@@ -81,8 +81,12 @@ scorep_definitions_unify_callpath( SCOREP_CallpathDef*                  definiti
  * the mappings.
  * @param handle handle to local callpath handle.
  */
-uint32_t
-SCOREP_CallpathHandle_GetUnifiedId( SCOREP_CallpathHandle handle );
+static inline uint32_t
+SCOREP_CallpathHandle_GetUnifiedId( SCOREP_CallpathHandle handle )
+{
+    uint32_t local_id = SCOREP_LOCAL_HANDLE_TO_ID( handle, Callpath );
+    return scorep_local_definition_manager.callpath.mapping[ local_id ];
+}
 
 
 /**

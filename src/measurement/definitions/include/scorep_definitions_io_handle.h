@@ -87,17 +87,32 @@ void
 SCOREP_IoHandleHandle_SetIoFile( SCOREP_IoHandleHandle handle,
                                  SCOREP_IoFileHandle   file );
 
-SCOREP_IoFileHandle
-SCOREP_IoHandleHandle_GetIoFile( SCOREP_IoHandleHandle handle );
+static inline SCOREP_IoFileHandle
+SCOREP_IoHandleHandle_GetIoFile( SCOREP_IoHandleHandle handle )
+{
+    return SCOREP_LOCAL_HANDLE_DEREF( handle, IoHandle )->file_handle;
+}
 
-void*
-SCOREP_IoHandleHandle_GetPayload( SCOREP_IoHandleHandle handle );
+static inline void*
+SCOREP_IoHandleHandle_GetPayload( SCOREP_IoHandleHandle handle )
+{
+    size_t              payload_offset = SCOREP_Allocator_RoundupToAlignment( sizeof( SCOREP_IoHandleDef ) );
+    SCOREP_IoHandleDef* def            = SCOREP_LOCAL_HANDLE_DEREF( handle, IoHandle );
 
-SCOREP_IoHandleHandle
-SCOREP_IoHandleHandle_GetParentHandle( SCOREP_IoHandleHandle handle );
+    return ( char* )def + payload_offset;
+}
 
-SCOREP_IoParadigmType
-SCOREP_IoHandleHandle_GetIoParadigm( SCOREP_IoHandleHandle handle );
+static inline SCOREP_IoHandleHandle
+SCOREP_IoHandleHandle_GetParentHandle( SCOREP_IoHandleHandle handle )
+{
+    return SCOREP_LOCAL_HANDLE_DEREF( handle, IoHandle )->parent_handle;
+}
+
+static inline SCOREP_IoHandleHandle
+SCOREP_IoHandleHandle_GetIoParadigm( SCOREP_IoHandleHandle handle )
+{
+    return SCOREP_LOCAL_HANDLE_DEREF( handle, IoHandle )->io_paradigm_type;
+}
 
 void
 scorep_definitions_unify_io_handle( SCOREP_IoHandleDef*                  definition,

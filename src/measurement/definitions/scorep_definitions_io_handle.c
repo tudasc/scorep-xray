@@ -363,12 +363,6 @@ hash_io_handle( SCOREP_IoHandleDef* definition )
     HASH_ADD_POD( definition, unify_key );
 }
 
-SCOREP_IoFileHandle
-SCOREP_IoHandleHandle_GetIoFile( SCOREP_IoHandleHandle handle )
-{
-    return SCOREP_LOCAL_HANDLE_DEREF( handle, IoHandle )->file_handle;
-}
-
 void
 SCOREP_IoHandleHandle_SetIoFile( SCOREP_IoHandleHandle handle,
                                  SCOREP_IoFileHandle   file )
@@ -386,25 +380,4 @@ SCOREP_IoHandleHandle_SetIoFile( SCOREP_IoHandleHandle handle,
 
     SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
                                 ( handle, SCOREP_HANDLE_TYPE_IO_HANDLE ) );
-}
-
-void*
-SCOREP_IoHandleHandle_GetPayload( SCOREP_IoHandleHandle handle )
-{
-    size_t              payload_offset = io_handle_static_size();
-    SCOREP_IoHandleDef* def            = SCOREP_LOCAL_HANDLE_DEREF( handle, IoHandle );
-
-    return ( char* )def + payload_offset;
-}
-
-SCOREP_IoHandleHandle
-SCOREP_IoHandleHandle_GetParentHandle( SCOREP_IoHandleHandle handle )
-{
-    return SCOREP_LOCAL_HANDLE_DEREF( handle, IoHandle )->parent_handle;
-}
-
-SCOREP_IoHandleHandle
-SCOREP_IoHandleHandle_GetIoParadigm( SCOREP_IoHandleHandle handle )
-{
-    return SCOREP_LOCAL_HANDLE_DEREF( handle, IoHandle )->io_paradigm_type;
 }

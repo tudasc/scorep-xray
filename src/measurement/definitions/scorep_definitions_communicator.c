@@ -80,7 +80,7 @@ define_interim_communicator( SCOREP_Allocator_PageManager*        pageManager,
                              va_list                              va );
 
 
-static size_t
+static inline size_t
 interim_comm_static_size( void )
 {
     return SCOREP_Allocator_RoundupToAlignment(
@@ -108,14 +108,6 @@ SCOREP_Definitions_NewInterimCommunicator( SCOREP_InterimCommunicatorHandle pare
 }
 
 
-void*
-SCOREP_InterimCommunicatorHandle_GetPayload( SCOREP_InterimCommunicatorHandle handle )
-{
-    return ( char* )SCOREP_LOCAL_HANDLE_DEREF( handle,
-                                               InterimCommunicator ) + interim_comm_static_size();
-}
-
-
 void
 SCOREP_InterimCommunicatorHandle_SetName( SCOREP_InterimCommunicatorHandle commHandle,
                                           const char*                      name )
@@ -137,13 +129,6 @@ SCOREP_InterimCommunicatorHandle_SetName( SCOREP_InterimCommunicatorHandle commH
     }
 
     SCOREP_Definitions_Unlock();
-}
-
-
-SCOREP_InterimCommunicatorHandle
-SCOREP_InterimCommunicatorHandle_GetParent( SCOREP_InterimCommunicatorHandle commHandle )
-{
-    return SCOREP_LOCAL_HANDLE_DEREF( commHandle, InterimCommunicator )->parent_handle;
 }
 
 

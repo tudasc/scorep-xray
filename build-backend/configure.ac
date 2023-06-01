@@ -142,25 +142,8 @@ AC_C_BIGENDIAN
 AFS_COMMON_UTILS([build], [<SCOREP_ErrorCodes.h>], [../src/utils/include])
 AC_CUTEST_COLOR_TESTS
 AC_SCOREP_DEFINE_REVISIONS
+SCOREP_ALLOCATOR_ALIGNMENT
 
-AC_SCOREP_CHECK_SIZEOF([void *])
-AC_SCOREP_CHECK_SIZEOF([double])
-AS_IF([test $ac_cv_sizeof_void_p -gt $ac_cv_sizeof_double],
-      [scorep_allocator_alignment=$ac_cv_sizeof_void_p],
-      [scorep_allocator_alignment=$ac_cv_sizeof_double])
-AC_MSG_CHECKING([for aligment $scorep_allocator_alignment being a power-of-two])
-AC_COMPILE_IFELSE(
-    [AC_LANG_BOOL_COMPILE_TRY(
-        [],
-        [( $scorep_allocator_alignment & ( $scorep_allocator_alignment - 1 ) ) == 0])],
-    [AC_MSG_RESULT([yes])],
-    [AC_MSG_RESULT([no])
-     AC_MSG_ERROR([Unsupported aligmemnt, expected a power-of-two: $scorep_allocator_alignment])])
-
-AC_DEFINE_UNQUOTED(
-    [SCOREP_ALLOCATOR_ALIGNMENT],
-    [$scorep_allocator_alignment],
-    [First guess, use the maximum of size(void*) and sizeof(double) as alignment for SCOREP_Allocator.])
 # </AC_SCOREP_COMMON_CHECKS>
 
 AS_IF([test "x${ac_scorep_platform}" = "xbgq"],

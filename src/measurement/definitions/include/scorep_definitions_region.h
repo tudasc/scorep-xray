@@ -136,8 +136,11 @@ SCOREP_RegionHandle_SetGroup( SCOREP_RegionHandle handle,
                               const char*         groupName );
 
 
-uint32_t
-SCOREP_RegionHandle_GetId( SCOREP_RegionHandle handle );
+static inline uint32_t
+SCOREP_RegionHandle_GetId( SCOREP_RegionHandle handle )
+{
+    return SCOREP_LOCAL_HANDLE_TO_ID( handle, Region );
+}
 
 
 const char*
@@ -152,12 +155,32 @@ const char*
 SCOREP_RegionHandle_GetFileName( SCOREP_RegionHandle handle );
 
 
-SCOREP_RegionType
-SCOREP_RegionHandle_GetType( SCOREP_RegionHandle handle );
+/**
+ * Gets the type of the region.
+ *
+ * @param handle A handle to the region.
+ *
+ * @return region type.
+ */
+static inline SCOREP_RegionType
+SCOREP_RegionHandle_GetType( SCOREP_RegionHandle handle )
+{
+    return SCOREP_LOCAL_HANDLE_DEREF( handle, Region )->region_type;
+}
 
 
-SCOREP_ParadigmType
-SCOREP_RegionHandle_GetParadigmType( SCOREP_RegionHandle handle );
+/**
+ * Gets the paradigm type of the region.
+ *
+ * @param handle A handle to the region.
+ *
+ * @return regions paradigm type.
+ */
+static inline SCOREP_ParadigmType
+SCOREP_RegionHandle_GetParadigmType( SCOREP_RegionHandle handle )
+{
+    return SCOREP_LOCAL_HANDLE_DEREF( handle, Region )->paradigm_type;
+}
 
 
 SCOREP_LineNo

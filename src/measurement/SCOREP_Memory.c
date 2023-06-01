@@ -93,7 +93,7 @@ static uint32_t                    page_size;
 static bool is_initialized;
 static bool out_of_memory;
 
-static SCOREP_Allocator_PageManager* definitions_page_manager;
+SCOREP_Allocator_PageManager* scorep_definitions_page_manager = NULL;
 
 /*
  * All tracing event page managers. Memory stats needs to access these,
@@ -145,9 +145,9 @@ SCOREP_Memory_Initialize( uint64_t totalMemory,
                   "SCOREP_TOTAL_MEMORY=%" PRIu64 " and SCOREP_PAGE_SIZE=%" PRIu64,
                   totalMemory, pageSize );
 
-    assert( definitions_page_manager == 0 );
-    definitions_page_manager = SCOREP_Allocator_CreatePageManager( allocator );
-    UTILS_BUG_ON( !definitions_page_manager,
+    assert( scorep_definitions_page_manager == NULL );
+    scorep_definitions_page_manager = SCOREP_Allocator_CreatePageManager( allocator );
+    UTILS_BUG_ON( !scorep_definitions_page_manager,
                   "Cannot create definitions manager." );
 }
 
@@ -161,9 +161,9 @@ SCOREP_Memory_Finalize( void )
     }
     is_initialized = false;
 
-    assert( definitions_page_manager );
-    SCOREP_Allocator_DeletePageManager( definitions_page_manager );
-    definitions_page_manager = 0;
+    assert( scorep_definitions_page_manager );
+    SCOREP_Allocator_DeletePageManager( scorep_definitions_page_manager );
+    scorep_definitions_page_manager = NULL;
 
     assert( allocator );
     SCOREP_Allocator_DeleteAllocator( allocator );
@@ -393,10 +393,7 @@ SCOREP_Memory_AlignedMalloc( size_t alignment,
     void* raw = malloc( size + sizeof( alignment_offset_t ) + alignment - 1 );
     if ( raw )
     {
-        #define roundupto( x, to ) ( ( ( intptr_t )( x ) + ( ( intptr_t )( to ) - 1 ) ) & ~( ( intptr_t )( to ) - 1 ) )
-        aligned = ( void* )roundupto( ( ( intptr_t )raw + sizeof( alignment_offset_t ) ),
-                                      alignment );
-        #undef roundupto
+        aligned = ( void* )SCOREP_ROUNDUPTO( ( ( intptr_t )raw + sizeof( alignment_offset_t ) ), alignment );
 
         /* Calculate the offset and store it in front of the
            aligned pointer. */
@@ -493,7 +490,7 @@ SCOREP_Memory_AllocForDefinitions( SCOREP_Location* location,
         return SCOREP_MOVABLE_NULL;
     }
 
-    SCOREP_Allocator_PageManager* page_manager = definitions_page_manager;
+    SCOREP_Allocator_PageManager* page_manager = scorep_definitions_page_manager;
     if ( location )
     {
         page_manager = SCOREP_Location_GetOrCreateMemoryPageManager(
@@ -516,17 +513,7 @@ void
 SCOREP_Memory_FreeDefinitionMem( void )
 {
     // print mem usage statistics
-    SCOREP_Allocator_Free( definitions_page_manager );
-}
-
-
-void*
-SCOREP_Memory_GetAddressFromMovableMemory( SCOREP_Allocator_MovableMemory movableMemory,
-                                           SCOREP_Allocator_PageManager*  movablePageManager )
-{
-    return SCOREP_Allocator_GetAddressFromMovableMemory(
-        movablePageManager,
-        movableMemory );
+    SCOREP_Allocator_Free( scorep_definitions_page_manager );
 }
 
 
@@ -541,14 +528,6 @@ SCOREP_Memory_CreateMovedPagedMemory( void )
     }
     return page_manager;
 }
-
-SCOREP_Allocator_PageManager*
-SCOREP_Memory_GetLocalDefinitionPageManager( void )
-{
-    assert( is_initialized );
-    return definitions_page_manager;
-}
-
 
 void
 SCOREP_Memory_DumpStats( const char* message )
@@ -608,9 +587,9 @@ memory_dump_stats_common( const char* message, bool report )
     SCOREP_Allocator_GetStats( allocator,
                                &stats[ SCORER_MEMORY_TRACKING_TOTAL ],
                                &stats[ SCORER_MEMORY_TRACKING_MAINTENANCE ] );
-    if ( definitions_page_manager )
+    if ( scorep_definitions_page_manager )
     {
-        SCOREP_Allocator_GetPageManagerStats( definitions_page_manager, &stats[ SCORER_MEMORY_TRACKING_DEFINITIONS ] );
+        SCOREP_Allocator_GetPageManagerStats( scorep_definitions_page_manager, &stats[ SCORER_MEMORY_TRACKING_DEFINITIONS ] );
     }
     SCOREP_Location_ForAll( memory_dump_for_location, NULL );
 

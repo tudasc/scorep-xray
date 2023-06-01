@@ -228,14 +228,6 @@ scorep_definitions_new_string_va( SCOREP_DefinitionManager* definition_manager,
 }
 
 const char*
-SCOREP_StringHandle_Get( SCOREP_StringHandle handle )
-{
-    SCOREP_StringDef* str = SCOREP_LOCAL_HANDLE_DEREF( handle, String );
-
-    return str->string_data;
-}
-
-const char*
 SCOREP_StringHandle_GetById( uint32_t id )
 {
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( &scorep_local_definition_manager, String, string )

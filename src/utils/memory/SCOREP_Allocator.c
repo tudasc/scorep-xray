@@ -50,8 +50,6 @@
 #include <UTILS_Debug.h>
 #include <UTILS_Error.h>
 
-#define roundup( x ) roundupto( x, SCOREP_ALLOCATOR_ALIGNMENT )
-
 #include "scorep_bitset.h"
 #include "scorep_page.h"
 
@@ -361,13 +359,6 @@ page_manager_alloc( SCOREP_Allocator_PageManager* pageManager,
 }
 
 
-size_t
-SCOREP_Allocator_RoundupToAlignment( size_t size )
-{
-    return roundup( size );
-}
-
-
 SCOREP_Allocator_Allocator*
 SCOREP_Allocator_CreateAllocator( uint32_t*                    totalMemory,
                                   uint32_t*                    pageSize,
@@ -416,7 +407,7 @@ SCOREP_Allocator_CreateAllocator( uint32_t*                    totalMemory,
                         page_shift, n_pages );
 
     uint32_t maint_memory_needed = union_size() + bitset_size( n_pages );
-    maint_memory_needed = roundupto( maint_memory_needed, 64 ); // why 64?
+    maint_memory_needed = SCOREP_ROUNDUPTO( maint_memory_needed, 64 ); // why 64?
     if ( ( *totalMemory ) <= maint_memory_needed )
     {
         /* too few memory to hold maintenance stuff */
@@ -468,7 +459,7 @@ SCOREP_Allocator_CreateAllocator( uint32_t*                    totalMemory,
     {
         return 0;
     }
-    SCOREP_Allocator_Allocator* allocator = ( void* )roundupto( raw, *pageSize );
+    SCOREP_Allocator_Allocator* allocator = ( void* )SCOREP_ROUNDUPTO( raw, *pageSize );
     allocator->allocated_memory = raw;
     allocator->page_shift       = page_shift;
     allocator->n_pages_bits     = n_pages_bits;
@@ -743,25 +734,23 @@ SCOREP_Allocator_AllocMovedPage( SCOREP_Allocator_PageManager* movedPageManager,
 
 
 void*
-SCOREP_Allocator_GetAddressFromMovableMemory(
+SCOREP_Allocator_GetAddressFromMovedMemory(
     const SCOREP_Allocator_PageManager* pageManager,
     SCOREP_Allocator_MovableMemory      movableMemory )
 {
     assert( pageManager );
     assert( movableMemory >= page_size( pageManager->allocator ) );
     assert( movableMemory < total_memory( pageManager->allocator ) );
+    assert( pageManager->moved_page_id_mapping_page );
 
-    if ( pageManager->moved_page_id_mapping_page )
-    {
-        uint32_t* moved_page_id_mapping =
-            ( uint32_t* )pageManager->moved_page_id_mapping_page->memory_start_address;
-        uint32_t page_id     = movableMemory >> pageManager->allocator->page_shift;
-        uint32_t page_offset = movableMemory & page_mask( pageManager->allocator );
-        assert( moved_page_id_mapping[ page_id ] != 0 );
-        page_id       = moved_page_id_mapping[ page_id ];
-        movableMemory = ( page_id << pageManager->allocator->page_shift )
-                        | page_offset;
-    }
+    uint32_t* moved_page_id_mapping =
+        ( uint32_t* )pageManager->moved_page_id_mapping_page->memory_start_address;
+    uint32_t page_id     = movableMemory >> pageManager->allocator->page_shift;
+    uint32_t page_offset = movableMemory & page_mask( pageManager->allocator );
+    assert( moved_page_id_mapping[ page_id ] != 0 );
+    page_id       = moved_page_id_mapping[ page_id ];
+    movableMemory = ( page_id << pageManager->allocator->page_shift )
+                    | page_offset;
 
     return ( char* )pageManager->allocator + movableMemory;
 }

@@ -66,10 +66,25 @@
 typedef struct SCOREP_Allocator_Allocator SCOREP_Allocator_Allocator;
 
 
-typedef struct SCOREP_Allocator_PageManager SCOREP_Allocator_PageManager;
-
-
 typedef struct SCOREP_Allocator_Page SCOREP_Allocator_Page;
+
+
+struct SCOREP_Allocator_PageManager
+{
+    SCOREP_Allocator_Allocator* allocator;         // fetch new pages from this one
+    SCOREP_Allocator_Page*      pages_in_use_list;
+
+    /*
+     * The page holding the mapping,
+     * The mapping is at moved_page_id_mapping_page->memory_start_address
+     */
+    SCOREP_Allocator_Page* moved_page_id_mapping_page;
+
+    /* sentinel which allocation could be rolled back */
+    /* only movable allocations currently */
+    SCOREP_Allocator_MovableMemory last_allocation;
+};
+typedef struct SCOREP_Allocator_PageManager SCOREP_Allocator_PageManager;
 
 
 typedef struct SCOREP_Allocator_ObjectManager SCOREP_Allocator_ObjectManager;
@@ -81,8 +96,13 @@ typedef void ( * SCOREP_Allocator_Guard )( SCOREP_Allocator_GuardObject );
 
 UTILS_BEGIN_C_DECLS
 
-size_t
-SCOREP_Allocator_RoundupToAlignment( size_t size );
+static inline size_t
+SCOREP_Allocator_RoundupToAlignment( size_t size )
+{
+    return SCOREP_ROUNDUPTO( size, SCOREP_ALLOCATOR_ALIGNMENT );
+}
+
+
 
 /**
  * Create a memory allocator object that uses at maximum @a totalMemory
@@ -197,8 +217,14 @@ SCOREP_Allocator_AllocMovedPage( SCOREP_Allocator_PageManager* movedPageManager,
                                  uint32_t                      page_usage );
 
 
+void*
+SCOREP_Allocator_GetAddressFromMovedMemory(
+    const SCOREP_Allocator_PageManager* pageManager,
+    SCOREP_Allocator_MovableMemory      movableMemory );
+
+
 /**
- * Covert a pointer to a SCOREP_Allocator_MovableMemory object to a raw pointer
+ * Convert a SCOREP_Allocator_MovableMemory object to a raw pointer
  * to the @e real memory.
  *
  * @param movableMemory The movable memory to be converted.
@@ -207,11 +233,18 @@ SCOREP_Allocator_AllocMovedPage( SCOREP_Allocator_PageManager* movedPageManager,
  * @return A pointer to the raw memory cooresponding to the movable memory
  * object.
  */
-void*
+static inline void*
 SCOREP_Allocator_GetAddressFromMovableMemory(
     const SCOREP_Allocator_PageManager* pageManager,
-    SCOREP_Allocator_MovableMemory      movableMemory );
+    SCOREP_Allocator_MovableMemory      movableMemory )
+{
+    if ( pageManager->moved_page_id_mapping_page )
+    {
+        return SCOREP_Allocator_GetAddressFromMovedMemory( pageManager, movableMemory );
+    }
 
+    return ( char* )pageManager->allocator + movableMemory;
+}
 
 /** Discard the last movable allocation */
 void

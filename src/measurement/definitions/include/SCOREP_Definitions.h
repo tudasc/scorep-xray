@@ -77,9 +77,10 @@
 /* forward decl */
 struct SCOREP_DefinitionManager;
 typedef struct SCOREP_DefinitionManager SCOREP_DefinitionManager;
-struct SCOREP_Allocator_PageManager;
 
 #include <SCOREP_Types.h>
+#include <SCOREP_Memory.h>
+
 #include <UTILS_Error.h>
 
 #include <stdbool.h>
@@ -100,8 +101,8 @@ struct SCOREP_Allocator_PageManager;
  * @return A pointer to an object of type @a target_type.
  */
 #define SCOREP_MEMORY_DEREF_MOVABLE( movableMemory, movablePageManager, targetType ) \
-    ( ( targetType )SCOREP_Memory_GetAddressFromMovableMemory( movableMemory, \
-                                                               movablePageManager ) )
+    ( ( targetType )SCOREP_Allocator_GetAddressFromMovableMemory( movablePageManager, \
+                                                                  movableMemory ) )
 
 /**
  *  Dereferences a moveable memory pointer to the definition struct.
@@ -299,36 +300,6 @@ scorep_definitions_manager_entry_free_mapping( scorep_definitions_manager_entry*
 }
 
 
-#include "scorep_definitions_string.h"
-#include "scorep_definitions_source_file.h"
-#include "scorep_definitions_location_group.h"
-#include "scorep_definitions_location.h"
-#include "scorep_definitions_system_tree_node.h"
-#include "scorep_definitions_system_tree_node_property.h"
-#include "scorep_definitions_region.h"
-#include "scorep_definitions_communicator.h"
-#include "scorep_definitions_group.h"
-#include "scorep_definitions_metric.h"
-#include "scorep_definitions_sampling_set.h"
-#include "scorep_definitions_sampling_set_recorder.h"
-#include "scorep_definitions_paradigm.h"
-#include "scorep_definitions_parameter.h"
-#include "scorep_definitions_callpath.h"
-#include "scorep_definitions_clock_offset.h"
-#include "scorep_definitions_property.h"
-#include "scorep_definitions_rma_window.h"
-#include "scorep_definitions_topology.h"
-#include "scorep_definitions_io_handle.h"
-#include "scorep_definitions_io_file.h"
-#include "scorep_definitions_io_file_property.h"
-#include "scorep_definitions_io_paradigm.h"
-#include "scorep_definitions_marker_group.h"
-#include "scorep_definitions_marker.h"
-#include "scorep_definitions_attribute.h"
-#include "scorep_definitions_location_property.h"
-#include "scorep_definitions_source_code_location.h"
-#include "scorep_definitions_calling_context.h"
-
 /* super object for all definitions */
 SCOREP_DEFINE_DEFINITION_TYPE( Any )
 {
@@ -339,8 +310,16 @@ SCOREP_DEFINE_DEFINITION_TYPE( Any )
 /* Return the unique id associated with @a handle.
  * So far only used in UTILS_DEBUG* statements, no need to introduce
  * dependency to SCOREP_Memory by inlining it.  */
-uint32_t
-SCOREP_Definitions_HandleToId( SCOREP_AnyHandle handle );
+static inline uint32_t
+SCOREP_Definitions_HandleToId( SCOREP_AnyHandle handle )
+{
+    if ( handle == SCOREP_MOVABLE_NULL )
+    {
+        return UINT32_MAX;
+    }
+
+    return SCOREP_LOCAL_HANDLE_TO_ID( handle, Any );
+}
 
 
 // the list of definitions for what we generate mappings to global
@@ -451,6 +430,37 @@ SCOREP_Definitions_InitializeDefinitionManager(
  */
 uint32_t
 SCOREP_Definitions_GetNumberOfUnifiedCallpathDefinitions( void );
+
+
+#include "scorep_definitions_string.h"
+#include "scorep_definitions_source_file.h"
+#include "scorep_definitions_location_group.h"
+#include "scorep_definitions_location.h"
+#include "scorep_definitions_system_tree_node.h"
+#include "scorep_definitions_system_tree_node_property.h"
+#include "scorep_definitions_region.h"
+#include "scorep_definitions_communicator.h"
+#include "scorep_definitions_group.h"
+#include "scorep_definitions_metric.h"
+#include "scorep_definitions_sampling_set.h"
+#include "scorep_definitions_sampling_set_recorder.h"
+#include "scorep_definitions_paradigm.h"
+#include "scorep_definitions_parameter.h"
+#include "scorep_definitions_callpath.h"
+#include "scorep_definitions_clock_offset.h"
+#include "scorep_definitions_property.h"
+#include "scorep_definitions_rma_window.h"
+#include "scorep_definitions_topology.h"
+#include "scorep_definitions_io_handle.h"
+#include "scorep_definitions_io_file.h"
+#include "scorep_definitions_io_file_property.h"
+#include "scorep_definitions_io_paradigm.h"
+#include "scorep_definitions_marker_group.h"
+#include "scorep_definitions_marker.h"
+#include "scorep_definitions_attribute.h"
+#include "scorep_definitions_location_property.h"
+#include "scorep_definitions_source_code_location.h"
+#include "scorep_definitions_calling_context.h"
 
 /*@}*/
 

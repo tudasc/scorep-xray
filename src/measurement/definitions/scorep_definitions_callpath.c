@@ -266,19 +266,6 @@ equal_callpath( const SCOREP_CallpathDef* existingDefinition,
 
 
 /**
- * Returns the sequence number of the unified definitions for a local callpath handle from
- * the mappings.
- * @param handle handle to local callpath handle.
- */
-uint32_t
-SCOREP_CallpathHandle_GetUnifiedId( SCOREP_CallpathHandle handle )
-{
-    uint32_t local_id = SCOREP_LOCAL_HANDLE_TO_ID( handle, Callpath );
-    return scorep_local_definition_manager.callpath.mapping[ local_id ];
-}
-
-
-/**
  * Returns the unified handle from a local handle.
  */
 SCOREP_CallpathHandle

@@ -314,13 +314,6 @@ equal_region( const SCOREP_RegionDef* existingDefinition,
 }
 
 
-uint32_t
-SCOREP_RegionHandle_GetId( SCOREP_RegionHandle handle )
-{
-    return SCOREP_LOCAL_HANDLE_TO_ID( handle, Region );
-}
-
-
 /**
  * Gets read-only access to the name of the region.
  *
@@ -369,34 +362,6 @@ SCOREP_RegionHandle_GetFileName( SCOREP_RegionHandle handle )
         return NULL;
     }
     return SCOREP_LOCAL_HANDLE_DEREF( region->file_name_handle, String )->string_data;
-}
-
-
-/**
- * Gets the type of the region.
- *
- * @param handle A handle to the region.
- *
- * @return region type.
- */
-SCOREP_RegionType
-SCOREP_RegionHandle_GetType( SCOREP_RegionHandle handle )
-{
-    return SCOREP_LOCAL_HANDLE_DEREF( handle, Region )->region_type;
-}
-
-
-/**
- * Gets the paradigm type of the region.
- *
- * @param handle A handle to the region.
- *
- * @return regions paradigm type.
- */
-SCOREP_ParadigmType
-SCOREP_RegionHandle_GetParadigmType( SCOREP_RegionHandle handle )
-{
-    return SCOREP_LOCAL_HANDLE_DEREF( handle, Region )->paradigm_type;
 }
 
 
