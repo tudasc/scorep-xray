@@ -64,6 +64,7 @@
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_IoManagement.h>
+#include <SCOREP_Definitions.h>
 
 static inline SCOREP_IoAccessMode
 mpi_io_get_access_mode( int amode )

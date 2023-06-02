@@ -40,6 +40,7 @@
  */
 
 #include "SCOREP_Mpi_Reg.h"
+#include <SCOREP_DefinitionHandles.h>
 
 #include <mpi.h>
 #include <stdbool.h>

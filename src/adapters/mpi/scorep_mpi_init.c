@@ -48,6 +48,7 @@
 #include <scorep/SCOREP_PublicTypes.h>
 #include <SCOREP_ErrorCodes.h>
 #include <SCOREP_Location.h>
+#include <SCOREP_Definitions.h>
 
 #include "SCOREP_Mpi.h"
 #include "scorep_mpi_fortran.h"

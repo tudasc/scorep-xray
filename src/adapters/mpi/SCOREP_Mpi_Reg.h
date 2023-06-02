@@ -64,7 +64,7 @@
 #ifndef SCOREP_MPI_REG_H
 #define SCOREP_MPI_REG_H
 
-#include <SCOREP_Definitions.h>
+#include <scorep/SCOREP_PublicTypes.h>
 /*
  * -----------------------------------------------------------------------------
  *

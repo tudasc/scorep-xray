@@ -63,6 +63,7 @@
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
+#include <SCOREP_Definitions.h>
 #include <stdio.h>
 #include <string.h>
 

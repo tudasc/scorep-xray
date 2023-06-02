@@ -64,6 +64,7 @@
 #include "SCOREP_Mpi.h"
 
 #include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_Definitions.h>
 
 /* Placeholder for MPI functions which are not communicative */
 #define SCOREP_REGION_NONE SCOREP_REGION_FUNCTION

@@ -28,6 +28,7 @@
 #include <UTILS_Error.h>
 #include <UTILS_Mutex.h>
 #include <SCOREP_Memory.h>
+#include <SCOREP_Definitions.h>
 
 #include "scorep_mpi_rma_request.h"
 
