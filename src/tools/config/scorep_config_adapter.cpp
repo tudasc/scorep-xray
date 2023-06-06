@@ -967,13 +967,6 @@ SCOREP_Config_MemoryAdapter::addLdFlags( std::string& ldflags,
                                          bool         build_check,
                                          bool         nvcc )
 {
-#if SCOREP_BACKEND_COMPILER_CC_CRAY || SCOREP_BACKEND_COMPILER_CXX_CRAY || SCOREP_BACKEND_COMPILER_FC_CRAY
-    // For clang-based cc/CC '-h system_alloc' issues a warning (argument
-    // unused during compilation). To prevent the warning, we would need to
-    // take the linking-language into account. Addressed in #16.
-    ldflags += " -h system_alloc";
-#endif // SCOREP_BACKEND_COMPILER_CC_CRAY || SCOREP_BACKEND_COMPILER_CXX_CRAY || SCOREP_BACKEND_COMPILER_FC_CRAY
-
     if ( m_categories.count( "libc" ) )
     {
         ldflags += " -Wl,"
