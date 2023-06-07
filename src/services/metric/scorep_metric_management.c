@@ -612,9 +612,11 @@ initialize_location_metric_cb( SCOREP_Location* location,
                                void*            data )
 {
     /* Call only, if previously initialized. Additional check of location
-     * type needed in case of SCOREP_Metric_Reinitialize */
+     * type needed in case of SCOREP_Metric_Reinitialize. Also do not
+     * initalize for GPU or metric locations. */
     if ( scorep_metric_management_initialized
-         && SCOREP_Location_GetType( location ) != SCOREP_LOCATION_TYPE_METRIC )
+         && SCOREP_Location_GetType( location ) != SCOREP_LOCATION_TYPE_METRIC
+         && SCOREP_Location_GetType( location ) != SCOREP_LOCATION_TYPE_GPU )
     {
         /* Get the thread local data related to metrics */
         SCOREP_Metric_LocationData* metric_data =
@@ -1134,9 +1136,11 @@ finalize_location_metric_cb( SCOREP_Location* location,
 {
     UTILS_ASSERT( location != NULL );
 
-    if ( SCOREP_Location_GetType( location ) == SCOREP_LOCATION_TYPE_METRIC )
+    if ( SCOREP_Location_GetType( location ) == SCOREP_LOCATION_TYPE_METRIC
+         || SCOREP_Location_GetType( location ) == SCOREP_LOCATION_TYPE_GPU )
     {
-        /* No need to handle locations which are just used to store metrics */
+        /* No need to handle locations which are just used to store metrics
+         * or are GPU locations. */
         return SCOREP_SUCCESS;
     }
 
@@ -1334,10 +1338,11 @@ static bool
 initialize_location_metric_after_mpp_init_cb( SCOREP_Location* location,
                                               void*            data )
 {
-    /* Call only, if location is not a metric-only one and was
+    /* Call only, if location is not a metric-only or GPU one and was
      * previously initialized. */
     if ( scorep_metric_management_initialized
-         && SCOREP_Location_GetType( location ) != SCOREP_LOCATION_TYPE_METRIC )
+         && SCOREP_Location_GetType( location ) != SCOREP_LOCATION_TYPE_METRIC
+         && SCOREP_Location_GetType( location ) != SCOREP_LOCATION_TYPE_GPU  )
     {
         /* Get the thread local data related to metrics */
         SCOREP_Metric_LocationData* metric_data =

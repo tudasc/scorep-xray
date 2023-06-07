@@ -117,7 +117,7 @@ scorep_profile_enter( SCOREP_Profile_LocationData* location,
     uint32_t number_of_synchronus_strict_metrics = SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics();
     for ( uint32_t i = 0; i < number_of_synchronus_strict_metrics; i++ )
     {
-        node->dense_metrics[ i ].start_value = metrics[ i ];
+        node->dense_metrics[ i ].start_value = metrics ? metrics[ i ] : 0;
     }
 
     return node;
@@ -168,7 +168,7 @@ scorep_profile_exit( SCOREP_Profile_LocationData* location,
         scorep_profile_update_dense_metric( &node->inclusive_time, timestamp );
         for ( uint32_t i = 0; i < SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics(); i++ )
         {
-            scorep_profile_update_dense_metric( &node->dense_metrics[ i ], metrics[ i ] );
+            scorep_profile_update_dense_metric( &node->dense_metrics[ i ], metrics ? metrics[ i ] : 0 );
         }
 
         parent = node->parent;

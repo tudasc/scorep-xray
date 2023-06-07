@@ -66,6 +66,8 @@ Bugfixes:
   inappropriately applied to other compilers on Cray/HPE systems.
 - Remove a misleading warning message from `MPI_Comm_join`.
 - Restore HIP memory transfer recording.
+- Limit metrics to CPU thread locations, to avoid aborts when used in
+  combination with accelerator recording.
 
 ------------------- Released version 8.1 -----------------------------
 
