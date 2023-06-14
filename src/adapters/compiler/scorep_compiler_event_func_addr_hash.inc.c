@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2021-2022,
+ * Copyright (c) 2021-2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -109,8 +109,7 @@ func_addr_hash_value_ctor( func_addr_hash_key_t* addr,
                        && ( strncmp( function_name_demangled, "otf2_", 5 ) != 0 )
                        && ( strncmp( function_name_demangled, "cube_", 5 ) != 0 )
                        && ( strncmp( function_name_demangled, "cubew_", 6 ) != 0 )
-                       && ( strncmp( function_name_demangled, ".omp.", 5 ) != 0 )
-                       && ( strncmp( function_name_demangled, ".omp_outlined.", 14 ) != 0 )
+                       && ( strncmp( function_name_demangled, ".omp", 4 ) != 0 )
                        && ( strncmp( function_name_demangled, ".nondebug_wrapper.", 18 ) != 0 )
                        && ( !strstr( function_name_demangled, "Kokkos::Tools" ) )
                        && ( !strstr( function_name_demangled, "Kokkos::Profiling" ) )
