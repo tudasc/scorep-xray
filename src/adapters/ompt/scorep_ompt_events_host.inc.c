@@ -1228,22 +1228,34 @@ scorep_ompt_cb_host_sync_region( ompt_sync_region_t    kind,
                     SCOREP_EnterRegion( sync_region_begin( task, codeptr_ra, TOOL_EVENT_BARRIER ) );
                     break;
                 }
+                case ompt_sync_region_barrier_implementation:
+                    UTILS_WARN_ONCE( "ompt_sync_region_t %s not implemented yet.",
+                                     sync_region2string( kind ) );
+                    break;
                 case ompt_sync_region_taskwait:
                     SCOREP_EnterRegion( sync_region_begin( task, codeptr_ra, TOOL_EVENT_TASKWAIT ) );
                     break;
                 case ompt_sync_region_taskgroup:
                     SCOREP_EnterRegion( sync_region_begin( task, codeptr_ra, TOOL_EVENT_TASKGROUP ) );
                     break;
+                case ompt_sync_region_reduction:
+                    UTILS_WARN_ONCE( "ompt_sync_region_t %s not implemented yet.",
+                                     sync_region2string( kind ) );
+                    break;
                 case ompt_sync_region_barrier_implicit_workshare:
                 {
                     SCOREP_EnterRegion( sync_region_begin( task, codeptr_ra, TOOL_EVENT_IMPLICIT_BARRIER ) );
                     break;
                 }
+                #if HAVE( DECL_OMPT_SYNC_REGION_BARRIER_TEAMS )
+                case ompt_sync_region_barrier_teams:
+                    UTILS_WARN_ONCE( "ompt_sync_region_t %s not implemented yet.",
+                                     sync_region2string( kind ) );
+                    break;
+                #endif  /* DECL_OMPT_SYNC_REGION_BARRIER_TEAMS */
                 default:
-                {
-                    UTILS_WARNING( "ompt_sync_region_t %s not implemented yet ",
-                                   sync_region2string( kind ) );
-                }
+                    UTILS_WARNING( "unknown ompt_sync_region_t %d.",
+                                   ( int )kind );
             }
             break;
         }
@@ -1305,11 +1317,19 @@ scorep_ompt_cb_host_sync_region( ompt_sync_region_t    kind,
                 case ompt_sync_region_barrier_explicit:
                     SCOREP_ExitRegion( sync_region_end( task ) );
                     break;
+                case ompt_sync_region_barrier_implementation:
+                    UTILS_WARN_ONCE( "ompt_sync_region_t %s not implemented yet.",
+                                     sync_region2string( kind ) );
+                    break;
                 case ompt_sync_region_taskwait:
                     SCOREP_ExitRegion( sync_region_end( task ) );
                     break;
                 case ompt_sync_region_taskgroup:
                     SCOREP_ExitRegion( sync_region_end( task ) );
+                    break;
+                case ompt_sync_region_reduction:
+                    UTILS_WARN_ONCE( "ompt_sync_region_t %s not implemented yet.",
+                                     sync_region2string( kind ) );
                     break;
                 case ompt_sync_region_barrier_implicit_workshare:
                 {
@@ -1317,11 +1337,15 @@ scorep_ompt_cb_host_sync_region( ompt_sync_region_t    kind,
                     SCOREP_ExitRegion( sync_region_end( task ) );
                     break;
                 }
+                #if HAVE( DECL_OMPT_SYNC_REGION_BARRIER_TEAMS )
+                case ompt_sync_region_barrier_teams:
+                    UTILS_WARN_ONCE( "ompt_sync_region_t %s not implemented yet.",
+                                     sync_region2string( kind ) );
+                    break;
+                #endif  /* DECL_OMPT_SYNC_REGION_BARRIER_TEAMS */
                 default:
-                {
-                    UTILS_WARNING( "ompt_sync_region_t %s not implemented yet ",
-                                   sync_region2string( kind ) );
-                }
+                    UTILS_WARNING( "unknown ompt_sync_region_t %d.",
+                                   ( int )kind );
             }
             break;
         #if HAVE( DECL_OMPT_SCOPE_BEGINEND )
@@ -1626,9 +1650,45 @@ scorep_ompt_cb_host_work( ompt_work_t           work_type,
                 case ompt_work_workshare:
                     SCOREP_EnterRegion( work_begin( task, codeptr_ra, TOOL_EVENT_WORKSHARE ) );
                     break;
+                case ompt_work_distribute:
+                    UTILS_WARN_ONCE( "ompt_work_t %s not implemented yet.",
+                                     work2string( work_type ) );
+                    break;
+                case ompt_work_taskloop:
+                    UTILS_WARN_ONCE( "ompt_work_t %s not implemented yet.",
+                                     work2string( work_type ) );
+                    break;
+                case ompt_work_scope:
+                    UTILS_WARN_ONCE( "ompt_work_t %s not implemented yet.",
+                                     work2string( work_type ) );
+                    break;
+                #if HAVE( DECL_OMPT_WORK_LOOP_STATIC )
+                case ompt_work_loop_static:
+                    UTILS_WARN_ONCE( "ompt_work_t %s not implemented yet.",
+                                     work2string( work_type ) );
+                    break;
+                #endif  /* DECL_OMPT_WORK_LOOP_STATIC */
+                #if HAVE( DECL_OMPT_WORK_LOOP_DYNAMIC )
+                case ompt_work_loop_dynamic:
+                    UTILS_WARN_ONCE( "ompt_work_t %s not implemented yet.",
+                                     work2string( work_type ) );
+                    break;
+                #endif  /* DECL_OMPT_WORK_LOOP_DYNAMIC */
+                #if HAVE( DECL_OMPT_WORK_LOOP_GUIDED )
+                case ompt_work_loop_guided:
+                    UTILS_WARN_ONCE( "ompt_work_t %s not implemented yet.",
+                                     work2string( work_type ) );
+                    break;
+                #endif  /* DECL_OMPT_WORK_LOOP_GUIDED */
+                #if HAVE( DECL_OMPT_WORK_LOOP_OTHER )
+                case ompt_work_loop_other:
+                    UTILS_WARN_ONCE( "ompt_work_t %s not implemented yet.",
+                                     work2string( work_type ) );
+                    break;
+                #endif  /* DECL_OMPT_WORK_LOOP_OTHER */
                 default:
-                    UTILS_WARNING( "ompt_work_t %s not implemented yet ",
-                                   work2string( work_type ) );
+                    UTILS_WARNING( "unknown ompt_work_t %d.",
+                                   ( int )work_type );
             }
             break;
         case ompt_scope_end:
@@ -1656,9 +1716,45 @@ scorep_ompt_cb_host_work( ompt_work_t           work_type,
                 case ompt_work_workshare:
                     SCOREP_ExitRegion( work_end( task ) );
                     break;
+                case ompt_work_distribute:
+                    UTILS_WARN_ONCE( "ompt_work_t %s not implemented yet.",
+                                     work2string( work_type ) );
+                    break;
+                case ompt_work_taskloop:
+                    UTILS_WARN_ONCE( "ompt_work_t %s not implemented yet.",
+                                     work2string( work_type ) );
+                    break;
+                case ompt_work_scope:
+                    UTILS_WARN_ONCE( "ompt_work_t %s not implemented yet.",
+                                     work2string( work_type ) );
+                    break;
+                #if HAVE( DECL_OMPT_WORK_LOOP_STATIC )
+                case ompt_work_loop_static:
+                    UTILS_WARN_ONCE( "ompt_work_t %s not implemented yet.",
+                                     work2string( work_type ) );
+                    break;
+                #endif  /* DECL_OMPT_WORK_LOOP_STATIC */
+                #if HAVE( DECL_OMPT_WORK_LOOP_DYNAMIC )
+                case ompt_work_loop_dynamic:
+                    UTILS_WARN_ONCE( "ompt_work_t %s not implemented yet.",
+                                     work2string( work_type ) );
+                    break;
+                #endif  /* DECL_OMPT_WORK_LOOP_DYNAMIC */
+                #if HAVE( DECL_OMPT_WORK_LOOP_GUIDED )
+                case ompt_work_loop_guided:
+                    UTILS_WARN_ONCE( "ompt_work_t %s not implemented yet.",
+                                     work2string( work_type ) );
+                    break;
+                #endif  /* DECL_OMPT_WORK_LOOP_GUIDED */
+                #if HAVE( DECL_OMPT_WORK_LOOP_OTHER )
+                case ompt_work_loop_other:
+                    UTILS_WARN_ONCE( "ompt_work_t %s not implemented yet.",
+                                     work2string( work_type ) );
+                    break;
+                #endif  /* DECL_OMPT_WORK_LOOP_OTHER */
                 default:
-                    UTILS_WARNING( "ompt_work_t %s not implemented yet ",
-                                   work2string( work_type ) );
+                    UTILS_WARNING( "unknown ompt_work_t %d.",
+                                   ( int )work_type );
             }
             break;
         #if HAVE( DECL_OMPT_SCOPE_BEGINEND )
@@ -2134,6 +2230,10 @@ scorep_ompt_cb_host_mutex_acquire( ompt_mutex_t   kind,
             SCOREP_EnterRegion( lock_regions[ TOOL_LOCK_EVENT_SET ] );
             #endif /* !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX ) */
             break;
+        case ompt_mutex_test_lock:
+            UTILS_WARN_ONCE( "ompt_mutex_t %s not implemented yet.",
+                             mutex2string( kind ) );
+            break;
         case ompt_mutex_nest_lock:
             #if !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX )
             /* nest-lock-acquire event. Followed by either nest-lock-acquired
@@ -2141,6 +2241,10 @@ scorep_ompt_cb_host_mutex_acquire( ompt_mutex_t   kind,
                scorep_ompt_cb_host_nest_lock(). */
             SCOREP_EnterRegion( lock_regions[ TOOL_LOCK_EVENT_SET_NEST ] );
             #endif /* !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX ) */
+            break;
+        case ompt_mutex_test_nest_lock:
+            UTILS_WARN_ONCE( "ompt_mutex_t %s not implemented yet.",
+                             mutex2string( kind ) );
             break;
         case ompt_mutex_critical:
             construct_mutex_acquire( task, codeptr_ra );
@@ -2152,7 +2256,7 @@ scorep_ompt_cb_host_mutex_acquire( ompt_mutex_t   kind,
             construct_mutex_acquire( task, codeptr_ra );
             break;
         default:
-            UTILS_WARNING( "mutex kind %s not implemented yet.", mutex2string( kind ) );
+            UTILS_WARNING( "unknown ompt_mutex_t %d.", ( int )kind );
     }
 
     UTILS_DEBUG_EXIT( "atid %" PRIu32 " | kind %s | wait_id %ld | codeptr_ra %p",
@@ -2222,6 +2326,10 @@ scorep_ompt_cb_host_mutex_acquired( ompt_mutex_t   kind,
             #endif /* !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX ) */
         }
         break;
+        case ompt_mutex_test_lock:
+            UTILS_WARN_ONCE( "ompt_mutex_t %s not implemented yet.",
+                             mutex2string( kind ) );
+            break;
         case ompt_mutex_nest_lock:
         {
             #if !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX )
@@ -2240,6 +2348,10 @@ scorep_ompt_cb_host_mutex_acquired( ompt_mutex_t   kind,
             #endif /* !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX ) */
         }
         break;
+        case ompt_mutex_test_nest_lock:
+            UTILS_WARN_ONCE( "ompt_mutex_t %s not implemented yet.",
+                             mutex2string( kind ) );
+            break;
         case ompt_mutex_critical:
             construct_mutex_acquired( task, TOOL_EVENT_CRITICAL, TOOL_EVENT_CRITICAL_SBLOCK, kind, wait_id );
             break;
@@ -2250,7 +2362,7 @@ scorep_ompt_cb_host_mutex_acquired( ompt_mutex_t   kind,
             construct_mutex_acquired( task, TOOL_EVENT_ORDERED, TOOL_EVENT_ORDERED_SBLOCK, kind, wait_id );
             break;
         default:
-            UTILS_WARNING( "mutex kind %s not implemented yet.", mutex2string( kind ) );
+            UTILS_WARNING( "unknown ompt_mutex_t %d.", ( int )kind );
     }
 
     UTILS_DEBUG_EXIT( "atid %" PRIu32 " | kind %s | wait_id %ld | codeptr_ra %p",
@@ -2339,6 +2451,10 @@ scorep_ompt_cb_host_mutex_released( ompt_mutex_t   kind,
             #endif /* !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX ) */
         }
         break;
+        case ompt_mutex_test_lock:
+            UTILS_WARN_ONCE( "ompt_mutex_t %s not implemented yet.",
+                             mutex2string( kind ) );
+            break;
         case ompt_mutex_nest_lock:
         {
             #if !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX )
@@ -2355,6 +2471,10 @@ scorep_ompt_cb_host_mutex_released( ompt_mutex_t   kind,
             #endif /* !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX ) */
         }
         break;
+        case ompt_mutex_test_nest_lock:
+            UTILS_WARN_ONCE( "ompt_mutex_t %s not implemented yet.",
+                             mutex2string( kind ) );
+            break;
         case ompt_mutex_critical:
             construct_mutex_released( kind, wait_id );
             break;
@@ -2365,7 +2485,7 @@ scorep_ompt_cb_host_mutex_released( ompt_mutex_t   kind,
             construct_mutex_released( kind, wait_id );
             break;
         default:
-            UTILS_WARNING( "mutex kind %s not implemented yet.", mutex2string( kind ) );
+            UTILS_WARNING( "unknown ompt_mutex_t %d.", ( int )kind );
     }
 
     UTILS_DEBUG_EXIT( "atid %" PRIu32 " | kind %s | wait_id %ld | codeptr_ra %p",
@@ -2440,7 +2560,7 @@ scorep_ompt_cb_host_lock_init( ompt_mutex_t   kind,
             SCOREP_Location_ExitRegion( location, timestamp, region );
             break;
         default:
-            UTILS_WARNING( "mutex kind %s not implemented yet.", mutex2string( kind ) );
+            UTILS_WARNING( "unexpected ompt_mutex_t %s.", mutex2string( kind ) );
     }
 
     UTILS_DEBUG_EXIT( "atid %" PRIu32 " | kind %s | wait_id %ld | codeptr_ra %p",
@@ -2487,7 +2607,7 @@ scorep_ompt_cb_host_lock_destroy( ompt_mutex_t   kind,
             SCOREP_Location_ExitRegion( location, timestamp, lock_regions[ TOOL_LOCK_EVENT_DESTROY_NEST ] );
             break;
         default:
-            UTILS_WARNING( "mutex kind %s not implemented yet.", mutex2string( kind ) );
+            UTILS_WARNING( "unexpected ompt_mutex_t %s.", mutex2string( kind ) );
     }
 
     UTILS_DEBUG_EXIT( "atid %" PRIu32 " | kind %s | wait_id %ld | codeptr_ra %p",
@@ -2537,11 +2657,11 @@ scorep_ompt_cb_host_nest_lock( ompt_scope_endpoint_t endpoint,
             mutex->optional.nest_level--;
             SCOREP_ExitRegion( lock_regions[ TOOL_LOCK_EVENT_UNSET_NEST ] );
             break;
-#if HAVE( DECL_OMPT_SCOPE_BEGINEND )
+        #if HAVE( DECL_OMPT_SCOPE_BEGINEND )
         case ompt_scope_beginend:
             UTILS_BUG( "ompt_scope_beginend not allowed in nest_lock callback" );
             break;
-#endif  /* DECL_OMPT_SCOPE_BEGINEND */
+        #endif  /* DECL_OMPT_SCOPE_BEGINEND */
     }
 
     UTILS_DEBUG_EXIT( "atid %" PRIu32 " | endpoint %s | wait_id %ld | codeptr_ra %p",
@@ -2590,6 +2710,10 @@ scorep_ompt_cb_host_dispatch( ompt_data_t*    parallel_data,
 
     switch ( kind )
     {
+        case ompt_dispatch_iteration:
+            UTILS_WARN_ONCE( "ompt_dispatch_t %s not implemented yet.",
+                             dispatch2string( kind ) );
+            break;
         case ompt_dispatch_section:
             /* Exit previous section, if any. */
             if ( task->dispatch.section != SCOREP_INVALID_REGION )
@@ -2601,8 +2725,26 @@ scorep_ompt_cb_host_dispatch( ompt_data_t*    parallel_data,
             task->dispatch.section = get_region( instance.ptr, TOOL_EVENT_SECTION );
             SCOREP_EnterRegion( task->dispatch.section );
             break;
+        #if HAVE( DECL_OMPT_DISPATCH_WS_LOOP_CHUNK )
+        case ompt_dispatch_ws_loop_chunk:
+            UTILS_WARN_ONCE( "ompt_dispatch_t %s not implemented yet.",
+                             dispatch2string( kind ) );
+            break;
+        #endif  /* DECL_OMPT_DISPATCH_WS_LOOP_CHUNK */
+        #if HAVE( DECL_OMPT_DISPATCH_TASKLOOP_CHUNK )
+        case ompt_dispatch_taskloop_chunk:
+            UTILS_WARN_ONCE( "ompt_dispatch_t %s not implemented yet.",
+                             dispatch2string( kind ) );
+            break;
+        #endif  /* DECL_OMPT_DISPATCH_TASKLOOP_CHUNK */
+        #if HAVE( DECL_OMPT_DISPATCH_DISTRIBUTE_CHUNK )
+        case ompt_dispatch_distribute_chunk:
+            UTILS_WARN_ONCE( "ompt_dispatch_t %s not implemented yet.",
+                             dispatch2string( kind ) );
+            break;
+        #endif  /* DECL_OMPT_DISPATCH_DISTRIBUTE_CHUNK */
         default:
-            UTILS_WARNING( "dispatch kind %s not implemented yet.", dispatch2string( kind ) );
+            UTILS_WARNING( "unknown ompt_dispatch_t %d.", ( int )kind );
     }
 
     UTILS_DEBUG_EXIT( "atid %" PRIu32 " | parallel_data->ptr %p | task_data->ptr %p | "
