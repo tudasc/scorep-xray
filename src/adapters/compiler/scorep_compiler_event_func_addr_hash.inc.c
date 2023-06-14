@@ -118,6 +118,8 @@ func_addr_hash_value_ctor( func_addr_hash_key_t* addr,
                        && ( strncmp( function_name_demangled, "..omp", 5 ) != 0 )
                        && ( strncmp( function_name_demangled, "__omp", 5 ) != 0 )
                        && ( strncmp( function_name_demangled, "..acc", 5 ) != 0 )
+                       && ( strncmp( function_name_demangled, "virtual thunk", 13 ) != 0 )
+                       && ( strncmp( function_name_demangled, "non-virtual thunk", 17 ) != 0 )
                        && ( strncmp( function_name_demangled, ".nondebug_wrapper.", 18 ) != 0 )
                        && ( !strstr( function_name_demangled, "Kokkos::Tools" ) )
                        && ( !strstr( function_name_demangled, "Kokkos::Profiling" ) )
