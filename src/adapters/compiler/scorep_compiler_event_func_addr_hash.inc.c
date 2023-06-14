@@ -115,6 +115,9 @@ func_addr_hash_value_ctor( func_addr_hash_key_t* addr,
 #if HAVE( SCOREP_COMPILER_CC_INTEL_ONEAPI ) || HAVE( SCOREP_COMPILER_CXX_INTEL_ONEAPI ) || HAVE( SCOREP_COMPILER_FC_INTEL_ONEAPI )
                        && ( !strstr( function_name_demangled, "_tree_reduce_" ) )
 #endif  /* Intel oneAPI compiler */
+                       && ( strncmp( function_name_demangled, "..omp", 5 ) != 0 )
+                       && ( strncmp( function_name_demangled, "__omp", 5 ) != 0 )
+                       && ( strncmp( function_name_demangled, "..acc", 5 ) != 0 )
                        && ( strncmp( function_name_demangled, ".nondebug_wrapper.", 18 ) != 0 )
                        && ( !strstr( function_name_demangled, "Kokkos::Tools" ) )
                        && ( !strstr( function_name_demangled, "Kokkos::Profiling" ) )
