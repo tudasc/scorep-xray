@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013, 2021-2022,
+## Copyright (c) 2009-2013, 2021-2023,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012, 2014,
@@ -43,6 +43,9 @@ AS_CASE(${ax_cv_[]_AC_LANG_ABBREV[]_compiler_vendor},
 
 AC_SUBST(SCOREP_COMPILER_[]_AC_CC[]_INTEL,        ${SCOREP_COMPILER_[]_AC_CC[]_INTEL-0})
 AC_SUBST(SCOREP_COMPILER_[]_AC_CC[]_INTEL_ONEAPI, ${SCOREP_COMPILER_[]_AC_CC[]_INTEL_ONEAPI-0})
+AC_DEFINE_UNQUOTED([HAVE_SCOREP_COMPILER_[]_AC_CC[]_INTEL_ONEAPI],
+    [${SCOREP_COMPILER_[]_AC_CC[]_INTEL_ONEAPI}],
+    [Defined to 1 if oneAPI compiler is used])
 AC_SUBST(SCOREP_COMPILER_[]_AC_CC[]_IBM,          ${SCOREP_COMPILER_[]_AC_CC[]_IBM-0})
 AC_SUBST(SCOREP_COMPILER_[]_AC_CC[]_PGI,          ${SCOREP_COMPILER_[]_AC_CC[]_PGI-0})
 AC_SUBST(SCOREP_COMPILER_[]_AC_CC[]_GNU,          ${SCOREP_COMPILER_[]_AC_CC[]_GNU-0})
