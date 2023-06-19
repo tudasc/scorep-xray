@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -75,6 +75,9 @@
 
 #elif defined GCC_PLUGIN_BUILD
        #include <config-gcc-plugin.h>
+
+#elif defined LLVM_PLUGIN_BUILD
+       #include <config-llvm-plugin.h>
 
 #elif defined LIBWRAP_BUILD
     #include <config-libwrap.h>

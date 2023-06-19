@@ -13,6 +13,8 @@
 /config-score.h.in
 /config-gcc-plugin.h.in
 /config-gcc-plugin.h
+/config-llvm-plugin.h.in
+/config-llvm-plugin.h
 /config-libwrap.h
 /config-libwrap.h.in
 /scorep_config_tool_backend.h

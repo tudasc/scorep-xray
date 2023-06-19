@@ -1,0 +1,22 @@
+/*
+ * This file is part of the Score-P software (http://www.score-p.org)
+ *
+ * Copyright (c) 2024,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
+ * This software may be modified and distributed under the terms of
+ * a BSD-style license.  See the COPYING file in the package base
+ * directory for details.
+ *
+ */
+
+#ifndef SCOREP_CONFIG_TOOL_LLVM_PLUGIN_H
+#define SCOREP_CONFIG_TOOL_LLVM_PLUGIN_H
+
+/* @configure_input@ */
+
+#define SCOREP_LLVM_PLUGIN_COMPILER_BACKEND_FLAG_CC  "@SCOREP_LLVM_PLUGIN_COMPILER_BACKEND_FLAG_CC@"
+#define SCOREP_LLVM_PLUGIN_COMPILER_BACKEND_FLAG_CXX "@SCOREP_LLVM_PLUGIN_COMPILER_BACKEND_FLAG_CXX@"
+#define SCOREP_LLVM_PLUGIN_COMPILER_BACKEND_FLAG_FC  "@SCOREP_LLVM_PLUGIN_COMPILER_BACKEND_FLAG_FC@"
+
+#endif /* SCOREP_CONFIG_TOOL_LLVM_PLUGIN_H */

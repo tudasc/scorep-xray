@@ -362,6 +362,11 @@ be used to build Score-P are as follows:
                instrumentation. Default is to determine support
                automatically. This disables it by request and fails
                if support cannot be satisfied but was requested.
+  --disable-llvm-plugin
+               Disable support for the LLVM plug-in
+               instrumentation. Default is to determine support
+               automatically. This disables it by request and fails
+               if support cannot be satisfied but was requested.
   --with-pdt=<path-to-binaries>
                Specifies the path to the program database toolkit
                (PDT) binaries, e.g., cparse.
@@ -535,6 +540,19 @@ variables:
   LIBS_FOR_BUILD_LIBWRAP
               Libraries for building library wrapper generator. Will be
               amended with '-lclang'.
+  CXXFLAGS_FOR_BUILD_LLVM_PLUGIN
+              C++ compiler flags for building LLVM plugin. Will be amended
+              with 'llvm-config --cxxflags', if 'llvm-config' is found.
+  CPPFLAGS_FOR_BUILD_LLVM_PLUGIN
+              C preprocesser flags for building LLVM plugin. Will be amended
+              with 'llvm-config --cppflags', if 'llvm-config' is found.
+  LDFLAGS_FOR_BUILD_LLVM_PLUGIN
+              Linker flags for building LLVM plugin. Will be amended
+              with 'llvm-config --ldflags', if 'llvm-config' is found.
+  LIBS_FOR_BUILD_LLVM_PLUGIN
+              Libraries for building LLVM plugin. Will be amended with
+              'llvm-config --libs demangle support', if 'llvm-config' is
+              found.
   MPICC       MPI C compiler command
   MPICXX      MPI C++ compiler command
   MPIF77      MPI Fortran 77 compiler command
