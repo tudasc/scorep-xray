@@ -26,9 +26,9 @@ AS_IF([test "x${scorep_have_addr2line}${afs_have_thread_local_storage}${scorep_h
                    [AFS_SUMMARY([OMPT C++ support], [$have_ompt_cxx_support${ompt_reason_cxx:+, $ompt_reason_cxx}])])
                AS_IF([test "x${scorep_have_openmp_fc_support}" = xyes],
                    [AFS_SUMMARY([OMPT Fortran support], [$have_ompt_fc_support${ompt_reason_fc:+, $ompt_reason_fc}])])
-               AS_IF([test "x${have_ompt_c_support}" = xyes],
-                   [AFS_SUMMARY([OMPT checks passed], [$have_ompt_checks_passed${ompt_reason_checks_passed:+, $ompt_reason_checks_passed}])])
-               AS_IF([test "x${have_ompt_support}" = xyes && test "x${have_ompt_checks_passed}" = xyes],
+               AS_IF([test "x${have_ompt_critical_checks_passed}" != xunknown],
+                   [AFS_SUMMARY([OMPT critical checks passed], [$have_ompt_critical_checks_passed${ompt_reason_critical_checks_passed:+, $ompt_reason_critical_checks_passed}])])
+               AS_IF([test "x${have_ompt_support}" = xyes && test "x${have_ompt_critical_checks_passed}" = xyes],
                    [AFS_SUMMARY([OMPT is default], [$scorep_enable_default_ompt])])])])])
 AFS_SUMMARY_POP([OMPT support], [$have_ompt_support${ompt_reason:+, $ompt_reason}])
 ]) dnl SCOREP_OMPT_SUMMARY
@@ -50,7 +50,7 @@ AC_REQUIRE([SCOREP_ENABLE_DEFAULT])
 have_ompt_header=no
 have_ompt_tool=no
 have_ompt_support=no
-have_ompt_checks_passed=no
+have_ompt_critical_checks_passed=unknown
 have_ompt_c_support=no
 have_ompt_cxx_support=no
 have_ompt_fc_support=no
@@ -80,7 +80,7 @@ AS_IF([test "x${scorep_have_addr2line}" = xyes],
 dnl
 
 AS_IF([test "x$have_ompt_support" = xyes],
-      [_CHECK_OMPT_KNOWN_ISSUES])
+      [_CHECK_OMPT_CRITICAL_ISSUES])
 
 AC_SCOREP_COND_HAVE([SCOREP_OMPT_SUPPORT],
     [test "x$have_ompt_support" = xyes],
@@ -454,27 +454,28 @@ AC_MSG_RESULT([$have_[]_OMPT_TEST[]])
 # Section for specific problem checks
 # -------------------------------
 
-# _CHECK_OMPT_KNOWN_ISSUES
-# ------------------------
-# Run configure checks to make sure that known issues
+# _CHECK_OMPT_CRITICAL_ISSUES
+# ---------------------------
+# Run configure checks to make sure that critical issues
 # aren't present in the runtime. Each test is compiled
 # and executed using _TRY_RUN_OMPT_TEST. If at least
 # one test fails, have_ompt_support is set no no.
 #
-m4_define([_CHECK_OMPT_KNOWN_ISSUES], [
-have_ompt_checks_passed=yes
+m4_define([_CHECK_OMPT_CRITICAL_ISSUES], [
+have_ompt_critical_checks_passed=yes
+AS_UNSET([issues_detected])
 m4_foreach_w([_OMPT_TEST],
     [missing_ws_loop_end],
     [m4_define([_TRY_RUN_OMPT_TEST_INPUT], [_INPUT_OMPT_KNOWN_ISSUE_[]m4_toupper(_OMPT_TEST)[]])
      _TRY_RUN_OMPT_TEST
      AS_IF([test "x${have_[]_OMPT_TEST[]}" != xyes],
         [have_ompt_support=no
-         have_ompt_checks_passed=no
+         have_ompt_critical_checks_passed=no
          issues_detected=${issues_detected:+$issues_detected, }_OMPT_TEST])
      m4_undefine([_TRY_RUN_OMPT_TEST_INPUT])])
-AS_IF([test "x${have_ompt_checks_passed}" = xno],
-    [ompt_reason_checks_passed="${issues_detected} detected"])
-]) dnl _CHECK_OMPT_KNOWN_ISSUES
+AS_IF([test "x${have_ompt_critical_checks_passed}" = xno],
+    [ompt_reason_critical_checks_passed="${issues_detected} detected"])
+]) dnl _CHECK_OMPT_CRITICAL_ISSUES
 
 # _INPUT_OMPT_KNOWN_ISSUE_MISSING_WS_LOOP_END
 # -------------------------------------------
