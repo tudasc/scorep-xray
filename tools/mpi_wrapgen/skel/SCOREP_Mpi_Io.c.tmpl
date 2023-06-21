@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2018, 2020, 2022,
+ * Copyright (c) 2009-2018, 2020, 2022-2023,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -175,6 +175,7 @@ MPI_File_open( MPI_Comm comm, SCOREP_MPI_CONST_DECL char* filename, int amode, M
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_IO);
     int return_val;
 
+    uint32_t unify_key = 0;
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
@@ -185,11 +186,11 @@ MPI_File_open( MPI_Comm comm, SCOREP_MPI_CONST_DECL char* filename, int amode, M
             SCOREP_InterimCommunicatorHandle    comm_handle  = SCOREP_MPI_COMM_HANDLE( comm );
             scorep_mpi_comm_definition_payload* comm_payload =
                 SCOREP_InterimCommunicatorHandle_GetPayload( comm_handle );
-            uint32_t unify_key = ++comm_payload->io_handle_counter /* avoid zero as key */;
+            unify_key = ++comm_payload->io_handle_counter /* avoid zero as key */;
             SCOREP_IoMgmt_BeginHandleCreation( SCOREP_IO_PARADIGM_MPI,
                                                SCOREP_IO_HANDLE_FLAG_NONE,
                                                comm_handle,
-                                               unify_key, "" );
+                                               "" );
         }
         else if ( SCOREP_IsUnwindingEnabled() )
         {
@@ -209,7 +210,7 @@ MPI_File_open( MPI_Comm comm, SCOREP_MPI_CONST_DECL char* filename, int amode, M
             {
                 SCOREP_IoFileHandle file = SCOREP_IoMgmt_GetIoFileHandle( filename );
                 SCOREP_IoHandleHandle io_handle = SCOREP_IoMgmt_CompleteHandleCreation(
-                    SCOREP_IO_PARADIGM_MPI, file, fh );
+                    SCOREP_IO_PARADIGM_MPI, file, unify_key, fh );
                 if( io_handle != SCOREP_INVALID_IO_HANDLE )
                 {
                     SCOREP_IoCreateHandle( io_handle,

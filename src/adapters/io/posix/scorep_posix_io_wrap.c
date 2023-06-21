@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016-2020,
+ * Copyright (c) 2016-2020, 2023,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2021,
@@ -250,7 +250,7 @@ SCOREP_LIBWRAP_FUNC_NAME( creat )( const char* pathname, mode_t mode )
         SCOREP_IoMgmt_BeginHandleCreation( SCOREP_IO_PARADIGM_POSIX,
                                            SCOREP_IO_HANDLE_FLAG_NONE,
                                            SCOREP_INVALID_INTERIM_COMMUNICATOR,
-                                           0 /* do not unify */, "" );
+                                           "" );
 
         SCOREP_ENTER_WRAPPED_REGION();
         ret = SCOREP_LIBWRAP_FUNC_CALL( creat,
@@ -261,7 +261,7 @@ SCOREP_LIBWRAP_FUNC_NAME( creat )( const char* pathname, mode_t mode )
         {
             SCOREP_IoFileHandle   file   = SCOREP_IoMgmt_GetIoFileHandle( pathname );
             SCOREP_IoHandleHandle handle = SCOREP_IoMgmt_CompleteHandleCreation(
-                SCOREP_IO_PARADIGM_POSIX, file, &ret );
+                SCOREP_IO_PARADIGM_POSIX, file, 0 /* do not unify */, &ret );
 
             if ( handle != SCOREP_INVALID_IO_HANDLE )
             {
@@ -309,7 +309,7 @@ SCOREP_LIBWRAP_FUNC_NAME( creat64 )( const char* pathname, mode_t mode )
         SCOREP_IoMgmt_BeginHandleCreation( SCOREP_IO_PARADIGM_POSIX,
                                            SCOREP_IO_HANDLE_FLAG_NONE,
                                            SCOREP_INVALID_INTERIM_COMMUNICATOR,
-                                           0 /* do not unify */, "" );
+                                           "" );
 
         SCOREP_ENTER_WRAPPED_REGION();
         ret = SCOREP_LIBWRAP_FUNC_CALL( creat64,
@@ -320,7 +320,7 @@ SCOREP_LIBWRAP_FUNC_NAME( creat64 )( const char* pathname, mode_t mode )
         {
             SCOREP_IoFileHandle   file   = SCOREP_IoMgmt_GetIoFileHandle( pathname );
             SCOREP_IoHandleHandle handle = SCOREP_IoMgmt_CompleteHandleCreation(
-                SCOREP_IO_PARADIGM_POSIX, file, &ret );
+                SCOREP_IO_PARADIGM_POSIX, file, 0 /* do not unify */, &ret );
 
             if ( handle != SCOREP_INVALID_IO_HANDLE )
             {
@@ -369,7 +369,7 @@ SCOREP_LIBWRAP_FUNC_NAME( dup )( int oldfd )
         if ( old_handle != SCOREP_INVALID_IO_HANDLE )
         {
             SCOREP_IoMgmt_BeginHandleDuplication( SCOREP_IO_PARADIGM_POSIX,
-                                                  old_handle, 0 );
+                                                  old_handle );
         }
 
         SCOREP_ENTER_WRAPPED_REGION();
@@ -382,7 +382,7 @@ SCOREP_LIBWRAP_FUNC_NAME( dup )( int oldfd )
             if ( ret != -1 )
             {
                 SCOREP_IoHandleHandle new_handle = SCOREP_IoMgmt_CompleteHandleDuplication(
-                    SCOREP_IO_PARADIGM_POSIX, SCOREP_INVALID_IO_FILE, &ret );
+                    SCOREP_IO_PARADIGM_POSIX, SCOREP_INVALID_IO_FILE, 0 /* do not unify */, &ret );
                 if ( new_handle != SCOREP_INVALID_IO_HANDLE )
                 {
                     SCOREP_IoStatusFlag flags = SCOREP_IO_STATUS_FLAG_NONE;
@@ -442,7 +442,7 @@ SCOREP_LIBWRAP_FUNC_NAME( dup2 )( int oldfd, int newfd )
                     SCOREP_IoMgmt_RemoveHandle( SCOREP_IO_PARADIGM_POSIX, &newfd );
                     SCOREP_IoMgmt_DestroyHandle( new_handle );
                     SCOREP_IoDestroyHandle( new_handle );
-                    SCOREP_IoMgmt_BeginHandleDuplication( SCOREP_IO_PARADIGM_POSIX, old_handle, 0 );
+                    SCOREP_IoMgmt_BeginHandleDuplication( SCOREP_IO_PARADIGM_POSIX, old_handle );
                 }
                 // else
                 // oldfd == newfd dup2 will return newfd and does nothing
@@ -450,7 +450,7 @@ SCOREP_LIBWRAP_FUNC_NAME( dup2 )( int oldfd, int newfd )
             }
             else
             {
-                SCOREP_IoMgmt_BeginHandleDuplication( SCOREP_IO_PARADIGM_POSIX, old_handle, 0 );
+                SCOREP_IoMgmt_BeginHandleDuplication( SCOREP_IO_PARADIGM_POSIX, old_handle );
             }
         }
 
@@ -464,7 +464,7 @@ SCOREP_LIBWRAP_FUNC_NAME( dup2 )( int oldfd, int newfd )
             if ( ret != -1 )
             {
                 new_handle = SCOREP_IoMgmt_CompleteHandleDuplication(
-                    SCOREP_IO_PARADIGM_POSIX, SCOREP_INVALID_IO_FILE, &newfd );
+                    SCOREP_IO_PARADIGM_POSIX, SCOREP_INVALID_IO_FILE, 0 /* do not unify */, &newfd );
                 if ( new_handle != SCOREP_INVALID_IO_HANDLE )
                 {
                     SCOREP_IoStatusFlag flags       = SCOREP_IO_STATUS_FLAG_NONE;
@@ -522,11 +522,11 @@ SCOREP_LIBWRAP_FUNC_NAME( dup3 )( int oldfd, int newfd, int flags )
                 // If oldfd equals newfd, then dup3() fails with the error EINVAL.
                 SCOREP_IoMgmt_RemoveHandle( SCOREP_IO_PARADIGM_POSIX, &newfd );
                 SCOREP_IoMgmt_DestroyHandle( new_handle );
-                SCOREP_IoMgmt_BeginHandleDuplication( SCOREP_IO_PARADIGM_POSIX, old_handle, 0 );
+                SCOREP_IoMgmt_BeginHandleDuplication( SCOREP_IO_PARADIGM_POSIX, old_handle );
             }
             else
             {
-                SCOREP_IoMgmt_BeginHandleDuplication( SCOREP_IO_PARADIGM_POSIX, old_handle, 0 );
+                SCOREP_IoMgmt_BeginHandleDuplication( SCOREP_IO_PARADIGM_POSIX, old_handle );
             }
         }
 
@@ -540,7 +540,7 @@ SCOREP_LIBWRAP_FUNC_NAME( dup3 )( int oldfd, int newfd, int flags )
             if ( ret != -1 )
             {
                 new_handle = SCOREP_IoMgmt_CompleteHandleDuplication(
-                    SCOREP_IO_PARADIGM_POSIX, SCOREP_INVALID_IO_FILE, &newfd );
+                    SCOREP_IO_PARADIGM_POSIX, SCOREP_INVALID_IO_FILE, 0 /* do not unify */, &newfd );
                 if ( new_handle != SCOREP_INVALID_IO_HANDLE )
                 {
                     SCOREP_IoStatusFlag status_flags = SCOREP_IO_STATUS_FLAG_NONE;
@@ -644,7 +644,7 @@ SCOREP_LIBWRAP_FUNC_NAME( fcntl )( int fd, int cmd, ... )
                     old_handle = SCOREP_IoMgmt_GetAndPushHandle( SCOREP_IO_PARADIGM_POSIX, &fd );
                     if ( fd != int_arg && old_handle != SCOREP_INVALID_IO_HANDLE )
                     {
-                        SCOREP_IoMgmt_BeginHandleDuplication( SCOREP_IO_PARADIGM_POSIX, old_handle, 0 );
+                        SCOREP_IoMgmt_BeginHandleDuplication( SCOREP_IO_PARADIGM_POSIX, old_handle );
                     }
                     SCOREP_ENTER_WRAPPED_REGION();
                     ret = SCOREP_LIBWRAP_FUNC_CALL( fcntl,
@@ -775,7 +775,7 @@ SCOREP_LIBWRAP_FUNC_NAME( fcntl )( int fd, int cmd, ... )
                 if ( ret != -1 )
                 {
                     new_handle = SCOREP_IoMgmt_CompleteHandleDuplication(
-                        SCOREP_IO_PARADIGM_POSIX, SCOREP_INVALID_IO_FILE, &ret );
+                        SCOREP_IO_PARADIGM_POSIX, SCOREP_INVALID_IO_FILE, 0 /* do not unify */, &ret );
                     if ( new_handle != SCOREP_INVALID_IO_HANDLE )
                     {
                         SCOREP_IoStatusFlag flags     = SCOREP_IO_STATUS_FLAG_NONE;
@@ -1061,7 +1061,7 @@ SCOREP_LIBWRAP_FUNC_NAME( open )( const char* pathname, int flags, ... /* mode_t
         SCOREP_IoMgmt_BeginHandleCreation( SCOREP_IO_PARADIGM_POSIX,
                                            SCOREP_IO_HANDLE_FLAG_NONE,
                                            SCOREP_INVALID_INTERIM_COMMUNICATOR,
-                                           0 /* do not unify */, "" );
+                                           "" );
         mode_t mode = 0;
         if ( ( flags & O_CREAT )
 #ifdef O_TMPFILE
@@ -1084,7 +1084,7 @@ SCOREP_LIBWRAP_FUNC_NAME( open )( const char* pathname, int flags, ... /* mode_t
         {
             SCOREP_IoFileHandle   file   = SCOREP_IoMgmt_GetIoFileHandle( pathname );
             SCOREP_IoHandleHandle handle = SCOREP_IoMgmt_CompleteHandleCreation(
-                SCOREP_IO_PARADIGM_POSIX, file, &ret );
+                SCOREP_IO_PARADIGM_POSIX, file, 0 /* do not unify */, &ret );
 
             if ( handle != SCOREP_INVALID_IO_HANDLE )
             {
@@ -1143,7 +1143,7 @@ SCOREP_LIBWRAP_FUNC_NAME( open64 )( const char* pathname, int flags, ... )
         SCOREP_IoMgmt_BeginHandleCreation( SCOREP_IO_PARADIGM_POSIX,
                                            SCOREP_IO_HANDLE_FLAG_NONE,
                                            SCOREP_INVALID_INTERIM_COMMUNICATOR,
-                                           0 /* do not unify */, "" );
+                                           "" );
         mode_t mode = 0;
         if ( ( flags & O_CREAT )
 #ifdef O_TMPFILE
@@ -1166,7 +1166,7 @@ SCOREP_LIBWRAP_FUNC_NAME( open64 )( const char* pathname, int flags, ... )
         {
             SCOREP_IoFileHandle   file   = SCOREP_IoMgmt_GetIoFileHandle( pathname );
             SCOREP_IoHandleHandle handle = SCOREP_IoMgmt_CompleteHandleCreation(
-                SCOREP_IO_PARADIGM_POSIX, file, &ret );
+                SCOREP_IO_PARADIGM_POSIX, file, 0 /* do not unify */, &ret );
 
             if ( handle != SCOREP_INVALID_IO_HANDLE )
             {
@@ -1223,7 +1223,7 @@ SCOREP_LIBWRAP_FUNC_NAME( openat )( int dirfd, const char* pathname, int flags, 
         SCOREP_IoMgmt_BeginHandleCreation( SCOREP_IO_PARADIGM_POSIX,
                                            SCOREP_IO_HANDLE_FLAG_NONE,
                                            SCOREP_INVALID_INTERIM_COMMUNICATOR,
-                                           0 /* do not unify */, "" );
+                                           "" );
         mode_t mode = 0;
         if ( ( flags & O_CREAT )
 #ifdef O_TMPFILE
@@ -1260,7 +1260,7 @@ SCOREP_LIBWRAP_FUNC_NAME( openat )( int dirfd, const char* pathname, int flags, 
 
             SCOREP_IoFileHandle   file   = SCOREP_IoMgmt_GetIoFileHandle( file_path );
             SCOREP_IoHandleHandle handle = SCOREP_IoMgmt_CompleteHandleCreation(
-                SCOREP_IO_PARADIGM_POSIX, file, &ret );
+                SCOREP_IO_PARADIGM_POSIX, file, 0 /* do not unify */, &ret );
 
             if ( handle != SCOREP_INVALID_IO_HANDLE )
             {

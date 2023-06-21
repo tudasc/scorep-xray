@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016-2017,
+ * Copyright (c) 2016-2017, 2023,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -55,8 +55,6 @@ SCOREP_DEFINE_DEFINITION_TYPE( IoHandle )
  * @param flags          Additonal information about the handle, e.g., handle was pre-created.
  * @param scope          Group of locations that make use of this file handle.
  * @param parent         Reference to parent I/O handle in order to model hierarchical I/O operations.
- * @param unifyKey       A non-zero integer value to allow multiple definition of
- *                       the same structural equal I/O handles. I/O handles with value 0 never get unified.
  * @param sizeOfPayload  The size of the payload which the adapter requests
  *                       for this I/O handle.
  * @param[out] payload   Will be set to the memory location of the payload.
@@ -79,13 +77,20 @@ SCOREP_Definitions_NewIoHandle( const char*                      name,
                                 ... );
 
 /**
- * Late associate an I/O file to an I/O handle.
+ * Complete an I/O handle creation.
  *
+ * @a SCOREP_Definitions_NewIoHandle must have been called with is_completed
+ * equal to false.
+ *
+ * @param file           The I/O file.
+ * @param unifyKey       A non-zero integer value to allow multiple definition of
+ *                       the same structural equal I/O handles. I/O handles with value 0 never get unified.
  * Only allowed once.
  */
 void
-SCOREP_IoHandleHandle_SetIoFile( SCOREP_IoHandleHandle handle,
-                                 SCOREP_IoFileHandle   file );
+SCOREP_IoHandleHandle_Complete( SCOREP_IoHandleHandle handle,
+                                SCOREP_IoFileHandle   file,
+                                uint32_t              unifyKey );
 
 static inline SCOREP_IoFileHandle
 SCOREP_IoHandleHandle_GetIoFile( SCOREP_IoHandleHandle handle )
