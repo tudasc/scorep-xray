@@ -261,7 +261,7 @@ SCOREP_LIBWRAP_FUNC_NAME( creat )( const char* pathname, mode_t mode )
         {
             SCOREP_IoFileHandle   file   = SCOREP_IoMgmt_GetIoFileHandle( pathname );
             SCOREP_IoHandleHandle handle = SCOREP_IoMgmt_CompleteHandleCreation(
-                SCOREP_IO_PARADIGM_POSIX, file, 0 /* do not unify */, &ret );
+                SCOREP_IO_PARADIGM_POSIX, file, ret + 1, &ret );
 
             if ( handle != SCOREP_INVALID_IO_HANDLE )
             {
@@ -320,7 +320,7 @@ SCOREP_LIBWRAP_FUNC_NAME( creat64 )( const char* pathname, mode_t mode )
         {
             SCOREP_IoFileHandle   file   = SCOREP_IoMgmt_GetIoFileHandle( pathname );
             SCOREP_IoHandleHandle handle = SCOREP_IoMgmt_CompleteHandleCreation(
-                SCOREP_IO_PARADIGM_POSIX, file, 0 /* do not unify */, &ret );
+                SCOREP_IO_PARADIGM_POSIX, file, ret + 1, &ret );
 
             if ( handle != SCOREP_INVALID_IO_HANDLE )
             {
@@ -382,7 +382,7 @@ SCOREP_LIBWRAP_FUNC_NAME( dup )( int oldfd )
             if ( ret != -1 )
             {
                 SCOREP_IoHandleHandle new_handle = SCOREP_IoMgmt_CompleteHandleDuplication(
-                    SCOREP_IO_PARADIGM_POSIX, SCOREP_INVALID_IO_FILE, 0 /* do not unify */, &ret );
+                    SCOREP_IO_PARADIGM_POSIX, SCOREP_INVALID_IO_FILE, ret + 1, &ret );
                 if ( new_handle != SCOREP_INVALID_IO_HANDLE )
                 {
                     SCOREP_IoStatusFlag flags = SCOREP_IO_STATUS_FLAG_NONE;
@@ -464,7 +464,7 @@ SCOREP_LIBWRAP_FUNC_NAME( dup2 )( int oldfd, int newfd )
             if ( ret != -1 )
             {
                 new_handle = SCOREP_IoMgmt_CompleteHandleDuplication(
-                    SCOREP_IO_PARADIGM_POSIX, SCOREP_INVALID_IO_FILE, 0 /* do not unify */, &newfd );
+                    SCOREP_IO_PARADIGM_POSIX, SCOREP_INVALID_IO_FILE, newfd + 1, &newfd );
                 if ( new_handle != SCOREP_INVALID_IO_HANDLE )
                 {
                     SCOREP_IoStatusFlag flags       = SCOREP_IO_STATUS_FLAG_NONE;
@@ -540,7 +540,7 @@ SCOREP_LIBWRAP_FUNC_NAME( dup3 )( int oldfd, int newfd, int flags )
             if ( ret != -1 )
             {
                 new_handle = SCOREP_IoMgmt_CompleteHandleDuplication(
-                    SCOREP_IO_PARADIGM_POSIX, SCOREP_INVALID_IO_FILE, 0 /* do not unify */, &newfd );
+                    SCOREP_IO_PARADIGM_POSIX, SCOREP_INVALID_IO_FILE, newfd + 1, &newfd );
                 if ( new_handle != SCOREP_INVALID_IO_HANDLE )
                 {
                     SCOREP_IoStatusFlag status_flags = SCOREP_IO_STATUS_FLAG_NONE;
@@ -775,7 +775,7 @@ SCOREP_LIBWRAP_FUNC_NAME( fcntl )( int fd, int cmd, ... )
                 if ( ret != -1 )
                 {
                     new_handle = SCOREP_IoMgmt_CompleteHandleDuplication(
-                        SCOREP_IO_PARADIGM_POSIX, SCOREP_INVALID_IO_FILE, 0 /* do not unify */, &ret );
+                        SCOREP_IO_PARADIGM_POSIX, SCOREP_INVALID_IO_FILE, ret + 1, &ret );
                     if ( new_handle != SCOREP_INVALID_IO_HANDLE )
                     {
                         SCOREP_IoStatusFlag flags     = SCOREP_IO_STATUS_FLAG_NONE;
@@ -1084,7 +1084,7 @@ SCOREP_LIBWRAP_FUNC_NAME( open )( const char* pathname, int flags, ... /* mode_t
         {
             SCOREP_IoFileHandle   file   = SCOREP_IoMgmt_GetIoFileHandle( pathname );
             SCOREP_IoHandleHandle handle = SCOREP_IoMgmt_CompleteHandleCreation(
-                SCOREP_IO_PARADIGM_POSIX, file, 0 /* do not unify */, &ret );
+                SCOREP_IO_PARADIGM_POSIX, file, ret + 1, &ret );
 
             if ( handle != SCOREP_INVALID_IO_HANDLE )
             {
@@ -1166,7 +1166,7 @@ SCOREP_LIBWRAP_FUNC_NAME( open64 )( const char* pathname, int flags, ... )
         {
             SCOREP_IoFileHandle   file   = SCOREP_IoMgmt_GetIoFileHandle( pathname );
             SCOREP_IoHandleHandle handle = SCOREP_IoMgmt_CompleteHandleCreation(
-                SCOREP_IO_PARADIGM_POSIX, file, 0 /* do not unify */, &ret );
+                SCOREP_IO_PARADIGM_POSIX, file, ret + 1, &ret );
 
             if ( handle != SCOREP_INVALID_IO_HANDLE )
             {
@@ -1260,7 +1260,7 @@ SCOREP_LIBWRAP_FUNC_NAME( openat )( int dirfd, const char* pathname, int flags, 
 
             SCOREP_IoFileHandle   file   = SCOREP_IoMgmt_GetIoFileHandle( file_path );
             SCOREP_IoHandleHandle handle = SCOREP_IoMgmt_CompleteHandleCreation(
-                SCOREP_IO_PARADIGM_POSIX, file, 0 /* do not unify */, &ret );
+                SCOREP_IO_PARADIGM_POSIX, file, ret + 1, &ret );
 
             if ( handle != SCOREP_INVALID_IO_HANDLE )
             {
