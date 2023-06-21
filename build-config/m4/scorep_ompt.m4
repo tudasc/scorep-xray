@@ -28,6 +28,8 @@ AS_IF([test "x${scorep_have_addr2line}${afs_have_thread_local_storage}${scorep_h
                    [AFS_SUMMARY([OMPT Fortran support], [$have_ompt_fc_support${ompt_reason_fc:+, $ompt_reason_fc}])])
                AS_IF([test "x${have_ompt_critical_checks_passed}" != xunknown],
                    [AFS_SUMMARY([OMPT critical checks passed], [$have_ompt_critical_checks_passed${ompt_reason_critical_checks_passed:+, $ompt_reason_critical_checks_passed}])])
+               AS_IF([test "x${have_ompt_remediable_checks_passed}" != xunknown],
+                   [AFS_SUMMARY([OMPT remediable checks passed], [$have_ompt_remediable_checks_passed${ompt_reason_remediable_checks_passed:+, $ompt_reason_remediable_checks_passed}])])
                AS_IF([test "x${have_ompt_support}" = xyes && test "x${have_ompt_critical_checks_passed}" = xyes],
                    [AFS_SUMMARY([OMPT is default], [$scorep_enable_default_ompt])])])])])
 AFS_SUMMARY_POP([OMPT support], [$have_ompt_support${ompt_reason:+, $ompt_reason}])
@@ -51,6 +53,7 @@ have_ompt_header=no
 have_ompt_tool=no
 have_ompt_support=no
 have_ompt_critical_checks_passed=unknown
+have_ompt_remediable_checks_passed=unknown
 have_ompt_c_support=no
 have_ompt_cxx_support=no
 have_ompt_fc_support=no
@@ -81,6 +84,9 @@ dnl
 
 AS_IF([test "x$have_ompt_support" = xyes],
       [_CHECK_OMPT_CRITICAL_ISSUES])
+
+AS_IF([test "x$have_ompt_support" = xyes],
+      [_CHECK_OMPT_REMEDIABLE_ISSUES])
 
 AC_SCOREP_COND_HAVE([SCOREP_OMPT_SUPPORT],
     [test "x$have_ompt_support" = xyes],
@@ -574,3 +580,142 @@ main( void )
     return 1;
 }
 ]]) dnl _INPUT_OMPT_KNOWN_ISSUE_MISSING_WS_LOOP_END
+
+# _CHECK_OMPT_REMEDIABLE_ISSUES
+# -----------------------------
+# Run configure checks to make sure if remediable issues
+# are present in the runtime. Each test is compiled and
+# executed using _TRY_RUN_OMPT_TEST. For each test that
+# fails, AC_DEFINE HAVE_SCOREP_OMPT_<TEST> to 1.
+#
+m4_define([_CHECK_OMPT_REMEDIABLE_ISSUES], [
+have_ompt_remediable_checks_passed=yes
+AS_UNSET([issues_detected])
+m4_foreach_w([_OMPT_TEST],
+    [wrong_test_lock_mutex],
+    [m4_define([_TRY_RUN_OMPT_TEST_INPUT], [_INPUT_OMPT_KNOWN_ISSUE_[]m4_toupper(_OMPT_TEST)[]])
+     _TRY_RUN_OMPT_TEST
+     AS_IF([test "x${have_[]_OMPT_TEST[]}" != xyes],
+        [AC_DEFINE([HAVE_SCOREP_OMPT_]m4_toupper(_OMPT_TEST), [1], [OMPT: Defined to 1 on detection of ]_OMPT_TEST)
+         have_ompt_remediable_checks_passed=no
+         issues_detected=${issues_detected:+$issues_detected, }_OMPT_TEST])
+     m4_undefine([_TRY_RUN_OMPT_TEST_INPUT])])
+AS_IF([test "x${have_ompt_remediable_checks_passed}" = xno],
+    [ompt_reason_remediable_checks_passed="${issues_detected} detected"])
+]) dnl _CHECK_OMPT_REMEDIABLE_ISSUES
+
+# _INPUT_OMPT_KNOWN_ISSUE_WRONG_TEST_LOCK_MUTEX
+# ---------------------------------------------
+# Test code to check if ompt_mutex_t provided to acquire and acquired
+# callbacks for test-locks or test-nest-locks is as specified. Wrong
+# kinds are provided for all but NVHPC (2023-06).
+#
+m4_define([_INPUT_OMPT_KNOWN_ISSUE_WRONG_TEST_LOCK_MUTEX], [[
+#include <omp.h>
+#include <omp-tools.h>
+#include <stdlib.h>
+
+static int                  wrong_mutex = 0;
+static int                  initialized = 0;
+static ompt_finalize_tool_t finalize_tool;
+
+void
+callback_ompt_mutex_acquire( ompt_mutex_t   kind,
+                             unsigned int   hint,
+                             unsigned int   impl,
+                             ompt_wait_id_t wait_id,
+                             const void*    codeptr_ra )
+{
+    if ( kind != ompt_mutex_test_lock &&
+         kind != ompt_mutex_test_nest_lock )
+    {
+        wrong_mutex = 1;
+    }
+}
+
+void
+callback_ompt_mutex_acquired( ompt_mutex_t   kind,
+                              ompt_wait_id_t wait_id,
+                              const void*    codeptr_ra )
+{
+    if ( kind != ompt_mutex_test_lock &&
+         kind != ompt_mutex_test_nest_lock )
+    {
+        wrong_mutex = 1;
+    }
+}
+
+static int
+ompt_initialize( ompt_function_lookup_t lookup,
+                 int                    initial_device_num,
+                 ompt_data_t*           tool_data )
+{
+    ompt_set_callback_t set_cb = ( ompt_set_callback_t )lookup( "ompt_set_callback" );
+    if ( !set_cb )
+    {
+        _Exit( 3 ); /* Tool got initialized but lookup of runtime-entry-point ompt_set_callback failed. */
+    }
+    finalize_tool = ( ompt_finalize_tool_t )lookup( "ompt_finalize_tool" );
+    if ( !finalize_tool )
+    {
+        _Exit( 4 ); /* Tool got initialized but lookup of runtime-entry-point ompt_finalize_tool failed. */
+    }
+    ompt_set_result_t result;
+    result = set_cb( ompt_callback_mutex_acquire, ( ompt_callback_t )&callback_ompt_mutex_acquire );
+    if ( result != ompt_set_always )
+    {
+        _Exit( 5 ); /* Tool got initialized but cb couldn't be registered. */
+    }
+    result = set_cb( ompt_callback_mutex_acquired, ( ompt_callback_t )&callback_ompt_mutex_acquired );
+    if ( result != ompt_set_always )
+    {
+        _Exit( 5 ); /* Tool got initialized but cb couldn't be registered. */
+    }
+    initialized = 1;
+    return 1; /* non-zero indicates success for OMPT runtime. */
+}
+
+static void
+ompt_finalize( ompt_data_t* tool_data )
+{
+    if ( initialized == 1 )
+    {
+        if ( wrong_mutex == 0 )
+        {
+            _Exit( 0 ); /* Tool got initialized and finalized. */
+        }
+        _Exit( 2 );     /* Tool got initialized and finalized but wrong
+                           mutex was provided for test-[nest-]lock events. */
+    }
+}
+
+ompt_start_tool_result_t*
+ompt_start_tool( unsigned int omp_version,
+                 const char*  runtime_version )
+{
+    static ompt_start_tool_result_t ompt_start_tool_result = { &ompt_initialize,
+                                                               &ompt_finalize,
+                                                               ompt_data_none };
+    return &ompt_start_tool_result;
+}
+
+int
+main( void )
+{
+    /* test-lock's acquire and acquired must provide ompt_mutex_test_lock */
+    omp_lock_t lck;
+    omp_init_lock( &lck );
+    while ( !omp_test_lock( &lck ) ) {}
+    omp_unset_lock( &lck) ;
+    omp_destroy_lock( &lck );
+
+    /* test-nest-lock's acquire and acquired must provide ompt_mutex_test_nest_lock */
+    omp_nest_lock_t nlck;
+    omp_init_nest_lock( &nlck );
+    while ( !omp_test_nest_lock( &nlck ) ) {}
+    omp_unset_nest_lock( &nlck );
+    omp_destroy_nest_lock( &nlck );
+
+    return 1;
+}
+]]) dnl _INPUT_OMPT_KNOWN_ISSUE_WRONG_TEST_LOCK_MUTEX
