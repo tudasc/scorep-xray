@@ -4,6 +4,8 @@ User tools and API improvements and changes:
 
 - The 'xnonblock' option of SCOREP_MPI_ENABLE_GROUPS is deprecated.
   Measurements always record extended non-blocking events.
+- The `scorep` tool now also provides the Git revision via the
+  `--revision` flag, similar to `scorep-config`.
 
 Compatibility:
 
