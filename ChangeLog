@@ -24,6 +24,13 @@ Bugfixes:
   be reported in the configure summary as `OMPT remediable checks`,
   whereas shortcomings that can't be worked around are now reported as
   `OMPT critical checks`.
+- Additional compiler-generated functions are excluded from automatic
+  compiler instrumentation, as they are known to cause measurement
+  failures. The names of these functions are unique and won't collide
+  with user-code functions, with one exception, though.  Functions
+  containing the substring `_tree_reduce_` are neglected when using
+  Intel's oneAPI compilers. In this case, renaming the functions would
+  prevent them from being ignored.
 
 ------------------- Released version 8.1 -----------------------------
 
