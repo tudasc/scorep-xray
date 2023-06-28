@@ -2114,13 +2114,17 @@ scorep_ompt_cb_host_mutex_acquire( ompt_mutex_t   kind,
     switch ( kind )
     {
         case ompt_mutex_lock:
+            #if !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX )
             SCOREP_EnterRegion( lock_regions[ TOOL_LOCK_EVENT_SET ] );
+            #endif /* !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX ) */
             break;
         case ompt_mutex_nest_lock:
+            #if !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX )
             /* nest-lock-acquire event. Followed by either nest-lock-acquired
                in scorep_ompt_cb_host_mutex_acquired() or nest-lock-owned in
                scorep_ompt_cb_host_nest_lock(). */
             SCOREP_EnterRegion( lock_regions[ TOOL_LOCK_EVENT_SET_NEST ] );
+            #endif /* !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX ) */
             break;
         case ompt_mutex_critical:
             construct_mutex_acquire( task, codeptr_ra );
@@ -2194,14 +2198,17 @@ scorep_ompt_cb_host_mutex_acquired( ompt_mutex_t   kind,
     {
         case ompt_mutex_lock:
         {
+            #if !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX )
             mutex_obj_t* mutex = mutex_get( wait_id, kind );
             UTILS_MutexLock( &( mutex->in_release_operation ) );
             SCOREP_ThreadAcquireLock( SCOREP_PARADIGM_OPENMP, mutex->id, ++( mutex->acquisition_order ) );
             SCOREP_ExitRegion( lock_regions[ TOOL_LOCK_EVENT_SET ] );
+            #endif /* !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX ) */
         }
         break;
         case ompt_mutex_nest_lock:
         {
+            #if !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX )
             /* nest-lock-acquired event. Followed by nest-lock-acquire (i.e.
                nesting) in scorep_ompt_cb_host_mutex_acquire() or
                nest-lock-release in scorep_ompt_cb_host_nest_lock(). */
@@ -2214,6 +2221,7 @@ scorep_ompt_cb_host_mutex_acquired( ompt_mutex_t   kind,
             mutex->optional.nest_level++;
             SCOREP_ThreadAcquireLock( SCOREP_PARADIGM_OPENMP, mutex->id, mutex->acquisition_order );
             SCOREP_ExitRegion( lock_regions[ TOOL_LOCK_EVENT_SET_NEST ] );
+            #endif /* !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX ) */
         }
         break;
         case ompt_mutex_critical:
@@ -2305,16 +2313,19 @@ scorep_ompt_cb_host_mutex_released( ompt_mutex_t   kind,
     {
         case ompt_mutex_lock:
         {
+            #if !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX )
             mutex_obj_t* mutex = mutex_get( wait_id, kind );
             SCOREP_EnterRegion( lock_regions[ TOOL_LOCK_EVENT_UNSET ] );
             SCOREP_ThreadReleaseLock( SCOREP_PARADIGM_OPENMP, mutex->id, mutex->acquisition_order );
             UTILS_MutexUnlock( &( mutex->in_release_operation ) );
             mutex = NULL; /* Don't use after unlock */
             SCOREP_ExitRegion( lock_regions[ TOOL_LOCK_EVENT_UNSET ] );
+            #endif /* !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX ) */
         }
         break;
         case ompt_mutex_nest_lock:
         {
+            #if !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX )
             /* nest-lock-release event. See also nest-lock-held in
                scorep_ompt_cb_host_nest_lock(). */
             mutex_obj_t* mutex = mutex_get( wait_id, kind );
@@ -2325,6 +2336,7 @@ scorep_ompt_cb_host_mutex_released( ompt_mutex_t   kind,
             UTILS_MutexUnlock( &( mutex->in_release_operation ) );
             mutex = NULL; /* Don't use after unlock */
             SCOREP_ExitRegion( lock_regions[ TOOL_LOCK_EVENT_UNSET_NEST ] );
+            #endif /* !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX ) */
         }
         break;
         case ompt_mutex_critical:

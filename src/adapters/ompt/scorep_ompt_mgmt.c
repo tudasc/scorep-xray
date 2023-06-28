@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2022,
+ * Copyright (c) 2022-2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -185,9 +185,11 @@ register_event_callbacks_host( ompt_set_callback_t setCallback )
     REGISTER_CALLBACK( host_, mutex_acquire );
     REGISTER_CALLBACK( host_, mutex_acquired );
     REGISTER_CALLBACK( host_, mutex_released );
+    #if !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX )
     REGISTER_CALLBACK( host_, lock_init );
     REGISTER_CALLBACK( host_, lock_destroy );
     REGISTER_CALLBACK( host_, nest_lock );
+    #endif /* !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX ) */
     REGISTER_CALLBACK( host_, dispatch );
     REGISTER_CALLBACK( host_, flush );
 }

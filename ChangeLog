@@ -18,6 +18,12 @@ Bugfixes:
   behavior observed with runtimes that don't support OMPT target
   callbacks (here, helper threads are created that lack thread-begin
   and implicit-task-begin but dispatch parallel-begin).
+- Support for OpenMP's tool interface OMPT will be partially disabled
+  if configure detects shortcomings of the OpenMP runtime that can be
+  worked around by disabling parts of the interface. The reason will
+  be reported in the configure summary as `OMPT remediable checks`,
+  whereas shortcomings that can't be worked around are now reported as
+  `OMPT critical checks`.
 
 ------------------- Released version 8.1 -----------------------------
 
