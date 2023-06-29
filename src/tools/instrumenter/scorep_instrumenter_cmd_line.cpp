@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015, 2018-2020,
+ * Copyright (c) 2009-2013, 2015, 2018-2020, 2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -523,6 +523,11 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( const std::string& arg )
     else if ( arg == "--version" )
     {
         std::cout << PACKAGE_STRING << std::endl;
+        exit( EXIT_SUCCESS );
+    }
+    else if ( arg == "--revision" )
+    {
+        std::cout << SCOREP_COMPONENT_REVISION << std::endl;
         exit( EXIT_SUCCESS );
     }
     else if ( arg == "--verbose" )

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2020,
+ * Copyright (c) 2009-2014, 2020, 2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -91,6 +91,7 @@ print_help( void )
               << "                  It applies the same syntax, as the one used by Score-P during\n"
               << "                  run-time. May require the use of an absolute file path.\n"
               << "  --version       Prints the Score-P version and exits.\n"
+              << "  --revision      Prints the revision number of the Score-P package.\n"
               << "  --disable-preprocessing\n"
               << "                  Tells scorep to skip all preprocessing related steps,\n"
               << "                  the input files are already preprocessed.\n"
