@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016-2020,
+ * Copyright (c) 2016-2020, 2023,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2022,
@@ -288,7 +288,7 @@ SCOREP_LIBWRAP_FUNC_NAME( fdopen )( int fd, const char* mode )
         SCOREP_IoMgmt_BeginHandleCreation( SCOREP_IO_PARADIGM_ISOC,
                                            SCOREP_IO_HANDLE_FLAG_NONE,
                                            SCOREP_INVALID_INTERIM_COMMUNICATOR,
-                                           0 /* do not unify */, "" );
+                                           "" );
 
         SCOREP_ENTER_WRAPPED_REGION();
         ret = SCOREP_LIBWRAP_FUNC_CALL( fdopen,
@@ -299,7 +299,7 @@ SCOREP_LIBWRAP_FUNC_NAME( fdopen )( int fd, const char* mode )
         {
             SCOREP_IoFileHandle   file          = SCOREP_IoHandleHandle_GetIoFile( fd_handle );
             SCOREP_IoHandleHandle stream_handle = SCOREP_IoMgmt_CompleteHandleCreation(
-                SCOREP_IO_PARADIGM_ISOC, file, &ret );
+                SCOREP_IO_PARADIGM_ISOC, file, fd + 1, &ret );
             if ( stream_handle != SCOREP_INVALID_IO_HANDLE )
             {
                 SCOREP_IoCreateHandle( stream_handle,                                  /* I/O handle */
@@ -557,11 +557,11 @@ create_posix_handle( int fd, const char* path, SCOREP_IoAccessMode access_mode )
     SCOREP_IoMgmt_BeginHandleCreation( SCOREP_IO_PARADIGM_POSIX,
                                        SCOREP_IO_HANDLE_FLAG_NONE,
                                        SCOREP_INVALID_INTERIM_COMMUNICATOR,
-                                       0 /* do not unify */, "" );
+                                       "" );
 
     SCOREP_IoFileHandle   file      = SCOREP_IoMgmt_GetIoFileHandle( path );
     SCOREP_IoHandleHandle io_handle = SCOREP_IoMgmt_CompleteHandleCreation(
-        SCOREP_IO_PARADIGM_POSIX, file, &fd );
+        SCOREP_IO_PARADIGM_POSIX, file, fd + 1, &fd );
 
     if ( io_handle != SCOREP_INVALID_IO_HANDLE )
     {
@@ -587,7 +587,7 @@ SCOREP_LIBWRAP_FUNC_NAME( fopen )( const char* path, const char* mode )
         SCOREP_IoMgmt_BeginHandleCreation( SCOREP_IO_PARADIGM_ISOC,
                                            SCOREP_IO_HANDLE_FLAG_NONE,
                                            SCOREP_INVALID_INTERIM_COMMUNICATOR,
-                                           0 /* do not unify */, "" );
+                                           "" );
 
         SCOREP_ENTER_WRAPPED_REGION();
         ret = SCOREP_LIBWRAP_FUNC_CALL( fopen,
@@ -628,8 +628,9 @@ SCOREP_LIBWRAP_FUNC_NAME( fopen )( const char* path, const char* mode )
         {
             SCOREP_IoAccessMode access_mode = get_scorep_io_access_mode_from_string( mode );
 
+            int fd = -1; // +1 also used as unify key
             #if HAVE_BACKEND( POSIX_FILENO )
-            int fd = fileno( ret );
+            fd = fileno( ret );
 
             SCOREP_IoHandleHandle fd_handle = SCOREP_IoMgmt_GetIoHandle( SCOREP_IO_PARADIGM_POSIX, &fd );
 
@@ -640,7 +641,7 @@ SCOREP_LIBWRAP_FUNC_NAME( fopen )( const char* path, const char* mode )
             #endif /* HAVE_BACKEND( POSIX_FILENO ) */
             SCOREP_IoFileHandle   file      = SCOREP_IoMgmt_GetIoFileHandle( path );
             SCOREP_IoHandleHandle io_handle = SCOREP_IoMgmt_CompleteHandleCreation(
-                SCOREP_IO_PARADIGM_ISOC, file, &ret );
+                SCOREP_IO_PARADIGM_ISOC, file, fd + 1, &ret );
 
             if ( io_handle != SCOREP_INVALID_IO_HANDLE )
             {
@@ -683,7 +684,7 @@ SCOREP_LIBWRAP_FUNC_NAME( fopen64 )( const char* path, const char* mode )
         SCOREP_IoMgmt_BeginHandleCreation( SCOREP_IO_PARADIGM_ISOC,
                                            SCOREP_IO_HANDLE_FLAG_NONE,
                                            SCOREP_INVALID_INTERIM_COMMUNICATOR,
-                                           0 /* do not unify */, "" );
+                                           "" );
 
         SCOREP_ENTER_WRAPPED_REGION();
         ret = SCOREP_LIBWRAP_FUNC_CALL( fopen64,
@@ -694,8 +695,9 @@ SCOREP_LIBWRAP_FUNC_NAME( fopen64 )( const char* path, const char* mode )
         {
             SCOREP_IoAccessMode access_mode = get_scorep_io_access_mode_from_string( mode );
 
+            int fd = -1; // +1 also used as unify key
             #if HAVE_BACKEND( POSIX_FILENO )
-            int fd = fileno( ret );
+            fd = fileno( ret );
 
             SCOREP_IoHandleHandle fd_handle = SCOREP_IoMgmt_GetIoHandle( SCOREP_IO_PARADIGM_POSIX, &fd );
 
@@ -708,7 +710,7 @@ SCOREP_LIBWRAP_FUNC_NAME( fopen64 )( const char* path, const char* mode )
             SCOREP_IoFileHandle file = SCOREP_IoMgmt_GetIoFileHandle( path );
 
             SCOREP_IoHandleHandle io_handle = SCOREP_IoMgmt_CompleteHandleCreation(
-                SCOREP_IO_PARADIGM_ISOC, file, &ret );
+                SCOREP_IO_PARADIGM_ISOC, file, fd + 1, &ret );
 
             if ( io_handle != SCOREP_INVALID_IO_HANDLE )
             {
@@ -960,13 +962,14 @@ SCOREP_LIBWRAP_FUNC_NAME( freopen )( const char* path, const char* mode, FILE* s
         // Case: stream will be closed by freopen
         SCOREP_IoHandleHandle old_handle = SCOREP_IoMgmt_RemoveHandle( SCOREP_IO_PARADIGM_ISOC, &stream );
 
+        int fd = -1; // +1 also used as unify key
         #if HAVE_BACKEND( POSIX_FILENO )
-        int                   fd        = fileno( stream );
+        fd = fileno( stream );
         SCOREP_IoHandleHandle fd_handle = SCOREP_IoMgmt_RemoveHandle( SCOREP_IO_PARADIGM_POSIX, &fd );
         #endif
 
         SCOREP_IoMgmt_BeginHandleDuplication( SCOREP_IO_PARADIGM_ISOC,
-                                              old_handle, 0 );
+                                              old_handle );
 
         SCOREP_ENTER_WRAPPED_REGION();
         ret = SCOREP_LIBWRAP_FUNC_CALL( freopen,
@@ -993,7 +996,7 @@ SCOREP_LIBWRAP_FUNC_NAME( freopen )( const char* path, const char* mode, FILE* s
             #endif /* HAVE_BACKEND( POSIX_FILENO ) */
 
             SCOREP_IoHandleHandle new_handle = SCOREP_IoMgmt_CompleteHandleDuplication(
-                SCOREP_IO_PARADIGM_ISOC, SCOREP_IoMgmt_GetIoFileHandle( path ), &ret );
+                SCOREP_IO_PARADIGM_ISOC, SCOREP_IoMgmt_GetIoFileHandle( path ), fd + 1, &ret );
             if ( new_handle != SCOREP_INVALID_IO_HANDLE )
             {
                 SCOREP_IoCreateHandle( new_handle,

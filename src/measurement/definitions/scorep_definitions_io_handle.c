@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016-2019, 2022,
+ * Copyright (c) 2016-2019, 2022-2023,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2022,
@@ -364,15 +364,20 @@ hash_io_handle( SCOREP_IoHandleDef* definition )
 }
 
 void
-SCOREP_IoHandleHandle_SetIoFile( SCOREP_IoHandleHandle handle,
-                                 SCOREP_IoFileHandle   file )
+SCOREP_IoHandleHandle_Complete( SCOREP_IoHandleHandle handle,
+                                SCOREP_IoFileHandle   file,
+                                uint32_t              unifyKey )
 {
     SCOREP_IoHandleDef* def = SCOREP_LOCAL_HANDLE_DEREF( handle, IoHandle );
 
-    UTILS_BUG_ON( def->is_completed, "SetIoFile on already completed I/O handle!" );
+    UTILS_BUG_ON( def->is_completed, "Completing an already completed I/O handle!" );
 
     SCOREP_Definitions_Lock();
 
+    if ( def->unify_key == 0 )
+    {
+        def->unify_key = unifyKey;
+    }
     def->file_handle  = file;
     def->is_completed = true;
 

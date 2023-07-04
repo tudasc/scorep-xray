@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2017,
+ * Copyright (c) 2017, 2023,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -159,7 +159,7 @@ SCOREP_IoMgmt_GetIoFile( SCOREP_IoHandleHandle handle );
  * @param scope         The scope (collective context) for this handle.
  * @param unifyKey      An arbitrary unification key, zero values prohibits
  *                      unification.
- * @param name          The name this handle.
+ * @param name          The name for this handle.
  * @param ioHandle      The paradigm specific I/O handle reference.
  *
  * @{
@@ -205,8 +205,6 @@ SCOREP_IoMgmt_CreatePreCreatedHandle( SCOREP_IoParadigmType            paradigm,
  * @param paradigm      The I/O paradigm to operate in.
  * @param flags         The I/O flags for this handle.
  * @param scope         The scope (collective context) for this handle.
- * @param unifyKey      An arbitrary unification key, zero values prohibits
- *                      unification.
  * @param name          The name for this handle.
  */
 
@@ -214,7 +212,6 @@ void
 SCOREP_IoMgmt_BeginHandleCreation( SCOREP_IoParadigmType            paradigm,
                                    SCOREP_IoHandleFlag              flags,
                                    SCOREP_InterimCommunicatorHandle scope,
-                                   uint32_t                         unifyKey,
                                    const char*                      name );
 
 /**
@@ -222,6 +219,8 @@ SCOREP_IoMgmt_BeginHandleCreation( SCOREP_IoParadigmType            paradigm,
  *
  * @param paradigm      The I/O paradigm to operate in.
  * @param path          Path or file that was opened or created
+ * @param unifyKey      An arbitrary unification key, zero values prohibits
+ *                      unification.
  * @param ioHandle      The paradigm specific I/O handle reference.
  *
  * @return The completed Score-P I/O handle
@@ -230,6 +229,7 @@ SCOREP_IoMgmt_BeginHandleCreation( SCOREP_IoParadigmType            paradigm,
 SCOREP_IoHandleHandle
 SCOREP_IoMgmt_CompleteHandleCreation( SCOREP_IoParadigmType paradigm,
                                       SCOREP_IoFileHandle   file,
+                                      uint32_t              unifyKey,
                                       const void*           ioHandle );
 
 /**
@@ -237,16 +237,13 @@ SCOREP_IoMgmt_CompleteHandleCreation( SCOREP_IoParadigmType paradigm,
  *
  * @param paradigm      The I/O paradigm to operate in.
  * @param srcHandle     The handle to duplicate.
- * @param unifyKey      An arbitrary unification key, zero values prohibits
- *                      unification.
  *
  * @return the Score-P I/O handle or @a SCOREP_INVALID_IO_HANDLE.
  */
 
 void
 SCOREP_IoMgmt_BeginHandleDuplication( SCOREP_IoParadigmType paradigm,
-                                      SCOREP_IoHandleHandle srcHandle,
-                                      uint32_t              unifyKey );
+                                      SCOREP_IoHandleHandle srcHandle );
 
 /**
  * @brief Completes the duplication of a Score-P I/O handle.
@@ -254,6 +251,8 @@ SCOREP_IoMgmt_BeginHandleDuplication( SCOREP_IoParadigmType paradigm,
  * @param paradigm      The I/O paradigm to operate in.
  * @param path          New file path for the duplicated handle.
  *                      If NULL is given, the file path of the old handle is used.
+ * @param unifyKey      An arbitrary unification key, zero values prohibits
+ *                      unification.
  * @param ioHandle      The paradigm specific I/O handle reference.
  *
  * @return the Score-P I/O handle
@@ -262,6 +261,7 @@ SCOREP_IoMgmt_BeginHandleDuplication( SCOREP_IoParadigmType paradigm,
 SCOREP_IoHandleHandle
 SCOREP_IoMgmt_CompleteHandleDuplication( SCOREP_IoParadigmType paradigm,
                                          SCOREP_IoFileHandle   file,
+                                         uint32_t              unifyKey,
                                          const void*           ioHandle );
 
 /**

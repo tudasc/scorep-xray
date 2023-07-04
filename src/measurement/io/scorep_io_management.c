@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2017, 2019-2020, 2022,
+ * Copyright (c) 2017, 2019-2020, 2022-2023,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2022,
@@ -408,7 +408,6 @@ void
 SCOREP_IoMgmt_BeginHandleCreation( SCOREP_IoParadigmType            paradigm,
                                    SCOREP_IoHandleFlag              flags,
                                    SCOREP_InterimCommunicatorHandle scope,
-                                   uint32_t                         unifyKey,
                                    const char*                      name )
 {
     UTILS_BUG_ON( paradigm < 0 || paradigm >= SCOREP_INVALID_IO_PARADIGM_TYPE,
@@ -442,7 +441,7 @@ SCOREP_IoMgmt_BeginHandleCreation( SCOREP_IoParadigmType            paradigm,
                                                                    flags,
                                                                    scope,
                                                                    parent,
-                                                                   unifyKey,
+                                                                   0,
                                                                    false,
                                                                    payload_size,
                                                                    ( void** )&payload );
@@ -458,6 +457,7 @@ SCOREP_IoMgmt_BeginHandleCreation( SCOREP_IoParadigmType            paradigm,
 SCOREP_IoHandleHandle
 SCOREP_IoMgmt_CompleteHandleCreation( SCOREP_IoParadigmType paradigm,
                                       SCOREP_IoFileHandle   file,
+                                      uint32_t              unifyKey,
                                       const void*           ioHandle )
 {
     UTILS_BUG_ON( paradigm < 0 || paradigm >= SCOREP_INVALID_IO_PARADIGM_TYPE,
@@ -491,7 +491,7 @@ SCOREP_IoMgmt_CompleteHandleCreation( SCOREP_IoParadigmType paradigm,
 
     UTILS_MutexUnlock( &io_paradigms[ paradigm ]->mutex );
 
-    SCOREP_IoHandleHandle_SetIoFile( handle, file );
+    SCOREP_IoHandleHandle_Complete( handle, file, unifyKey );
 
     SCOREP_CALL_SUBSTRATE_MGMT( IoParadigmLeave, IO_PARADIGM_LEAVE,
                                 ( SCOREP_Location_GetCurrentCPULocation(), paradigm ) );
@@ -501,8 +501,7 @@ SCOREP_IoMgmt_CompleteHandleCreation( SCOREP_IoParadigmType paradigm,
 
 void
 SCOREP_IoMgmt_BeginHandleDuplication( SCOREP_IoParadigmType paradigm,
-                                      SCOREP_IoHandleHandle srcHandle,
-                                      uint32_t              unifyKey )
+                                      SCOREP_IoHandleHandle srcHandle )
 {
     UTILS_BUG_ON( srcHandle == SCOREP_INVALID_IO_HANDLE,
                   "Given handle is invalid" );
@@ -532,7 +531,7 @@ SCOREP_IoMgmt_BeginHandleDuplication( SCOREP_IoParadigmType paradigm,
                                                                    SCOREP_IO_HANDLE_FLAG_NONE, /* The new handle won't inherit the handle flags (e.g., SCOREP_IO_HANDLE_FLAG_PRE_CREATED) */
                                                                    src_def->scope_handle,
                                                                    src_def->parent_handle,
-                                                                   unifyKey,
+                                                                   0,
                                                                    false,
                                                                    payload_size,
                                                                    ( void** )&payload );
@@ -548,6 +547,7 @@ SCOREP_IoMgmt_BeginHandleDuplication( SCOREP_IoParadigmType paradigm,
 SCOREP_IoHandleHandle
 SCOREP_IoMgmt_CompleteHandleDuplication( SCOREP_IoParadigmType paradigm,
                                          SCOREP_IoFileHandle   file,
+                                         uint32_t              unifyKey,
                                          const void*           ioHandle )
 {
     io_mgmt_location_data* data = get_location_data();
@@ -582,7 +582,7 @@ SCOREP_IoMgmt_CompleteHandleDuplication( SCOREP_IoParadigmType paradigm,
 
     UTILS_MutexUnlock( &io_paradigms[ paradigm ]->mutex );
 
-    SCOREP_IoHandleHandle_SetIoFile( handle, file );
+    SCOREP_IoHandleHandle_Complete( handle, file, unifyKey );
 
     SCOREP_CALL_SUBSTRATE_MGMT( IoParadigmLeave, IO_PARADIGM_LEAVE,
                                 ( SCOREP_Location_GetCurrentCPULocation(), paradigm ) );
