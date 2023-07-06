@@ -33,6 +33,8 @@ Bugfixes:
   containing the substring `_tree_reduce_` are neglected when using
   Intel's oneAPI compilers. In this case, renaming the functions would
   prevent them from being ignored.
+- Fix the errors in topology coordinate mapping, introduced by
+  non-process location groups.
 
 ------------------- Released version 8.1 -----------------------------
 
