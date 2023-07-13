@@ -1305,10 +1305,10 @@ scorep_profile_write_cube4( SCOREP_Profile_OutputFormat format )
     {
         cube_metric* metric = NULL; /* Only used on rank 0 */
 
-        for ( uint32_t i = 0; i < write_set.num_unified_metrics; i++ )
+        for ( uint32_t unified = 0; unified < write_set.num_unified_metrics; unified++ )
         {
             if ( !check_if_metric_shall_be_written( &write_set,
-                                                    write_set.metric_map[ i ] ) )
+                                                    write_set.metric_map[ unified ] ) )
             {
                 continue;
             }
@@ -1316,46 +1316,54 @@ scorep_profile_write_cube4( SCOREP_Profile_OutputFormat format )
             if ( write_set.my_rank == write_set.root_rank )
             {
                 metric = scorep_get_cube4_metric( write_set.map,
-                                                  write_set.unified_metric_map[ i ] );
+                                                  write_set.unified_metric_map[ unified ] );
             }
 
-            if ( write_set.metric_map[ i ] == SCOREP_INVALID_METRIC )
+            /* All ranks need to participate in communication, even if they
+               lack a metric. Thus, provide all ranks the metric_value_type
+               that triggers the communication in the switch below. There,
+               call set_bitstring_for_unknown_metric for SCOREP_INVALID_METRIC,
+               instead of set_bitstring_for_metric.
+               The assumption is that write_set.metric_map[ i ] leads to
+               either SCOREP_INVALID_METRIC_VALUE_TYPE or has the same
+               value type on all other ranks.
+               Note that SCOREP_INVALID_METRIC_VALUE_TYPE is larger than
+               all other types. */
+            SCOREP_MetricValueType local_metric_value_type = SCOREP_INVALID_METRIC_VALUE_TYPE;
+            if ( write_set.metric_map[ unified ] != SCOREP_INVALID_METRIC )
             {
-                set_bitstring_for_unknown_metric( &write_set, comm );
-                if ( layout.sparse_metric_type == SCOREP_CUBE_DATA_TUPLE )
-                {
-                    write_cube_cube_type_tau_atomic( &write_set,
-                                                     comm,
-                                                     metric,
-                                                     &get_sparse_tuple_value_from_double,
-                                                     &write_set.metric_map[ i ] );
-                }
-                else
-                {
-                    write_cube_doubles( &write_set,
-                                        comm,
-                                        metric,
-                                        &get_sparse_double_value,
-                                        &write_set.metric_map[ i ] );
-                }
-                continue;
+                local_metric_value_type = SCOREP_MetricHandle_GetValueType( write_set.metric_map[ unified ] );
             }
+            SCOREP_MetricValueType metric_value_type = SCOREP_INVALID_METRIC_VALUE_TYPE;
+            SCOREP_IpcGroup_Allreduce( comm,
+                                       &local_metric_value_type,
+                                       &metric_value_type,
+                                       1,
+                                       SCOREP_IPC_UINT32_T,
+                                       SCOREP_IPC_MIN );
 
-            switch ( SCOREP_MetricHandle_GetValueType( write_set.metric_map[ i ] ) )
+            switch ( metric_value_type )
             {
                 case SCOREP_METRIC_VALUE_INT64:
                 case SCOREP_METRIC_VALUE_UINT64:
-                    set_bitstring_for_metric( &write_set,
-                                              comm,
-                                              &get_sparse_uint64_value,
-                                              &write_set.metric_map[ i ] );
+                    if (  write_set.metric_map[ unified ] == SCOREP_INVALID_METRIC )
+                    {
+                        set_bitstring_for_unknown_metric( &write_set, comm );
+                    }
+                    else
+                    {
+                        set_bitstring_for_metric( &write_set,
+                                                  comm,
+                                                  &get_sparse_uint64_value,
+                                                  &write_set.metric_map[ unified ] );
+                    }
                     if ( layout.sparse_metric_type == SCOREP_CUBE_DATA_TUPLE )
                     {
                         write_cube_cube_type_tau_atomic( &write_set,
                                                          comm,
                                                          metric,
                                                          &get_sparse_tuple_value_from_uint64,
-                                                         &write_set.metric_map[ i ] );
+                                                         &write_set.metric_map[ unified ] );
                     }
                     else
                     {
@@ -1363,22 +1371,29 @@ scorep_profile_write_cube4( SCOREP_Profile_OutputFormat format )
                                            comm,
                                            metric,
                                            &get_sparse_uint64_value,
-                                           &write_set.metric_map[ i ] );
+                                           &write_set.metric_map[ unified ] );
                     }
 
                     break;
                 case SCOREP_METRIC_VALUE_DOUBLE:
-                    set_bitstring_for_metric( &write_set,
-                                              comm,
-                                              &has_sparse_double_value,
-                                              &write_set.metric_map[ i ] );
+                    if (  write_set.metric_map[ unified ] == SCOREP_INVALID_METRIC )
+                    {
+                        set_bitstring_for_unknown_metric( &write_set, comm );
+                    }
+                    else
+                    {
+                        set_bitstring_for_metric( &write_set,
+                                                  comm,
+                                                  &has_sparse_double_value,
+                                                  &write_set.metric_map[ unified ] );
+                    }
                     if ( layout.sparse_metric_type == SCOREP_CUBE_DATA_TUPLE )
                     {
                         write_cube_cube_type_tau_atomic( &write_set,
                                                          comm,
                                                          metric,
                                                          &get_sparse_tuple_value_from_double,
-                                                         &write_set.metric_map[ i ] );
+                                                         &write_set.metric_map[ unified ] );
                     }
                     else
                     {
@@ -1386,15 +1401,15 @@ scorep_profile_write_cube4( SCOREP_Profile_OutputFormat format )
                                             comm,
                                             metric,
                                             &get_sparse_double_value,
-                                            &write_set.metric_map[ i ] );
+                                            &write_set.metric_map[ unified ] );
                     }
 
                     break;
                 default:
                     UTILS_ERROR( SCOREP_ERROR_UNKNOWN_TYPE,
                                  "Metric '%s' has unknown value type %d",
-                                 SCOREP_MetricHandle_GetName( write_set.metric_map[ i ] ),
-                                 SCOREP_MetricHandle_GetValueType( write_set.metric_map[ i ] ) );
+                                 SCOREP_MetricHandle_GetName( write_set.metric_map[ unified ] ),
+                                 SCOREP_MetricHandle_GetValueType( write_set.metric_map[ unified ] ) );
             }
         }
     }
