@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2016, 2019-2021,
+ * Copyright (c) 2009-2014, 2016, 2019-2021, 2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012, 2015,
@@ -132,6 +132,13 @@ public:
                         bool     filterCOM );
 
     /**
+     * Generates a maximal filter file, that includes every filterable region
+     * as a basis for a manual selection.
+     */
+    void
+    generateMaxFilterFile( void );
+
+    /**
      * Reads and evaluates a filter file.
      * @param filterFile  The name of the filter file.
      */
@@ -208,8 +215,9 @@ private:
     /**
      * Sorts table entries by previously chosen m_sort_type.
      * Employs std::stable_sort as sorting algorithm.
+     * Returns the name of the used option.
      */
-    void
+    std::string
     sortEntries( SCOREP_Score_Group** items,
                  uint64_t             size );
 

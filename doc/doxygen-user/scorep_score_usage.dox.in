@@ -32,3 +32,7 @@ Options:
                                        threshold in microseconds
              - `type`                : region type matches the given value
                                        (allowed: 'usr', 'com', 'both')
+             The generation parameter `all` will create a filter file with
+             the name 'max_scorep.filter', that contains all filterable
+             regions. This maximal filter file serves as starting point for a
+             manual approach without using any heuristics.

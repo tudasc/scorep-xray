@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2020,
+ * Copyright (c) 2009-2013, 2020, 2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -140,6 +140,16 @@ exists_file( const std::string& filename );
 std::string
 backup_existing_file( const std::string& filename );
 
+/**
+   Reverts a backuped file, if it exists, by renaming it to its original
+   name. Note, it assumes a backup happened and the original file, if it
+   exists can be safely overwritten.
+   @param backupFilename   Name of the backup to be reverted.
+   @param originalFilename Name of the original file.
+ */
+void
+revert_file_backup( const std::string& backupFilename,
+                    const std::string& originalFilename );
 
 /**
    Tests if a path is specified in absolute form.

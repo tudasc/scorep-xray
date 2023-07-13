@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2016, 2019-2021,
+ * Copyright (c) 2009-2016, 2019-2021, 2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013, 2015,
@@ -597,7 +597,7 @@ SCOREP_Score_Estimator::~SCOREP_Score_Estimator()
     }
 }
 
-void
+std::string
 SCOREP_Score_Estimator::sortEntries( SCOREP_Score_Group** items,
                                      uint64_t             size )
 {
@@ -605,19 +605,19 @@ SCOREP_Score_Estimator::sortEntries( SCOREP_Score_Group** items,
     {
         case SCOREP_SCORE_SORTING_TYPE_MAXBUFFER:
             std::stable_sort( items, items + size, compare_maxbuffer );
-            break;
+            return "maxbuffer";
         case SCOREP_SCORE_SORTING_TYPE_TOTALTIME:
             std::stable_sort( items, items + size, compare_totaltime );
-            break;
+            return "totaltime";
         case SCOREP_SCORE_SORTING_TYPE_TIMEPERVISIT:
             std::stable_sort( items, items + size, compare_timepervisit );
-            break;
+            return "timepervisit";
         case SCOREP_SCORE_SORTING_TYPE_VISITS:
             std::stable_sort( items, items + size, compare_visits );
-            break;
+            return "visits";
         case SCOREP_SCORE_SORTING_TYPE_NAME:
             std::stable_sort( items, items + size, compare_name );
-            break;
+            return "name";
         default:
             // In normal use this should not happen.
             cerr << "ERROR: Unknown sorting type!\n";
@@ -625,7 +625,7 @@ SCOREP_Score_Estimator::sortEntries( SCOREP_Score_Group** items,
     }
     ;
 
-    return;
+    return {};
 }
 
 void
@@ -838,13 +838,13 @@ SCOREP_Score_Estimator::generateFilterFile( double   minBufferPercentage,
                                             bool     filterCOM )
 
 {
-    sortEntries( m_regions, m_region_num );
+    const auto sorting_name = sortEntries( m_regions, m_region_num );
 
-    string filter_file_name = "initial_scorep.filter";
+    const auto filter_file_name = "initial_scorep.filter";
 
     // avoid overwriting existing file by using the renaming scheme also used
     // for experiment directories.
-    string moved_existing_file = backup_existing_file( filter_file_name );
+    const auto moved_existing_file = backup_existing_file( filter_file_name );
 
     ofstream filter_file;
     filter_file.open( filter_file_name );
@@ -852,6 +852,7 @@ SCOREP_Score_Estimator::generateFilterFile( double   minBufferPercentage,
     if ( !filter_file.is_open() )
     {
         cerr << "ERROR: Cannot create filter file!\n";
+        revert_file_backup( moved_existing_file, filter_file_name );
         exit( EXIT_FAILURE );
         return;
     }
@@ -893,6 +894,7 @@ SCOREP_Score_Estimator::generateFilterFile( double   minBufferPercentage,
     filter_file << "#\n"
                 << "# The file contains comments for each region providing additional information\n"
                 << "# regarding the respective region.\n"
+                << "# The entries are sorted by `" << sorting_name << "`.\n"
                 << "# The common prefix for the files is:\n"
                 << "# '" << m_profile->getPathPrefix() << "'\n"
                 << "#\n"
@@ -901,15 +903,15 @@ SCOREP_Score_Estimator::generateFilterFile( double   minBufferPercentage,
                 << "  EXCLUDE" << endl;
     for ( uint64_t i = 0; i < m_region_num; i++ )
     {
-        string temp = m_regions[ i ]->getFilterCandidate( m_max_buf,
-                                                          m_total_time,
-                                                          m_widths,
-                                                          minBufferPercentage,
-                                                          maxTimePerVisits,
-                                                          minVisits,
-                                                          minBufferAbsolute,
-                                                          filterUSR,
-                                                          filterCOM );
+        const auto temp = m_regions[ i ]->getFilterCandidate( m_max_buf,
+                                                              m_total_time,
+                                                              m_widths,
+                                                              minBufferPercentage,
+                                                              maxTimePerVisits,
+                                                              minVisits,
+                                                              minBufferAbsolute,
+                                                              filterUSR,
+                                                              filterCOM );
         if ( temp.length() > 0 )
         {
             filter_file << temp << endl;
@@ -942,10 +944,78 @@ SCOREP_Score_Estimator::generateFilterFile( double   minBufferPercentage,
     if ( filter_file.bad() )
     {
         cerr << "ERROR: Cannot close filter file!\n";
+        revert_file_backup( moved_existing_file, filter_file_name );
         exit( EXIT_FAILURE );
         return;
     }
     cout << "\n\nAn initial filter file template has been generated: '" << filter_file_name << "'\n\n";
+    if ( moved_existing_file != "" )
+    {
+        cout << "Moved existing filter file to: '" << moved_existing_file << "'\n\n";
+    }
+    cout << "To use this file for filtering at run-time, set the respective Score-P variable:\n\n"
+         << "    SCOREP_FILTERING_FILE=" << filter_file_name << "\n\n"
+         << "For compile-time filtering 'scorep' has to be provided with the '--instrument-filter' option:\n\n"
+         << "    $ scorep --instrument-filter=" << filter_file_name << "\n\n"
+         << "Compile-time filtering depends on support in the used Score-P installation.\n\n"
+         << "The filter file is annotated with comments, please check if the selection is\n"
+         << "suitable for your purposes and add or remove functions if needed.\n" << endl;
+}
+
+void
+SCOREP_Score_Estimator::generateMaxFilterFile( void )
+
+{
+    const auto sorting_name = sortEntries( m_regions, m_region_num );
+
+    string filter_file_name = "max_scorep.filter";
+
+    // avoid overwriting existing file by using the renaming scheme also used
+    // for experiment directories.
+    string moved_existing_file = backup_existing_file( filter_file_name );
+
+    ofstream filter_file;
+    filter_file.open( filter_file_name );
+
+    if ( !filter_file.is_open() )
+    {
+        cerr << "ERROR: Cannot create filter file!\n";
+        revert_file_backup( moved_existing_file, filter_file_name );
+        exit( EXIT_FAILURE );
+        return;
+    }
+
+    filter_file << "# Maximal filter file, including every filterable region for manual editing.\n"
+                << "#\n"
+                << "# The file contains comments for each region providing additional information\n"
+                << "# regarding the respective region.\n"
+                << "# The entries are sorted by `" << sorting_name << "`.\n"
+                << "# The common prefix for the files is:\n"
+                << "# '" << m_profile->getPathPrefix() << "'\n"
+                << "#\n"
+                << "# Please refer to the Score-P user guide for more options on filtering.\n"
+                << "SCOREP_REGION_NAMES_BEGIN\n"
+                << "  EXCLUDE" << endl;
+    for ( uint64_t i = 0; i < m_region_num; i++ )
+    {
+        const auto temp = m_regions[ i ]->getMaxFilterCandidate( m_total_time,
+                                                                 m_widths );
+        if ( temp.length() > 0 )
+        {
+            filter_file << temp << "\n";
+        }
+    }
+
+    filter_file << "SCOREP_REGION_NAMES_END" << endl;
+    filter_file.close();
+    if ( filter_file.bad() )
+    {
+        cerr << "ERROR: Cannot close filter file!\n";
+        revert_file_backup( moved_existing_file, filter_file_name );
+        exit( EXIT_FAILURE );
+        return;
+    }
+    cout << "\n\nA maximal filter file template has been generated: '" << filter_file_name << "'\n\n";
     if ( moved_existing_file != "" )
     {
         cout << "Moved existing filter file to: '" << moved_existing_file << "'\n\n";

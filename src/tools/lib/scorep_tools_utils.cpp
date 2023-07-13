@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2020,
+ * Copyright (c) 2009-2013, 2020, 2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2015,
@@ -284,7 +284,7 @@ backup_existing_file( const string& filename )
         string target_filename = filename + local_time_buf;
         if ( rename( absolute_path.c_str(),  canonicalize_path( target_filename ).c_str() ) != 0 )
         {
-            UTILS_ERROR_POSIX( "Cannot rename existing filter file from \"%s\" to \"%s\".",
+            UTILS_ERROR_POSIX( "Cannot rename existing file from \"%s\" to \"%s\".",
                                filename.c_str(), target_filename.c_str() );
             _Exit( EXIT_FAILURE );
         }
@@ -293,6 +293,35 @@ backup_existing_file( const string& filename )
     }
 
     return "";
+}
+
+void
+revert_file_backup( const string& backupFilename, const string& originalFilename )
+{
+    auto absolute_backup_path   = canonicalize_path( backupFilename );
+    auto absolute_original_path = canonicalize_path( originalFilename );
+
+    if ( originalFilename.empty() || backupFilename.empty() || !exists_file( absolute_backup_path ) )
+    {
+        return;
+    }
+
+    if ( exists_file( absolute_original_path ) )
+    {
+        // Removes any file at the target location
+        if ( remove( absolute_original_path.c_str() ) != 0 )
+        {
+            UTILS_ERROR_POSIX( "Cannot remove existing file \"%s\" .",
+                               originalFilename.c_str() );
+            _Exit( EXIT_FAILURE );
+        }
+    }
+    if ( rename( absolute_backup_path.c_str(),  absolute_original_path.c_str() ) != 0 )
+    {
+        UTILS_ERROR_POSIX( "Cannot revert file backup from \"%s\" to \"%s\".",
+                           backupFilename.c_str(), originalFilename.c_str() );
+        _Exit( EXIT_FAILURE );
+    }
 }
 
 bool

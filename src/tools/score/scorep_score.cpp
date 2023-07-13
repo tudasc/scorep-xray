@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2017, 2019-2021,
+ * Copyright (c) 2009-2013, 2017, 2019-2021, 2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012, 2015,
@@ -42,6 +42,14 @@
 
 using namespace std;
 
+typedef enum
+{
+    NO_FILTER,
+    INITIAL_FILTER,
+    MAX_FILTER,
+} generated_filter_file;
+
+
 void
 exit_fail()
 {
@@ -68,11 +76,11 @@ main( int    argc,
 {
     string                   file_name;
     string                   filter_file;
-    int64_t                  dense_num                   = 0;
-    bool                     show_regions                = false;
-    bool                     use_mangled                 = false;
-    SCOREP_Score_SortingType sortingby                   = SCOREP_SCORE_SORTING_TYPE_MAXBUFFER;
-    bool                     produce_initial_filter_file = false;
+    int64_t                  dense_num           = 0;
+    bool                     show_regions        = false;
+    bool                     use_mangled         = false;
+    SCOREP_Score_SortingType sortingby           = SCOREP_SCORE_SORTING_TYPE_MAXBUFFER;
+    generated_filter_file    produce_filter_file = NO_FILTER;
     // default options for automatic selection
     double min_percentage_from_max_buf = 1;
     double max_time_per_visit          = 1;
@@ -155,7 +163,7 @@ main( int    argc,
         }
         else if ( arg == "-g" )
         {
-            produce_initial_filter_file = true;
+            produce_filter_file = INITIAL_FILTER;
 
             // check if there is optional parameter for this option
             if ( ( i + 1 < argc ) && ( argv[ i + 1 ][ 0 ] != '-' ) )
@@ -178,8 +186,16 @@ main( int    argc,
                     std::string::size_type pos = token.find( "=" );
                     if ( pos == std::string::npos )
                     {
-                        cerr << "ERROR: Invalid filter generation option:\"" << original_token << "\"" << endl;
-                        exit_fail();
+                        if ( token == "all" )
+                        {
+                            // generate filter file with all filterable regions
+                            produce_filter_file = MAX_FILTER;
+                        }
+                        else
+                        {
+                            cerr << "ERROR: Invalid filter generation option:\"" << original_token << "\"" << endl;
+                            exit_fail();
+                        }
                     }
                     else
                     {
@@ -357,7 +373,7 @@ main( int    argc,
     {
         estimator.initializeFilter( filter_file );
     }
-    estimator.calculate( show_regions || produce_initial_filter_file, use_mangled );
+    estimator.calculate( show_regions || ( produce_filter_file != NO_FILTER ), use_mangled );
     estimator.printGroups();
 
     if ( show_regions )
@@ -365,7 +381,11 @@ main( int    argc,
         estimator.printRegions();
     }
 
-    if ( produce_initial_filter_file )
+    if ( produce_filter_file == MAX_FILTER )
+    {
+        estimator.generateMaxFilterFile();
+    }
+    else if (  produce_filter_file == INITIAL_FILTER )
     {
         estimator.generateFilterFile( min_percentage_from_max_buf,
                                       max_time_per_visit,

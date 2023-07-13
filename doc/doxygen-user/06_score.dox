@@ -267,4 +267,14 @@ matches all of the given conditions, with the following keys:
       filtered regions from a file specified via @verb{-f} will be included at
       the end of the newly generated file. Those regions are marked and added
       'as is' without being checked against the inclusion heuristics.
+
+As an alternative to using the heuristics to limit the scope of the included
+regions, the parameter @verb{all} creates a filter, that includes all filterable
+regions. This filter file serves as a starting point for a fully manual approach
+allowing the user to decide, which regions to keep without the need of copy&paste
+of the scoring output. To not interfere with heuristics mode this file is named
+@verb{max_scorep.filter}. As this mode already contains every region there is no
+need for iterative behavior or the inclusion of filtered regions specified via
+@verb{-f}. Additional calls to this option will backup existing files to
+preserve any changes.
 */

@@ -227,6 +227,28 @@ SCOREP_Score_Group::cleanName( const std::string& name )
 }
 
 std::string
+SCOREP_Score_Group::generateFilterEntry( double                   totalTime,
+                                         SCOREP_Score_FieldWidths widths )
+{
+    const auto clean_name = cleanName( m_mangled_name );
+
+    std::ostringstream temp;
+    temp.setf( ios::fixed, ios::floatfield );
+    temp.setf( ios::showpoint );
+    temp << "# type=" << setw( 3 ) << SCOREP_Score_getTypeName( m_type )
+         << " max_buf=" << setw( widths.m_bytes ) << get_number_with_comma( getMaxTraceBufferSize() )
+         << " visits=" << setw( widths.m_visits ) << get_number_with_comma( m_visits )
+         << ", time="   << setw( widths.m_time ) << setprecision( 2 ) << m_total_time
+         << "s ("  << setw( 5 )  << setprecision( 1 ) << ( m_total_time / totalTime ) * 100 << "%)"
+         << ", time/visit= " << setw( 7 ) << setprecision( 2 ) << getTimePerVisit() << "us";
+
+    return "    " + temp.str() + "\n"
+           + "    # name='" + m_name + "'\n"
+           + "    # file='" + m_file_name + "'\n"
+           + "    MANGLED " + clean_name + "\n";
+}
+
+std::string
 SCOREP_Score_Group::getFilterCandidate( uint64_t                 maxBuffer,
                                         double                   totalTime,
                                         SCOREP_Score_FieldWidths widths,
@@ -245,27 +267,25 @@ SCOREP_Score_Group::getFilterCandidate( uint64_t                 maxBuffer,
              && m_visits >= minVisits
              && buffer_in_M >= minBufferAbsolute
              && ( ( filterUSR && m_type == SCOREP_SCORE_TYPE_USR ) ||
-                  ( filterCOM && m_type == SCOREP_SCORE_TYPE_COM ) ) ) )
+                  ( filterCOM && m_type == SCOREP_SCORE_TYPE_COM ) ) )
+         )
     {
-        string clean_name = cleanName( m_mangled_name );
-
-        std::ostringstream temp;
-        temp.setf( ios::fixed, ios::floatfield );
-        temp.setf( ios::showpoint );
-        temp << "# type=" << setw( 3 ) << SCOREP_Score_getTypeName( m_type )
-             << " max_buf=" << setw( widths.m_bytes ) << get_number_with_comma( getMaxTraceBufferSize() )
-             << " visits=" << setw( widths.m_visits ) << get_number_with_comma( m_visits )
-             << ", time="   << setw( widths.m_time ) << setprecision( 2 ) << m_total_time
-             << "s ("  << setw( 5 )  << setprecision( 1 ) << ( m_total_time / totalTime ) * 100 << "%)"
-             << ", time/visit= " << setw( 7 ) << setprecision( 2 ) << getTimePerVisit() << "us";
-
-        return "    " + temp.str() + "\n"
-               + "    # name='" + m_name + "'\n"
-               + "    # file='" + m_file_name + "'\n"
-               + "    MANGLED " + clean_name + "\n";
+        return generateFilterEntry( totalTime, widths );
     }
     return "";
 }
+
+std::string
+SCOREP_Score_Group::getMaxFilterCandidate( double                   totalTime,
+                                           SCOREP_Score_FieldWidths widths )
+{
+    if ( SCOREP_Score_getFilterState( m_type ) != SCOREP_SCORE_FILTER_NO && m_total_buf > 0 )
+    {
+        return generateFilterEntry( totalTime, widths );
+    }
+    return {};
+}
+
 
 std::string
 SCOREP_Score_Group::getPreviouslyFiltered()
