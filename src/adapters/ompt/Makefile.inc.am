@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2022,
+## Copyright (c) 2022-2023,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -24,6 +24,7 @@ libscorep_adapter_ompt_mgmt_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     $(UTILS_CPPFLAGS) \
     -I$(PUBLIC_INC_DIR) \
+    -I$(INC_DIR_DEFINITIONS) \
     -I$(INC_DIR_MEASUREMENT) \
     -I$(INC_DIR_SERVICES)
 

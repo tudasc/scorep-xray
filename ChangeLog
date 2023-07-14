@@ -1,5 +1,9 @@
 ------------------- Upcoming version 9.0 -----------------------------
 
+Features and improvements:
+- The OMPT adapter is now able to report the schedule type selected
+  in OpenMP loops. However, this needs to be supported by the runtime.
+
 User tools and API improvements and changes:
 
 - The 'xnonblock' option of SCOREP_MPI_ENABLE_GROUPS is deprecated.
