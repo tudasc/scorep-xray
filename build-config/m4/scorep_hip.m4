@@ -45,7 +45,7 @@ scorep_have_rocm_smi="yes"
 # and hipcc only supports `-finstrument-functions*`)
 AS_IF([test "x${scorep_have_hip}" = "xyes"],
       [AS_IF([test "x${ax_cv_c_compiler_vendor%/*}" != "xclang"],
-             [scorep_have_hip="no, only a Clang-based compiler is supported"])])
+             [scorep_have_hip="no, only a Clang-based compiler is supported, got ${ax_cv_c_compiler_vendor%/*}"])])
 
 scorep_hip_safe_CPPFLAGS=$CPPFLAGS
 scorep_hip_safe_LDFLAGS=$LDFLAGS
@@ -112,7 +112,7 @@ AS_IF([test "x${scorep_have_hip}" = "xyes"],
 
 AS_CASE([$with_rocm,$scorep_have_hip],
         [yes,no*],
-        [AC_MSG_ERROR([Could not fulfill requested support for HIP.])],
+        [AC_MSG_ERROR([[Could not fulfill requested support for HIP${scorep_have_hip#no}]])],
         [no,yes],
         [scorep_have_hip="no (disabled by request)"],
         [no,no*],
