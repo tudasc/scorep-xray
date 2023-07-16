@@ -70,9 +70,7 @@ AS_IF([test "x${with_libamdhip64}" != xnot_set],
                [*/include,*],       [scorep_hip_root=${with_libamdhip64_include%/include}],
                [*,*/lib|*,*/lib64], [scorep_hip_root=${with_libamdhip64_lib%/lib*}])])
 
-AS_IF([test -d "${scorep_hip_root}/include/roctracer"],
-      [: ${with_libroctracer64_include:=${scorep_hip_root}/include/roctracer}])
-AC_SCOREP_BACKEND_LIB([libroctracer64], [roctracer_hip.h])
+AC_SCOREP_BACKEND_LIB([libroctracer64], [roctracer/roctracer_hip.h], [], [${scorep_hip_root}])
 AS_IF([test "x${scorep_have_hip}" = "xyes"],
       [AS_IF([test "x${scorep_have_libroctracer64}" = "xyes"],
              [scorep_hip_roctracer_safe_CPPFLAGS=$CPPFLAGS
@@ -80,20 +78,18 @@ AS_IF([test "x${scorep_have_hip}" = "xyes"],
 
               # check for deprecated APIs, might already be removed
               AC_CHECK_DECLS([HIP_API_ID_hipMallocHost], [], [], [[
-#include <roctracer_hip.h>
+#include <roctracer/roctracer_hip.h>
 ]])
               AC_CHECK_DECLS([HIP_API_ID_hipHostAlloc], [], [], [[
-#include <roctracer_hip.h>
+#include <roctracer/roctracer_hip.h>
 ]])
               AC_CHECK_DECLS([HIP_API_ID_hipFreeHost], [], [], [[
-#include <roctracer_hip.h>
+#include <roctracer/roctracer_hip.h>
 ]])
               CPPFLAGS=$scorep_hip_roctracer_safe_CPPFLAGS],
              [scorep_have_hip="no, missing ROCm tracer library"])])
 
-AS_IF([test -d "${scorep_hip_root}/include/rocm_smi"],
-      [: ${with_librocm_smi64_include:=${scorep_hip_root}/include}])
-AC_SCOREP_BACKEND_LIB([librocm_smi64], [rocm_smi/rocm_smi.h])
+AC_SCOREP_BACKEND_LIB([librocm_smi64], [rocm_smi/rocm_smi.h], [], [${scorep_hip_root}])
 AS_IF([test "x${scorep_have_hip}" = "xyes"],
       [AS_IF([test "x${scorep_have_librocm_smi64}" = "xyes"],
              [AC_CHECK_TYPES([hipUUID], [], [scorep_have_rocm_smi="no"])],
