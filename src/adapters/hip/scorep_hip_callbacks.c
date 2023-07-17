@@ -45,8 +45,8 @@
 #include <stdio.h>
 #include <inttypes.h>
 
-#include <roctracer_hip.h>
-#include <roctracer_roctx.h>
+#include <roctracer/roctracer_hip.h>
+#include <roctracer/roctracer_roctx.h>
 
 #if HAVE( ROCM_SMI_SUPPORT )
 #include <rocm_smi/rocm_smi.h>
