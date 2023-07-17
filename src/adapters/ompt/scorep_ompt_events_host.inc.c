@@ -2221,10 +2221,6 @@ scorep_ompt_cb_host_mutex_acquire( ompt_mutex_t   kind,
             SCOREP_EnterRegion( lock_regions[ TOOL_LOCK_EVENT_SET ] );
             #endif /* !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX ) */
             break;
-        case ompt_mutex_test_lock:
-            UTILS_WARN_ONCE( "ompt_mutex_t %s not implemented yet.",
-                             mutex2string( kind ) );
-            break;
         case ompt_mutex_nest_lock:
             #if !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX )
             /* nest-lock-acquire event. Followed by either nest-lock-acquired
@@ -2233,9 +2229,10 @@ scorep_ompt_cb_host_mutex_acquire( ompt_mutex_t   kind,
             SCOREP_EnterRegion( lock_regions[ TOOL_LOCK_EVENT_SET_NEST ] );
             #endif /* !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX ) */
             break;
+        case ompt_mutex_test_lock:
         case ompt_mutex_test_nest_lock:
-            UTILS_WARN_ONCE( "ompt_mutex_t %s not implemented yet.",
-                             mutex2string( kind ) );
+            /* Only set the timestamp, since test locks might not end up in acquired. */
+            task->mutex_acquire_timestamp = SCOREP_Timer_GetClockTicks();
             break;
         case ompt_mutex_critical:
             construct_mutex_acquire( task, codeptr_ra );
@@ -2305,29 +2302,40 @@ scorep_ompt_cb_host_mutex_acquired( ompt_mutex_t   kind,
         return;
     }
 
+    SCOREP_RegionHandle lock_region = SCOREP_INVALID_REGION;
     switch ( kind )
     {
+        case ompt_mutex_test_lock:
+            lock_region = lock_regions[ TOOL_LOCK_EVENT_TEST ];
+            SCOREP_Location_EnterRegion( SCOREP_Location_GetCurrentCPULocation(), task->mutex_acquire_timestamp, lock_region );
+            task->mutex_acquire_timestamp = 0;
+        /* Fallthrough is intended, since test lock does the same as lock in acquired. */
         case ompt_mutex_lock:
         {
             #if !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX )
-            mutex_obj_t* mutex = mutex_get( wait_id, kind );
+            mutex_obj_t* mutex = mutex_get( wait_id, ompt_mutex_lock );
             UTILS_MutexLock( &( mutex->in_release_operation ) );
             SCOREP_ThreadAcquireLock( SCOREP_PARADIGM_OPENMP, mutex->id, ++( mutex->acquisition_order ) );
-            SCOREP_ExitRegion( lock_regions[ TOOL_LOCK_EVENT_SET ] );
+            if ( lock_region == SCOREP_INVALID_REGION )
+            {
+                lock_region = lock_regions[ TOOL_LOCK_EVENT_SET ];
+            }
+            SCOREP_ExitRegion( lock_region );
             #endif /* !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX ) */
         }
         break;
-        case ompt_mutex_test_lock:
-            UTILS_WARN_ONCE( "ompt_mutex_t %s not implemented yet.",
-                             mutex2string( kind ) );
-            break;
+        case ompt_mutex_test_nest_lock:
+            lock_region = lock_regions[ TOOL_LOCK_EVENT_TEST_NEST ];
+            SCOREP_Location_EnterRegion( SCOREP_Location_GetCurrentCPULocation(), task->mutex_acquire_timestamp, lock_region );
+            task->mutex_acquire_timestamp = 0;
+        /* Fallthrough is intended, since test nest lock does the same as nest lock in acquired. */
         case ompt_mutex_nest_lock:
         {
             #if !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX )
             /* nest-lock-acquired event. Followed by nest-lock-acquire (i.e.
                nesting) in scorep_ompt_cb_host_mutex_acquire() or
                nest-lock-release in scorep_ompt_cb_host_nest_lock(). */
-            mutex_obj_t* mutex = mutex_get( wait_id, kind );
+            mutex_obj_t* mutex = mutex_get( wait_id, ompt_mutex_nest_lock );
             UTILS_MutexLock( &( mutex->in_release_operation ) );
             if ( mutex->optional.nest_level == 0 )
             {
@@ -2335,14 +2343,14 @@ scorep_ompt_cb_host_mutex_acquired( ompt_mutex_t   kind,
             }
             mutex->optional.nest_level++;
             SCOREP_ThreadAcquireLock( SCOREP_PARADIGM_OPENMP, mutex->id, mutex->acquisition_order );
-            SCOREP_ExitRegion( lock_regions[ TOOL_LOCK_EVENT_SET_NEST ] );
+            if ( lock_region == SCOREP_INVALID_REGION )
+            {
+                lock_region = lock_regions[ TOOL_LOCK_EVENT_SET_NEST ];
+            }
+            SCOREP_ExitRegion( lock_region );
             #endif /* !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX ) */
         }
         break;
-        case ompt_mutex_test_nest_lock:
-            UTILS_WARN_ONCE( "ompt_mutex_t %s not implemented yet.",
-                             mutex2string( kind ) );
-            break;
         case ompt_mutex_critical:
             construct_mutex_acquired( task, TOOL_EVENT_CRITICAL, TOOL_EVENT_CRITICAL_SBLOCK, kind, wait_id );
             break;
@@ -2442,10 +2450,6 @@ scorep_ompt_cb_host_mutex_released( ompt_mutex_t   kind,
             #endif /* !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX ) */
         }
         break;
-        case ompt_mutex_test_lock:
-            UTILS_WARN_ONCE( "ompt_mutex_t %s not implemented yet.",
-                             mutex2string( kind ) );
-            break;
         case ompt_mutex_nest_lock:
         {
             #if !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX )
@@ -2462,10 +2466,6 @@ scorep_ompt_cb_host_mutex_released( ompt_mutex_t   kind,
             #endif /* !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX ) */
         }
         break;
-        case ompt_mutex_test_nest_lock:
-            UTILS_WARN_ONCE( "ompt_mutex_t %s not implemented yet.",
-                             mutex2string( kind ) );
-            break;
         case ompt_mutex_critical:
             construct_mutex_released( kind, wait_id );
             break;
@@ -2476,7 +2476,7 @@ scorep_ompt_cb_host_mutex_released( ompt_mutex_t   kind,
             construct_mutex_released( kind, wait_id );
             break;
         default:
-            UTILS_WARNING( "unknown ompt_mutex_t %d.", ( int )kind );
+            UTILS_WARNING( "unknown/unexpected ompt_mutex_t %d.", ( int )kind );
     }
 
     UTILS_DEBUG_EXIT( "atid %" PRIu32 " | kind %s | wait_id %ld | codeptr_ra %p",

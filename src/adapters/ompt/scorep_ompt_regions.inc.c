@@ -153,17 +153,13 @@ typedef enum tool_lock_event_t
     TOOL_LOCK_EVENT_DESTROY,
     TOOL_LOCK_EVENT_SET,
     TOOL_LOCK_EVENT_UNSET,
+    TOOL_LOCK_EVENT_TEST,
     TOOL_LOCK_EVENT_INIT_NEST,
     TOOL_LOCK_EVENT_INIT_NEST_WITH_HINT,
     TOOL_LOCK_EVENT_DESTROY_NEST,
     TOOL_LOCK_EVENT_SET_NEST,
     TOOL_LOCK_EVENT_UNSET_NEST,
-
-    /* omp_test_lock and omp_test_nest_lock are missing. For them, we get
-       acquire/acquired/released if we obtain the lock or just acquire if the
-       lock was already held. In the latter case, I don't see a way to trigger
-       the exit(test_[nest_]lock) that corresponds to the acquire's
-       enter(test_[nest_lock). */
+    TOOL_LOCK_EVENT_TEST_NEST,
 
     TOOL_LOCK_EVENTS,
 
@@ -204,11 +200,13 @@ init_region_fallbacks( void )
             "omp_destroy_lock",
             "omp_set_lock",
             "omp_unset_lock",
+            "omp_test_lock",
             "omp_init_nest_lock",
             "omp_init_nest_lock_with_hint",
             "omp_destroy_nest_lock",
             "omp_set_nest_lock",
-            "omp_unset_nest_lock"
+            "omp_unset_nest_lock",
+            "omp_test_nest_lock"
         };
         for ( int i = 0; i < TOOL_LOCK_EVENTS; i++ )
         {
