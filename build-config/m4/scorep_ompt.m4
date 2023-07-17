@@ -592,7 +592,7 @@ m4_define([_CHECK_OMPT_REMEDIABLE_ISSUES], [
 have_ompt_remediable_checks_passed=yes
 AS_UNSET([issues_detected])
 m4_foreach_w([_OMPT_TEST],
-    [wrong_test_lock_mutex],
+    [wrong_test_lock_mutex missing_work_loop_schedule],
     [m4_define([_TRY_RUN_OMPT_TEST_INPUT], [_INPUT_OMPT_KNOWN_ISSUE_[]m4_toupper(_OMPT_TEST)[]])
      _TRY_RUN_OMPT_TEST
      AS_IF([test "x${have_[]_OMPT_TEST[]}" != xyes],
@@ -719,3 +719,109 @@ main( void )
     return 1;
 }
 ]]) dnl _INPUT_OMPT_KNOWN_ISSUE_WRONG_TEST_LOCK_MUTEX
+
+# _INPUT_OMPT_KNOWN_ISSUE_MISSING_WORK_LOOP_SCHEDULE
+# ---------------------------------------------
+# Test code to check if work callback reports schedule type
+# for parallel for loops
+#
+m4_define([_INPUT_OMPT_KNOWN_ISSUE_MISSING_WORK_LOOP_SCHEDULE], [[
+#include <omp.h>
+#include <omp-tools.h>
+#include <stdlib.h>
+
+static int                  has_schedule = 0;
+static int                  initialized = 0;
+static ompt_finalize_tool_t finalize_tool;
+
+void
+callback_ompt_work( ompt_work_t           work_type,
+                    ompt_scope_endpoint_t endpoint,
+                    ompt_data_t*          parallel_data,
+                    ompt_data_t*          task_data,
+                    uint64_t              count,
+                    const void*           codeptr_ra )
+{
+    switch ( work_type )
+    {
+        case ompt_work_loop_static:
+        case ompt_work_loop_dynamic:
+        case ompt_work_loop_guided:
+        case ompt_work_loop_other:
+            has_schedule = 1;
+            break;
+        default:
+            break;
+    }
+}
+
+static int
+ompt_initialize( ompt_function_lookup_t lookup,
+                 int                    initial_device_num,
+                 ompt_data_t*           tool_data )
+{
+    ompt_set_callback_t set_cb = ( ompt_set_callback_t )lookup( "ompt_set_callback" );
+    if ( !set_cb )
+    {
+        _Exit( 3 ); /* Tool got initialized but lookup of runtime-entry-point ompt_set_callback failed. */
+    }
+    finalize_tool = ( ompt_finalize_tool_t )lookup( "ompt_finalize_tool" );
+    if ( !finalize_tool )
+    {
+        _Exit( 4 ); /* Tool got initialized but lookup of runtime-entry-point ompt_finalize_tool failed. */
+    }
+    ompt_set_result_t result;
+    result = set_cb( ompt_callback_work, ( ompt_callback_t )&callback_ompt_work );
+    if ( result != ompt_set_always )
+    {
+        _Exit( 5 ); /* Tool got initialized but cb couldn't be registered. */
+    }
+    initialized = 1;
+    return 1; /* non-zero indicates success for OMPT runtime. */
+}
+
+static void
+ompt_finalize( ompt_data_t* tool_data )
+{
+    if ( initialized == 1 )
+    {
+        if ( has_schedule == 1 )
+        {
+            _Exit( 0 ); /* Tool got initialized and finalized. */
+        }
+        _Exit( 2 );     /* Tool got initialized and finalized but no loop schedule
+                           was provided. */
+    }
+}
+
+ompt_start_tool_result_t*
+ompt_start_tool( unsigned int omp_version,
+                 const char*  runtime_version )
+{
+    static ompt_start_tool_result_t ompt_start_tool_result = { &ompt_initialize,
+                                                               &ompt_finalize,
+                                                               ompt_data_none };
+    return &ompt_start_tool_result;
+}
+
+int
+main( void )
+{
+#pragma omp parallel for schedule(static)
+    for ( unsigned i = 0; i < 100; ++i )
+    {
+    }
+
+#pragma omp parallel for schedule(dynamic)
+    for ( unsigned i = 0; i < 100; ++i )
+    {
+    }
+
+#pragma omp parallel for schedule(guided)
+    for ( unsigned i = 0; i < 100; ++i )
+    {
+    }
+
+    return 1;
+}
+]]) dnl _INPUT_OMPT_KNOWN_ISSUE_MISSING_WORK_LOOP_SCHEDULE
