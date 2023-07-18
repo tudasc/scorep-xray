@@ -61,6 +61,10 @@ typedef struct task_t
     struct parallel_t* parallel_region;  /* to which parallel region the
                                           * task belongs. */
 
+    uintptr_t reduction_codeptr_ra;      /* Return-address taken from host_work
+                                          * for reduction, since it doesn't have
+                                          * a codeptr_ra attached. */
+
     /* Retrieve barrier handle in sync_region_begin, usually contended. Use it
        there for EnterRegion and 'pass' it to sync_region_end for ExitRegion.
        Used for all sync kinds except ibarrier of parallel_region where the
@@ -844,13 +848,14 @@ scorep_ompt_cb_host_implicit_task( ompt_scope_endpoint_t endpoint,
             SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
             task_t*          task     = get_task_from_pool();
 
-            task->team_size       = actual_parallelism;
-            task->index           = index;
-            task->type            = ompt_task_implicit;
-            task->parallel_region = parallel_region;
-            task->tpd             = new_tpd;
-            task->scorep_location = location;
-            task->scorep_task     = scorep_task;
+            task->team_size            = actual_parallelism;
+            task->index                = index;
+            task->type                 = ompt_task_implicit;
+            task->parallel_region      = parallel_region;
+            task->tpd                  = new_tpd;
+            task->scorep_location      = location;
+            task->scorep_task          = scorep_task;
+            task->reduction_codeptr_ra = parallel_region->codeptr_ra;
             /* NVHPC might reuse the task_data->ptr if a parallel region only uses
              * a single thread. Therefore, store the task as the next task and restore
              * the task on implicit_task end */
@@ -1246,11 +1251,11 @@ scorep_ompt_cb_host_sync_region( ompt_sync_region_t    kind,
                     SCOREP_EnterRegion( sync_region_begin( task, codeptr_ra, TOOL_EVENT_TASKWAIT ) );
                     break;
                 case ompt_sync_region_taskgroup:
+                    task->reduction_codeptr_ra = ( uintptr_t )codeptr_ra;
                     SCOREP_EnterRegion( sync_region_begin( task, codeptr_ra, TOOL_EVENT_TASKGROUP ) );
                     break;
                 case ompt_sync_region_reduction:
-                    UTILS_WARN_ONCE( "ompt_sync_region_t %s not implemented yet.",
-                                     sync_region2string( kind ) );
+                    UTILS_WARN_ONCE( "Unexpected use of ompt_callback_sync_region with kind ompt_sync_region_reduction!" );
                     break;
                 case ompt_sync_region_barrier_implicit_workshare:
                 {
@@ -1338,8 +1343,7 @@ scorep_ompt_cb_host_sync_region( ompt_sync_region_t    kind,
                     SCOREP_ExitRegion( sync_region_end( task ) );
                     break;
                 case ompt_sync_region_reduction:
-                    UTILS_WARN_ONCE( "ompt_sync_region_t %s not implemented yet.",
-                                     sync_region2string( kind ) );
+                    UTILS_WARN_ONCE( "Unexpected use of ompt_callback_sync_region with kind ompt_sync_region_reduction!" );
                     break;
                 case ompt_sync_region_barrier_implicit_workshare:
                 {
@@ -1661,12 +1665,14 @@ scorep_ompt_cb_host_work( ompt_work_t           work_type,
                 #if HAVE( DECL_OMPT_WORK_LOOP_OTHER )
                 case ompt_work_loop_other:
                 #endif  /* DECL_OMPT_WORK_LOOP_OTHER */
+                    task->reduction_codeptr_ra = ( uintptr_t )codeptr_ra;
                     SCOREP_EnterRegion( work_begin( task, codeptr_ra, TOOL_EVENT_LOOP ) );
                     #if !HAVE( SCOREP_OMPT_MISSING_WORK_LOOP_SCHEDULE )
                     SCOREP_TriggerParameterString( scorep_ompt_parameter_loop_type, looptype2string( work_type ) );
                     #endif /* !HAVE( SCOREP_OMPT_MISSING_WORK_LOOP_SCHEDULE ) */
                     break;
                 case ompt_work_sections:
+                    task->reduction_codeptr_ra = ( uintptr_t )codeptr_ra;
                     SCOREP_EnterRegion( work_begin( task, codeptr_ra, TOOL_EVENT_SECTIONS ) );
                     task->dispatch.section = SCOREP_INVALID_REGION;
                     break;
@@ -1685,9 +1691,11 @@ scorep_ompt_cb_host_work( ompt_work_t           work_type,
                                      work2string( work_type ) );
                     break;
                 case ompt_work_taskloop:
+                    task->reduction_codeptr_ra = ( uintptr_t )codeptr_ra;
                     SCOREP_EnterRegion( work_begin( task, codeptr_ra, TOOL_EVENT_TASKLOOP ) );
                     break;
                 case ompt_work_scope:
+                    task->reduction_codeptr_ra = ( uintptr_t )codeptr_ra;
                     UTILS_WARN_ONCE( "ompt_work_t %s not implemented yet.",
                                      work2string( work_type ) );
                     break;
@@ -2835,4 +2843,63 @@ scorep_ompt_cb_host_flush( ompt_data_t* thread_data,
     /* No duration available for flush. Use identical timestamp. */
     SCOREP_Location_EnterRegion( location, timestamp, region );
     SCOREP_Location_ExitRegion( location, timestamp, region );
+}
+
+void
+scorep_ompt_cb_host_reduction( ompt_sync_region_t    kind,
+                               ompt_scope_endpoint_t endpoint,
+                               ompt_data_t*          parallel_data,
+                               ompt_data_t*          task_data,
+                               const void*           codeptr_ra )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    UTILS_DEBUG_ENTRY( "atid %" PRIu32 " | kind %s | endpoint %s | "
+                       "parallel_data->ptr %p | task_data->ptr %p | codeptr_ra %p ",
+                       adapter_tid, sync_region2string( kind ),
+                       scope_endpoint2string( endpoint ),
+                       parallel_data == NULL ? NULL : parallel_data->ptr,
+                       task_data->ptr, codeptr_ra );
+    SCOREP_OMPT_RETURN_ON_INVALID_EVENT();
+
+    task_t* task = task_data->ptr;
+    /* For now, prevent league events */
+    if ( task->belongs_to_league )
+    {
+        UTILS_DEBUG_EXIT( "atid %" PRIu32 " | kind %s | endpoint %s | "
+                          "parallel_data->ptr %p | task_data->ptr %p | codeptr_ra %p | "
+                          "belongs_to_league",
+                          adapter_tid, sync_region2string( kind ),
+                          scope_endpoint2string( endpoint ),
+                          parallel_data == NULL ? NULL : parallel_data->ptr,
+                          task_data->ptr, codeptr_ra );
+
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    UTILS_BUG_ON( kind != ompt_sync_region_reduction );
+    switch ( endpoint )
+    {
+        case ompt_scope_begin:
+        {
+            /* Reduction has no codeptr_ra attached, thus provide a codeptr_ra
+               via task_t. It's value starts with the codeptr_ra from the
+               parallel region (see implicit_task cb), and is updated by the
+               constructs issuing the reduction (see work and sync_region cbs).
+               Once the codeptr_ra is consumed, reset to the enclosing one. */
+            SCOREP_EnterRegion( sync_region_begin( task, ( void* )task->reduction_codeptr_ra, TOOL_EVENT_REDUCTION ) );
+            task->reduction_codeptr_ra = task->parallel_region->codeptr_ra;
+        }
+        break;
+        case ompt_scope_end:
+            SCOREP_ExitRegion( sync_region_end( task ) );
+            break;
+        #if HAVE( DECL_OMPT_SCOPE_BEGINEND )
+        case ompt_scope_beginend:
+            UTILS_BUG( "ompt_scope_beginend not allowed in sync_region callback" );
+            break;
+        #endif /* DECL_OMPT_SCOPE_BEGINEND */
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
