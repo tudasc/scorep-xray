@@ -110,6 +110,8 @@ func_addr_hash_value_ctor( func_addr_hash_key_t* addr,
                        && ( strncmp( function_name_demangled, "cube_", 5 ) != 0 )
                        && ( strncmp( function_name_demangled, "cubew_", 6 ) != 0 )
                        && ( strncmp( function_name_demangled, ".omp", 4 ) != 0 )
+                       && ( fnmatch( "*.omp_outlined", function_name_demangled, 0 ) != 0 )
+                       && ( fnmatch( "*.omp_outlined_debug__", function_name_demangled, 0 ) != 0 )
                        && ( !strstr( function_name_demangled, "DIR.OMP." ) )
                        && ( !strstr( function_name_demangled, ".extracted" ) )
 #if HAVE( SCOREP_COMPILER_CC_INTEL_ONEAPI ) || HAVE( SCOREP_COMPILER_CXX_INTEL_ONEAPI ) || HAVE( SCOREP_COMPILER_FC_INTEL_ONEAPI )
