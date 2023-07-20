@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014, 2016, 2020, 2022,
+ * Copyright (c) 2013-2014, 2016, 2020, 2022-2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2015, 2017, 2022,
@@ -55,8 +55,7 @@ public:
 protected:
     std::set<std::string> m_openmp_flags; // provided by scorep_config_tool_backend.h
 
-private:
-    bool
+    virtual bool
     checkForOpenmpOption( const std::string& current );
 };
 
@@ -81,6 +80,12 @@ class SCOREP_Instrumenter_OmpOmpt : public SCOREP_Instrumenter_Omp
 {
 public:
     SCOREP_Instrumenter_OmpOmpt( SCOREP_Instrumenter_Selector* selector );
+
+private:
+    bool m_warn_intel_openmp_flags;
+
+    bool
+    checkForOpenmpOption( const std::string& current ) override;
 };
 
 /* *****************************************************************************

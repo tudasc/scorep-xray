@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014, 2016-2017, 2020, 2022,
+ * Copyright (c) 2013-2014, 2016-2017, 2020, 2022-2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014,
@@ -173,7 +173,8 @@ SCOREP_Instrumenter_OmpOpari2::checkDependencies( void )
 SCOREP_Instrumenter_OmpOmpt::SCOREP_Instrumenter_OmpOmpt
 (
     SCOREP_Instrumenter_Selector* selector
-) : SCOREP_Instrumenter_Omp( selector, "ompt", "OpenMP support using thread tracking via OMPT." )
+) : SCOREP_Instrumenter_Omp( selector, "ompt", "OpenMP support using thread tracking via OMPT." ),
+    m_warn_intel_openmp_flags( false )
 {
     // For Fortran, pdt inserts a specification statement into the executable
     // section (omp parallel do), which is illegal. Subsequent opari2
@@ -192,6 +193,29 @@ SCOREP_Instrumenter_OmpOmpt::SCOREP_Instrumenter_OmpOmpt
 #endif // ! BACKEND_SCOREP_OMPT_SUPPORT
 }
 
+bool
+SCOREP_Instrumenter_OmpOmpt::checkForOpenmpOption( const std::string& current )
+{
+    #if SCOREP_BACKEND_COMPILER_CC_INTEL_ONEAPI || SCOREP_BACKEND_COMPILER_CXX_INTEL_ONEAPI || SCOREP_BACKEND_COMPILER_FC_INTEL_ONEAPI
+    // checkForOpenmpOption is called several times. Once we found a
+    // problematic flag, check in the current and subsequent
+    // invocations if we are using OMPT (either implicitly because
+    // configured with --enable-default=ompt or explicitly via
+    // --thread=omp:ompt). This is potentially reported by
+    // m_selector->isParadigmSelected( "omp:ompt" ) in one invocation
+    // and then in subsequent invocations as well.
+    if ( current == "-fiopenmp" || current == "-qopenmp" )
+    {
+        m_warn_intel_openmp_flags = true;
+    }
+    if ( m_warn_intel_openmp_flags && m_selector->isParadigmSelected( "omp:ompt" ) )
+    {
+        UTILS_WARN_ONCE( "Detected flag -fiopenmp / -qopenmp. If you run into issues, please try to use -fopenmp instead or take a look at the open issues via 'scorep-info open-issues'!" );
+    }
+    #endif // SCOREP_BACKEND_COMPILER_CC_INTEL_ONEAPI || SCOREP_BACKEND_COMPILER_CXX_INTEL_ONEAPI || SCOREP_BACKEND_COMPILER_FC_INTEL_ONEAPI
+
+    return SCOREP_Instrumenter_Omp::checkForOpenmpOption( current );
+}
 
 /* *****************************************************************************
  * class SCOREP_Instrumenter_Pthread

@@ -412,6 +412,13 @@ various Score-P components.
     helper thread.
     In these cases, Score-P can't ignore the device events, but aborts.
 
+  - When instrumenting an application using `#pragma omp sections` with
+    Intel oneAPI compilers, enabling OpenMP via `-fiopenmp` or `-qopenmp`
+    may result in an error reporting an `inconsistent profile`. This happens
+    because the runtime reports the end of the sections construct incorrectly.
+    For C / C++ only, you may switch to `-fopenmp` for instrumentation. For
+    Fortran applications, please use OPARI2 via `--thread=omp:opari2`.
+
 --------------------------------------------------------------------------------
 
 * CUDA support
