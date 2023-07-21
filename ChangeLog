@@ -39,6 +39,8 @@ Bugfixes:
   prevent them from being ignored.
 - Fix the errors in topology coordinate mapping, introduced by
   non-process location groups.
+- Fix abort on nested synchronization regions in OpenMP programs
+  when using the OMPT adapter.
 
 ------------------- Released version 8.1 -----------------------------
 

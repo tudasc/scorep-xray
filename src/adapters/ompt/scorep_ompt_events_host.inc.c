@@ -65,8 +65,12 @@ typedef struct task_t
        there for EnterRegion and 'pass' it to sync_region_end for ExitRegion.
        Used for all sync kinds except ibarrier of parallel_region where the
        handle is assigned uncontended in parallel_begin.
-       Unused if task does not take part in synchronization. */
-    SCOREP_RegionHandle barrier_handle;
+       Unused if task does not take part in synchronization.
+       Since sync_regions might be nested, we also need a task-local stack
+       of region handles. */
+    SCOREP_RegionHandle* sync_regions; /* aligned */
+    uint8_t              sync_regions_capacity;
+    uint8_t              sync_regions_current;
 
     /* Workshare regions are assigned in <workshare>-begin and passed via task_t
        to <workshare>-end. As workshare constructs might be nested, we keep a
@@ -184,6 +188,8 @@ static void implicit_task_end_impl( task_t* task, char* utilsDebugcaller );
 static void barrier_implicit_parallel_end( ompt_data_t* taskData );
 static void barrier_implicit_parallel_end_finalize_tool( ompt_data_t* taskData );
 static void barrier_implicit_parallel_end_impl( task_t* task, char* utilsDebugCaller );
+static inline SCOREP_RegionHandle sync_region_begin( task_t* task, const void* codeptrRa, tool_event_t regionType );
+static inline SCOREP_RegionHandle sync_region_end( task_t* task );
 static inline SCOREP_RegionHandle work_begin( task_t* task, const void* codeptrRa, tool_event_t regionType );
 static inline void enlarge_region_array( uint8_t* capacity, SCOREP_RegionHandle** regions );
 static inline SCOREP_RegionHandle work_end( task_t* task );
@@ -299,11 +305,15 @@ get_task_from_pool( void )
     task_t*              data;
     SCOREP_RegionHandle* workshare_regions          = NULL;
     uint8_t              workshare_regions_capacity = 0;
+    SCOREP_RegionHandle* sync_regions               = NULL;
+    uint8_t              sync_regions_capacity      = 0;
     if ( tasks_free_list != NULL )
     {
         data                       = tasks_free_list;
         workshare_regions          = data->workshare_regions;
         workshare_regions_capacity = data->workshare_regions_capacity;
+        sync_regions               = data->sync_regions;
+        sync_regions_capacity      = data->sync_regions_capacity;
         tasks_free_list            = tasks_free_list->next;
     }
     else
@@ -316,6 +326,8 @@ get_task_from_pool( void )
     memset( data, 0,  sizeof( *data ) );
     data->workshare_regions          = workshare_regions;
     data->workshare_regions_capacity = workshare_regions_capacity;
+    data->sync_regions               = sync_regions;
+    data->sync_regions_capacity      = sync_regions_capacity;
     return data;
 }
 
@@ -1193,10 +1205,7 @@ scorep_ompt_cb_host_sync_region( ompt_sync_region_t    kind,
                     {
                         ibarrier_codeptr_ra = ( const void* )task->parallel_region->codeptr_ra;
                     }
-                    UTILS_BUG_ON( task->barrier_handle != SCOREP_INVALID_REGION );
-                    task->barrier_handle = get_region( ibarrier_codeptr_ra,
-                                                       TOOL_EVENT_IMPLICIT_BARRIER );
-                    SCOREP_EnterRegion( task->barrier_handle );
+                    SCOREP_EnterRegion( sync_region_begin( task, ibarrier_codeptr_ra, TOOL_EVENT_IMPLICIT_BARRIER ) );
 
                     #if HAVE( UTILS_DEBUG )
                     SCOREP_Location* loc = SCOREP_Location_GetCurrentCPULocation();
@@ -1210,33 +1219,24 @@ scorep_ompt_cb_host_sync_region( ompt_sync_region_t    kind,
                                  SCOREP_Location_GetId( task->scorep_location ),
                                  task->parallel_region, task, task->index,
                                  tpd, task->tpd,
-                                 SCOREP_RegionHandle_GetId( task->barrier_handle ) );
+                                 SCOREP_RegionHandle_GetId( task->sync_regions[ task->sync_regions_current - 1 ] ) );
 
                     break;
                 }
                 case ompt_sync_region_barrier_explicit:
                 {
-                    UTILS_BUG_ON( task->barrier_handle != SCOREP_INVALID_REGION );
-                    task->barrier_handle = get_region( codeptr_ra, TOOL_EVENT_BARRIER );
-                    SCOREP_EnterRegion( task->barrier_handle );
+                    SCOREP_EnterRegion( sync_region_begin( task, codeptr_ra, TOOL_EVENT_BARRIER ) );
                     break;
                 }
                 case ompt_sync_region_taskwait:
-                    UTILS_BUG_ON( task->barrier_handle != SCOREP_INVALID_REGION );
-                    task->barrier_handle = get_region( codeptr_ra, TOOL_EVENT_TASKWAIT );
-                    SCOREP_EnterRegion( task->barrier_handle );
+                    SCOREP_EnterRegion( sync_region_begin( task, codeptr_ra, TOOL_EVENT_TASKWAIT ) );
                     break;
                 case ompt_sync_region_taskgroup:
-                    UTILS_BUG_ON( task->barrier_handle != SCOREP_INVALID_REGION );
-                    task->barrier_handle = get_region( codeptr_ra, TOOL_EVENT_TASKGROUP );
-                    SCOREP_EnterRegion( task->barrier_handle );
+                    SCOREP_EnterRegion( sync_region_begin( task, codeptr_ra, TOOL_EVENT_TASKGROUP ) );
                     break;
                 case ompt_sync_region_barrier_implicit_workshare:
                 {
-                    UTILS_BUG_ON( task->barrier_handle != SCOREP_INVALID_REGION );
-                    task->barrier_handle = get_region( codeptr_ra,
-                                                       TOOL_EVENT_IMPLICIT_BARRIER );
-                    SCOREP_EnterRegion( task->barrier_handle );
+                    SCOREP_EnterRegion( sync_region_begin( task, codeptr_ra, TOOL_EVENT_IMPLICIT_BARRIER ) );
                     break;
                 }
                 default:
@@ -1263,8 +1263,7 @@ scorep_ompt_cb_host_sync_region( ompt_sync_region_t    kind,
                     if ( parallel_data != NULL ) /* ibarrier inside parallel region */
                     {
                         task_t* task = task_data->ptr;
-                        SCOREP_ExitRegion( task->barrier_handle );
-                        task->barrier_handle = SCOREP_INVALID_REGION;
+                        SCOREP_ExitRegion( sync_region_end( task ) );
                         break;
                     }
                 } /* fall-through into ompt_sync_region_barrier_implicit_parallel intended */
@@ -1304,25 +1303,18 @@ scorep_ompt_cb_host_sync_region( ompt_sync_region_t    kind,
                     break;
                 }
                 case ompt_sync_region_barrier_explicit:
-                    UTILS_BUG_ON( task->barrier_handle == SCOREP_INVALID_REGION );
-                    SCOREP_ExitRegion( task->barrier_handle );
-                    task->barrier_handle = SCOREP_INVALID_REGION;
+                    SCOREP_ExitRegion( sync_region_end( task ) );
                     break;
                 case ompt_sync_region_taskwait:
-                    UTILS_BUG_ON( task->barrier_handle == SCOREP_INVALID_REGION );
-                    SCOREP_ExitRegion( task->barrier_handle );
-                    task->barrier_handle = SCOREP_INVALID_REGION;
+                    SCOREP_ExitRegion( sync_region_end( task ) );
                     break;
                 case ompt_sync_region_taskgroup:
-                    UTILS_BUG_ON( task->barrier_handle == SCOREP_INVALID_REGION );
-                    SCOREP_ExitRegion( task->barrier_handle );
-                    task->barrier_handle = SCOREP_INVALID_REGION;
+                    SCOREP_ExitRegion( sync_region_end( task ) );
                     break;
                 case ompt_sync_region_barrier_implicit_workshare:
                 {
                     task_t* task = task_data->ptr;
-                    SCOREP_ExitRegion( task->barrier_handle );
-                    task->barrier_handle = SCOREP_INVALID_REGION;
+                    SCOREP_ExitRegion( sync_region_end( task ) );
                     break;
                 }
                 default:
@@ -1343,6 +1335,31 @@ scorep_ompt_cb_host_sync_region( ompt_sync_region_t    kind,
        with Intel compiler and 2018 LLVM RT) */
     asm ( " " );
     SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+static inline SCOREP_RegionHandle
+sync_region_begin( task_t*      task,
+                   const void*  codeptrRa,
+                   tool_event_t regionType )
+{
+    if ( task->sync_regions_current == task->sync_regions_capacity )
+    {
+        enlarge_region_array( &( task->sync_regions_capacity ), &( task->sync_regions ) );
+    }
+    UTILS_BUG_ON( task->sync_regions[ task->sync_regions_current ] != SCOREP_INVALID_REGION );
+    SCOREP_RegionHandle region = get_region( codeptrRa, regionType );
+    task->sync_regions[ task->sync_regions_current++ ] = region;
+    return region;
+}
+
+static inline SCOREP_RegionHandle
+sync_region_end( task_t* task )
+{
+    UTILS_BUG_ON( task->sync_regions_current == 0 );
+    SCOREP_RegionHandle region = task->sync_regions[ --task->sync_regions_current ];
+    task->sync_regions[ task->sync_regions_current ] = SCOREP_INVALID_REGION;
+    UTILS_BUG_ON( region == SCOREP_INVALID_REGION );
+    return region;
 }
 
 
@@ -1524,16 +1541,15 @@ barrier_implicit_parallel_end_impl( task_t* task, char* utilsDebugCaller )
                  SCOREP_Location_GetId( location ),
                  SCOREP_Location_GetId( task->scorep_location ),
                  parallel_region, task, task->index, tpd, task->tpd,
-                 SCOREP_RegionHandle_GetId( task->barrier_handle ), timestamp );
+                 SCOREP_RegionHandle_GetId( task->sync_regions[ task->sync_regions_current - 1 ] ), timestamp );
 
-    UTILS_BUG_ON( task->barrier_handle == SCOREP_INVALID_REGION,
+    UTILS_BUG_ON( task->sync_regions[ task->sync_regions_current - 1 ] == SCOREP_INVALID_REGION,
                   "ibarrier_end %s : loc %" PRIu32 " | task %p ",
                   utilsDebugCaller, SCOREP_Location_GetId( task->scorep_location ),
                   task );
     SCOREP_Location_ExitRegion( task->scorep_location,
                                 timestamp,
-                                task->barrier_handle );
-    task->barrier_handle = SCOREP_INVALID_REGION;
+                                sync_region_end( task ) );
 }
 
 
