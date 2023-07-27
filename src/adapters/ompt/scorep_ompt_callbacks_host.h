@@ -18,6 +18,9 @@
 #define SCOREP_OMPT_CALLBACKS_HOST_H
 
 #include <UTILS_Mutex.h>
+#include <SCOREP_DefinitionHandles.h>
+
+extern SCOREP_ParameterHandle scorep_ompt_parameter_loop_type;
 
 typedef struct scorep_ompt_cpu_location_data
 {

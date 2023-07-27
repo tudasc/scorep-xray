@@ -1634,7 +1634,22 @@ scorep_ompt_cb_host_work( ompt_work_t           work_type,
             switch ( work_type )
             {
                 case ompt_work_loop:
+                #if HAVE( DECL_OMPT_WORK_LOOP_STATIC )
+                case ompt_work_loop_static:
+                #endif /* DECL_OMPT_WORK_LOOP_STATIC */
+                #if HAVE( DECL_OMPT_WORK_LOOP_DYNAMIC )
+                case ompt_work_loop_dynamic:
+                #endif  /* DECL_OMPT_WORK_LOOP_DYNAMIC */
+                #if HAVE( DECL_OMPT_WORK_LOOP_GUIDED )
+                case ompt_work_loop_guided:
+                #endif  /* DECL_OMPT_WORK_LOOP_GUIDED */
+                #if HAVE( DECL_OMPT_WORK_LOOP_OTHER )
+                case ompt_work_loop_other:
+                #endif  /* DECL_OMPT_WORK_LOOP_OTHER */
                     SCOREP_EnterRegion( work_begin( task, codeptr_ra, TOOL_EVENT_LOOP ) );
+                    #if !HAVE( SCOREP_OMPT_MISSING_WORK_LOOP_SCHEDULE )
+                    SCOREP_TriggerParameterString( scorep_ompt_parameter_loop_type, looptype2string( work_type ) );
+                    #endif /* !HAVE( SCOREP_OMPT_MISSING_WORK_LOOP_SCHEDULE ) */
                     break;
                 case ompt_work_sections:
                     SCOREP_EnterRegion( work_begin( task, codeptr_ra, TOOL_EVENT_SECTIONS ) );
@@ -1662,30 +1677,6 @@ scorep_ompt_cb_host_work( ompt_work_t           work_type,
                     UTILS_WARN_ONCE( "ompt_work_t %s not implemented yet.",
                                      work2string( work_type ) );
                     break;
-                #if HAVE( DECL_OMPT_WORK_LOOP_STATIC )
-                case ompt_work_loop_static:
-                    UTILS_WARN_ONCE( "ompt_work_t %s not implemented yet.",
-                                     work2string( work_type ) );
-                    break;
-                #endif  /* DECL_OMPT_WORK_LOOP_STATIC */
-                #if HAVE( DECL_OMPT_WORK_LOOP_DYNAMIC )
-                case ompt_work_loop_dynamic:
-                    UTILS_WARN_ONCE( "ompt_work_t %s not implemented yet.",
-                                     work2string( work_type ) );
-                    break;
-                #endif  /* DECL_OMPT_WORK_LOOP_DYNAMIC */
-                #if HAVE( DECL_OMPT_WORK_LOOP_GUIDED )
-                case ompt_work_loop_guided:
-                    UTILS_WARN_ONCE( "ompt_work_t %s not implemented yet.",
-                                     work2string( work_type ) );
-                    break;
-                #endif  /* DECL_OMPT_WORK_LOOP_GUIDED */
-                #if HAVE( DECL_OMPT_WORK_LOOP_OTHER )
-                case ompt_work_loop_other:
-                    UTILS_WARN_ONCE( "ompt_work_t %s not implemented yet.",
-                                     work2string( work_type ) );
-                    break;
-                #endif  /* DECL_OMPT_WORK_LOOP_OTHER */
                 default:
                     UTILS_WARNING( "unknown ompt_work_t %d.",
                                    ( int )work_type );

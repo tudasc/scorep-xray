@@ -348,6 +348,35 @@ work2string( ompt_work_t t )
 }
 
 static const char*
+looptype2string( ompt_work_t t )
+{
+    switch ( t )
+    {
+        case ompt_work_loop:
+            return "unknown";
+#if HAVE( DECL_OMPT_WORK_LOOP_STATIC )
+        case ompt_work_loop_static:
+            return "static";
+#endif
+#if HAVE( DECL_OMPT_WORK_LOOP_DYNAMIC )
+        case ompt_work_loop_dynamic:
+            return "dynamic";
+#endif
+#if HAVE( DECL_OMPT_WORK_LOOP_GUIDED )
+        case ompt_work_loop_guided:
+            return "guided";
+#endif
+#if HAVE( DECL_OMPT_WORK_LOOP_OTHER )
+        case ompt_work_loop_other:
+            return "implementation specific";
+#endif
+        default:
+            UTILS_BUG();
+            return "";
+    }
+}
+
+static const char*
 mutex2string( ompt_mutex_t t )
 {
     switch ( t )
