@@ -255,6 +255,8 @@ AS_IF([test "x${scorep_gcc_plugin_target_version}" = x],
 #
 AC_DEFUN([SCOREP_GCC_PLUGIN], [
 dnl
+AC_REQUIRE([SCOREP_CHECK_SECTION_ATTRIBUTE])
+
 scorep_gcc_plugin_version_match=yes
 AS_IF([test "x${scorep_gcc_plugin_target_vendor_c}" = xgnu],
     [AC_LANG_PUSH([C])
@@ -288,6 +290,10 @@ AS_IF([test "x${scorep_gcc_plugin_version_match}" = xno],
          [scorep_gcc_plugin_support_reason="no, GCC ${scorep_gcc_plugin_target_version_dump} is unsupported"],
          [# GCC 4.9 and onwards are always compiled with the C++ compiler
           _GCC_PLUGIN_CHECK([C++], [scorep_gcc_plugin_support="yes"])])])
+
+     AS_IF([test "x${scorep_section_attribute_support}" = xno],
+         [scorep_gcc_plugin_support_reason="no, check for adding section attributes failed"
+          scorep_gcc_plugin_support="no"])
 
 AFS_AM_CONDITIONAL([HAVE_GCC_PLUGIN_SUPPORT], [test "x${scorep_gcc_plugin_support}" = "xyes"], [false])
 
