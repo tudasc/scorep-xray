@@ -86,7 +86,8 @@ AS_IF([test "x$have_ompt_support" = xyes],
       [_CHECK_OMPT_CRITICAL_ISSUES])
 
 AS_IF([test "x$have_ompt_support" = xyes],
-      [_CHECK_OMPT_REMEDIABLE_ISSUES])
+      [_CHECK_OMPT_REMEDIABLE_ISSUES
+       _ADD_COMPILER_SPECIFIC_COMPILE_FLAGS])
 
 AC_SCOREP_COND_HAVE([SCOREP_OMPT_SUPPORT],
     [test "x$have_ompt_support" = xyes],
@@ -257,6 +258,20 @@ AC_MSG_CHECKING([whether OMPT is supported for language ]_AC_LANG)
 AC_MSG_RESULT([$have_ompt_[]_AC_LANG_ABBREV[]_support${ompt_reason_[]_AC_LANG_ABBREV:+, $ompt_reason_[]_AC_LANG_ABBREV}])
 ])dnl _CHECK_OMPT_SUPPORT
 
+
+# _ADD_COMPILER_SPECIFIC_COMPILE_FLAGS()
+# ------------------------------
+# This function adds the required compile flags to a macro used in `scorep-config`.
+# Starting with NVHPC 23.7, each compilation unit requires that we specify the OMPT runtime on the command line.
+# See: https://forums.developer.nvidia.com/t/nvhpc-23-7-differences-to-nvhpc-23-5-regarding-ompt-in-compiler-and-linker-flags/261390/2
+#
+m4_define([_ADD_COMPILER_SPECIFIC_COMPILE_FLAGS], [
+AS_CASE([${ax_cv_c_compiler_vendor}],
+    [nvhpc], [ompt_cflags="-mp=ompt"],
+    [ompt_cflags=""])
+
+AC_SUBST([SCOREP_OMPT_CFLAGS], [${ompt_cflags}])
+])
 
 # _INPUT_IGNORED()
 # ----------------

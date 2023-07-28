@@ -215,6 +215,15 @@ SCOREP_Config_OmptThreadSystem::addLibs( std::deque<std::string>&           libs
 }
 
 void
+SCOREP_Config_OmptThreadSystem::addCFlags( std::string&           cflags,
+                                           bool                   build_check,
+                                           SCOREP_Config_Language language,
+                                           bool                   nvcc )
+{
+    cflags += " " SCOREP_OMPT_CFLAGS " ";
+}
+
+void
 SCOREP_Config_OmptThreadSystem::addLdFlags( std::string& ldflags,
                                             bool         nvcc )
 {

@@ -251,6 +251,12 @@ public:
              SCOREP_Config_LibraryDependencies& deps ) override;
 
     void
+    addCFlags( std::string&           cflags,
+               bool                   build_check,
+               SCOREP_Config_Language language,
+               bool                   nvcc ) override;
+
+    void
     addLdFlags( std::string& ldflags,
                 bool         nvcc ) override;
 
