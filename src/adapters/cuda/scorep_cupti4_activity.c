@@ -553,14 +553,14 @@ mark_complete_buffer( uint8_t*  buffer,
         return NULL;
     }
 
-    /* mark entry to contain completed, pending records*/
-    buffer_entry->committed = false;
+    buffer_entry->valid_size = validSize;
+    buffer_entry->stream_id  = streamId;
+    /* mark entry to contain completed, pending records */
     if ( validSize > 0 )
     {
         buffer_entry->pending = true;
     }
-    buffer_entry->valid_size = validSize;
-    buffer_entry->stream_id  = streamId;
+    buffer_entry->committed = false;
     return result;
 }
 
@@ -633,6 +633,7 @@ get_free_buffer( scorep_cupti_context* context )
 
         free_buffer->buffer     = SCOREP_CUPTI_ACTIVITY_ALIGN_BUFFER( free_buffer->buffer );
         free_buffer->pending    = false;
+        free_buffer->committed  = true;
         free_buffer->size       = scorep_cupti_activity_buffer_chunk_size;
         free_buffer->valid_size = 0;
 
@@ -647,10 +648,14 @@ get_free_buffer( scorep_cupti_context* context )
             activity->buffers = free_buffer;
         }
     }
+    else
+    {
+        free_buffer->committed = true;
+    }
+
 
     UTILS_ASSERT( free_buffer->valid_size == 0 );
 
-    free_buffer->committed = true;
     free_buffer->stream_id = 0;
 
     return free_buffer;
