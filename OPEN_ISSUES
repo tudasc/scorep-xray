@@ -419,6 +419,13 @@ various Score-P components.
     For C / C++ only, you may switch to `-fopenmp` for instrumentation. For
     Fortran applications, please use OPARI2 via `--thread=omp:opari2`.
 
+  - When instrumenting an application using `#pragma omp sections` with
+    NVHPC 23.7, running the instrumented application will abort reporting an
+    `inconsistent profile`. This happens because the runtime does not report
+    the end of the sections construct. If you want to instrument applications
+    using OpenMP sections with NVHPC, please use OPARI2 via `--thread=omp:opari2`
+    instead.
+
 --------------------------------------------------------------------------------
 
 * CUDA support
