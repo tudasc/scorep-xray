@@ -607,7 +607,7 @@ m4_define([_CHECK_OMPT_REMEDIABLE_ISSUES], [
 have_ompt_remediable_checks_passed=yes
 AS_UNSET([issues_detected])
 m4_foreach_w([_OMPT_TEST],
-    [wrong_test_lock_mutex missing_work_loop_schedule],
+    [wrong_test_lock_mutex missing_work_loop_schedule missing_work_sections_end],
     [m4_define([_TRY_RUN_OMPT_TEST_INPUT], [_INPUT_OMPT_KNOWN_ISSUE_[]m4_toupper(_OMPT_TEST)[]])
      _TRY_RUN_OMPT_TEST
      AS_IF([test "x${have_[]_OMPT_TEST[]}" != xyes],
@@ -840,3 +840,99 @@ main( void )
     return 1;
 }
 ]]) dnl _INPUT_OMPT_KNOWN_ISSUE_MISSING_WORK_LOOP_SCHEDULE
+
+# _INPUT_OMPT_KNOWN_ISSUE_MISSING_WORK_SECTIONS_END
+# ---------------------------------------------
+# Test code to check if work callback reports endpoint end
+# for sections directive
+#
+m4_define([_INPUT_OMPT_KNOWN_ISSUE_MISSING_WORK_SECTIONS_END], [[
+#include <omp-tools.h>
+#include <stdlib.h>
+
+static int                  ws_sections_end_reached = 0;
+static int                  initialized         = 0;
+static ompt_finalize_tool_t finalize_tool;
+
+void
+callback_ompt_work( ompt_work_t           work_type,
+                    ompt_scope_endpoint_t endpoint,
+                    ompt_data_t*          parallel_data,
+                    ompt_data_t*          task_data,
+                    uint64_t              count,
+                    const void*           codeptr_ra )
+{
+    if ( endpoint == ompt_scope_end )
+    {
+        ws_sections_end_reached = 1;
+    }
+}
+
+static int
+ompt_initialize( ompt_function_lookup_t lookup,
+                 int                    initial_device_num,
+                 ompt_data_t*           tool_data )
+{
+    ompt_set_callback_t set_cb = ( ompt_set_callback_t )lookup( "ompt_set_callback" );
+    if ( !set_cb )
+    {
+        _Exit( 3 ); /* Tool got initialized but lookup of runtime-entry-point ompt_set_callback failed. */
+    }
+    finalize_tool = ( ompt_finalize_tool_t )lookup( "ompt_finalize_tool" );
+    if ( !finalize_tool )
+    {
+        _Exit( 4 ); /* Tool got initialized but lookup of runtime-entry-point ompt_finalize_tool failed. */
+    }
+    ompt_set_result_t result;
+    result = set_cb( ompt_callback_work, ( ompt_callback_t )&callback_ompt_work );
+    if ( result != ompt_set_always )
+    {
+        _Exit( 5 ); /* Tool got initialized but work cb couldn't be registered. */
+    }
+
+    initialized = 1;
+    return 1; /* non-zero indicates success for OMPT runtime. */
+}
+
+static void
+ompt_finalize( ompt_data_t* tool_data )
+{
+    if ( initialized == 1 )
+    {
+        if ( ws_sections_end_reached == 1 )
+        {
+            _Exit( 0 ); /* Tool got initialized and finalized. */
+        }
+        _Exit( 2 );     /* Tool got initialized and finalized but ws_loop_end was not reached. */
+    }
+}
+
+ompt_start_tool_result_t*
+ompt_start_tool( unsigned int omp_version,                           /* == _OPENMP */
+                 const char*  runtime_version )
+{
+    static ompt_start_tool_result_t ompt_start_tool_result = { &ompt_initialize,
+                                                               &ompt_finalize,
+                                                               ompt_data_none };
+    return &ompt_start_tool_result;
+}
+
+int
+foo( int i )
+{
+    return i;
+}
+
+int
+main( void )
+{
+    #pragma omp sections
+    {
+        #pragma omp section
+        {
+            foo( 42 );
+        }
+    }
+    return 1;
+}
+]]) dnl _INPUT_OMPT_KNOWN_ISSUE_MISSING_WORK_SECTIONS_END

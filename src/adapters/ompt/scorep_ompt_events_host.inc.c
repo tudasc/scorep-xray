@@ -1611,6 +1611,11 @@ scorep_ompt_cb_host_work( ompt_work_t           work_type,
                        count, codeptr_ra );
     SCOREP_OMPT_RETURN_ON_INVALID_EVENT();
 
+#if HAVE( SCOREP_OMPT_MISSING_WORK_SECTIONS_END )
+    UTILS_WARN_ONCE( "Runtime does not report the end of OpenMP sections. Using them will abort the measurement. "
+                     "Look at `scorep-info open-issues` for more information." );
+#endif // HAVE( SCOREP_OMPT_MISSING_WORK_SECTIONS_END )
+
     task_t* task = task_data->ptr;
 
     /* For now, prevent league events */
