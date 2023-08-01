@@ -90,7 +90,7 @@ static SCOREP_ConfigVariable scorep_hip_confvars[] =
         SCOREP_CONFIG_TYPE_SIZE,          /* type */
         &scorep_hip_activity_buffer_size, /* pointer to target variable */
         NULL,
-        "4096",                           /* default value */
+        "1M",                             /* default value */
         "HIP device activity buffer size",
         "Buffer size for device activity events. Must be a power-of-2."
     },
