@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012, 2013, 2017-2018, 2020,
+ * Copyright (c) 2009-2012, 2013, 2017-2018, 2020, 2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -98,17 +98,17 @@ visit_to_switches( scorep_profile_node* node,
 
 static scorep_profile_node*
 change_root_node( SCOREP_Profile_LocationData* location,
-                  scorep_profile_node*         root,
+                  scorep_profile_node*         localRootNode,
                   SCOREP_RegionHandle          rootRegion,
                   scorep_profile_node_type     rootType,
                   scorep_profile_node*         node,
                   bool                         addInclusiveTime )
 {
-    /* Create root nodes for each new location */
     scorep_profile_node* program_root    = NULL;
     scorep_profile_node* artificial_root = NULL;
-    if ( root == NULL )
+    if ( localRootNode == NULL )
     {
+        /* Create root nodes for each new location. */
         scorep_profile_type_data_t program_region_data;
         memset( &program_region_data, 0, sizeof( program_region_data ) );
         scorep_profile_type_set_region_handle( &program_region_data, SCOREP_GetProgramRegion() );
@@ -131,7 +131,8 @@ change_root_node( SCOREP_Profile_LocationData* location,
     }
     else
     {
-        program_root = root;
+        /* Reuse local program_root->artificial_node subtree. */
+        program_root = localRootNode;
         UTILS_BUG_ON( program_root->first_child == NULL );
         artificial_root = program_root->first_child;
     }
@@ -141,12 +142,16 @@ change_root_node( SCOREP_Profile_LocationData* location,
         scorep_profile_merge_node_dense( program_root, node );
     }
 
-    /* move task tree to task_root */
+    /* Move the node instance to the local subtree node below the
+     * artificial node and add the node's inclusive time to the
+     * artificial node as time is stored inclusively and has to be
+     * propagated down.
+     */
     scorep_profile_remove_node( node );
     scorep_profile_add_child( artificial_root, node );
     scorep_profile_merge_node_inclusive( artificial_root, node );
 
-    /* give the task root the timestamp of the first task */
+    /* Give the artificial node the timestamp of the first node instance. */
     if ( node->first_enter_time < artificial_root->first_enter_time )
     {
         artificial_root->first_enter_time = node->first_enter_time;
@@ -161,108 +166,118 @@ scorep_profile_process_tasks( void )
     scorep_profile_node*         thread_root = scorep_profile.first_root_node;
     SCOREP_Profile_LocationData* location    = NULL;
 
+    /* Loop over all threads on a process. */
     while ( thread_root != NULL )
     {
-        scorep_profile_node* next         = NULL;
-        scorep_profile_node* node         = thread_root->first_child;
-        scorep_profile_node* tasks_root   = NULL;
-        scorep_profile_node* threads_root = NULL;
-        scorep_profile_node* kernels_root = NULL;
+        scorep_profile_node* next                           = NULL;
+        scorep_profile_node* node                           = thread_root->first_child;
+        scorep_profile_node* program_root_with_tasks_node   = NULL;
+        scorep_profile_node* program_root_with_threads_node = NULL;
+        scorep_profile_node* program_root_with_kernels_node = NULL;
         location = scorep_profile_type_get_location_data( thread_root->type_specific_data );
+
+        /* Loop over regions that would appear as roots in a calltree if no further processing is applied.
+         * That covers the program root, pthread functions, tasks and GPU location activities.
+         */
         while ( node != NULL )
         {
             next = node->next_sibling;
             if ( node->node_type == SCOREP_PROFILE_NODE_REGULAR_REGION )
             {
                 SCOREP_RegionHandle region_handle = scorep_profile_type_get_region_handle( node->type_specific_data );
+                /* The program root doesn't have to be touched as it is the intended primary root
+                 * node of the profile calltree. The remaining instances create on their thread_root
+                 * a local subtree of the form:
+                 * program_root ->artifical node(THREADS,KERNELS or TASKS)->recorded instances of threads,kernels,tasks
+                 */
                 if ( region_handle != SCOREP_GetProgramRegion() )
                 {
                     SCOREP_LocationType location_type = SCOREP_Location_GetType( location->location_data );
 
                     if ( location_type == SCOREP_LOCATION_TYPE_CPU_THREAD )
                     {
-                        /* Register the region handle on first visit */
-                        static SCOREP_RegionHandle threads_root_region = SCOREP_INVALID_REGION;
-                        if ( threads_root_region == SCOREP_INVALID_REGION )
+                        /* Register the region handle on first visit. */
+                        static SCOREP_RegionHandle program_root_with_threads_node_region = SCOREP_INVALID_REGION;
+                        if ( program_root_with_threads_node_region == SCOREP_INVALID_REGION )
                         {
-                            threads_root_region = SCOREP_Definitions_NewRegion( "THREADS",
-                                                                                NULL,
-                                                                                SCOREP_INVALID_SOURCE_FILE,
-                                                                                SCOREP_INVALID_LINE_NO,
-                                                                                SCOREP_INVALID_LINE_NO,
-                                                                                SCOREP_PARADIGM_PTHREAD,
-                                                                                SCOREP_REGION_ARTIFICIAL );
+                            program_root_with_threads_node_region = SCOREP_Definitions_NewRegion( "THREADS",
+                                                                                                  NULL,
+                                                                                                  SCOREP_INVALID_SOURCE_FILE,
+                                                                                                  SCOREP_INVALID_LINE_NO,
+                                                                                                  SCOREP_INVALID_LINE_NO,
+                                                                                                  SCOREP_PARADIGM_PTHREAD,
+                                                                                                  SCOREP_REGION_ARTIFICIAL );
                         }
-                        threads_root = change_root_node( location,
-                                                         threads_root,
-                                                         threads_root_region,
-                                                         SCOREP_PROFILE_NODE_TASK_ROOT,
-                                                         node,
-                                                         true );
+                        program_root_with_threads_node = change_root_node( location,
+                                                                           program_root_with_threads_node,
+                                                                           program_root_with_threads_node_region,
+                                                                           SCOREP_PROFILE_NODE_TASK_ROOT,
+                                                                           node,
+                                                                           true );
                     }
                     if ( location_type == SCOREP_LOCATION_TYPE_GPU )
                     {
-                        /* Register the region handle on first visit */
-                        static SCOREP_RegionHandle kernels_root_region = SCOREP_INVALID_REGION;
-                        if ( kernels_root_region == SCOREP_INVALID_REGION )
+                        /* Register the region handle on first visit. */
+                        static SCOREP_RegionHandle program_root_with_kernels_node_region = SCOREP_INVALID_REGION;
+                        if ( program_root_with_kernels_node_region == SCOREP_INVALID_REGION )
                         {
-                            kernels_root_region = SCOREP_Definitions_NewRegion( "KERNELS",
-                                                                                NULL,
-                                                                                SCOREP_INVALID_SOURCE_FILE,
-                                                                                SCOREP_INVALID_LINE_NO,
-                                                                                SCOREP_INVALID_LINE_NO,
-                                                                                SCOREP_RegionHandle_GetParadigmType( region_handle ),
-                                                                                SCOREP_REGION_ARTIFICIAL );
+                            program_root_with_kernels_node_region = SCOREP_Definitions_NewRegion( "KERNELS",
+                                                                                                  NULL,
+                                                                                                  SCOREP_INVALID_SOURCE_FILE,
+                                                                                                  SCOREP_INVALID_LINE_NO,
+                                                                                                  SCOREP_INVALID_LINE_NO,
+                                                                                                  SCOREP_RegionHandle_GetParadigmType( region_handle ),
+                                                                                                  SCOREP_REGION_ARTIFICIAL );
                         }
 
-                        kernels_root = change_root_node( location,
-                                                         kernels_root,
-                                                         kernels_root_region,
-                                                         SCOREP_PROFILE_NODE_TASK_ROOT,
-                                                         node,
-                                                         true );
+                        program_root_with_kernels_node = change_root_node( location,
+                                                                           program_root_with_kernels_node,
+                                                                           program_root_with_kernels_node_region,
+                                                                           SCOREP_PROFILE_NODE_TASK_ROOT,
+                                                                           node,
+                                                                           true );
                     }
                 }
             }
             if ( node->node_type == SCOREP_PROFILE_NODE_TASK_ROOT )
             {
                 SCOREP_RegionHandle region_handle = scorep_profile_type_get_region_handle( node->type_specific_data );
-                /* Register the region handle on first visit */
-                static SCOREP_RegionHandle tasks_root_region = SCOREP_INVALID_REGION;
-                if ( tasks_root_region == SCOREP_INVALID_REGION )
+                /* Register the region handle on first visit. */
+                static SCOREP_RegionHandle program_root_with_tasks_node_region = SCOREP_INVALID_REGION;
+                if ( program_root_with_tasks_node_region == SCOREP_INVALID_REGION )
                 {
-                    tasks_root_region = SCOREP_Definitions_NewRegion( "TASKS",
-                                                                      NULL,
-                                                                      SCOREP_INVALID_SOURCE_FILE,
-                                                                      SCOREP_INVALID_LINE_NO,
-                                                                      SCOREP_INVALID_LINE_NO,
-                                                                      SCOREP_RegionHandle_GetParadigmType( region_handle ),
-                                                                      SCOREP_REGION_ARTIFICIAL );
+                    program_root_with_tasks_node_region = SCOREP_Definitions_NewRegion( "TASKS",
+                                                                                        NULL,
+                                                                                        SCOREP_INVALID_SOURCE_FILE,
+                                                                                        SCOREP_INVALID_LINE_NO,
+                                                                                        SCOREP_INVALID_LINE_NO,
+                                                                                        SCOREP_RegionHandle_GetParadigmType( region_handle ),
+                                                                                        SCOREP_REGION_ARTIFICIAL );
                 }
 
-                tasks_root = change_root_node( location,
-                                               tasks_root,
-                                               tasks_root_region,
-                                               SCOREP_PROFILE_NODE_TASK_ROOT,
-                                               node,
-                                               false );
+                program_root_with_tasks_node = change_root_node( location,
+                                                                 program_root_with_tasks_node,
+                                                                 program_root_with_tasks_node_region,
+                                                                 SCOREP_PROFILE_NODE_TASK_ROOT,
+                                                                 node,
+                                                                 false );
             }
 
             node = next;
         }
 
-        /* If tasks, threads or kernels roots were created, add them to the thread_root */
-        if ( tasks_root != NULL )
+        /* If tasks, threads or kernels local subtrees were created, add them to the thread_root. */
+        if ( program_root_with_tasks_node != NULL )
         {
-            scorep_profile_add_child( thread_root, tasks_root );
+            scorep_profile_add_child( thread_root, program_root_with_tasks_node );
         }
-        if ( threads_root != NULL )
+        if ( program_root_with_threads_node != NULL )
         {
-            scorep_profile_add_child( thread_root, threads_root );
+            scorep_profile_add_child( thread_root, program_root_with_threads_node );
         }
-        if ( kernels_root != NULL )
+        if ( program_root_with_kernels_node != NULL )
         {
-            scorep_profile_add_child( thread_root, kernels_root );
+            scorep_profile_add_child( thread_root, program_root_with_kernels_node );
         }
 
         thread_root = thread_root->next_sibling;
