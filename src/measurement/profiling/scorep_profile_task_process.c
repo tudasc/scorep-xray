@@ -139,7 +139,11 @@ change_root_node( SCOREP_Profile_LocationData* location,
 
     if ( addInclusiveTime )
     {
-        scorep_profile_merge_node_dense( program_root, node );
+        /* If the program root requires the added inclusive time
+         * depends if the specific case had already accounted for
+         * this time or not.
+         */
+        scorep_profile_merge_node_inclusive( program_root, node );
     }
 
     /* Move the node instance to the local subtree node below the

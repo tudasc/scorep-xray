@@ -51,6 +51,8 @@ Bugfixes:
 - Ensure that each OpenMP compilation unit receives `-mp=ompt` as a compile
   flag under NVHPC, as this is now mandatory as of version 23.7.
 - Fix race condition in CUDA adapter leading to a failed assertion.
+- Fix erroneous attribution of visits from GPU and asynchronous
+  thread activities to the program root node in profiling.
 
 ------------------- Released version 8.1 -----------------------------
 
