@@ -117,9 +117,9 @@ SCOREP_Memory_Initialize( uint64_t totalMemory,
     }
     is_initialized = true;
 
-    if ( totalMemory > ( uint64_t )UINT32_MAX )
+    if ( totalMemory > UINT32_MAX )
     {
-        UTILS_WARNING( "Too many memory requested. "
+        UTILS_WARNING( "Too much memory requested. "
                        "Score-P supports only up to, but not including, 4 GiB of "
                        "total memory per process. Reducing to its maximum value." );
         totalMemory = UINT32_MAX;
