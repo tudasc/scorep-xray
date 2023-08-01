@@ -131,6 +131,17 @@ typedef struct
 } scorep_cupti_sync;
 
 /**
+ * State a CUPTI activity buffer is in
+ */
+typedef enum scorep_cupti_buffer_state
+{
+    SCOREP_CUPTI_BUFFER_FREE,       /**< buffer is free to be used */
+    SCOREP_CUPTI_BUFFER_COMMITTED,  /**< buffer is controlled by CUPTI */
+    SCOREP_CUPTI_BUFFER_PENDING,    /**< buffer has been filled by CUPTI */
+} scorep_cupti_buffer_state;
+
+
+/**
  * Score-P CUPTI activity buffers list entry
  */
 typedef struct scorep_cupti_buffer
@@ -139,8 +150,7 @@ typedef struct scorep_cupti_buffer
     uint32_t                    stream_id;  /**< CUDA stream id */
     size_t                      valid_size; /**< valid bytes in buffer */
     size_t                      size;       /**< total size (bytes) in buffer */
-    bool                        committed;  /**< set if buffer is controlled by CUPTI */
-    bool                        pending;    /**< set if buffer has been filled by CUPTI */
+    scorep_cupti_buffer_state   state;      /**< how the buffer is currently used */
     struct scorep_cupti_buffer* next;       /**< ptr to next entry in list */
 } scorep_cupti_buffer;
 
