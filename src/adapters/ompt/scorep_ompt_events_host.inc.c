@@ -1681,8 +1681,7 @@ scorep_ompt_cb_host_work( ompt_work_t           work_type,
                                      work2string( work_type ) );
                     break;
                 case ompt_work_taskloop:
-                    UTILS_WARN_ONCE( "ompt_work_t %s not implemented yet.",
-                                     work2string( work_type ) );
+                    SCOREP_EnterRegion( work_begin( task, codeptr_ra, TOOL_EVENT_TASKLOOP ) );
                     break;
                 case ompt_work_scope:
                     UTILS_WARN_ONCE( "ompt_work_t %s not implemented yet.",
@@ -1735,8 +1734,7 @@ scorep_ompt_cb_host_work( ompt_work_t           work_type,
                                      work2string( work_type ) );
                     break;
                 case ompt_work_taskloop:
-                    UTILS_WARN_ONCE( "ompt_work_t %s not implemented yet.",
-                                     work2string( work_type ) );
+                    SCOREP_ExitRegion( work_end( task ) );
                     break;
                 case ompt_work_scope:
                     UTILS_WARN_ONCE( "ompt_work_t %s not implemented yet.",

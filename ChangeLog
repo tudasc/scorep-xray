@@ -6,6 +6,8 @@ Features and improvements:
   instead of converting CUPTI timestamps with CUDA 11.6 and newer. Older
   CUDA versions still use the previous implementation. This may prevent
   timestamp issues seen with previous Score-P versions.
+- The OMPT adapter has these new features:
+  - Added support for OpenMP taskloops.
 
 User tools and API improvements and changes:
 
