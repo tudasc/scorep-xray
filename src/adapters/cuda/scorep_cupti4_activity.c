@@ -547,7 +547,7 @@ mark_complete_buffer( uint8_t*  buffer,
 
     buffer_entry->valid_size = validSize;
     /* mark entry to contain completed, pending records */
-    buffer_entry->state = ( validSize > 0 ) ? SCOREP_CUPTI_BUFFER_PENDING : SCOREP_CUPTI_BUFFER_FREE;
+    buffer_entry->state = ( buffer_entry->valid_size > 0 ) ? SCOREP_CUPTI_BUFFER_PENDING : SCOREP_CUPTI_BUFFER_FREE;
     return result;
 }
 

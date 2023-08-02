@@ -147,7 +147,7 @@ typedef enum scorep_cupti_buffer_state
 typedef struct scorep_cupti_buffer
 {
     uint8_t*                    buffer;     /**< activity records buffer */
-    size_t                      valid_size; /**< valid bytes in buffer */
+    volatile size_t             valid_size; /**< valid bytes in buffer */
     size_t                      size;       /**< total size (bytes) in buffer */
     scorep_cupti_buffer_state   state;      /**< how the buffer is currently used */
     struct scorep_cupti_buffer* next;       /**< ptr to next entry in list */
