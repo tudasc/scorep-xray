@@ -35,8 +35,7 @@ is_kernel_record_valid( CUpti_ActivityKernelType* kernel );
 static void
 handle_buffer( uint8_t*              buffer,
                size_t                validSize,
-               scorep_cupti_context* context,
-               uint32_t              streamId );
+               scorep_cupti_context* context );
 
 static scorep_cupti_buffer*
 get_free_buffer( scorep_cupti_context* context );
@@ -179,8 +178,7 @@ scorep_cupti_activity_context_flush( scorep_cupti_context* context )
             }
             else if ( current->state == SCOREP_CUPTI_BUFFER_PENDING )
             {
-                handle_buffer( current->buffer, current->valid_size,
-                               context, current->stream_id );
+                handle_buffer( current->buffer, current->valid_size, context );
 
                 current->valid_size                        = 0;
                 current->state                             = SCOREP_CUPTI_BUFFER_FREE;
@@ -405,8 +403,7 @@ buffer_completed_callback( CUcontext cudaContext,
 static void
 handle_buffer( uint8_t*              buffer,
                size_t                validSize,
-               scorep_cupti_context* context,
-               uint32_t              streamId )
+               scorep_cupti_context* context )
 {
     CUptiResult     status = CUPTI_SUCCESS;
     CUpti_Activity* record = NULL;
@@ -428,8 +425,8 @@ handle_buffer( uint8_t*              buffer,
         else
         {
             UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
-                                "[CUPTI Activity] Handle activities from context %p, stream %d",
-                                context->cuda_context, streamId );
+                                "[CUPTI Activity] Handle activities from context %p",
+                                context->cuda_context );
         }
 
         do
@@ -549,7 +546,6 @@ mark_complete_buffer( uint8_t*  buffer,
     }
 
     buffer_entry->valid_size = validSize;
-    buffer_entry->stream_id  = streamId;
     /* mark entry to contain completed, pending records */
     buffer_entry->state = ( validSize > 0 ) ? SCOREP_CUPTI_BUFFER_PENDING : SCOREP_CUPTI_BUFFER_FREE;
     return result;
@@ -645,8 +641,6 @@ get_free_buffer( scorep_cupti_context* context )
 
 
     UTILS_ASSERT( free_buffer->valid_size == 0 );
-
-    free_buffer->stream_id = 0;
 
     return free_buffer;
 }

@@ -147,7 +147,6 @@ typedef enum scorep_cupti_buffer_state
 typedef struct scorep_cupti_buffer
 {
     uint8_t*                    buffer;     /**< activity records buffer */
-    uint32_t                    stream_id;  /**< CUDA stream id */
     size_t                      valid_size; /**< valid bytes in buffer */
     size_t                      size;       /**< total size (bytes) in buffer */
     scorep_cupti_buffer_state   state;      /**< how the buffer is currently used */
