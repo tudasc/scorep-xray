@@ -35,8 +35,7 @@ is_kernel_record_valid( CUpti_ActivityKernelType* kernel );
 static void
 handle_buffer( uint8_t*              buffer,
                size_t                validSize,
-               scorep_cupti_context* context,
-               uint32_t              streamId );
+               scorep_cupti_context* context );
 
 static scorep_cupti_buffer*
 get_free_buffer( scorep_cupti_context* context );
@@ -106,8 +105,7 @@ bool
 scorep_cupti_activity_is_buffer_empty( scorep_cupti_context* context )
 {
     if ( context->activity && context->activity->buffers &&
-         ( context->activity->buffers->committed ||
-           context->activity->buffers->pending ) )
+         context->activity->buffers->state != SCOREP_CUPTI_BUFFER_FREE )
     {
         return false;
     }
@@ -124,9 +122,6 @@ scorep_cupti_activity_is_buffer_empty( scorep_cupti_context* context )
 void
 scorep_cupti_activity_context_flush( scorep_cupti_context* context )
 {
-    scorep_cupti_buffer* current           = NULL;
-    uint8_t              buffers_completed = 1;
-
     /* check for Score-P CUPTI context */
     if ( context == NULL || context->activity == NULL )
     {
@@ -139,9 +134,9 @@ scorep_cupti_activity_context_flush( scorep_cupti_context* context )
     SCOREP_CUPTI_LOCK();
     {
         uint64_t               hostStop, gpuStop;
-        scorep_cupti_activity* context_activity = NULL;
-
-        context_activity = context->activity;
+        scorep_cupti_activity* context_activity  = context->activity;
+        scorep_cupti_buffer*   current           = NULL;
+        bool                   buffers_completed = true;
 
         /*
          * Get time synchronization factor between host and GPU time for measured
@@ -177,18 +172,16 @@ scorep_cupti_activity_context_flush( scorep_cupti_context* context )
         current = context_activity->buffers;
         while ( current )
         {
-            if ( current->committed )
+            if ( current->state == SCOREP_CUPTI_BUFFER_COMMITTED )
             {
-                buffers_completed = 0;
+                buffers_completed = false;
             }
-            else if ( current->pending )
+            else if ( current->state == SCOREP_CUPTI_BUFFER_PENDING )
             {
-                handle_buffer( current->buffer, current->valid_size,
-                               context, current->stream_id );
+                handle_buffer( current->buffer, current->valid_size, context );
 
-                /* mark buffer as free */
-                current->pending                           = false;
                 current->valid_size                        = 0;
+                current->state                             = SCOREP_CUPTI_BUFFER_FREE;
                 context_activity->max_buffer_size_exceeded = false;
             }
 
@@ -249,10 +242,10 @@ scorep_cupti_activity_context_finalize( scorep_cupti_context* context )
         {
             scorep_cupti_buffer* next = bfr->next;
 
-            if ( bfr->committed || bfr->pending )
+            if ( bfr->state != SCOREP_CUPTI_BUFFER_FREE )
             {
-                UTILS_WARNING( "[CUPTI Activity] Destroying buffer which is currently in use (%d, %u, %u)",
-                               context->cuda_context, bfr->committed, bfr->pending );
+                UTILS_WARNING( "[CUPTI Activity] Destroying buffer which is currently in use (%d, %d)",
+                               context->cuda_context, bfr->state );
             }
 
             free( bfr->buffer );
@@ -410,8 +403,7 @@ buffer_completed_callback( CUcontext cudaContext,
 static void
 handle_buffer( uint8_t*              buffer,
                size_t                validSize,
-               scorep_cupti_context* context,
-               uint32_t              streamId )
+               scorep_cupti_context* context )
 {
     CUptiResult     status = CUPTI_SUCCESS;
     CUpti_Activity* record = NULL;
@@ -433,8 +425,8 @@ handle_buffer( uint8_t*              buffer,
         else
         {
             UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
-                                "[CUPTI Activity] Handle activities from context %p, stream %d",
-                                context->cuda_context, streamId );
+                                "[CUPTI Activity] Handle activities from context %p",
+                                context->cuda_context );
         }
 
         do
@@ -553,14 +545,9 @@ mark_complete_buffer( uint8_t*  buffer,
         return NULL;
     }
 
-    /* mark entry to contain completed, pending records*/
-    buffer_entry->committed = false;
-    if ( validSize > 0 )
-    {
-        buffer_entry->pending = true;
-    }
     buffer_entry->valid_size = validSize;
-    buffer_entry->stream_id  = streamId;
+    /* mark entry to contain completed, pending records */
+    buffer_entry->state = ( buffer_entry->valid_size > 0 ) ? SCOREP_CUPTI_BUFFER_PENDING : SCOREP_CUPTI_BUFFER_FREE;
     return result;
 }
 
@@ -590,7 +577,7 @@ get_free_buffer( scorep_cupti_context* context )
             prev            = current;
             total_bfr_size += current->size;
 
-            if ( ( !current->committed ) && ( !current->pending ) )
+            if ( current->state == SCOREP_CUPTI_BUFFER_FREE )
             {
                 free_buffer = current;
                 break;
@@ -632,7 +619,7 @@ get_free_buffer( scorep_cupti_context* context )
         }
 
         free_buffer->buffer     = SCOREP_CUPTI_ACTIVITY_ALIGN_BUFFER( free_buffer->buffer );
-        free_buffer->pending    = false;
+        free_buffer->state      = SCOREP_CUPTI_BUFFER_COMMITTED;
         free_buffer->size       = scorep_cupti_activity_buffer_chunk_size;
         free_buffer->valid_size = 0;
 
@@ -647,11 +634,13 @@ get_free_buffer( scorep_cupti_context* context )
             activity->buffers = free_buffer;
         }
     }
+    else
+    {
+        free_buffer->state = SCOREP_CUPTI_BUFFER_COMMITTED;
+    }
+
 
     UTILS_ASSERT( free_buffer->valid_size == 0 );
-
-    free_buffer->committed = true;
-    free_buffer->stream_id = 0;
 
     return free_buffer;
 }

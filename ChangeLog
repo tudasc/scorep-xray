@@ -50,6 +50,7 @@ Bugfixes:
   are recorded only if lock acquisition was successful.
 - Ensure that each OpenMP compilation unit receives `-mp=ompt` as a compile
   flag under NVHPC, as this is now mandatory as of version 23.7.
+- Fix race condition in CUDA adapter leading to a failed assertion.
 
 ------------------- Released version 8.1 -----------------------------
 
