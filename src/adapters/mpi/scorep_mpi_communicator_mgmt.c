@@ -390,9 +390,7 @@ scorep_mpi_comm_create( MPI_Comm comm, MPI_Comm parentComm )
     }
 
     SCOREP_InterimCommunicatorHandle parent_handle = SCOREP_INVALID_INTERIM_COMMUNICATOR;
-    int                              inter;
-    PMPI_Comm_test_inter( comm, &inter );
-    if ( !inter && parentComm != MPI_COMM_NULL )
+    if ( parentComm != MPI_COMM_NULL )
     {
         /* SCOREP_MPI_COMM_HANDLE() also takes the scorep_mpi_communicator_mutex
          * mutex, thus resolve parentComm outside of the comm mutex
