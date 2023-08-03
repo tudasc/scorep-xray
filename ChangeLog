@@ -48,6 +48,8 @@ Bugfixes:
 - Acquiring a lock through `omp_test_[nest_]lock` no longer aborts
   the measurement when using OMPT. Note that test_[nest_]lock events
   are recorded only if lock acquisition was successful.
+- Ensure that each OpenMP compilation unit receives `-mp=ompt` as a compile
+  flag under NVHPC, as this is now mandatory as of version 23.7.
 
 ------------------- Released version 8.1 -----------------------------
 
