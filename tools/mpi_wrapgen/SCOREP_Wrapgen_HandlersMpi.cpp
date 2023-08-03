@@ -123,6 +123,7 @@ SCOREP::Wrapgen::handler::mpi::_initialize
     func_handlers[ "guard:end" ]       = handler::mpi::guard_end;
     func_handlers[ "comm:new" ]        = handler::mpi::comm_new;
     func_handlers[ "comm:parent" ]     = handler::mpi::comm_parent;
+    func_handlers[ "group:new" ]       = handler::mpi::group_new;
 
     /** - Fortran<->C conversion types */
     f2c_types[ "MPI_Status" ]   = "PMPI_Status";
@@ -1259,4 +1260,24 @@ SCOREP::Wrapgen::handler::mpi::comm_parent
 
     // Use MPI_COMM_NULL, if no parent communicator is available
     return "MPI_COMM_NULL";
+}
+
+string
+SCOREP::Wrapgen::handler::mpi::group_new
+(
+    const Func& func
+)
+{
+    for ( size_t i = 0; i < func.get_param_count(); ++i )
+    {
+        const Funcparam& arg = func.get_param( i );
+        if ( arg.has_special_tag( "groupnew" ) )
+        {
+            return arg.get_name();
+        }
+    }
+    std::cerr << "ERROR: Requesting a new group argument from function '"
+              << func.get_name() << "' which does not have one."  << std::endl;
+    exit( EXIT_FAILURE );
+    return "";
 }

@@ -382,6 +382,12 @@ comm_parent
     const SCOREP::Wrapgen::Func& func
 );
 
+std::string
+group_new
+(
+    const SCOREP::Wrapgen::Func& func
+);
+
 /**
  * @}
  */

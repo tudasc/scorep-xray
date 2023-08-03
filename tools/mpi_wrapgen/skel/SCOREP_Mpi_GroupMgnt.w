@@ -36,8 +36,8 @@ ${proto:c}
   SCOREP_ENTER_WRAPPED_REGION();
   return_val = ${call:pmpi};
   SCOREP_EXIT_WRAPPED_REGION();
-  if (*newgroup != MPI_GROUP_NULL)
-    scorep_mpi_group_create(*newgroup);
+  if (*${group:new} != MPI_GROUP_NULL)
+    scorep_mpi_group_create(*${group:new});
 
   if (event_gen_active)
     {

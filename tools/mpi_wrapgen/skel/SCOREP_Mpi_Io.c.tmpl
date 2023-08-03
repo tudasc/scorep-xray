@@ -529,7 +529,7 @@ MPI_File_delete(SCOREP_MPI_CONST_DECL char* filename, MPI_Info info)
 }
 #endif
 #pragma wrapgen multiple regex(MPI_File.*(get_[abipstv]|set_[abipstv]|sync|preallocate).*) skel/SCOREP_Mpi_Std.w
-#pragma wrapgen single MPI_File_get_group skel/SCOREP_Mpi_Group.w
+#pragma wrapgen single MPI_File_get_group skel/SCOREP_Mpi_GroupMgnt.w
 #pragma wrapgen single MPI_Register_datarep skel/SCOREP_Mpi_Std.w
 
 /**

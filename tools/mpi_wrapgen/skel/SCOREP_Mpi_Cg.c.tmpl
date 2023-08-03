@@ -155,7 +155,7 @@ int MPI_Comm_free(MPI_Comm* comm)
  */
 
 #pragma wrapgen multiple regex(Group.*(diff|incl|excl|intersection|union)) skel/SCOREP_Mpi_GroupMgnt.w
-#pragma wrapgen multiple regex(Comm_(group|remote_group)$)                 skel/SCOREP_Mpi_Group.w
+#pragma wrapgen multiple regex(Comm_(group|remote_group)$)                 skel/SCOREP_Mpi_GroupMgnt.w
 #pragma wrapgen single MPI_Group_from_session_pset skel/SCOREP_Mpi_GroupMgnt.w
 
 /**

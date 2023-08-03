@@ -1018,7 +1018,7 @@
 
 <prototype name="MPI_Comm_group" rtype="int" group="cg" >
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
-    <param access="o" type_modifier="" type="MPI_Group*" name="group" />
+    <param access="o" type_modifier="" type="MPI_Group*" name="group" special="groupnew" />
     <version id="1.0" />
 </prototype>
 
@@ -1051,7 +1051,7 @@
 
 <prototype name="MPI_Comm_remote_group" rtype="int" group="cg" >
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
-    <param access="o" type_modifier="" type="MPI_Group*" name="group" />
+    <param access="o" type_modifier="" type="MPI_Group*" name="group" special="groupnew"/>
     <version id="1.0" />
 </prototype>
 
@@ -1522,7 +1522,7 @@
 
 <prototype name="MPI_File_get_group" rtype="int" group="io" guard="io" >
     <param access="i" type_modifier="" type="MPI_File" name="fh" />
-    <param access="o" type_modifier="" type="MPI_Group*" name="group" />
+    <param access="o" type_modifier="" type="MPI_Group*" name="group" special="groupnew"/>
     <version id="2.0" />
 </prototype>
 
@@ -3056,7 +3056,7 @@
 <prototype name="MPI_Group_difference" rtype="int" group="cg" guard="cg" >
     <param access="i" type_modifier="" type="MPI_Group" name="group1" />
     <param access="i" type_modifier="" type="MPI_Group" name="group2" />
-    <param access="o" type_modifier="" type="MPI_Group*" name="newgroup" />
+    <param access="o" type_modifier="" type="MPI_Group*" name="newgroup" special="groupnew" />
     <version id="1.0" />
 </prototype>
 
@@ -3064,7 +3064,7 @@
     <param access="i" type_modifier="" type="MPI_Group" name="group" />
     <param access="i" type_modifier="" type="int" name="n" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="ranks" />
-    <param access="o" type_modifier="" type="MPI_Group*" name="newgroup" />
+    <param access="o" type_modifier="" type="MPI_Group*" name="newgroup" special="groupnew" />
     <version id="1.0" />
 </prototype>
 
@@ -3082,21 +3082,21 @@
     <version id="4.0" />
     <param access="i" type_modifier="" type="MPI_Session" name="session" />
     <param access="i" type_modifier="const" type="char*" name="pset_name" />
-    <param access="o" type_modifier="" type="MPI_Group*" name="newgroup" />
+    <param access="o" type_modifier="" type="MPI_Group*" name="newgroup" special="groupnew"/>
 </prototype>
 
 <prototype name="MPI_Group_incl" rtype="int" group="cg" guard="cg" >
     <param access="i" type_modifier="" type="MPI_Group" name="group" />
     <param access="i" type_modifier="" type="int" name="n" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="ranks" />
-    <param access="o" type_modifier="" type="MPI_Group*" name="newgroup" />
+    <param access="o" type_modifier="" type="MPI_Group*" name="newgroup" special="groupnew" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Group_intersection" rtype="int" group="cg" guard="cg" >
     <param access="i" type_modifier="" type="MPI_Group" name="group1" />
     <param access="i" type_modifier="" type="MPI_Group" name="group2" />
-    <param access="o" type_modifier="" type="MPI_Group*" name="newgroup" />
+    <param access="o" type_modifier="" type="MPI_Group*" name="newgroup" special="groupnew" />
     <version id="1.0" />
 </prototype>
 
@@ -3104,7 +3104,7 @@
     <param access="i" type_modifier="" type="MPI_Group" name="group" />
     <param access="i" type_modifier="" type="int" name="n" />
     <param access="i" type_modifier="" type="int" name="ranges" suffix="[][3]" />
-    <param access="o" type_modifier="" type="MPI_Group*" name="newgroup" />
+    <param access="o" type_modifier="" type="MPI_Group*" name="newgroup" special="groupnew" />
     <version id="1.0" />
 </prototype>
 
@@ -3112,7 +3112,7 @@
     <param access="i" type_modifier="" type="MPI_Group" name="group" />
     <param access="i" type_modifier="" type="int" name="n" />
     <param access="i" type_modifier="" type="int" name="ranges" suffix="[][3]" />
-    <param access="o" type_modifier="" type="MPI_Group*" name="newgroup" />
+    <param access="o" type_modifier="" type="MPI_Group*" name="newgroup" special="groupnew" />
     <version id="1.0" />
 </prototype>
 
@@ -3140,7 +3140,7 @@
 <prototype name="MPI_Group_union" rtype="int" group="cg" guard="cg" >
     <param access="i" type_modifier="" type="MPI_Group" name="group1" />
     <param access="i" type_modifier="" type="MPI_Group" name="group2" />
-    <param access="o" type_modifier="" type="MPI_Group*" name="newgroup" />
+    <param access="o" type_modifier="" type="MPI_Group*" name="newgroup" special="groupnew"/>
     <version id="1.0" />
 </prototype>
 
@@ -7337,7 +7337,7 @@
 
 <prototype name="MPI_Win_get_group" rtype="int" group="rma" guard="rma,extra" >
     <param access="i" type_modifier="" type="MPI_Win" name="win" />
-    <param access="o" type_modifier="" type="MPI_Group*" name="group" />
+    <param access="o" type_modifier="" type="MPI_Group*" name="group" special="groupnew" />
     <version id="2.0" />
 </prototype>
 
