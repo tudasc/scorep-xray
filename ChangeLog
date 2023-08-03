@@ -45,6 +45,9 @@ Bugfixes:
   non-process location groups.
 - Fix abort on nested synchronization regions in OpenMP programs
   when using the OMPT adapter.
+- Acquiring a lock through `omp_test_[nest_]lock` no longer aborts
+  the measurement when using OMPT. Note that test_[nest_]lock events
+  are recorded only if lock acquisition was successful.
 
 ------------------- Released version 8.1 -----------------------------
 
