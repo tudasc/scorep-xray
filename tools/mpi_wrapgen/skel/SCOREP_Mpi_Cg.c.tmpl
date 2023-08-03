@@ -71,7 +71,7 @@
 
 #pragma wrapgen multiple regex((Interc|C)omm_(create|create_group|dup|dup_with_info|merge|split|split_type)$) skel/SCOREP_Mpi_CommMgnt.w
 #pragma wrapgen single MPI_Comm_create_from_group skel/SCOREP_Mpi_CommMgnt.w
-#pragma wrapgen single MPI_Intercomm_create_from_groups skel/SCOREP_Mpi_Std.w
+#pragma wrapgen single MPI_Intercomm_create_from_groups skel/SCOREP_Mpi_CommMgnt.w
 
 #if HAVE( MPI_3_0_SYMBOL_PMPI_COMM_IDUP )
 /**

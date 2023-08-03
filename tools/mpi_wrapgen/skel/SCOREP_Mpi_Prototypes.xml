@@ -4329,7 +4329,7 @@
     <param access="i" type_modifier="const" type="char*" name="stringtag" />
     <param access="i" type_modifier="" type="MPI_Info" name="info" />
     <param access="i" type_modifier="" type="MPI_Errhandler" name="errhandler" />
-    <param access="o" type_modifier="" type="MPI_Comm*" name="newintercomm" />
+    <param access="o" type_modifier="" type="MPI_Comm*" name="newintercomm" special="commnew" />
 </prototype>
 
 <prototype name="MPI_Intercomm_merge" rtype="int" group="cg" >
