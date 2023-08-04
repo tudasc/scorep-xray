@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2019-2020,
+ * Copyright (c) 2009-2014, 2019-2020, 2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013, 2015,
@@ -40,6 +40,7 @@
 
 #include <string>
 #include <set>
+#include <unordered_map>
 #include <Cube.h>
 #include "SCOREP_Score_Types.hpp"
 
@@ -238,17 +239,26 @@ private:
 
     uint64_t
     get_visits( cube::Cnode* node,
-                uint64_t     process );
+                uint64_t     process ) const;
 
     double
     get_time( cube::Cnode* node,
-              uint64_t     process );
+              uint64_t     process ) const;
 
     uint64_t
     get_hits( cube::Cnode* node,
-              uint64_t     process );
+              uint64_t     process ) const;
 
 private:
+    /**
+     * Aggregate the metric Value for a PROCESS and its associated ACCELERATORS
+     */
+    const cube::Value*
+    get_aggregated_metric_value( uint64_t                 process,
+                                 cube::Cnode*             node,
+                                 cube::Metric*            metric,
+                                 cube::CalculationFlavour metricFlavour ) const;
+
     /**
      * Stores a pointer to the CUBE data structure.
      */
@@ -270,9 +280,16 @@ private:
     cube::Metric* m_hits;
 
     /**
-     * Stores a list of CUBE process obejcts.
+     * Stores a list of CUBE LocationGroup objects of type PROCESS.
      */
-    std::vector<cube::Process*> m_processes;
+    std::vector<cube::LocationGroup*> m_processes;
+
+    /**
+     * Maps names of PROCESS LocationGroups to associated ACCELERATOR
+     * LocationGroups as the lattter contribute to visits, time, and
+     * hits.
+     */
+    std::unordered_map< std::string, std::vector<cube::LocationGroup*> > m_gpu_contexts_of_processes;
 
     /**
      * Stores a list of CUBE region objects.

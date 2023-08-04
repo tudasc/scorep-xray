@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2019-2020,
+ * Copyright (c) 2009-2014, 2019-2020, 2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013, 2015,
@@ -89,8 +89,60 @@ SCOREP_Score_Profile::SCOREP_Score_Profile( cube::Cube* cube   ) : m_cube( cube 
                                           value ) );
     }
 
-    m_processes = m_cube->get_procv();
-    m_regions   = m_cube->get_regv();
+
+    // Visits, time, and hits are calculated not only by LocationGroups
+    // of type PROCESS, but also need to take associated LocationGroups
+    // of type ACCELLERATOR into account. From all LocationGroups,
+    // separate the PROCESS ones and map the ACCELLERATOR ones to the
+    // PROCESS' names.
+
+    // First get the PROCESS location groups and initialize the m_gpu_contexts_of_processes
+    // map with known rank names to allow a cross check against the ACCELLERATOR
+    // attribute on the second pass.
+    for ( const auto location_group : m_cube->get_location_groupv() )
+    {
+        if ( location_group->get_type() == CUBE_LOCATION_GROUP_TYPE_PROCESS )
+        {
+            // Restrict the m_processes list to actual processes.
+            m_processes.push_back( location_group );
+
+            // Initialize the map with each known process name.
+            m_gpu_contexts_of_processes[ location_group->get_name() ] = {};
+        }
+    }
+
+    for ( const auto location_group : m_cube->get_location_groupv() )
+    {
+        if ( location_group->get_type() == CUBE_LOCATION_GROUP_TYPE_ACCELERATOR )
+        {
+            // Add GPU context location group to the list of lgs stored with the name key.
+            const auto process_name = location_group->get_attr( "Creating location group" );
+            if ( !process_name.empty() )
+            {
+                if ( m_gpu_contexts_of_processes.count( process_name ) != 0 )
+                {
+                    m_gpu_contexts_of_processes[ process_name ].push_back( location_group );
+                }
+                else
+                {
+                    // This should not happen in a Score-P created cubex file.
+                    cerr << "WARNING: location group " << location_group->get_rank() << " '" << location_group->get_name()
+                         << "' will be ignored for scoring as the value '" << process_name
+                         << "' of attribute 'Creating location group' is not a known process name!" << endl;
+                }
+            }
+            else
+            {
+                // This should not happen in a Score-P created cubex file.
+                cerr << "WARNING: location group " << location_group->get_rank() << " '" << location_group->get_name()
+                     << "' will be ignored for scoring as it is missing the required attribute 'Creating location group'!" << endl;
+            }
+        }
+        // Defined as possible Cube type, but currently there is no equivalent representation on Score-P side.
+        assert( location_group->get_type() != CUBE_LOCATION_GROUP_TYPE_METRICS );
+    }
+
+    m_regions = m_cube->get_regv();
 
     // Make sure the id of the region definitions match their position in the vector
     // and add special regions to containers.
@@ -501,13 +553,38 @@ SCOREP_Score_Profile::has_prefix_then_upper( const string& str,
     return isupper( str[ prefix.size() ] );
 }
 
+const Value*
+SCOREP_Score_Profile::get_aggregated_metric_value( uint64_t           process,
+                                                   Cnode*             node,
+                                                   Metric*            metric,
+                                                   CalculationFlavour metricFlavour ) const
+{
+    auto* const value = m_cube->get_sev_adv( metric, metricFlavour,
+                                             node, CUBE_CALCULATE_EXCLUSIVE,
+                                             m_processes[ process ], CUBE_CALCULATE_INCLUSIVE );
+
+    if ( !value )
+    {
+        return NULL;
+    }
+
+    // Add values of associated GPU contexts to the same process number.
+    const auto process_name = m_processes[ process ]->get_name();
+    for ( const auto gpu_context : m_gpu_contexts_of_processes.at( process_name ) )
+    {
+        *value += m_cube->get_sev_adv( metric, metricFlavour,
+                                       node, CUBE_CALCULATE_EXCLUSIVE,
+                                       gpu_context, CUBE_CALCULATE_INCLUSIVE );
+    }
+    return value;
+}
+
 uint64_t
 SCOREP_Score_Profile::get_visits( Cnode*   node,
-                                  uint64_t process )
+                                  uint64_t process ) const
 {
-    Value* value = m_cube->get_sev_adv( m_visits, CUBE_CALCULATE_EXCLUSIVE,
-                                        node, CUBE_CALCULATE_EXCLUSIVE,
-                                        m_processes[ process ], CUBE_CALCULATE_INCLUSIVE );
+    const auto* const value = get_aggregated_metric_value( process, node, m_visits,
+                                                           CUBE_CALCULATE_EXCLUSIVE );
 
     if ( !value )
     {
@@ -526,11 +603,10 @@ SCOREP_Score_Profile::get_visits( Cnode*   node,
 
 double
 SCOREP_Score_Profile::get_time( Cnode*   node,
-                                uint64_t process )
+                                uint64_t process ) const
 {
-    Value* value = m_cube->get_sev_adv( m_time, CUBE_CALCULATE_INCLUSIVE,
-                                        node, CUBE_CALCULATE_EXCLUSIVE,
-                                        m_processes[ process ], CUBE_CALCULATE_INCLUSIVE );
+    const auto* const value = get_aggregated_metric_value( process, node, m_time,
+                                                           CUBE_CALCULATE_INCLUSIVE );
 
     if ( !value )
     {
@@ -549,16 +625,15 @@ SCOREP_Score_Profile::get_time( Cnode*   node,
 
 uint64_t
 SCOREP_Score_Profile::get_hits( Cnode*   node,
-                                uint64_t process )
+                                uint64_t process ) const
 {
     if ( !m_hits )
     {
         return 0;
     }
 
-    Value* value = m_cube->get_sev_adv( m_hits, CUBE_CALCULATE_EXCLUSIVE,
-                                        node, CUBE_CALCULATE_EXCLUSIVE,
-                                        m_processes[ process ], CUBE_CALCULATE_INCLUSIVE );
+    const auto* const value = get_aggregated_metric_value( process, node, m_hits,
+                                                           CUBE_CALCULATE_EXCLUSIVE );
 
     if ( !value )
     {
