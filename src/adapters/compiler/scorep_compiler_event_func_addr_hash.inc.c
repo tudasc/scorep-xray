@@ -37,6 +37,37 @@ typedef SCOREP_RegionHandle func_addr_hash_value_t;
 #define FUNC_ADDR_HASH_EXPONENT 9
 
 static inline bool
+func_addr_hash_match_function_name( const char* functionName )
+{
+    return strncmp( functionName, "POMP", 4 ) == 0
+           || ( strncmp( functionName, "Pomp", 4 ) == 0 )
+           || ( strncmp( functionName, "pomp", 4 ) == 0 )
+           || ( strncmp( functionName, "SCOREP_", 7 ) == 0 )
+           || ( strncmp( functionName, "scorep_", 7 ) == 0 )
+           || ( strncmp( functionName, "OTF2_", 5 ) == 0 )
+           || ( strncmp( functionName, "otf2_", 5 ) == 0 )
+           || ( strncmp( functionName, "cube_", 5 ) == 0 )
+           || ( strncmp( functionName, "cubew_", 6 ) == 0 )
+           || ( functionName[ 0 ] == '.' )
+           || ( strstr( functionName, "DIR.OMP." ) )
+           || ( strstr( functionName, ".extracted" ) )
+           #if HAVE( SCOREP_COMPILER_CC_INTEL_ONEAPI ) || HAVE( SCOREP_COMPILER_CXX_INTEL_ONEAPI ) || HAVE( SCOREP_COMPILER_FC_INTEL_ONEAPI )
+           || ( strstr( functionName, "_tree_reduce_" ) )
+           #endif  /* Intel oneAPI compiler */
+           || ( strncmp( functionName, "__omp", 5 ) == 0 )
+           || ( strncmp( functionName, "virtual thunk", 13 ) == 0 )
+           || ( strncmp( functionName, "non-virtual thunk", 17 ) == 0 )
+           || ( strstr( functionName, "6Kokkos5Tools" ) )
+           || ( strstr( functionName, "6Kokkos9Profiling" ) )
+           || ( strstr( functionName, "Kokkos::Tools" ) )
+           || ( strstr( functionName, "Kokkos::Profiling" ) )
+           || ( strstr( ".omp_outlined", functionName ) )
+           || ( strstr( ".omp_outlined_debug__", functionName ) )
+           || ( fnmatch( "__nv_*_F[0-9]*L[0-9]*_[0-9]*", functionName, 0 ) == 0 )
+           || ( fnmatch( "__sti___[0-9]*__*", functionName, 0 ) == 0 );
+}
+
+static inline bool
 func_addr_hash_equals( func_addr_hash_key_t key1, func_addr_hash_key_t key2 )
 {
     return key1 == key2;
@@ -97,38 +128,18 @@ func_addr_hash_value_ctor( func_addr_hash_key_t* addr,
 #endif  /*HAVE( PLATFORM_MAC )*/
 
         char* function_name_demangled;
+        bool  use_address = ( *addr != 0 );
+        /* Check mangled function names, since demangling them might
+         * cause them to incorrectly pass the pattern checks */
+        use_address &= !func_addr_hash_match_function_name( function_name );
         scorep_compiler_demangle( function_name, function_name_demangled );
+        if ( function_name && use_address ) /* If demangling was successful */
+        {
+            use_address &= !func_addr_hash_match_function_name( function_name_demangled );
+        }
 
-        bool use_address = ( *addr != 0 );
-        use_address &= ( strncmp( function_name_demangled, "POMP", 4 ) != 0 )
-                       && ( strncmp( function_name_demangled, "Pomp", 4 ) != 0 )
-                       && ( strncmp( function_name_demangled, "pomp", 4 ) != 0 )
-                       && ( strncmp( function_name_demangled, "SCOREP_", 7 ) != 0 )
-                       && ( strncmp( function_name_demangled, "scorep_", 7 ) != 0 )
-                       && ( strncmp( function_name_demangled, "OTF2_", 5 ) != 0 )
-                       && ( strncmp( function_name_demangled, "otf2_", 5 ) != 0 )
-                       && ( strncmp( function_name_demangled, "cube_", 5 ) != 0 )
-                       && ( strncmp( function_name_demangled, "cubew_", 6 ) != 0 )
-                       && ( strncmp( function_name_demangled, ".omp", 4 ) != 0 )
-                       && ( fnmatch( "*.omp_outlined*", function_name_demangled, 0 ) != 0 )
-                       && ( fnmatch( "*.omp_outlined_debug__*", function_name_demangled, 0 ) != 0 )
-                       && ( !strstr( function_name_demangled, "DIR.OMP." ) )
-                       && ( !strstr( function_name_demangled, ".extracted" ) )
-#if HAVE( SCOREP_COMPILER_CC_INTEL_ONEAPI ) || HAVE( SCOREP_COMPILER_CXX_INTEL_ONEAPI ) || HAVE( SCOREP_COMPILER_FC_INTEL_ONEAPI )
-                       && ( !strstr( function_name_demangled, "_tree_reduce_" ) )
-#endif  /* Intel oneAPI compiler */
-                       && ( strncmp( function_name_demangled, "..omp", 5 ) != 0 )
-                       && ( strncmp( function_name_demangled, "__omp", 5 ) != 0 )
-                       && ( strncmp( function_name_demangled, "..acc", 5 ) != 0 )
-                       && ( strncmp( function_name_demangled, "virtual thunk", 13 ) != 0 )
-                       && ( strncmp( function_name_demangled, "non-virtual thunk", 17 ) != 0 )
-                       && ( strncmp( function_name_demangled, ".nondebug_wrapper.", 18 ) != 0 )
-                       && ( !strstr( function_name_demangled, "Kokkos::Tools" ) )
-                       && ( !strstr( function_name_demangled, "Kokkos::Profiling" ) )
-                       && ( !strstr( function_name_demangled, "6Kokkos5Tools" ) )
-                       && ( !strstr( function_name_demangled, "6Kokkos9Profiling" ) )
-                       && ( fnmatch( "__nv_*_F[0-9]*L[0-9]*_[0-9]*", function_name_demangled, 0 ) != 0 );
-        /* Usage of UTILS_IO_SimplifyPath on a copy of file_name not needed as libbfd lookup provides absolute paths. */
+        /* Usage of UTILS_IO_SimplifyPath on a copy of file_name not
+         * needed as libbfd lookup provides absolute paths. */
         use_address &= ( !SCOREP_Filtering_Match( file_name, function_name_demangled, function_name ) );
         if ( use_address )
         {
