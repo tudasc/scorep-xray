@@ -573,6 +573,13 @@ scorep_mpi_comm_handle( MPI_Comm comm )
             UTILS_WARNING( "This function SHOULD NOT be called with MPI_COMM_WORLD" );
             return SCOREP_MPI_COMM_WORLD_HANDLE;
         }
+        else if ( comm == MPI_COMM_NULL )
+        {
+            UTILS_ERROR( SCOREP_ERROR_MPI_NO_COMM,
+                         "It is not possible to track MPI_COMM_NULL. This error"
+                         " is likely due to an incorrect call to MPI" );
+            return SCOREP_INVALID_INTERIM_COMMUNICATOR;
+        }
         else
         {
             UTILS_ERROR( SCOREP_ERROR_MPI_NO_COMM,
