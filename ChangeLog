@@ -53,6 +53,8 @@ Bugfixes:
 - Fix race condition in CUDA adapter leading to a failed assertion.
 - Fix erroneous attribution of visits from GPU and asynchronous
   thread activities to the program root node in profiling.
+- Fix missing or inconsistent contributions of GPU activities in the
+  `scorep-score` calculations.
 
 ------------------- Released version 8.1 -----------------------------
 
