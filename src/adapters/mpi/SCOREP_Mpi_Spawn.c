@@ -279,7 +279,7 @@ MPI_Comm_join( int fd, MPI_Comm* newcomm )
             {
                 SCOREP_CommCreate( new_comm_handle );
             }
-            SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( MPI_COMM_NULL ),
+            SCOREP_MpiCollectiveEnd( SCOREP_INVALID_INTERIM_COMMUNICATOR,
                                      SCOREP_INVALID_ROOT_RANK,
                                      SCOREP_COLLECTIVE_CREATE_HANDLE,
                                      0,

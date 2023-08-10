@@ -734,7 +734,7 @@ MPI_Comm_create_from_group( MPI_Group group, const char* stringtag, MPI_Info inf
             {
                 SCOREP_CommCreate( new_comm_handle );
             }
-            SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( MPI_COMM_NULL ),
+            SCOREP_MpiCollectiveEnd( SCOREP_INVALID_INTERIM_COMMUNICATOR,
                                      SCOREP_INVALID_ROOT_RANK,
                                      SCOREP_COLLECTIVE_CREATE_HANDLE,
                                      0,
@@ -814,7 +814,7 @@ MPI_Intercomm_create_from_groups( MPI_Group local_group, int local_leader, MPI_G
             {
                 SCOREP_CommCreate( new_comm_handle );
             }
-            SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( MPI_COMM_NULL ),
+            SCOREP_MpiCollectiveEnd( SCOREP_INVALID_INTERIM_COMMUNICATOR,
                                      SCOREP_INVALID_ROOT_RANK,
                                      SCOREP_COLLECTIVE_CREATE_HANDLE,
                                      0,

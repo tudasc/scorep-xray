@@ -51,7 +51,7 @@ ${proto:c}
             {
               SCOREP_CommCreate(new_comm_handle);
             }
-            SCOREP_MpiCollectiveEnd(SCOREP_MPI_COMM_HANDLE(${comm:parent}),
+            SCOREP_MpiCollectiveEnd( ${comm:parent_handle},
                                     SCOREP_INVALID_ROOT_RANK,
                                     SCOREP_COLLECTIVE_CREATE_HANDLE,
                                     0,

@@ -92,38 +92,39 @@ SCOREP::Wrapgen::handler::mpi::_initialize
     funcarg_handlers[ "proto:fortran" ] = handler::mpi::proto_fortran;
     funcarg_handlers[ "proto:f2c_c2f" ] = handler::mpi::proto_f2c_c2f;
 
-    func_handlers[ "call:f2c_c2f" ]    = handler::mpi::call_f2c_c2f;
-    func_handlers[ "call:fortran" ]    = handler::mpi::call_fortran;
-    func_handlers[ "call:pmpi" ]       = handler::mpi::call_pmpi;
-    func_handlers[ "cleanup" ]         = handler::mpi::cleanup;
-    func_handlers[ "cleanup:f2c_c2f" ] = handler::mpi::cleanup_f2c_c2f;
-    func_handlers[ "cleanup:fortran" ] = handler::mpi::cleanup_fortran;
-    func_handlers[ "decl" ]            = handler::mpi::decl;
-    func_handlers[ "decl:f2c_c2f" ]    = handler::mpi::decl_f2c_c2f;
-    func_handlers[ "decl:fortran" ]    = handler::mpi::decl_fortran;
-    func_handlers[ "group" ]           = handler::mpi::group;
-    func_handlers[ "id" ]              = handler::mpi::id;
-    func_handlers[ "init" ]            = handler::mpi::init;
-    func_handlers[ "init:f2c_c2f" ]    = handler::mpi::init_f2c_c2f;
-    func_handlers[ "init:fortran" ]    = handler::mpi::init_fortran;
-    func_handlers[ "mpi:sendcount" ]   = handler::mpi::send_rule;
-    func_handlers[ "mpi:recvcount" ]   = handler::mpi::recv_rule;
-    func_handlers[ "mpi:version" ]     = handler::mpi::version;
-    func_handlers[ "name" ]            = handler::mpi::name;
-    func_handlers[ "proto:c" ]         = handler::mpi::proto_c;
-    func_handlers[ "proto:fortran" ]   = handler::mpi::proto_fortran;
-    func_handlers[ "proto:f2c_c2f" ]   = handler::mpi::proto_f2c_c2f;
-    func_handlers[ "rtype" ]           = handler::mpi::rtype;
-    func_handlers[ "xblock" ]          = handler::mpi::xblock;
-    func_handlers[ "xblock:pre" ]      = handler::mpi::xblock_pre;
-    func_handlers[ "xblock:post" ]     = handler::mpi::xblock_post;
-    func_handlers[ "xblock:fortran" ]  = handler::mpi::xblock_fortran;
-    func_handlers[ "xblock:f2c_c2f" ]  = handler::mpi::xblock_f2c_c2f;
-    func_handlers[ "guard:start" ]     = handler::mpi::guard_start;
-    func_handlers[ "guard:end" ]       = handler::mpi::guard_end;
-    func_handlers[ "comm:new" ]        = handler::mpi::comm_new;
-    func_handlers[ "comm:parent" ]     = handler::mpi::comm_parent;
-    func_handlers[ "group:new" ]       = handler::mpi::group_new;
+    func_handlers[ "call:f2c_c2f" ]       = handler::mpi::call_f2c_c2f;
+    func_handlers[ "call:fortran" ]       = handler::mpi::call_fortran;
+    func_handlers[ "call:pmpi" ]          = handler::mpi::call_pmpi;
+    func_handlers[ "cleanup" ]            = handler::mpi::cleanup;
+    func_handlers[ "cleanup:f2c_c2f" ]    = handler::mpi::cleanup_f2c_c2f;
+    func_handlers[ "cleanup:fortran" ]    = handler::mpi::cleanup_fortran;
+    func_handlers[ "decl" ]               = handler::mpi::decl;
+    func_handlers[ "decl:f2c_c2f" ]       = handler::mpi::decl_f2c_c2f;
+    func_handlers[ "decl:fortran" ]       = handler::mpi::decl_fortran;
+    func_handlers[ "group" ]              = handler::mpi::group;
+    func_handlers[ "id" ]                 = handler::mpi::id;
+    func_handlers[ "init" ]               = handler::mpi::init;
+    func_handlers[ "init:f2c_c2f" ]       = handler::mpi::init_f2c_c2f;
+    func_handlers[ "init:fortran" ]       = handler::mpi::init_fortran;
+    func_handlers[ "mpi:sendcount" ]      = handler::mpi::send_rule;
+    func_handlers[ "mpi:recvcount" ]      = handler::mpi::recv_rule;
+    func_handlers[ "mpi:version" ]        = handler::mpi::version;
+    func_handlers[ "name" ]               = handler::mpi::name;
+    func_handlers[ "proto:c" ]            = handler::mpi::proto_c;
+    func_handlers[ "proto:fortran" ]      = handler::mpi::proto_fortran;
+    func_handlers[ "proto:f2c_c2f" ]      = handler::mpi::proto_f2c_c2f;
+    func_handlers[ "rtype" ]              = handler::mpi::rtype;
+    func_handlers[ "xblock" ]             = handler::mpi::xblock;
+    func_handlers[ "xblock:pre" ]         = handler::mpi::xblock_pre;
+    func_handlers[ "xblock:post" ]        = handler::mpi::xblock_post;
+    func_handlers[ "xblock:fortran" ]     = handler::mpi::xblock_fortran;
+    func_handlers[ "xblock:f2c_c2f" ]     = handler::mpi::xblock_f2c_c2f;
+    func_handlers[ "guard:start" ]        = handler::mpi::guard_start;
+    func_handlers[ "guard:end" ]          = handler::mpi::guard_end;
+    func_handlers[ "comm:new" ]           = handler::mpi::comm_new;
+    func_handlers[ "comm:parent" ]        = handler::mpi::comm_parent;
+    func_handlers[ "comm:parent_handle" ] = handler::mpi::comm_parent_handle;
+    func_handlers[ "group:new" ]          = handler::mpi::group_new;
 
     /** - Fortran<->C conversion types */
     f2c_types[ "MPI_Status" ]   = "PMPI_Status";
@@ -1221,8 +1222,9 @@ SCOREP::Wrapgen::handler::mpi::comm_new
     return "";
 }
 
-string
-SCOREP::Wrapgen::handler::mpi::comm_parent
+
+int
+find_comm_parent_arg_index
 (
     const Func& func
 )
@@ -1253,13 +1255,39 @@ SCOREP::Wrapgen::handler::mpi::comm_parent
                   << func.get_name() << "' are the same arguments."  << std::endl;
         exit( EXIT_FAILURE );
     }
+    return comm_parent_arg_index;
+}
+
+string
+SCOREP::Wrapgen::handler::mpi::comm_parent
+(
+    const Func& func
+)
+{
+    int comm_parent_arg_index = find_comm_parent_arg_index( func );
+
     if ( comm_parent_arg_index >= 0 )
     {
         return func.get_param( comm_parent_arg_index ).get_name();
     }
-
-    // Use MPI_COMM_NULL, if no parent communicator is available
+    // No parent communicator available
     return "MPI_COMM_NULL";
+}
+
+string
+SCOREP::Wrapgen::handler::mpi::comm_parent_handle
+(
+    const Func& func
+)
+{
+    int comm_parent_arg_index = find_comm_parent_arg_index( func );
+
+    if ( comm_parent_arg_index >= 0 )
+    {
+        return "SCOREP_MPI_COMM_HANDLE( " + func.get_param( comm_parent_arg_index ).get_name() + " )";
+    }
+    // No parent communicator available
+    return "SCOREP_INVALID_INTERIM_COMMUNICATOR";
 }
 
 string
