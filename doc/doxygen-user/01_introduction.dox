@@ -351,6 +351,22 @@ synchronization of the clocks is an important aspect in tracing mode that
 may cause difficulties.
 
 
+@section citing Overview article and citing
+@seclabel{citing}
+
+Please refer to the <em>Score-P measurement infrastructure</em> by
+citing the overview article
+<em><a href="https://link.springer.com/chapter/10.1007/978-3-642-31476-6_7">Score-P: A Joint Performance Measurement Run-Time Infrastructure for Periscope, Scalasca, TAU, and Vampir</a></em>
+(this link provides citations in various formats)
+ (@href{https://www.vi-hps.org/cms/upload/packages/scorep/Score-P_-_A_Joint_Performance_Measurement_Run-Time_Infrastructure.pdf,PDF}),
+or use the DOI <tt>10.1007/978-3-642-31476-6_7</tt> directly.
+
+Version-specific DOIs of the software can be found on
+@href{https://zenodo.org/record/1240731,Score-P's Zenodo page}.
+
+See also the file <tt>CITATION.cff</tt> in
+<tt>&lt;scorep_prefix&gt;/share/doc/scorep/</tt>
+for machine-readable citation information.
 
 @section acknowledgment Acknowledgment
 @seclabel{acknowledgment}
