@@ -55,6 +55,9 @@ Bugfixes:
   thread activities to the program root node in profiling.
 - Fix missing or inconsistent contributions of GPU activities in the
   `scorep-score` calculations.
+- Compiler-generated functions are now checked by their mangled and
+  demangled function name, as only checking demangled function
+  names could lead them to pass the checks incorrectly.
 
 ------------------- Released version 8.1 -----------------------------
 
