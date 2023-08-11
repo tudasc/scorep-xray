@@ -371,11 +371,27 @@ for machine-readable citation information.
 @section acknowledgment Acknowledgment
 @seclabel{acknowledgment}
 
-The development of @scorep was sponsored by a grant from the
+The development of @scorep was initially funded by grants from the
 @href{http://www.bmbf.bund.de,German Federal Ministry of Education
 and Research} (Grant No.\ 01IH08006) within the framework of its High
-Performance Computing programme and with a grant from the
+Performance Computing programme and from the
 @href{http://energy.gov/, US Department of Energy}
 (Award No. DE-SC0001621). This support is gratefully
 acknowledged.
+
+Futher funding was received by following organizations and programms
+(alphabetically ordered), and is also gratefully acknowledged:
+@li AMD
+@li EU Framework Programmes for Research and Technological Development: FP7 and Horizon 2020
+@li European High-Performance Computing Joint Undertaking (EuroHPC JU)
+@li German Aerospace Center (DLR)
+@li German Research Foundation (DFG)
+@li Helmholtz Association
+@li Information Technology for European Advancement (ITEA2)
+@li Intel
+@li NVIDIA
+@li Oak Ridge National Laboratory (ORNL)
+@li Siemens AG
+
+
 */
