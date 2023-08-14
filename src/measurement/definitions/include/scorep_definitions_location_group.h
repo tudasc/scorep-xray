@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -52,6 +52,9 @@ SCOREP_DEFINE_DEFINITION_TYPE( LocationGroup )
     SCOREP_SystemTreeNodeHandle system_tree_parent;
     SCOREP_LocationGroupType    location_group_type;
     SCOREP_LocationGroupHandle  creating_location_group;
+
+    /* Tracking info to avoid writing out empty locations groups. */
+    bool has_children;
 };
 
 

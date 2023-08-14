@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -56,6 +56,9 @@ SCOREP_DEFINE_DEFINITION_TYPE( SystemTreeNode )
     /* Chain of all properties for this node. */
     SCOREP_SystemTreeNodePropertyHandle  properties;
     SCOREP_SystemTreeNodePropertyHandle* properties_tail;
+
+    /* Tracking info to avoid writing out nodes without children. */
+    bool has_children;
 };
 
 

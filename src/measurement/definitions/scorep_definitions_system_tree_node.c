@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2022,
+ * Copyright (c) 2009-2014, 2022-2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -107,13 +107,20 @@ SCOREP_Definitions_NewSystemTreeNode( SCOREP_SystemTreeNodeHandle parent,
     return new_handle;
 }
 
-
 void
 scorep_definitions_unify_system_tree_node( SCOREP_SystemTreeNodeDef*     definition,
                                            SCOREP_Allocator_PageManager* handlesPageManager )
 {
     UTILS_ASSERT( definition );
     UTILS_ASSERT( handlesPageManager );
+
+    if ( !definition->has_children )
+    {
+        /* This system tree has no valid children, that lead to a location and therefore
+         * does not need to be unified.
+         */
+        return;
+    }
 
     SCOREP_SystemTreeNodeHandle unified_parent_handle = SCOREP_INVALID_SYSTEM_TREE_NODE;
     if ( definition->parent_handle != SCOREP_INVALID_SYSTEM_TREE_NODE )
@@ -183,6 +190,7 @@ define_system_tree_node( SCOREP_DefinitionManager*   definition_manager,
 
     new_definition->properties      = SCOREP_INVALID_SYSTEM_TREE_NODE_PROPERTY;
     new_definition->properties_tail = &new_definition->properties;
+    new_definition->has_children    = false;
 
     /* Does return if it is a duplicate */
     SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( SystemTreeNode, system_tree_node );

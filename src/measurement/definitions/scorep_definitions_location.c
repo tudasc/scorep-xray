@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2022,
+ * Copyright (c) 2009-2014, 2022-2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -124,6 +124,7 @@ scorep_definitions_unify_location( SCOREP_LocationDef*           definition,
             definition->location_group_parent,
             LocationGroup,
             handlesPageManager );
+
         UTILS_BUG_ON( unified_location_group_parent == SCOREP_INVALID_LOCATION_GROUP,
                       "Invalid unification order of location definition: location group not yet unified" );
     }
@@ -148,6 +149,36 @@ equal_location( const SCOREP_LocationDef* existingDefinition,
                 const SCOREP_LocationDef* newDefinition )
 {
     return false;
+}
+
+
+static void
+scorep_system_tree_node_handle_mark_used( SCOREP_SystemTreeNodeHandle handle, SCOREP_Allocator_PageManager* handlesPageManager )
+{
+    if ( handle == SCOREP_INVALID_SYSTEM_TREE_NODE || SCOREP_HANDLE_DEREF( handle, SystemTreeNode, handlesPageManager )->has_children == true )
+    {
+        /* Recursion until reaching the root node or a node that is already marked. */
+        return;
+    }
+    SCOREP_HANDLE_DEREF( handle, SystemTreeNode, handlesPageManager )->has_children = true;
+    scorep_system_tree_node_handle_mark_used( SCOREP_HANDLE_DEREF( handle, SystemTreeNode, handlesPageManager )->parent_handle, handlesPageManager );
+}
+
+static void
+scorep_location_group_handle_mark_used( SCOREP_LocationGroupHandle handle, SCOREP_Allocator_PageManager* handlesPageManager )
+{
+    if ( handle == SCOREP_INVALID_LOCATION_GROUP )
+    {
+        return;
+    }
+
+    SCOREP_HANDLE_DEREF( handle, LocationGroup, handlesPageManager )->has_children = true;
+
+    /* Mark also the creating location group if it is set for this lg. */
+    scorep_location_group_handle_mark_used( SCOREP_HANDLE_DEREF( handle, LocationGroup, handlesPageManager )->creating_location_group, handlesPageManager );
+
+    /* Recursively mark the system tree parent as used. */
+    scorep_system_tree_node_handle_mark_used( SCOREP_HANDLE_DEREF( handle, LocationGroup, handlesPageManager )->system_tree_parent, handlesPageManager );
 }
 
 
@@ -199,6 +230,9 @@ define_location( SCOREP_DefinitionManager*  definition_manager,
         SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
                                     ( new_handle, SCOREP_HANDLE_TYPE_LOCATION ) );
     }
+
+    /* Flag parent location group and all its parent system tree nodes as used. */
+    scorep_location_group_handle_mark_used( locationGroupParent, definition_manager->page_manager );
 
     return new_handle;
 }

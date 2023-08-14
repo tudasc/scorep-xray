@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2022,
+ * Copyright (c) 2009-2014, 2022-2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -120,6 +120,14 @@ scorep_definitions_unify_system_tree_node_property( SCOREP_SystemTreeNodePropert
 {
     UTILS_ASSERT( definition );
     UTILS_ASSERT( handlesPageManager );
+
+    if ( !SCOREP_HANDLE_DEREF( definition->system_tree_node_handle, SystemTreeNode, handlesPageManager )->has_children )
+    {
+        /* The respective systemtree node didn't get unified, because it had no children that lead to locations at
+         * the end of the branch.
+         */
+        return;
+    }
 
     SCOREP_SystemTreeNodeHandle unified_system_tree_node_handle = SCOREP_HANDLE_GET_UNIFIED(
         definition->system_tree_node_handle,
