@@ -390,9 +390,7 @@ scorep_mpi_comm_create( MPI_Comm comm, MPI_Comm parentComm )
     }
 
     SCOREP_InterimCommunicatorHandle parent_handle = SCOREP_INVALID_INTERIM_COMMUNICATOR;
-    int                              inter;
-    PMPI_Comm_test_inter( comm, &inter );
-    if ( !inter && parentComm != MPI_COMM_NULL )
+    if ( parentComm != MPI_COMM_NULL )
     {
         /* SCOREP_MPI_COMM_HANDLE() also takes the scorep_mpi_communicator_mutex
          * mutex, thus resolve parentComm outside of the comm mutex
@@ -574,6 +572,13 @@ scorep_mpi_comm_handle( MPI_Comm comm )
         {
             UTILS_WARNING( "This function SHOULD NOT be called with MPI_COMM_WORLD" );
             return SCOREP_MPI_COMM_WORLD_HANDLE;
+        }
+        else if ( comm == MPI_COMM_NULL )
+        {
+            UTILS_ERROR( SCOREP_ERROR_MPI_NO_COMM,
+                         "It is not possible to track MPI_COMM_NULL. This error"
+                         " is likely due to an incorrect call to MPI" );
+            return SCOREP_INVALID_INTERIM_COMMUNICATOR;
         }
         else
         {

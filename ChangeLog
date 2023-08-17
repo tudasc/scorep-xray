@@ -3,6 +3,8 @@
 Features and improvements:
 - The OMPT adapter is now able to report the schedule type selected
   in OpenMP loops. However, this needs to be supported by the runtime.
+- Communicators created with one of the procedures added in MPI 4.0 are now
+  properly tracked by Score-P.
 
 User tools and API improvements and changes:
 
@@ -61,6 +63,7 @@ Bugfixes:
   names could lead them to pass the checks incorrectly.
 - Removed flags for pre-LLVM CCE memory instrumentation, which were
   inappropriately applied to other compilers on Cray/HPE systems.
+- Remove a misleading warning message from `MPI_Comm_join`.
 
 ------------------- Released version 8.1 -----------------------------
 
