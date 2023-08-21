@@ -279,12 +279,16 @@ get_smi_device( int       deviceId,
 
 typedef struct
 {
+    // protects concurrent creation of definitions for this device
+    UTILS_Mutex                 lock;
     int                         device_id;
     int                         smi_device_id;
     SCOREP_SystemTreeNodeHandle system_tree_node;
     SCOREP_LocationGroupHandle  location_group;
     uint32_t                    stream_counter;
     SCOREP_AllocMetric*         alloc_metric;
+    hipDeviceProp_t             properties;
+    uint64_t                    uuid;
 } scorep_hip_device;
 
 typedef int                device_table_key_t;
@@ -321,165 +325,12 @@ device_table_value_ctor( device_table_key_t* key,
                          void*               ctorData )
 {
     scorep_hip_device* device = SCOREP_Memory_AllocForMisc( sizeof( *device ) );
+    memset( device, 0, sizeof( *device ) );
 
-    device->device_id = *key;
+    device->device_id     = *key;
+    device->smi_device_id = get_smi_device( device->device_id, &device->uuid );
 
-    uint64_t uuid = 0;
-    device->smi_device_id = get_smi_device( *key, &uuid );
-
-    char buffer[ 80 ];
-    snprintf( buffer, sizeof( buffer ), "%d", device->smi_device_id );
-    device->system_tree_node = SCOREP_Definitions_NewSystemTreeNode(
-        SCOREP_GetSystemTreeNodeHandleForSharedMemory(),
-        SCOREP_SYSTEM_TREE_DOMAIN_ACCELERATOR_DEVICE,
-        "ROCm Device",
-        buffer );
-
-    if ( uuid != 0 )
-    {
-        /* ROCm uses "GPU-" as prefix for the UUID
-         * https://github.com/RadeonOpenCompute/ROCR-Runtime/blob/master/src/core/runtime/amd_gpu_agent.cpp#L993 */
-        char uuid_buffer[ 22 ];
-        snprintf( uuid_buffer, sizeof( uuid_buffer ), "GPU-%016" PRIx64, uuid );
-        SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node, "UUID", uuid_buffer );
-    }
-
-    hipDeviceProp_t device_props;
-    hipGetDeviceProperties( &device_props, *key );
-
-    if ( strnlen( device_props.name, sizeof( device_props.name ) ) < sizeof( device_props.name ) )
-    {
-        SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                                 "Device name",
-                                                 device_props.name );
-    }
-
-    if ( strnlen( device_props.gcnArchName, sizeof( device_props.gcnArchName ) ) < sizeof( device_props.gcnArchName ) )
-    {
-        SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                                 "AMD GCN architecture name",
-                                                 device_props.gcnArchName );
-    }
-
-    snprintf( buffer, sizeof( buffer ), "%zu", device_props.totalGlobalMem );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "Size of global memory region (in bytes)",
-                                             buffer );
-
-    snprintf( buffer, sizeof( buffer ), "%zu", device_props.sharedMemPerBlock );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "Size of shared memory region (in bytes)",
-                                             buffer );
-
-    snprintf( buffer, sizeof( buffer ), "%zu", device_props.totalConstMem );
-    /* Documentation looks wrong,
-     * see https://github.com/ROCm-Developer-Tools/HIP/issues/3035 */
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "",
-                                             buffer );
-
-    snprintf( buffer, sizeof( buffer ), "%d", device_props.regsPerBlock );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "Registers per block",
-                                             buffer );
-
-    snprintf( buffer, sizeof( buffer ), "%d", device_props.warpSize );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "Warp size",
-                                             buffer );
-
-    snprintf( buffer, sizeof( buffer ), "%d", device_props.maxThreadsPerBlock );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "Maximum work items per work group or workgroup max size",
-                                             buffer );
-
-    snprintf( buffer, sizeof( buffer ), "%d, %d, %d",
-              device_props.maxThreadsDim[ 0 ],
-              device_props.maxThreadsDim[ 1 ],
-              device_props.maxThreadsDim[ 2 ] );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "Maximum number of threads in each dimension (XYZ) of a block",
-                                             buffer );
-
-    snprintf( buffer, sizeof( buffer ), "%d, %d, %d",
-              device_props.maxGridSize[ 0 ],
-              device_props.maxGridSize[ 1 ],
-              device_props.maxGridSize[ 2 ] );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "Maximum grid dimensions (XYZ)",
-                                             buffer );
-
-    snprintf( buffer, sizeof( buffer ), "%d", device_props.clockRate );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "Maximum clock frequency of the multi-processors (in khz)",
-                                             buffer );
-
-    snprintf( buffer, sizeof( buffer ), "%d", device_props.memoryClockRate );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "Max global memory clock frequency (in khz)",
-                                             buffer );
-
-    snprintf( buffer, sizeof( buffer ), "%d", device_props.clockInstructionRate );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "Timer clock frequency (in khz)",
-                                             buffer );
-
-    snprintf( buffer, sizeof( buffer ), "%d", device_props.memoryBusWidth );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "Global memory bus width (in bits)",
-                                             buffer );
-
-    snprintf( buffer, sizeof( buffer ), "%d", device_props.isMultiGpuBoard );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "Is multi-GPU board (1 if yes, 0 if not)",
-                                             buffer );
-
-
-    snprintf( buffer, sizeof( buffer ), "%d", device_props.canMapHostMemory );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "Device can map host memory (1 if yes, 0 if not)",
-                                             buffer );
-
-    snprintf( buffer, sizeof( buffer ), "%d", device_props.concurrentKernels );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "Device can possibly execute multiple kernels concurrently (1 if yes, 0 if not)",
-                                             buffer );
-
-    snprintf( buffer, sizeof( buffer ), "%d", device_props.multiProcessorCount );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "Number of multi-processors (compute units)",
-                                             buffer );
-
-    snprintf( buffer, sizeof( buffer ), "%d", device_props.l2CacheSize );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "L2 cache size",
-                                             buffer );
-
-    snprintf( buffer, sizeof( buffer ), "%d", device_props.maxThreadsPerMultiProcessor );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "Maximum resident threads per multi-processor",
-                                             buffer );
-
-    SCOREP_SystemTreeNode_AddPCIProperties( device->system_tree_node,
-                                            device_props.pciDomainID,
-                                            device_props.pciBusID,
-                                            device_props.pciDeviceID,
-                                            UINT8_MAX );
-
-    /* ROCm/HIP does not have a "context", we add one per device. The "ID"
-     * is irrelevant regarding unification. But as this is already the
-     * software layer, we use the HIP device ID, not the ROCm SMI device index.
-     */
-    snprintf( buffer, sizeof( buffer ), "HIP Context %d", *key );
-    device->location_group = SCOREP_AcceleratorMgmt_CreateContext(
-        device->system_tree_node,
-        buffer );
-
-    if ( scorep_hip_features & SCOREP_HIP_FEATURE_MALLOC )
-    {
-        snprintf( buffer, 80, "HIP Context %d Memory", *key );
-        SCOREP_AllocMetric_NewScoped( buffer, device->location_group, &device->alloc_metric );
-    }
+    hipGetDeviceProperties( &device->properties, device->device_id );
 
     return device;
 }
@@ -489,11 +340,187 @@ SCOREP_HASH_TABLE_MONOTONIC( device_table,
                              10,
                              hashsize( DEVICE_TABLE_HASH_EXPONENT ) );
 
+static void
+create_device( device_table_key_t deviceId )
+{
+    device_table_value_t ignored = NULL;
+    device_table_get_and_insert( deviceId, NULL, &ignored );
+}
+
+static void
+define_device( scorep_hip_device* device )
+{
+    char buffer[ 80 ];
+    snprintf( buffer, sizeof( buffer ), "%d", device->smi_device_id );
+    device->system_tree_node = SCOREP_Definitions_NewSystemTreeNode(
+        SCOREP_GetSystemTreeNodeHandleForSharedMemory(),
+        SCOREP_SYSTEM_TREE_DOMAIN_ACCELERATOR_DEVICE,
+        "ROCm Device",
+        buffer );
+
+    if ( device->uuid != 0 )
+    {
+        /* ROCm uses "GPU-" as prefix for the UUID
+         * https://github.com/RadeonOpenCompute/ROCR-Runtime/blob/master/src/core/runtime/amd_gpu_agent.cpp#L993 */
+        char uuid_buffer[ 22 ];
+        snprintf( uuid_buffer, sizeof( uuid_buffer ), "GPU-%016" PRIx64, device->uuid );
+        SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node, "UUID", uuid_buffer );
+    }
+
+    if ( strnlen( device->properties.name, sizeof( device->properties.name ) ) < sizeof( device->properties.name ) )
+    {
+        SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                                 "Device name",
+                                                 device->properties.name );
+    }
+
+    if ( strnlen( device->properties.gcnArchName, sizeof( device->properties.gcnArchName ) ) < sizeof( device->properties.gcnArchName ) )
+    {
+        SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                                 "AMD GCN architecture name",
+                                                 device->properties.gcnArchName );
+    }
+
+    snprintf( buffer, sizeof( buffer ), "%zu", device->properties.totalGlobalMem );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "Size of global memory region (in bytes)",
+                                             buffer );
+
+    snprintf( buffer, sizeof( buffer ), "%zu", device->properties.sharedMemPerBlock );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "Size of shared memory region (in bytes)",
+                                             buffer );
+
+    snprintf( buffer, sizeof( buffer ), "%zu", device->properties.totalConstMem );
+    /* Documentation looks wrong,
+     * see https://github.com/ROCm-Developer-Tools/HIP/issues/3035 */
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "",
+                                             buffer );
+
+    snprintf( buffer, sizeof( buffer ), "%d", device->properties.regsPerBlock );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "Registers per block",
+                                             buffer );
+
+    snprintf( buffer, sizeof( buffer ), "%d", device->properties.warpSize );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "Warp size",
+                                             buffer );
+
+    snprintf( buffer, sizeof( buffer ), "%d", device->properties.maxThreadsPerBlock );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "Maximum work items per work group or workgroup max size",
+                                             buffer );
+
+    snprintf( buffer, sizeof( buffer ), "%d, %d, %d",
+              device->properties.maxThreadsDim[ 0 ],
+              device->properties.maxThreadsDim[ 1 ],
+              device->properties.maxThreadsDim[ 2 ] );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "Maximum number of threads in each dimension (XYZ) of a block",
+                                             buffer );
+
+    snprintf( buffer, sizeof( buffer ), "%d, %d, %d",
+              device->properties.maxGridSize[ 0 ],
+              device->properties.maxGridSize[ 1 ],
+              device->properties.maxGridSize[ 2 ] );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "Maximum grid dimensions (XYZ)",
+                                             buffer );
+
+    snprintf( buffer, sizeof( buffer ), "%d", device->properties.clockRate );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "Maximum clock frequency of the multi-processors (in khz)",
+                                             buffer );
+
+    snprintf( buffer, sizeof( buffer ), "%d", device->properties.memoryClockRate );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "Max global memory clock frequency (in khz)",
+                                             buffer );
+
+    snprintf( buffer, sizeof( buffer ), "%d", device->properties.clockInstructionRate );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "Timer clock frequency (in khz)",
+                                             buffer );
+
+    snprintf( buffer, sizeof( buffer ), "%d", device->properties.memoryBusWidth );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "Global memory bus width (in bits)",
+                                             buffer );
+
+    snprintf( buffer, sizeof( buffer ), "%d", device->properties.isMultiGpuBoard );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "Is multi-GPU board (1 if yes, 0 if not)",
+                                             buffer );
+
+
+    snprintf( buffer, sizeof( buffer ), "%d", device->properties.canMapHostMemory );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "Device can map host memory (1 if yes, 0 if not)",
+                                             buffer );
+
+    snprintf( buffer, sizeof( buffer ), "%d", device->properties.concurrentKernels );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "Device can possibly execute multiple kernels concurrently (1 if yes, 0 if not)",
+                                             buffer );
+
+    snprintf( buffer, sizeof( buffer ), "%d", device->properties.multiProcessorCount );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "Number of multi-processors (compute units)",
+                                             buffer );
+
+    snprintf( buffer, sizeof( buffer ), "%d", device->properties.l2CacheSize );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "L2 cache size",
+                                             buffer );
+
+    snprintf( buffer, sizeof( buffer ), "%d", device->properties.maxThreadsPerMultiProcessor );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "Maximum resident threads per multi-processor",
+                                             buffer );
+
+    SCOREP_SystemTreeNode_AddPCIProperties( device->system_tree_node,
+                                            device->properties.pciDomainID,
+                                            device->properties.pciBusID,
+                                            device->properties.pciDeviceID,
+                                            UINT8_MAX );
+
+    /* ROCm/HIP does not have a "context", we add one per device. The "ID"
+     * is irrelevant regarding unification. But as this is already the
+     * software layer, we use the HIP device ID, not the ROCm SMI device index.
+     */
+    snprintf( buffer, sizeof( buffer ), "HIP Context %d", device->device_id );
+    device->location_group = SCOREP_AcceleratorMgmt_CreateContext(
+        device->system_tree_node,
+        buffer );
+
+    if ( scorep_hip_features & SCOREP_HIP_FEATURE_MALLOC )
+    {
+        snprintf( buffer, 80, "HIP Context %d Memory", device->device_id );
+        SCOREP_AllocMetric_NewScoped( buffer, device->location_group, &device->alloc_metric );
+    }
+}
+
 static scorep_hip_device*
 get_device( device_table_key_t deviceId )
 {
     device_table_value_t device = NULL;
-    device_table_get_and_insert( deviceId, NULL, &device );
+    if ( !device_table_get( deviceId, &device ) )
+    {
+        UTILS_BUG( "Unknown HIP device %d. Not created in init", deviceId );
+    }
+
+    if ( device->system_tree_node == SCOREP_INVALID_SYSTEM_TREE_NODE )
+    {
+        UTILS_MutexLock( &device->lock );
+        if ( device->system_tree_node == SCOREP_INVALID_SYSTEM_TREE_NODE )
+        {
+            define_device( device );
+        }
+        UTILS_MutexUnlock( &device->lock );
+    }
+
     return device;
 }
 
@@ -548,9 +575,8 @@ static inline stream_table_value_t
 stream_table_value_ctor( stream_table_key_t* key,
                          void*               ctorData )
 {
-    scorep_hip_device* device = NULL;
-    device_table_get_and_insert( key->device_id, NULL, &device );
-    uint32_t stream_seq = 0;
+    scorep_hip_device* device     = get_device( key->device_id );
+    uint32_t           stream_seq = 0;
     if ( key->stream_id != 0 )
     {
         /* Ensure that stream_seq == 0 is always given to the NULL-stream */
@@ -1793,6 +1819,17 @@ scorep_hip_callbacks_init( void )
 
     enumerate_smi_devices();
 
+    /* Already create all HIP devices, so that we do not query the device
+     * properties inside a roctracer API callback. We create the corresponding
+     * Score-P device on demand though. */
+    int number_of_hip_devices;
+    hipGetDeviceCount( &number_of_hip_devices );
+    for ( int hip_device_id = 0; hip_device_id < number_of_hip_devices; hip_device_id++ )
+    {
+        /* Creates only the device struct, but not the Score-P definitions. */
+        create_device( hip_device_id );
+    }
+
     hip_file_handle = SCOREP_Definitions_NewSourceFile( "HIP" );
 
     if ( scorep_hip_features & SCOREP_HIP_FEATURE_KERNEL_CALLSITE )
@@ -2041,7 +2078,10 @@ report_leaked( device_table_key_t   k,
                device_table_value_t v,
                void*                unused )
 {
-    SCOREP_AllocMetric_ReportLeaked( v->alloc_metric );
+    if ( v->alloc_metric )
+    {
+        SCOREP_AllocMetric_ReportLeaked( v->alloc_metric );
+    }
 }
 
 // Stop tracing routine
