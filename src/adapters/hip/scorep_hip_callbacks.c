@@ -589,8 +589,13 @@ stream_table_free_chunk( void* chunk )
 
 struct stream_table_ctor_data
 {
-    int device_id;
+    int          device_id;
+    unsigned int flags;
+    int          priority;
 };
+
+static bool have_stream_priorities;
+static int  default_stream_priority;
 
 static inline stream_table_value_t
 stream_table_value_ctor( stream_table_key_t* key,
@@ -637,20 +642,19 @@ stream_table_value_ctor( stream_table_key_t* key,
     /* Only valid for non-NULL-streams */
     if ( key->stream != NULL )
     {
-        unsigned int stream_flags;
-        hipStreamGetFlags( key->stream, &stream_flags );
-        if ( stream_flags & hipStreamNonBlocking )
+        if ( data->flags & hipStreamNonBlocking )
         {
             SCOREP_Location_AddLocationProperty( stream->device_location,
                                                  "hipStreamNonBlocking",
                                                  0, "1" );
         }
 
-        int stream_priority;
-        hipStreamGetPriority( key->stream, &stream_priority );
-        SCOREP_Location_AddLocationProperty( stream->device_location,
-                                             "hipStreamPriority",
-                                             16, "%d", stream_priority );
+        if ( have_stream_priorities )
+        {
+            SCOREP_Location_AddLocationProperty( stream->device_location,
+                                                 "hipStreamPriority",
+                                                 16, "%d", data->priority );
+        }
     }
     else
     {
@@ -668,10 +672,17 @@ SCOREP_HASH_TABLE_MONOTONIC( stream_table,
                              hashsize( STREAM_TABLE_HASH_EXPONENT ) )
 
 static void
-create_stream( hipStream_t stream )
+create_stream( hipStream_t  stream,
+               unsigned int flags,
+               int          priority )
 {
     stream_table_key_t            key  = { .stream = stream, .device_id = 0 };
-    struct stream_table_ctor_data data = { 0, };
+    struct stream_table_ctor_data data =
+    {
+        .device_id = 0,
+        .flags     = flags,
+        .priority  = priority
+    };
 #if HAVE( DECL_HIPGETDEVICEFORSTREAM )
     /* hipGetStreamDeviceId not traceable via roctracer */
     data.device_id = hipGetStreamDeviceId( stream );
@@ -711,7 +722,10 @@ get_stream( hipStream_t stream )
     {
         struct stream_table_ctor_data data =
         {
-            .device_id = key.device_id
+            .device_id = key.device_id,
+            /* Ignored for the NULL-stream */
+            .flags    = 0,
+            .priority = 0
         };
         /* the NULL-stream is created implicitly at hipInit, which itself
          * is called implicitly without triggering the callback. */
@@ -1165,31 +1179,37 @@ stream_cb( uint32_t    domain,
         switch ( cid )
         {
             case HIP_API_ID_hipInit:
-                create_stream( NULL );
+                create_stream( NULL, 0, 0 );
                 break;
             case HIP_API_ID_hipStreamCreate:
                 if ( data->args.hipStreamCreate.stream )
                 {
-                    create_stream( *data->args.hipStreamCreate.stream );
+                    create_stream( *data->args.hipStreamCreate.stream,
+                                   0, default_stream_priority );
                 }
                 break;
             case HIP_API_ID_hipStreamCreateWithFlags:
                 if ( data->args.hipStreamCreateWithFlags.stream )
                 {
-                    create_stream( *data->args.hipStreamCreateWithFlags.stream );
+                    create_stream( *data->args.hipStreamCreateWithFlags.stream,
+                                   data->args.hipStreamCreateWithFlags.flags,
+                                   default_stream_priority );
                 }
                 break;
             case HIP_API_ID_hipStreamCreateWithPriority:
                 if ( data->args.hipStreamCreateWithPriority.stream )
                 {
-                    create_stream( *data->args.hipStreamCreateWithPriority.stream );
+                    create_stream( *data->args.hipStreamCreateWithPriority.stream,
+                                   data->args.hipStreamCreateWithPriority.flags,
+                                   data->args.hipStreamCreateWithPriority.priority );
                 }
                 break;
 
             case HIP_API_ID_hipExtStreamCreateWithCUMask:
                 if ( data->args.hipExtStreamCreateWithCUMask.stream )
                 {
-                    create_stream( *data->args.hipExtStreamCreateWithCUMask.stream );
+                    create_stream( *data->args.hipExtStreamCreateWithCUMask.stream,
+                                   0, default_stream_priority );
                 }
                 break;
 
@@ -1877,6 +1897,18 @@ scorep_hip_callbacks_init( void )
     {
         /* Creates only the device struct, but not the Score-P definitions. */
         create_device( hip_device_id );
+    }
+
+    /* Determine default stream priority.
+     * Taken from tests/src/runtimeApi/stream/hipStreamCreateWithPriority.cpp */
+    int priority_low;
+    int priority_high;
+    hipDeviceGetStreamPriorityRange( &priority_low, &priority_high );
+    if ( ( priority_low != 0 || priority_high != 0 )
+         && ( ( priority_low - priority_high ) > 1 ) )
+    {
+        default_stream_priority = ( priority_low + priority_high ) / 2;
+        have_stream_priorities  = true;
     }
 
     hip_file_handle = SCOREP_Definitions_NewSourceFile( "HIP" );

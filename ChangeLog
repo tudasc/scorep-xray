@@ -65,6 +65,7 @@ Bugfixes:
 - Removed flags for pre-LLVM CCE memory instrumentation, which were
   inappropriately applied to other compilers on Cray/HPE systems.
 - Remove a misleading warning message from `MPI_Comm_join`.
+- Restore HIP memory transfer recording.
 
 ------------------- Released version 8.1 -----------------------------
 
