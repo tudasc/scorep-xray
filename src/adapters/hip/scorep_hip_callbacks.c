@@ -529,20 +529,20 @@ get_device( device_table_key_t deviceId )
 typedef struct
 {
     int              device_id;
-    uint64_t         stream_id;
+    hipStream_t      stream;
     uint32_t         stream_seq;
     SCOREP_Location* device_location;
     uint32_t         local_rank;
 } scorep_hip_stream;
 
 /**
- * Acts more like a union. If @p stream_id is 0, then only the device is the key.
+ * Acts more like a union. If @p stream is NULL, then only the device is the key.
  * else the device is ignored and must be 0.
  */
 typedef struct
 {
-    uint64_t stream_id;
-    int      device_id;
+    hipStream_t stream;
+    int         device_id;
 } stream_table_key_t;
 typedef scorep_hip_stream* stream_table_value_t;
 
@@ -552,7 +552,7 @@ static inline uint32_t
 stream_table_bucket_idx( stream_table_key_t key )
 {
     uint32_t hashvalue = jenkins_hash( &key.device_id, sizeof( key.device_id ), 0 );
-    hashvalue = jenkins_hash( &key.stream_id, sizeof( key.stream_id ), hashvalue );
+    hashvalue = jenkins_hash( &key.stream, sizeof( key.stream ), hashvalue );
 
     return hashvalue & hashmask( STREAM_TABLE_HASH_EXPONENT );
 }
@@ -561,14 +561,14 @@ static inline bool
 stream_table_equals( stream_table_key_t key1,
                      stream_table_key_t key2 )
 {
-    if ( key1.stream_id != key2.stream_id )
+    if ( key1.stream != key2.stream )
     {
         return false;
     }
 
     /* Same stream, when both are 0 compare the devices, else its the
      * "same" stream */
-    if ( key1.stream_id != 0 )
+    if ( key1.stream != NULL )
     {
         return true;
     }
@@ -602,18 +602,18 @@ stream_table_value_ctor( stream_table_key_t* key,
     /* device ID in the key is only valid for NULL-streams */
     scorep_hip_device* device     = get_device( data->device_id );
     uint32_t           stream_seq = 0;
-    if ( key->stream_id != 0 )
+    if ( key->stream != NULL )
     {
         /* Ensure that stream_seq == 0 is always given to the NULL-stream */
         stream_seq = UTILS_Atomic_AddFetch_uint32( &device->stream_counter, 1,
                                                    UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
     }
 
-    UTILS_DEBUG( "Creating stream %p/%d -> [%d:%u]", ( void* )key->stream_id, key->device_id, data->device_id, stream_seq );
+    UTILS_DEBUG( "Creating stream %p/%d -> [%d:%u]", key->stream, key->device_id, data->device_id, stream_seq );
 
     scorep_hip_stream* stream = SCOREP_Memory_AllocForMisc( sizeof( *stream ) );
     stream->device_id  = key->device_id;
-    stream->stream_id  = key->stream_id;
+    stream->stream     = key->stream;
     stream->stream_seq = stream_seq;
 
     char thread_name[ 32 ];
@@ -635,10 +635,10 @@ stream_table_value_ctor( stream_table_key_t* key,
         UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
 
     /* Only valid for non-NULL-streams */
-    if ( key->stream_id != 0 )
+    if ( key->stream != NULL )
     {
         unsigned int stream_flags;
-        hipStreamGetFlags( ( hipStream_t )key->stream_id, &stream_flags );
+        hipStreamGetFlags( key->stream, &stream_flags );
         if ( stream_flags & hipStreamNonBlocking )
         {
             SCOREP_Location_AddLocationProperty( stream->device_location,
@@ -647,7 +647,7 @@ stream_table_value_ctor( stream_table_key_t* key,
         }
 
         int stream_priority;
-        hipStreamGetPriority( ( hipStream_t )key->stream_id, &stream_priority );
+        hipStreamGetPriority( key->stream, &stream_priority );
         SCOREP_Location_AddLocationProperty( stream->device_location,
                                              "hipStreamPriority",
                                              16, "%d", stream_priority );
@@ -668,18 +668,18 @@ SCOREP_HASH_TABLE_MONOTONIC( stream_table,
                              hashsize( STREAM_TABLE_HASH_EXPONENT ) )
 
 static void
-create_stream( uint64_t streamId )
+create_stream( hipStream_t stream )
 {
-    stream_table_key_t            key  = { .stream_id = streamId, .device_id = 0 };
+    stream_table_key_t            key  = { .stream = stream, .device_id = 0 };
     struct stream_table_ctor_data data = { 0, };
 #if HAVE( DECL_HIPGETDEVICEFORSTREAM )
     /* hipGetStreamDeviceId not traceable via roctracer */
-    data.device_id = hipGetStreamDeviceId( ( hipStream_t )streamId );
+    data.device_id = hipGetStreamDeviceId( stream );
 #else
     hipGetDevice( &data.device_id );
 #endif /* HAVE( DECL_HIPGETDEVICEFORSTREAM ) */
 
-    if ( streamId == 0 )
+    if ( stream == NULL )
     {
         // only the NULL-stream depends on the current device
         key.device_id = data.device_id;
@@ -688,26 +688,26 @@ create_stream( uint64_t streamId )
     stream_table_value_t ignored = NULL;
     if ( !stream_table_get_and_insert( key, &data, &ignored ) )
     {
-        UTILS_WARNING( "Duplicate stream %p/%d", ( void* )key.stream_id, key.device_id );
+        UTILS_WARNING( "Duplicate stream %p/%d", key.stream, key.device_id );
     }
 }
 
 static scorep_hip_stream*
-get_stream( uint64_t streamId )
+get_stream( hipStream_t stream )
 {
-    stream_table_key_t key = { .stream_id = streamId, .device_id = 0 };
-    if ( streamId == 0 )
+    stream_table_key_t key = { .stream = stream, .device_id = 0 };
+    if ( stream == NULL )
     {
 #if HAVE( DECL_HIPGETDEVICEFORSTREAM )
         /* hipGetStreamDeviceId not traceable via roctracer */
-        key.device_id = hipGetStreamDeviceId( ( hipStream_t )streamId );
+        key.device_id = hipGetStreamDeviceId( stream );
 #else
         hipGetDevice( &key.device_id );
 #endif  /* HAVE( DECL_HIPGETDEVICEFORSTREAM ) */
     }
 
-    scorep_hip_stream* stream = NULL;
-    if ( !stream_table_get( key, &stream ) && streamId == 0 )
+    scorep_hip_stream* result = NULL;
+    if ( !stream_table_get( key, &result ) && stream == NULL )
     {
         struct stream_table_ctor_data data =
         {
@@ -715,11 +715,11 @@ get_stream( uint64_t streamId )
         };
         /* the NULL-stream is created implicitly at hipInit, which itself
          * is called implicitly without triggering the callback. */
-        stream_table_get_and_insert( key, &data, &stream );
+        stream_table_get_and_insert( key, &data, &result );
     }
-    UTILS_BUG_ON( stream == NULL, "Unknown stream %p/%d", ( void* )key.stream_id, key.device_id );
+    UTILS_BUG_ON( result == NULL, "Unknown stream %p/%d", key.stream, key.device_id );
 
-    return stream;
+    return result;
 }
 
 /************************** HIP kernel table **********************************/
@@ -1165,31 +1165,31 @@ stream_cb( uint32_t    domain,
         switch ( cid )
         {
             case HIP_API_ID_hipInit:
-                create_stream( 0 );
+                create_stream( NULL );
                 break;
             case HIP_API_ID_hipStreamCreate:
                 if ( data->args.hipStreamCreate.stream )
                 {
-                    create_stream( ( uint64_t )( *data->args.hipStreamCreate.stream ) );
+                    create_stream( *data->args.hipStreamCreate.stream );
                 }
                 break;
             case HIP_API_ID_hipStreamCreateWithFlags:
                 if ( data->args.hipStreamCreateWithFlags.stream )
                 {
-                    create_stream( ( uint64_t )( *data->args.hipStreamCreateWithFlags.stream ) );
+                    create_stream( *data->args.hipStreamCreateWithFlags.stream );
                 }
                 break;
             case HIP_API_ID_hipStreamCreateWithPriority:
                 if ( data->args.hipStreamCreateWithPriority.stream )
                 {
-                    create_stream( ( uint64_t )( *data->args.hipStreamCreateWithPriority.stream ) );
+                    create_stream( *data->args.hipStreamCreateWithPriority.stream );
                 }
                 break;
 
             case HIP_API_ID_hipExtStreamCreateWithCUMask:
                 if ( data->args.hipExtStreamCreateWithCUMask.stream )
                 {
-                    create_stream( ( uint64_t )( *data->args.hipExtStreamCreateWithCUMask.stream ) );
+                    create_stream( *data->args.hipExtStreamCreateWithCUMask.stream );
                 }
                 break;
 
@@ -1242,25 +1242,25 @@ kernel_cb( uint32_t    domain,
         if ( e )
         {
             const char* kernel_name = NULL;
-            uint64_t    stream      = 0;
+            hipStream_t stream      = NULL;
             switch ( cid )
             {
                 case HIP_API_ID_hipModuleLaunchKernel:
                     kernel_name = hipKernelNameRef( data->args.hipModuleLaunchKernel.f );
-                    stream      = ( uint64_t )( data->args.hipModuleLaunchKernel.stream );
+                    stream      = data->args.hipModuleLaunchKernel.stream;
                     break;
                 case HIP_API_ID_hipExtModuleLaunchKernel:
                     kernel_name = hipKernelNameRef( data->args.hipExtModuleLaunchKernel.f );
-                    stream      = ( uint64_t )( data->args.hipExtModuleLaunchKernel.hStream );
+                    stream      = data->args.hipExtModuleLaunchKernel.hStream;
                     break;
                 case HIP_API_ID_hipHccModuleLaunchKernel:
                     kernel_name = hipKernelNameRef( data->args.hipHccModuleLaunchKernel.f );
-                    stream      = ( uint64_t )( data->args.hipHccModuleLaunchKernel.hStream );
+                    stream      = data->args.hipHccModuleLaunchKernel.hStream;
                     break;
                 case HIP_API_ID_hipLaunchKernel:
                     kernel_name = hipKernelNameRefByPtr( data->args.hipLaunchKernel.function_address,
                                                          data->args.hipLaunchKernel.stream );
-                    stream = ( uint64_t )data->args.hipLaunchKernel.stream;
+                    stream = data->args.hipLaunchKernel.stream;
                     break;
                 default:
                     UTILS_BUG( "Unhandled kernel call" );
@@ -1528,7 +1528,7 @@ memcpy_cb( uint32_t    domain,
 
     const hip_api_data_t* data = ( const hip_api_data_t* )callbackData;
 
-    uint64_t      stream_id = 0;
+    hipStream_t   stream = NULL;
     hipMemcpyKind kind;
     uint64_t      size;
     bool          is_sync;
@@ -1540,10 +1540,10 @@ memcpy_cb( uint32_t    domain,
             is_sync = true;
             break;
         case HIP_API_ID_hipMemcpyWithStream:
-            stream_id = ( uint64_t )data->args.hipMemcpyWithStream.stream;
-            kind      = data->args.hipMemcpyWithStream.kind;
-            size      = data->args.hipMemcpyWithStream.sizeBytes;
-            is_sync   = true;
+            stream  = data->args.hipMemcpyWithStream.stream;
+            kind    = data->args.hipMemcpyWithStream.kind;
+            size    = data->args.hipMemcpyWithStream.sizeBytes;
+            is_sync = true;
             break;
         case HIP_API_ID_hipMemcpyHtoD:
             kind    = hipMemcpyHostToDevice;
@@ -1601,7 +1601,7 @@ memcpy_cb( uint32_t    domain,
         api_region_enter( cid, SCOREP_REGION_RMA, "HIP_MEMCPY", false );
 
         correlation_entry* e = create_correlation_entry( data->correlation_id, cid );
-        e->payload.memcpy.stream = get_stream( stream_id );
+        e->payload.memcpy.stream = get_stream( stream );
         e->payload.memcpy.kind   = kind;
         e->payload.memcpy.size   = size;
 
