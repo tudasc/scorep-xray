@@ -2126,7 +2126,19 @@ scorep_hip_callbacks_enable( void )
 
     if ( need_activity_tracing )
     {
+#if HAVE( HIP_OP_ID_T )
+        if ( scorep_hip_features & SCOREP_HIP_FEATURE_KERNEL )
+        {
+            SCOREP_ROCTRACER_CALL( roctracer_enable_op_activity( ACTIVITY_DOMAIN_HIP_OPS, HIP_OP_ID_DISPATCH ) );
+        }
+
+        if ( scorep_hip_features & SCOREP_HIP_FEATURE_MEMCPY )
+        {
+            SCOREP_ROCTRACER_CALL( roctracer_enable_op_activity( ACTIVITY_DOMAIN_HIP_OPS, HIP_OP_ID_COPY ) );
+        }
+#else
         SCOREP_ROCTRACER_CALL( roctracer_enable_domain_activity( ACTIVITY_DOMAIN_HIP_OPS ) );
+#endif  /* HAVE( HIP_OP_ID_T ) */
     }
 
     if ( scorep_hip_features & SCOREP_HIP_FEATURE_USER )

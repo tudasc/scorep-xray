@@ -89,6 +89,9 @@ AS_IF([test "x${scorep_have_hip}" = "xyes"],
               AC_CHECK_DECLS([HIP_API_ID_hipFreeHost], [], [], [[
 #include <roctracer/roctracer_hip.h>
 ]])
+              AC_CHECK_TYPES([hip_op_id_t], [], [], [[
+#include <roctracer/roctracer_hip.h>
+]])
               CPPFLAGS=$scorep_hip_roctracer_safe_CPPFLAGS],
              [scorep_have_hip="no, missing ROCm tracer library"])])
 
