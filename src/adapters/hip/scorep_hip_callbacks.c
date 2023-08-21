@@ -672,7 +672,12 @@ create_stream( uint64_t streamId )
 {
     stream_table_key_t            key  = { .stream_id = streamId, .device_id = 0 };
     struct stream_table_ctor_data data = { 0, };
+#if HAVE( DECL_HIPGETDEVICEFORSTREAM )
+    /* hipGetStreamDeviceId not traceable via roctracer */
+    data.device_id = hipGetStreamDeviceId( ( hipStream_t )streamId );
+#else
     hipGetDevice( &data.device_id );
+#endif /* HAVE( DECL_HIPGETDEVICEFORSTREAM ) */
 
     if ( streamId == 0 )
     {
@@ -693,7 +698,12 @@ get_stream( uint64_t streamId )
     stream_table_key_t key = { .stream_id = streamId, .device_id = 0 };
     if ( streamId == 0 )
     {
+#if HAVE( DECL_HIPGETDEVICEFORSTREAM )
+        /* hipGetStreamDeviceId not traceable via roctracer */
+        key.device_id = hipGetStreamDeviceId( ( hipStream_t )streamId );
+#else
         hipGetDevice( &key.device_id );
+#endif  /* HAVE( DECL_HIPGETDEVICEFORSTREAM ) */
     }
 
     scorep_hip_stream* stream = NULL;
@@ -1955,6 +1965,11 @@ scorep_hip_callbacks_enable( void )
     {
         /* These are all allowed to be filtered, thus setting callback arg to !NULL */
         SCOREP_ROCTRACER_CALL( roctracer_enable_domain_callback( ACTIVITY_DOMAIN_HIP_API, api_cb, ( void* )1 ) );
+#if !HAVE( DECL_HIPGETDEVICEFORSTREAM )
+        /* We need to call this in our own callback, but it destroys correlation IDs
+         * thus disable it in pre-5.6 ROCm */
+        SCOREP_ROCTRACER_CALL( roctracer_disable_op_callback( ACTIVITY_DOMAIN_HIP_API, HIP_API_ID_hipGetDevice ) );
+#endif      /* !HAVE( DECL_HIPGETDEVICEFORSTREAM ) */
     }
 
     bool need_stream_api_tracing = false;

@@ -61,6 +61,9 @@ AS_IF([test "x${scorep_have_hip}" = "xyes"],
               LDFLAGS="${with_libamdhip64_ldflags} $LDFLAGS"
               AC_CHECK_DECLS([hipDeviceGetUuid], [], [], [[
 #include <hip/hip_runtime.h>
+]])
+              AC_CHECK_DECLS([hipGetDeviceForStream], [], [], [[
+#include <hip/hip_runtime_api.h>
 ]])],
              [scorep_have_hip="no, missing HIP runtime library"])])
 
