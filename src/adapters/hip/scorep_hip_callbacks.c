@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2022,
+ * Copyright (c) 2022-2023,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -74,9 +74,8 @@ static SCOREP_ParameterHandle callsite_id_parameter;
 
 static uint32_t local_rank_counter;
 
-/* will be defined when the first device will be created */
-SCOREP_RmaWindowHandle           scorep_hip_window_handle;
-SCOREP_InterimCommunicatorHandle scorep_hip_interim_communicator_handle;
+SCOREP_RmaWindowHandle           scorep_hip_window_handle               = SCOREP_INVALID_RMA_WINDOW;
+SCOREP_InterimCommunicatorHandle scorep_hip_interim_communicator_handle = SCOREP_INVALID_INTERIM_COMMUNICATOR;
 
 uint64_t  scorep_hip_global_location_count = 0;
 uint64_t* scorep_hip_global_location_ids   = NULL;
@@ -480,21 +479,6 @@ device_table_value_ctor( device_table_key_t* key,
     {
         snprintf( buffer, 80, "HIP Context %d Memory", *key );
         SCOREP_AllocMetric_NewScoped( buffer, device->location_group, &device->alloc_metric );
-    }
-
-    if ( scorep_hip_features & SCOREP_HIP_FEATURE_MEMCPY
-         && scorep_hip_interim_communicator_handle == SCOREP_INVALID_INTERIM_COMMUNICATOR )
-    {
-        /* create interim communicator once for a process */
-        scorep_hip_interim_communicator_handle = SCOREP_Definitions_NewInterimCommunicator(
-            SCOREP_INVALID_INTERIM_COMMUNICATOR,
-            SCOREP_PARADIGM_HIP,
-            0,
-            NULL );
-        scorep_hip_window_handle = SCOREP_Definitions_NewRmaWindow(
-            "HIP_WINDOW",
-            scorep_hip_interim_communicator_handle,
-            SCOREP_RMA_WINDOW_FLAG_NONE );
     }
 
     return device;
@@ -1826,6 +1810,20 @@ scorep_hip_callbacks_init( void )
 
         attribute_allocation_size   = SCOREP_AllocMetric_GetAllocationSizeAttribute();
         attribute_deallocation_size = SCOREP_AllocMetric_GetDeallocationSizeAttribute();
+    }
+
+    if ( scorep_hip_features & SCOREP_HIP_FEATURE_MEMCPY )
+    {
+        /* create interim communicator once for a process */
+        scorep_hip_interim_communicator_handle = SCOREP_Definitions_NewInterimCommunicator(
+            SCOREP_INVALID_INTERIM_COMMUNICATOR,
+            SCOREP_PARADIGM_HIP,
+            0,
+            NULL );
+        scorep_hip_window_handle = SCOREP_Definitions_NewRmaWindow(
+            "HIP_WINDOW",
+            scorep_hip_interim_communicator_handle,
+            SCOREP_RMA_WINDOW_FLAG_NONE );
     }
 
     // Must be called at least once on one of HIP_API, HCC_OPS, or its alias
