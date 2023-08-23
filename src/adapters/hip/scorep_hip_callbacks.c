@@ -1280,6 +1280,11 @@ kernel_cb( uint32_t    domain,
         }
         e->payload.launch.stream        = get_stream( stream );
         e->payload.launch.kernel_region = get_kernel_region_by_name( kernel_name );
+
+        UTILS_DEBUG( "H%" PRIu64 ": [%d:%u]: Kernel %s",
+                     data->correlation_id,
+                     e->payload.launch.stream->device_id, e->payload.launch.stream->stream_seq,
+                     SCOREP_RegionHandle_GetName( e->payload.launch.kernel_region ) );
     }
 
     if ( data->phase == ACTIVITY_API_PHASE_EXIT )
@@ -1625,6 +1630,11 @@ memcpy_cb( uint32_t    domain,
         e->payload.memcpy.size   = size;
 
         activate_host_location();
+
+        UTILS_DEBUG( "H%" PRIu64 ": [%d:%u]: Memcopy %s",
+                     data->correlation_id,
+                     e->payload.memcpy.stream->device_id, e->payload.memcpy.stream->stream_seq,
+                     roctracer_op_string( domain, cid, e->payload.memcpy.kind ) );
     }
 
     if ( data->phase == ACTIVITY_API_PHASE_EXIT )
@@ -1723,12 +1733,12 @@ activity_cb( const char* begin,
             case HIP_API_ID_hipExtModuleLaunchKernel:
             case HIP_API_ID_hipHccModuleLaunchKernel:
             case HIP_API_ID_hipLaunchKernel:
-                UTILS_DEBUG( "Recording kernel %s execution from correlation id %" PRIu64 ", "
-                             "translated %" PRIu64 " duration, original %" PRIu64 " duration",
-                             SCOREP_RegionHandle_GetName( e->payload.launch.kernel_region ),
+                UTILS_DEBUG( "D%" PRIu64 ": [%d:%u]: kernel %s execution: %" PRIu64 ":%" PRIu64,
                              record->correlation_id,
-                             record->end_ns - record->begin_ns,
-                             end_time - begin_time );
+                             e->payload.launch.stream->device_id,
+                             e->payload.launch.stream->stream_seq,
+                             SCOREP_RegionHandle_GetName( e->payload.launch.kernel_region ),
+                             begin_time, end_time );
 
                 SCOREP_Location_EnterRegion( e->payload.launch.stream->device_location,
                                              begin_time,
@@ -1757,8 +1767,10 @@ activity_cb( const char* begin,
             case HIP_API_ID_hipMemcpyHtoD:
             case HIP_API_ID_hipMemcpyDtoH:
             case HIP_API_ID_hipMemcpyDtoD:
-                UTILS_DEBUG( "Recording RMA completion from correlation id %d, %" PRIu64 ":%" PRIu64,
+                UTILS_DEBUG( "D%" PRIu64 ": [%d:%u]: RMA completion: %" PRIu64 ":%" PRIu64,
                              record->correlation_id,
+                             e->payload.memcpy.stream->device_id,
+                             e->payload.memcpy.stream->stream_seq,
                              begin_time, end_time );
 
                 if ( e->payload.memcpy.kind == hipMemcpyHostToDevice )
