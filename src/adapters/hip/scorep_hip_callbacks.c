@@ -1580,26 +1580,31 @@ memcpy_cb( uint32_t    domain,
             is_sync = true;
             break;
         case HIP_API_ID_hipMemcpyAsync:
+            stream  = data->args.hipMemcpyAsync.stream;
             kind    = data->args.hipMemcpyAsync.kind;
             size    = data->args.hipMemcpyAsync.sizeBytes;
             is_sync = false;
             break;
         case HIP_API_ID_hipMemcpyHtoDAsync:
+            stream  = data->args.hipMemcpyHtoDAsync.stream;
             kind    = hipMemcpyHostToDevice;
             size    = data->args.hipMemcpyHtoDAsync.sizeBytes;
             is_sync = false;
             break;
         case HIP_API_ID_hipMemcpyDtoHAsync:
+            stream  = data->args.hipMemcpyDtoHAsync.stream;
             kind    = hipMemcpyDeviceToHost;
             size    = data->args.hipMemcpyDtoHAsync.sizeBytes;
             is_sync = false;
             break;
         case HIP_API_ID_hipMemcpyDtoDAsync:
+            stream  = data->args.hipMemcpyDtoDAsync.stream;
             kind    = hipMemcpyDeviceToDevice;
             size    = data->args.hipMemcpyDtoDAsync.sizeBytes;
             is_sync = false;
             break;
         case HIP_API_ID_hipMemcpyFromSymbolAsync:
+            stream  = data->args.hipMemcpyFromSymbolAsync.stream;
             kind    = data->args.hipMemcpyFromSymbolAsync.kind;
             size    = data->args.hipMemcpyFromSymbolAsync.sizeBytes;
             is_sync = false;
