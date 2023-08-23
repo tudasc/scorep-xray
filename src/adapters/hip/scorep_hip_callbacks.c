@@ -1249,47 +1249,41 @@ kernel_cb( uint32_t    domain,
         if ( scorep_hip_features & SCOREP_HIP_FEATURE_KERNEL_CALLSITE )
         {
             e->payload.launch.callsite_hash = SCOREP_Task_GetRegionStackHash( SCOREP_Task_GetCurrentTask( SCOREP_Location_GetCurrentCPULocation() ) );
-            // other parameters are only valid in the EXIT phase
 
             SCOREP_TriggerParameterUint64( callsite_id_parameter, e->payload.launch.callsite_hash );
         }
+
+        const char* kernel_name = NULL;
+        hipStream_t stream      = NULL;
+        switch ( cid )
+        {
+            case HIP_API_ID_hipModuleLaunchKernel:
+                kernel_name = hipKernelNameRef( data->args.hipModuleLaunchKernel.f );
+                stream      = data->args.hipModuleLaunchKernel.stream;
+                break;
+            case HIP_API_ID_hipExtModuleLaunchKernel:
+                kernel_name = hipKernelNameRef( data->args.hipExtModuleLaunchKernel.f );
+                stream      = data->args.hipExtModuleLaunchKernel.hStream;
+                break;
+            case HIP_API_ID_hipHccModuleLaunchKernel:
+                kernel_name = hipKernelNameRef( data->args.hipHccModuleLaunchKernel.f );
+                stream      = data->args.hipHccModuleLaunchKernel.hStream;
+                break;
+            case HIP_API_ID_hipLaunchKernel:
+                kernel_name = hipKernelNameRefByPtr( data->args.hipLaunchKernel.function_address,
+                                                     data->args.hipLaunchKernel.stream );
+                stream = data->args.hipLaunchKernel.stream;
+                break;
+            default:
+                UTILS_BUG( "Unhandled kernel call" );
+                break;
+        }
+        e->payload.launch.stream        = get_stream( stream );
+        e->payload.launch.kernel_region = get_kernel_region_by_name( kernel_name );
     }
 
-    // Only store the correlation record on exit
     if ( data->phase == ACTIVITY_API_PHASE_EXIT )
     {
-        correlation_entry* e = get_correlation_entry( data->correlation_id );
-        if ( e )
-        {
-            const char* kernel_name = NULL;
-            hipStream_t stream      = NULL;
-            switch ( cid )
-            {
-                case HIP_API_ID_hipModuleLaunchKernel:
-                    kernel_name = hipKernelNameRef( data->args.hipModuleLaunchKernel.f );
-                    stream      = data->args.hipModuleLaunchKernel.stream;
-                    break;
-                case HIP_API_ID_hipExtModuleLaunchKernel:
-                    kernel_name = hipKernelNameRef( data->args.hipExtModuleLaunchKernel.f );
-                    stream      = data->args.hipExtModuleLaunchKernel.hStream;
-                    break;
-                case HIP_API_ID_hipHccModuleLaunchKernel:
-                    kernel_name = hipKernelNameRef( data->args.hipHccModuleLaunchKernel.f );
-                    stream      = data->args.hipHccModuleLaunchKernel.hStream;
-                    break;
-                case HIP_API_ID_hipLaunchKernel:
-                    kernel_name = hipKernelNameRefByPtr( data->args.hipLaunchKernel.function_address,
-                                                         data->args.hipLaunchKernel.stream );
-                    stream = data->args.hipLaunchKernel.stream;
-                    break;
-                default:
-                    UTILS_BUG( "Unhandled kernel call" );
-                    break;
-            }
-            e->payload.launch.stream        = get_stream( stream );
-            e->payload.launch.kernel_region = get_kernel_region_by_name( kernel_name );
-        }
-
         api_region_exit( cid );
     }
 
