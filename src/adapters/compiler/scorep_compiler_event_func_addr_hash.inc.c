@@ -61,8 +61,8 @@ func_addr_hash_match_function_name( const char* functionName )
            || ( strstr( functionName, "6Kokkos9Profiling" ) )
            || ( strstr( functionName, "Kokkos::Tools" ) )
            || ( strstr( functionName, "Kokkos::Profiling" ) )
-           || ( strstr( ".omp_outlined", functionName ) )
-           || ( strstr( ".omp_outlined_debug__", functionName ) )
+           || ( strstr( functionName, ".omp_outlined" ) )
+           || ( strstr( functionName, ".omp_outlined_debug__" ) )
            || ( fnmatch( "__nv_*_F[0-9]*L[0-9]*_[0-9]*", functionName, 0 ) == 0 )
            || ( fnmatch( "__sti___[0-9]*__*", functionName, 0 ) == 0 );
 }
