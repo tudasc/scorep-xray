@@ -535,10 +535,14 @@ typedef struct
     uint32_t         local_rank;
 } scorep_hip_stream;
 
+/**
+ * Acts more like a union. If @p stream_id is 0, then only the device is the key.
+ * else the device is ignored and must be 0.
+ */
 typedef struct
 {
-    int      device_id;
     uint64_t stream_id;
+    int      device_id;
 } stream_table_key_t;
 typedef scorep_hip_stream* stream_table_value_t;
 
@@ -557,7 +561,19 @@ static inline bool
 stream_table_equals( stream_table_key_t key1,
                      stream_table_key_t key2 )
 {
-    return key1.device_id == key2.device_id && key1.stream_id == key2.stream_id;
+    if ( key1.stream_id != key2.stream_id )
+    {
+        return false;
+    }
+
+    /* Same stream, when both are 0 compare the devices, else its the
+     * "same" stream */
+    if ( key1.stream_id != 0 )
+    {
+        return true;
+    }
+
+    return key1.device_id == key2.device_id;
 }
 
 static inline void*
@@ -571,11 +587,20 @@ stream_table_free_chunk( void* chunk )
 {
 }
 
+struct stream_table_ctor_data
+{
+    int device_id;
+};
+
 static inline stream_table_value_t
 stream_table_value_ctor( stream_table_key_t* key,
                          void*               ctorData )
 {
-    scorep_hip_device* device     = get_device( key->device_id );
+    struct stream_table_ctor_data* data = ctorData;
+    UTILS_BUG_ON( !data, "Missing ctor data" );
+
+    /* device ID in the key is only valid for NULL-streams */
+    scorep_hip_device* device     = get_device( data->device_id );
     uint32_t           stream_seq = 0;
     if ( key->stream_id != 0 )
     {
@@ -583,6 +608,8 @@ stream_table_value_ctor( stream_table_key_t* key,
         stream_seq = UTILS_Atomic_AddFetch_uint32( &device->stream_counter, 1,
                                                    UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
     }
+
+    UTILS_DEBUG( "Creating stream %p/%d -> [%d:%u]", ( void* )key->stream_id, key->device_id, data->device_id, stream_seq );
 
     scorep_hip_stream* stream = SCOREP_Memory_AllocForMisc( sizeof( *stream ) );
     stream->device_id  = key->device_id;
@@ -643,32 +670,44 @@ SCOREP_HASH_TABLE_MONOTONIC( stream_table,
 static void
 create_stream( uint64_t streamId )
 {
-    stream_table_key_t key;
-    hipGetDevice( &key.device_id );
-    key.stream_id = streamId;
+    stream_table_key_t            key  = { .stream_id = streamId, .device_id = 0 };
+    struct stream_table_ctor_data data = { 0, };
+    hipGetDevice( &data.device_id );
+
+    if ( streamId == 0 )
+    {
+        // only the NULL-stream depends on the current device
+        key.device_id = data.device_id;
+    }
 
     stream_table_value_t ignored = NULL;
-    if ( !stream_table_get_and_insert( key, NULL, &ignored ) )
+    if ( !stream_table_get_and_insert( key, &data, &ignored ) )
     {
-        UTILS_WARNING( "Duplicate stream %p", ( void* )streamId );
+        UTILS_WARNING( "Duplicate stream %p/%d", ( void* )key.stream_id, key.device_id );
     }
 }
 
 static scorep_hip_stream*
 get_stream( uint64_t streamId )
 {
-    stream_table_key_t key;
-    hipGetDevice( &key.device_id );
-    key.stream_id = streamId;
+    stream_table_key_t key = { .stream_id = streamId, .device_id = 0 };
+    if ( streamId == 0 )
+    {
+        hipGetDevice( &key.device_id );
+    }
 
     scorep_hip_stream* stream = NULL;
     if ( !stream_table_get( key, &stream ) && streamId == 0 )
     {
+        struct stream_table_ctor_data data =
+        {
+            .device_id = key.device_id
+        };
         /* the NULL-stream is created implicitly at hipInit, which itself
          * is called implicitly without triggering the callback. */
-        stream_table_get_and_insert( key, NULL, &stream );
+        stream_table_get_and_insert( key, &data, &stream );
     }
-    UTILS_BUG_ON( stream == NULL, "Unknown stream %p", ( void* )streamId );
+    UTILS_BUG_ON( stream == NULL, "Unknown stream %p/%d", ( void* )key.stream_id, key.device_id );
 
     return stream;
 }
