@@ -92,7 +92,9 @@ AS_IF([test "x${scorep_have_hip}" = "xyes"],
 AC_SCOREP_BACKEND_LIB([librocm_smi64], [rocm_smi/rocm_smi.h], [], [${scorep_hip_root}])
 AS_IF([test "x${scorep_have_hip}" = "xyes"],
       [AS_IF([test "x${scorep_have_librocm_smi64}" = "xyes"],
-             [AC_CHECK_TYPES([hipUUID], [], [scorep_have_rocm_smi="no"])],
+             [AC_CHECK_TYPES([hipUUID], [], [scorep_have_rocm_smi="no"], [[
+#include <hip/hip_runtime_api.h>
+]])],
              [scorep_have_rocm_smi="no"])])
 
 # only reset CPPFLAGS
