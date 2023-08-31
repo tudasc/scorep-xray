@@ -92,10 +92,10 @@ AS_IF([test "x${scorep_have_hip}" = "xyes"],
 AC_SCOREP_BACKEND_LIB([librocm_smi64], [rocm_smi/rocm_smi.h], [], [${scorep_hip_root}])
 AS_IF([test "x${scorep_have_hip}" = "xyes"],
       [AS_IF([test "x${scorep_have_librocm_smi64}" = "xyes"],
-             [AC_CHECK_TYPES([hipUUID], [], [scorep_have_rocm_smi="no"], [[
+             [AC_CHECK_TYPES([hipUUID], [], [scorep_have_hip="no, missing UUID support in HIP library"], [[
 #include <hip/hip_runtime_api.h>
 ]])],
-             [scorep_have_rocm_smi="no"])])
+             [scorep_have_hip="no, missing ROCm SMI library"])])
 
 # only reset CPPFLAGS
 CPPFLAGS=$scorep_hip_safe_CPPFLAGS
@@ -120,22 +120,12 @@ AS_CASE([$with_rocm,$scorep_have_hip],
 AC_SCOREP_COND_HAVE([HIP_SUPPORT],
                     [test "x${scorep_have_hip}" = "xyes"],
                     [Defined if hip is available.],
-                    [AC_SUBST(HIP_CPPFLAGS, ["${with_libamdhip64_cppflags} ${with_libroctracer64_cppflags}"])
-                     AC_SUBST(HIP_LDFLAGS,  ["${with_libamdhip64_ldflags} ${with_libamdhip64_rpathflag} ${with_libroctracer64_ldflags} ${with_libroctracer64_rpathflag}"])
-                     AC_SUBST(HIP_LIBS,     ["${with_libamdhip64_libs} ${with_libroctracer64_libs}"])],
+                    [AC_SUBST(HIP_CPPFLAGS, ["${with_libamdhip64_cppflags} ${with_libroctracer64_cppflags} ${with_librocm_smi64_cppflags}"])
+                     AC_SUBST(HIP_LDFLAGS,  ["${with_libamdhip64_ldflags} ${with_libamdhip64_rpathflag} ${with_libroctracer64_ldflags} ${with_libroctracer64_rpathflag} ${with_librocm_smi64_ldflags} ${with_librocm_smi64_rpathflag}"])
+                     AC_SUBST(HIP_LIBS,     ["${with_libamdhip64_libs} ${with_libroctracer64_libs} ${with_librocm_smi64_libs}"])],
                     [AC_SUBST(HIP_CPPFLAGS, [""])
                      AC_SUBST(HIP_LDFLAGS,  [""])
                      AC_SUBST(HIP_LIBS,     [""])])
-
-AC_SCOREP_COND_HAVE([ROCM_SMI_SUPPORT],
-                    [test "x${scorep_have_rocm_smi}" = "xyes"],
-                    [Defined if ROCm SMI is available.],
-                    [AC_SUBST(ROCM_SMI_CPPFLAGS, ["${with_librocm_smi64_cppflags}"])
-                     AC_SUBST(ROCM_SMI_LDFLAGS,  ["${with_librocm_smi64_ldflags} ${with_librocm_smi64_rpathflag}"])
-                     AC_SUBST(ROCM_SMI_LIBS,     ["${with_librocm_smi64_libs}"])],
-                    [AC_SUBST(ROCM_SMI_CPPFLAGS, [""])
-                     AC_SUBST(ROCM_SMI_LDFLAGS,  [""])
-                     AC_SUBST(ROCM_SMI_LIBS,     [""])])
 
 AFS_SUMMARY_POP([HIP support], [${scorep_have_hip}])
 

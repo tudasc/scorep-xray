@@ -49,17 +49,6 @@ libscorep_adapter_hip_mgmt_la_LDFLAGS = \
     $(SCOREP_LIBBFD_LDFLAGS) \
     $(HIP_LDFLAGS)
 
-if HAVE_ROCM_SMI_SUPPORT
-
-libscorep_adapter_hip_mgmt_la_CPPFLAGS += \
-    $(ROCM_SMI_CPPFLAGS)
-libscorep_adapter_hip_mgmt_la_LIBADD += \
-    $(ROCM_SMI_LIBS)
-libscorep_adapter_hip_mgmt_la_LDFLAGS += \
-    $(ROCM_SMI_LDFLAGS)
-
-endif HAVE_ROCM_SMI_SUPPORT
-
 # no event library for the HIP adapter
 
 endif

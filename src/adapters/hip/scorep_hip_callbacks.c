@@ -47,10 +47,7 @@
 
 #include <roctracer/roctracer_hip.h>
 #include <roctracer/roctracer_roctx.h>
-
-#if HAVE( ROCM_SMI_SUPPORT )
 #include <rocm_smi/rocm_smi.h>
-#endif
 
 #include <jenkins_hash.h>
 
@@ -173,8 +170,6 @@ SCOREP_HASH_TABLE_MONOTONIC( api_region_table,
                              15,
                              hashsize( API_REGION_TABLE_HASH_EXPONENT ) );
 
-#if HAVE( ROCM_SMI_SUPPORT )
-
 /************************** ROCm SMI devices **********************************/
 
 typedef uint64_t smi_device_table_key_t;
@@ -218,16 +213,11 @@ SCOREP_HASH_TABLE_MONOTONIC( smi_device_table,
                              10,
                              hashsize( SMI_DEVICE_TABLE_HASH_EXPONENT ) );
 
-#endif
-
-
 static void
 enumerate_smi_devices( void )
 {
-#if HAVE( ROCM_SMI_SUPPORT )
-
-// Macro to check ROCm-SMI calls status
-// Note that this applies only to calls returning `rsmi_status_t`!
+/* Macro to check ROCm-SMI calls status
+ * Note that this applies only to calls returning `rsmi_status_t`! */
 #define SCOREP_ROCMSMI_CALL( call ) \
     do { \
         rsmi_status_t err = call; \
@@ -256,8 +246,6 @@ enumerate_smi_devices( void )
     SCOREP_ROCMSMI_CALL( rsmi_shut_down() );
 
 #undef SCOREP_ROCMSMI_CALL
-
-#endif
 }
 
 static int
@@ -265,8 +253,6 @@ get_smi_device( int       deviceId,
                 uint64_t* uuidOut )
 {
     UTILS_ASSERT( uuidOut );
-
-#if HAVE( ROCM_SMI_SUPPORT )
 
     /* HIP returns only the hex string part of the UUID "GPI-XXXXXXXXXXXXXXXX"
      * but without a terminating 0, hence the union with one more byte.
@@ -286,8 +272,6 @@ get_smi_device( int       deviceId,
         *uuidOut = uuid;
         return smi_device;
     }
-
-#endif
 
     return deviceId;
 }
