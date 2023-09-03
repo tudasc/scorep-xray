@@ -22,6 +22,7 @@ Compatibility:
 - The usage of POMP user instrumentation, aka `#pragma pomp ...`, is
   deprecated. Use the `SCOREP_USER_*` macros instead.
 - Non-LLVM based CCE compilers are no longer supported. Please upgrade.
+- The HIP adapter requires the ROCm SMI library.
 
 Bugfixes:
 
@@ -64,6 +65,7 @@ Bugfixes:
 - Removed flags for pre-LLVM CCE memory instrumentation, which were
   inappropriately applied to other compilers on Cray/HPE systems.
 - Remove a misleading warning message from `MPI_Comm_join`.
+- Restore HIP memory transfer recording.
 
 ------------------- Released version 8.1 -----------------------------
 

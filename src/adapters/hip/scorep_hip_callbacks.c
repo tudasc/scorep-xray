@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2022,
+ * Copyright (c) 2022-2023,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -47,10 +47,7 @@
 
 #include <roctracer/roctracer_hip.h>
 #include <roctracer/roctracer_roctx.h>
-
-#if HAVE( ROCM_SMI_SUPPORT )
 #include <rocm_smi/rocm_smi.h>
-#endif
 
 #include <jenkins_hash.h>
 
@@ -77,9 +74,8 @@ static SCOREP_ParameterHandle callsite_id_parameter;
 
 static uint32_t local_rank_counter;
 
-/* will be defined when the first device will be created */
-SCOREP_RmaWindowHandle           scorep_hip_window_handle;
-SCOREP_InterimCommunicatorHandle scorep_hip_interim_communicator_handle;
+SCOREP_RmaWindowHandle           scorep_hip_window_handle               = SCOREP_INVALID_RMA_WINDOW;
+SCOREP_InterimCommunicatorHandle scorep_hip_interim_communicator_handle = SCOREP_INVALID_INTERIM_COMMUNICATOR;
 
 uint64_t  scorep_hip_global_location_count = 0;
 uint64_t* scorep_hip_global_location_ids   = NULL;
@@ -173,8 +169,6 @@ SCOREP_HASH_TABLE_MONOTONIC( api_region_table,
                              15,
                              hashsize( API_REGION_TABLE_HASH_EXPONENT ) );
 
-#if HAVE( ROCM_SMI_SUPPORT )
-
 /************************** ROCm SMI devices **********************************/
 
 typedef uint64_t smi_device_table_key_t;
@@ -218,16 +212,11 @@ SCOREP_HASH_TABLE_MONOTONIC( smi_device_table,
                              10,
                              hashsize( SMI_DEVICE_TABLE_HASH_EXPONENT ) );
 
-#endif
-
-
 static void
 enumerate_smi_devices( void )
 {
-#if HAVE( ROCM_SMI_SUPPORT )
-
-// Macro to check ROCm-SMI calls status
-// Note that this applies only to calls returning `rsmi_status_t`!
+/* Macro to check ROCm-SMI calls status
+ * Note that this applies only to calls returning `rsmi_status_t`! */
 #define SCOREP_ROCMSMI_CALL( call ) \
     do { \
         rsmi_status_t err = call; \
@@ -256,8 +245,6 @@ enumerate_smi_devices( void )
     SCOREP_ROCMSMI_CALL( rsmi_shut_down() );
 
 #undef SCOREP_ROCMSMI_CALL
-
-#endif
 }
 
 static int
@@ -265,8 +252,6 @@ get_smi_device( int       deviceId,
                 uint64_t* uuidOut )
 {
     UTILS_ASSERT( uuidOut );
-
-#if HAVE( ROCM_SMI_SUPPORT )
 
     /* HIP returns only the hex string part of the UUID "GPI-XXXXXXXXXXXXXXXX"
      * but without a terminating 0, hence the union with one more byte.
@@ -287,8 +272,6 @@ get_smi_device( int       deviceId,
         return smi_device;
     }
 
-#endif
-
     return deviceId;
 }
 
@@ -296,12 +279,16 @@ get_smi_device( int       deviceId,
 
 typedef struct
 {
+    // protects concurrent creation of definitions for this device
+    UTILS_Mutex                 lock;
     int                         device_id;
     int                         smi_device_id;
     SCOREP_SystemTreeNodeHandle system_tree_node;
     SCOREP_LocationGroupHandle  location_group;
     uint32_t                    stream_counter;
     SCOREP_AllocMetric*         alloc_metric;
+    hipDeviceProp_t             properties;
+    uint64_t                    uuid;
 } scorep_hip_device;
 
 typedef int                device_table_key_t;
@@ -338,180 +325,12 @@ device_table_value_ctor( device_table_key_t* key,
                          void*               ctorData )
 {
     scorep_hip_device* device = SCOREP_Memory_AllocForMisc( sizeof( *device ) );
+    memset( device, 0, sizeof( *device ) );
 
-    device->device_id = *key;
+    device->device_id     = *key;
+    device->smi_device_id = get_smi_device( device->device_id, &device->uuid );
 
-    uint64_t uuid = 0;
-    device->smi_device_id = get_smi_device( *key, &uuid );
-
-    char buffer[ 80 ];
-    snprintf( buffer, sizeof( buffer ), "%d", device->smi_device_id );
-    device->system_tree_node = SCOREP_Definitions_NewSystemTreeNode(
-        SCOREP_GetSystemTreeNodeHandleForSharedMemory(),
-        SCOREP_SYSTEM_TREE_DOMAIN_ACCELERATOR_DEVICE,
-        "ROCm Device",
-        buffer );
-
-    if ( uuid != 0 )
-    {
-        /* ROCm uses "GPU-" as prefix for the UUID
-         * https://github.com/RadeonOpenCompute/ROCR-Runtime/blob/master/src/core/runtime/amd_gpu_agent.cpp#L993 */
-        char uuid_buffer[ 22 ];
-        snprintf( uuid_buffer, sizeof( uuid_buffer ), "GPU-%016" PRIx64, uuid );
-        SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node, "UUID", uuid_buffer );
-    }
-
-    hipDeviceProp_t device_props;
-    hipGetDeviceProperties( &device_props, *key );
-
-    if ( strnlen( device_props.name, sizeof( device_props.name ) ) < sizeof( device_props.name ) )
-    {
-        SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                                 "Device name",
-                                                 device_props.name );
-    }
-
-    if ( strnlen( device_props.gcnArchName, sizeof( device_props.gcnArchName ) ) < sizeof( device_props.gcnArchName ) )
-    {
-        SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                                 "AMD GCN architecture name",
-                                                 device_props.gcnArchName );
-    }
-
-    snprintf( buffer, sizeof( buffer ), "%zu", device_props.totalGlobalMem );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "Size of global memory region (in bytes)",
-                                             buffer );
-
-    snprintf( buffer, sizeof( buffer ), "%zu", device_props.sharedMemPerBlock );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "Size of shared memory region (in bytes)",
-                                             buffer );
-
-    snprintf( buffer, sizeof( buffer ), "%zu", device_props.totalConstMem );
-    /* Documentation looks wrong,
-     * see https://github.com/ROCm-Developer-Tools/HIP/issues/3035 */
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "",
-                                             buffer );
-
-    snprintf( buffer, sizeof( buffer ), "%d", device_props.regsPerBlock );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "Registers per block",
-                                             buffer );
-
-    snprintf( buffer, sizeof( buffer ), "%d", device_props.warpSize );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "Warp size",
-                                             buffer );
-
-    snprintf( buffer, sizeof( buffer ), "%d", device_props.maxThreadsPerBlock );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "Maximum work items per work group or workgroup max size",
-                                             buffer );
-
-    snprintf( buffer, sizeof( buffer ), "%d, %d, %d",
-              device_props.maxThreadsDim[ 0 ],
-              device_props.maxThreadsDim[ 1 ],
-              device_props.maxThreadsDim[ 2 ] );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "Maximum number of threads in each dimension (XYZ) of a block",
-                                             buffer );
-
-    snprintf( buffer, sizeof( buffer ), "%d, %d, %d",
-              device_props.maxGridSize[ 0 ],
-              device_props.maxGridSize[ 1 ],
-              device_props.maxGridSize[ 2 ] );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "Maximum grid dimensions (XYZ)",
-                                             buffer );
-
-    snprintf( buffer, sizeof( buffer ), "%d", device_props.clockRate );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "Maximum clock frequency of the multi-processors (in khz)",
-                                             buffer );
-
-    snprintf( buffer, sizeof( buffer ), "%d", device_props.memoryClockRate );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "Max global memory clock frequency (in khz)",
-                                             buffer );
-
-    snprintf( buffer, sizeof( buffer ), "%d", device_props.clockInstructionRate );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "Timer clock frequency (in khz)",
-                                             buffer );
-
-    snprintf( buffer, sizeof( buffer ), "%d", device_props.memoryBusWidth );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "Global memory bus width (in bits)",
-                                             buffer );
-
-    snprintf( buffer, sizeof( buffer ), "%d", device_props.isMultiGpuBoard );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "Is multi-GPU board (1 if yes, 0 if not)",
-                                             buffer );
-
-
-    snprintf( buffer, sizeof( buffer ), "%d", device_props.canMapHostMemory );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "Device can map host memory (1 if yes, 0 if not)",
-                                             buffer );
-
-    snprintf( buffer, sizeof( buffer ), "%d", device_props.concurrentKernels );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "Device can possibly execute multiple kernels concurrently (1 if yes, 0 if not)",
-                                             buffer );
-
-    snprintf( buffer, sizeof( buffer ), "%d", device_props.multiProcessorCount );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "Number of multi-processors (compute units)",
-                                             buffer );
-
-    snprintf( buffer, sizeof( buffer ), "%d", device_props.l2CacheSize );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "L2 cache size",
-                                             buffer );
-
-    snprintf( buffer, sizeof( buffer ), "%d", device_props.maxThreadsPerMultiProcessor );
-    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
-                                             "Maximum resident threads per multi-processor",
-                                             buffer );
-
-    SCOREP_SystemTreeNode_AddPCIProperties( device->system_tree_node,
-                                            device_props.pciDomainID,
-                                            device_props.pciBusID,
-                                            device_props.pciDeviceID,
-                                            UINT8_MAX );
-
-    /* ROCm/HIP does not have a "context", we add one per device. The "ID"
-     * is irrelevant regarding unification. But as this is already the
-     * software layer, we use the HIP device ID, not the ROCm SMI device index.
-     */
-    snprintf( buffer, sizeof( buffer ), "HIP Context %d", *key );
-    device->location_group = SCOREP_AcceleratorMgmt_CreateContext(
-        device->system_tree_node,
-        buffer );
-
-    if ( scorep_hip_features & SCOREP_HIP_FEATURE_MALLOC )
-    {
-        snprintf( buffer, 80, "HIP Context %d Memory", *key );
-        SCOREP_AllocMetric_NewScoped( buffer, device->location_group, &device->alloc_metric );
-    }
-
-    if ( scorep_hip_features & SCOREP_HIP_FEATURE_MEMCPY
-         && scorep_hip_interim_communicator_handle == SCOREP_INVALID_INTERIM_COMMUNICATOR )
-    {
-        /* create interim communicator once for a process */
-        scorep_hip_interim_communicator_handle = SCOREP_Definitions_NewInterimCommunicator(
-            SCOREP_INVALID_INTERIM_COMMUNICATOR,
-            SCOREP_PARADIGM_HIP,
-            0,
-            NULL );
-        scorep_hip_window_handle = SCOREP_Definitions_NewRmaWindow(
-            "HIP_WINDOW",
-            scorep_hip_interim_communicator_handle,
-            SCOREP_RMA_WINDOW_FLAG_NONE );
-    }
+    hipGetDeviceProperties( &device->properties, device->device_id );
 
     return device;
 }
@@ -521,11 +340,187 @@ SCOREP_HASH_TABLE_MONOTONIC( device_table,
                              10,
                              hashsize( DEVICE_TABLE_HASH_EXPONENT ) );
 
+static void
+create_device( device_table_key_t deviceId )
+{
+    device_table_value_t ignored = NULL;
+    device_table_get_and_insert( deviceId, NULL, &ignored );
+}
+
+static void
+define_device( scorep_hip_device* device )
+{
+    char buffer[ 80 ];
+    snprintf( buffer, sizeof( buffer ), "%d", device->smi_device_id );
+    device->system_tree_node = SCOREP_Definitions_NewSystemTreeNode(
+        SCOREP_GetSystemTreeNodeHandleForSharedMemory(),
+        SCOREP_SYSTEM_TREE_DOMAIN_ACCELERATOR_DEVICE,
+        "ROCm Device",
+        buffer );
+
+    if ( device->uuid != 0 )
+    {
+        /* ROCm uses "GPU-" as prefix for the UUID
+         * https://github.com/RadeonOpenCompute/ROCR-Runtime/blob/master/src/core/runtime/amd_gpu_agent.cpp#L993 */
+        char uuid_buffer[ 22 ];
+        snprintf( uuid_buffer, sizeof( uuid_buffer ), "GPU-%016" PRIx64, device->uuid );
+        SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node, "UUID", uuid_buffer );
+    }
+
+    if ( strnlen( device->properties.name, sizeof( device->properties.name ) ) < sizeof( device->properties.name ) )
+    {
+        SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                                 "Device name",
+                                                 device->properties.name );
+    }
+
+    if ( strnlen( device->properties.gcnArchName, sizeof( device->properties.gcnArchName ) ) < sizeof( device->properties.gcnArchName ) )
+    {
+        SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                                 "AMD GCN architecture name",
+                                                 device->properties.gcnArchName );
+    }
+
+    snprintf( buffer, sizeof( buffer ), "%zu", device->properties.totalGlobalMem );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "Size of global memory region (in bytes)",
+                                             buffer );
+
+    snprintf( buffer, sizeof( buffer ), "%zu", device->properties.sharedMemPerBlock );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "Size of shared memory region (in bytes)",
+                                             buffer );
+
+    snprintf( buffer, sizeof( buffer ), "%zu", device->properties.totalConstMem );
+    /* Documentation looks wrong,
+     * see https://github.com/ROCm-Developer-Tools/HIP/issues/3035 */
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "",
+                                             buffer );
+
+    snprintf( buffer, sizeof( buffer ), "%d", device->properties.regsPerBlock );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "Registers per block",
+                                             buffer );
+
+    snprintf( buffer, sizeof( buffer ), "%d", device->properties.warpSize );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "Warp size",
+                                             buffer );
+
+    snprintf( buffer, sizeof( buffer ), "%d", device->properties.maxThreadsPerBlock );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "Maximum work items per work group or workgroup max size",
+                                             buffer );
+
+    snprintf( buffer, sizeof( buffer ), "%d, %d, %d",
+              device->properties.maxThreadsDim[ 0 ],
+              device->properties.maxThreadsDim[ 1 ],
+              device->properties.maxThreadsDim[ 2 ] );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "Maximum number of threads in each dimension (XYZ) of a block",
+                                             buffer );
+
+    snprintf( buffer, sizeof( buffer ), "%d, %d, %d",
+              device->properties.maxGridSize[ 0 ],
+              device->properties.maxGridSize[ 1 ],
+              device->properties.maxGridSize[ 2 ] );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "Maximum grid dimensions (XYZ)",
+                                             buffer );
+
+    snprintf( buffer, sizeof( buffer ), "%d", device->properties.clockRate );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "Maximum clock frequency of the multi-processors (in khz)",
+                                             buffer );
+
+    snprintf( buffer, sizeof( buffer ), "%d", device->properties.memoryClockRate );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "Max global memory clock frequency (in khz)",
+                                             buffer );
+
+    snprintf( buffer, sizeof( buffer ), "%d", device->properties.clockInstructionRate );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "Timer clock frequency (in khz)",
+                                             buffer );
+
+    snprintf( buffer, sizeof( buffer ), "%d", device->properties.memoryBusWidth );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "Global memory bus width (in bits)",
+                                             buffer );
+
+    snprintf( buffer, sizeof( buffer ), "%d", device->properties.isMultiGpuBoard );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "Is multi-GPU board (1 if yes, 0 if not)",
+                                             buffer );
+
+
+    snprintf( buffer, sizeof( buffer ), "%d", device->properties.canMapHostMemory );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "Device can map host memory (1 if yes, 0 if not)",
+                                             buffer );
+
+    snprintf( buffer, sizeof( buffer ), "%d", device->properties.concurrentKernels );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "Device can possibly execute multiple kernels concurrently (1 if yes, 0 if not)",
+                                             buffer );
+
+    snprintf( buffer, sizeof( buffer ), "%d", device->properties.multiProcessorCount );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "Number of multi-processors (compute units)",
+                                             buffer );
+
+    snprintf( buffer, sizeof( buffer ), "%d", device->properties.l2CacheSize );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "L2 cache size",
+                                             buffer );
+
+    snprintf( buffer, sizeof( buffer ), "%d", device->properties.maxThreadsPerMultiProcessor );
+    SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node,
+                                             "Maximum resident threads per multi-processor",
+                                             buffer );
+
+    SCOREP_SystemTreeNode_AddPCIProperties( device->system_tree_node,
+                                            device->properties.pciDomainID,
+                                            device->properties.pciBusID,
+                                            device->properties.pciDeviceID,
+                                            UINT8_MAX );
+
+    /* ROCm/HIP does not have a "context", we add one per device. The "ID"
+     * is irrelevant regarding unification. But as this is already the
+     * software layer, we use the HIP device ID, not the ROCm SMI device index.
+     */
+    snprintf( buffer, sizeof( buffer ), "HIP Context %d", device->device_id );
+    device->location_group = SCOREP_AcceleratorMgmt_CreateContext(
+        device->system_tree_node,
+        buffer );
+
+    if ( scorep_hip_features & SCOREP_HIP_FEATURE_MALLOC )
+    {
+        snprintf( buffer, 80, "HIP Context %d Memory", device->device_id );
+        SCOREP_AllocMetric_NewScoped( buffer, device->location_group, &device->alloc_metric );
+    }
+}
+
 static scorep_hip_device*
 get_device( device_table_key_t deviceId )
 {
     device_table_value_t device = NULL;
-    device_table_get_and_insert( deviceId, NULL, &device );
+    if ( !device_table_get( deviceId, &device ) )
+    {
+        UTILS_BUG( "Unknown HIP device %d. Not created in init", deviceId );
+    }
+
+    if ( device->system_tree_node == SCOREP_INVALID_SYSTEM_TREE_NODE )
+    {
+        UTILS_MutexLock( &device->lock );
+        if ( device->system_tree_node == SCOREP_INVALID_SYSTEM_TREE_NODE )
+        {
+            define_device( device );
+        }
+        UTILS_MutexUnlock( &device->lock );
+    }
+
     return device;
 }
 
@@ -534,16 +529,20 @@ get_device( device_table_key_t deviceId )
 typedef struct
 {
     int              device_id;
-    uint64_t         stream_id;
+    hipStream_t      stream;
     uint32_t         stream_seq;
     SCOREP_Location* device_location;
     uint32_t         local_rank;
 } scorep_hip_stream;
 
+/**
+ * Acts more like a union. If @p stream is NULL, then only the device is the key.
+ * else the device is ignored and must be 0.
+ */
 typedef struct
 {
-    int      device_id;
-    uint64_t stream_id;
+    hipStream_t stream;
+    int         device_id;
 } stream_table_key_t;
 typedef scorep_hip_stream* stream_table_value_t;
 
@@ -553,7 +552,7 @@ static inline uint32_t
 stream_table_bucket_idx( stream_table_key_t key )
 {
     uint32_t hashvalue = jenkins_hash( &key.device_id, sizeof( key.device_id ), 0 );
-    hashvalue = jenkins_hash( &key.stream_id, sizeof( key.stream_id ), hashvalue );
+    hashvalue = jenkins_hash( &key.stream, sizeof( key.stream ), hashvalue );
 
     return hashvalue & hashmask( STREAM_TABLE_HASH_EXPONENT );
 }
@@ -562,7 +561,19 @@ static inline bool
 stream_table_equals( stream_table_key_t key1,
                      stream_table_key_t key2 )
 {
-    return key1.device_id == key2.device_id && key1.stream_id == key2.stream_id;
+    if ( key1.stream != key2.stream )
+    {
+        return false;
+    }
+
+    /* Same stream, when both are 0 compare the devices, else its the
+     * "same" stream */
+    if ( key1.stream != NULL )
+    {
+        return true;
+    }
+
+    return key1.device_id == key2.device_id;
 }
 
 static inline void*
@@ -576,23 +587,38 @@ stream_table_free_chunk( void* chunk )
 {
 }
 
+struct stream_table_ctor_data
+{
+    int          device_id;
+    unsigned int flags;
+    int          priority;
+};
+
+static bool have_stream_priorities;
+static int  default_stream_priority;
+
 static inline stream_table_value_t
 stream_table_value_ctor( stream_table_key_t* key,
                          void*               ctorData )
 {
-    scorep_hip_device* device = NULL;
-    device_table_get_and_insert( key->device_id, NULL, &device );
-    uint32_t stream_seq = 0;
-    if ( key->stream_id != 0 )
+    struct stream_table_ctor_data* data = ctorData;
+    UTILS_BUG_ON( !data, "Missing ctor data" );
+
+    /* device ID in the key is only valid for NULL-streams */
+    scorep_hip_device* device     = get_device( data->device_id );
+    uint32_t           stream_seq = 0;
+    if ( key->stream != NULL )
     {
         /* Ensure that stream_seq == 0 is always given to the NULL-stream */
         stream_seq = UTILS_Atomic_AddFetch_uint32( &device->stream_counter, 1,
                                                    UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
     }
 
+    UTILS_DEBUG( "Creating stream %p/%d -> [%d:%u]", key->stream, key->device_id, data->device_id, stream_seq );
+
     scorep_hip_stream* stream = SCOREP_Memory_AllocForMisc( sizeof( *stream ) );
     stream->device_id  = key->device_id;
-    stream->stream_id  = key->stream_id;
+    stream->stream     = key->stream;
     stream->stream_seq = stream_seq;
 
     char thread_name[ 32 ];
@@ -614,22 +640,21 @@ stream_table_value_ctor( stream_table_key_t* key,
         UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
 
     /* Only valid for non-NULL-streams */
-    if ( key->stream_id != 0 )
+    if ( key->stream != NULL )
     {
-        unsigned int stream_flags;
-        hipStreamGetFlags( ( hipStream_t )key->stream_id, &stream_flags );
-        if ( stream_flags & hipStreamNonBlocking )
+        if ( data->flags & hipStreamNonBlocking )
         {
             SCOREP_Location_AddLocationProperty( stream->device_location,
                                                  "hipStreamNonBlocking",
                                                  0, "1" );
         }
 
-        int stream_priority;
-        hipStreamGetPriority( ( hipStream_t )key->stream_id, &stream_priority );
-        SCOREP_Location_AddLocationProperty( stream->device_location,
-                                             "hipStreamPriority",
-                                             16, "%d", stream_priority );
+        if ( have_stream_priorities )
+        {
+            SCOREP_Location_AddLocationProperty( stream->device_location,
+                                                 "hipStreamPriority",
+                                                 16, "%d", data->priority );
+        }
     }
     else
     {
@@ -647,36 +672,68 @@ SCOREP_HASH_TABLE_MONOTONIC( stream_table,
                              hashsize( STREAM_TABLE_HASH_EXPONENT ) )
 
 static void
-create_stream( uint64_t streamId )
+create_stream( hipStream_t  stream,
+               unsigned int flags,
+               int          priority )
 {
-    stream_table_key_t key;
-    hipGetDevice( &key.device_id );
-    key.stream_id = streamId;
+    stream_table_key_t            key  = { .stream = stream, .device_id = 0 };
+    struct stream_table_ctor_data data =
+    {
+        .device_id = 0,
+        .flags     = flags,
+        .priority  = priority
+    };
+#if HAVE( DECL_HIPGETDEVICEFORSTREAM )
+    /* hipGetStreamDeviceId not traceable via roctracer */
+    data.device_id = hipGetStreamDeviceId( stream );
+#else
+    hipGetDevice( &data.device_id );
+#endif /* HAVE( DECL_HIPGETDEVICEFORSTREAM ) */
+
+    if ( stream == NULL )
+    {
+        // only the NULL-stream depends on the current device
+        key.device_id = data.device_id;
+    }
 
     stream_table_value_t ignored = NULL;
-    if ( !stream_table_get_and_insert( key, NULL, &ignored ) )
+    if ( !stream_table_get_and_insert( key, &data, &ignored ) )
     {
-        UTILS_WARNING( "Duplicate stream %p", ( void* )streamId );
+        UTILS_WARNING( "Duplicate stream %p/%d", key.stream, key.device_id );
     }
 }
 
 static scorep_hip_stream*
-get_stream( uint64_t streamId )
+get_stream( hipStream_t stream )
 {
-    stream_table_key_t key;
-    hipGetDevice( &key.device_id );
-    key.stream_id = streamId;
-
-    scorep_hip_stream* stream = NULL;
-    if ( !stream_table_get( key, &stream ) && streamId == 0 )
+    stream_table_key_t key = { .stream = stream, .device_id = 0 };
+    if ( stream == NULL )
     {
+#if HAVE( DECL_HIPGETDEVICEFORSTREAM )
+        /* hipGetStreamDeviceId not traceable via roctracer */
+        key.device_id = hipGetStreamDeviceId( stream );
+#else
+        hipGetDevice( &key.device_id );
+#endif  /* HAVE( DECL_HIPGETDEVICEFORSTREAM ) */
+    }
+
+    scorep_hip_stream* result = NULL;
+    if ( !stream_table_get( key, &result ) && stream == NULL )
+    {
+        struct stream_table_ctor_data data =
+        {
+            .device_id = key.device_id,
+            /* Ignored for the NULL-stream */
+            .flags    = 0,
+            .priority = 0
+        };
         /* the NULL-stream is created implicitly at hipInit, which itself
          * is called implicitly without triggering the callback. */
-        stream_table_get_and_insert( key, NULL, &stream );
+        stream_table_get_and_insert( key, &data, &result );
     }
-    UTILS_BUG_ON( stream == NULL, "Unknown stream %p", ( void* )streamId );
+    UTILS_BUG_ON( result == NULL, "Unknown stream %p/%d", key.stream, key.device_id );
 
-    return stream;
+    return result;
 }
 
 /************************** HIP kernel table **********************************/
@@ -1122,31 +1179,37 @@ stream_cb( uint32_t    domain,
         switch ( cid )
         {
             case HIP_API_ID_hipInit:
-                create_stream( 0 );
+                create_stream( NULL, 0, 0 );
                 break;
             case HIP_API_ID_hipStreamCreate:
                 if ( data->args.hipStreamCreate.stream )
                 {
-                    create_stream( ( uint64_t )( *data->args.hipStreamCreate.stream ) );
+                    create_stream( *data->args.hipStreamCreate.stream,
+                                   0, default_stream_priority );
                 }
                 break;
             case HIP_API_ID_hipStreamCreateWithFlags:
                 if ( data->args.hipStreamCreateWithFlags.stream )
                 {
-                    create_stream( ( uint64_t )( *data->args.hipStreamCreateWithFlags.stream ) );
+                    create_stream( *data->args.hipStreamCreateWithFlags.stream,
+                                   data->args.hipStreamCreateWithFlags.flags,
+                                   default_stream_priority );
                 }
                 break;
             case HIP_API_ID_hipStreamCreateWithPriority:
                 if ( data->args.hipStreamCreateWithPriority.stream )
                 {
-                    create_stream( ( uint64_t )( *data->args.hipStreamCreateWithPriority.stream ) );
+                    create_stream( *data->args.hipStreamCreateWithPriority.stream,
+                                   data->args.hipStreamCreateWithPriority.flags,
+                                   data->args.hipStreamCreateWithPriority.priority );
                 }
                 break;
 
             case HIP_API_ID_hipExtStreamCreateWithCUMask:
                 if ( data->args.hipExtStreamCreateWithCUMask.stream )
                 {
-                    create_stream( ( uint64_t )( *data->args.hipExtStreamCreateWithCUMask.stream ) );
+                    create_stream( *data->args.hipExtStreamCreateWithCUMask.stream,
+                                   0, default_stream_priority );
                 }
                 break;
 
@@ -1186,47 +1249,46 @@ kernel_cb( uint32_t    domain,
         if ( scorep_hip_features & SCOREP_HIP_FEATURE_KERNEL_CALLSITE )
         {
             e->payload.launch.callsite_hash = SCOREP_Task_GetRegionStackHash( SCOREP_Task_GetCurrentTask( SCOREP_Location_GetCurrentCPULocation() ) );
-            // other parameters are only valid in the EXIT phase
 
             SCOREP_TriggerParameterUint64( callsite_id_parameter, e->payload.launch.callsite_hash );
         }
+
+        const char* kernel_name = NULL;
+        hipStream_t stream      = NULL;
+        switch ( cid )
+        {
+            case HIP_API_ID_hipModuleLaunchKernel:
+                kernel_name = hipKernelNameRef( data->args.hipModuleLaunchKernel.f );
+                stream      = data->args.hipModuleLaunchKernel.stream;
+                break;
+            case HIP_API_ID_hipExtModuleLaunchKernel:
+                kernel_name = hipKernelNameRef( data->args.hipExtModuleLaunchKernel.f );
+                stream      = data->args.hipExtModuleLaunchKernel.hStream;
+                break;
+            case HIP_API_ID_hipHccModuleLaunchKernel:
+                kernel_name = hipKernelNameRef( data->args.hipHccModuleLaunchKernel.f );
+                stream      = data->args.hipHccModuleLaunchKernel.hStream;
+                break;
+            case HIP_API_ID_hipLaunchKernel:
+                kernel_name = hipKernelNameRefByPtr( data->args.hipLaunchKernel.function_address,
+                                                     data->args.hipLaunchKernel.stream );
+                stream = data->args.hipLaunchKernel.stream;
+                break;
+            default:
+                UTILS_BUG( "Unhandled kernel call" );
+                break;
+        }
+        e->payload.launch.stream        = get_stream( stream );
+        e->payload.launch.kernel_region = get_kernel_region_by_name( kernel_name );
+
+        UTILS_DEBUG( "H%" PRIu64 ": [%d:%u]: Kernel %s",
+                     data->correlation_id,
+                     e->payload.launch.stream->device_id, e->payload.launch.stream->stream_seq,
+                     SCOREP_RegionHandle_GetName( e->payload.launch.kernel_region ) );
     }
 
-    // Only store the correlation record on exit
     if ( data->phase == ACTIVITY_API_PHASE_EXIT )
     {
-        correlation_entry* e = get_correlation_entry( data->correlation_id );
-        if ( e )
-        {
-            const char* kernel_name = NULL;
-            uint64_t    stream      = 0;
-            switch ( cid )
-            {
-                case HIP_API_ID_hipModuleLaunchKernel:
-                    kernel_name = hipKernelNameRef( data->args.hipModuleLaunchKernel.f );
-                    stream      = ( uint64_t )( data->args.hipModuleLaunchKernel.stream );
-                    break;
-                case HIP_API_ID_hipExtModuleLaunchKernel:
-                    kernel_name = hipKernelNameRef( data->args.hipExtModuleLaunchKernel.f );
-                    stream      = ( uint64_t )( data->args.hipExtModuleLaunchKernel.hStream );
-                    break;
-                case HIP_API_ID_hipHccModuleLaunchKernel:
-                    kernel_name = hipKernelNameRef( data->args.hipHccModuleLaunchKernel.f );
-                    stream      = ( uint64_t )( data->args.hipHccModuleLaunchKernel.hStream );
-                    break;
-                case HIP_API_ID_hipLaunchKernel:
-                    kernel_name = hipKernelNameRefByPtr( data->args.hipLaunchKernel.function_address,
-                                                         data->args.hipLaunchKernel.stream );
-                    stream = ( uint64_t )data->args.hipLaunchKernel.stream;
-                    break;
-                default:
-                    UTILS_BUG( "Unhandled kernel call" );
-                    break;
-            }
-            e->payload.launch.stream        = get_stream( stream );
-            e->payload.launch.kernel_region = get_kernel_region_by_name( kernel_name );
-        }
-
         api_region_exit( cid );
     }
 
@@ -1485,7 +1547,7 @@ memcpy_cb( uint32_t    domain,
 
     const hip_api_data_t* data = ( const hip_api_data_t* )callbackData;
 
-    uint64_t      stream_id = 0;
+    hipStream_t   stream = NULL;
     hipMemcpyKind kind;
     uint64_t      size;
     bool          is_sync;
@@ -1497,10 +1559,10 @@ memcpy_cb( uint32_t    domain,
             is_sync = true;
             break;
         case HIP_API_ID_hipMemcpyWithStream:
-            stream_id = ( uint64_t )data->args.hipMemcpyWithStream.stream;
-            kind      = data->args.hipMemcpyWithStream.kind;
-            size      = data->args.hipMemcpyWithStream.sizeBytes;
-            is_sync   = true;
+            stream  = data->args.hipMemcpyWithStream.stream;
+            kind    = data->args.hipMemcpyWithStream.kind;
+            size    = data->args.hipMemcpyWithStream.sizeBytes;
+            is_sync = true;
             break;
         case HIP_API_ID_hipMemcpyHtoD:
             kind    = hipMemcpyHostToDevice;
@@ -1523,26 +1585,31 @@ memcpy_cb( uint32_t    domain,
             is_sync = true;
             break;
         case HIP_API_ID_hipMemcpyAsync:
+            stream  = data->args.hipMemcpyAsync.stream;
             kind    = data->args.hipMemcpyAsync.kind;
             size    = data->args.hipMemcpyAsync.sizeBytes;
             is_sync = false;
             break;
         case HIP_API_ID_hipMemcpyHtoDAsync:
+            stream  = data->args.hipMemcpyHtoDAsync.stream;
             kind    = hipMemcpyHostToDevice;
             size    = data->args.hipMemcpyHtoDAsync.sizeBytes;
             is_sync = false;
             break;
         case HIP_API_ID_hipMemcpyDtoHAsync:
+            stream  = data->args.hipMemcpyDtoHAsync.stream;
             kind    = hipMemcpyDeviceToHost;
             size    = data->args.hipMemcpyDtoHAsync.sizeBytes;
             is_sync = false;
             break;
         case HIP_API_ID_hipMemcpyDtoDAsync:
+            stream  = data->args.hipMemcpyDtoDAsync.stream;
             kind    = hipMemcpyDeviceToDevice;
             size    = data->args.hipMemcpyDtoDAsync.sizeBytes;
             is_sync = false;
             break;
         case HIP_API_ID_hipMemcpyFromSymbolAsync:
+            stream  = data->args.hipMemcpyFromSymbolAsync.stream;
             kind    = data->args.hipMemcpyFromSymbolAsync.kind;
             size    = data->args.hipMemcpyFromSymbolAsync.sizeBytes;
             is_sync = false;
@@ -1558,11 +1625,16 @@ memcpy_cb( uint32_t    domain,
         api_region_enter( cid, SCOREP_REGION_RMA, "HIP_MEMCPY", false );
 
         correlation_entry* e = create_correlation_entry( data->correlation_id, cid );
-        e->payload.memcpy.stream = get_stream( stream_id );
+        e->payload.memcpy.stream = get_stream( stream );
         e->payload.memcpy.kind   = kind;
         e->payload.memcpy.size   = size;
 
         activate_host_location();
+
+        UTILS_DEBUG( "H%" PRIu64 ": [%d:%u]: Memcopy %s",
+                     data->correlation_id,
+                     e->payload.memcpy.stream->device_id, e->payload.memcpy.stream->stream_seq,
+                     roctracer_op_string( domain, cid, e->payload.memcpy.kind ) );
     }
 
     if ( data->phase == ACTIVITY_API_PHASE_EXIT )
@@ -1661,12 +1733,12 @@ activity_cb( const char* begin,
             case HIP_API_ID_hipExtModuleLaunchKernel:
             case HIP_API_ID_hipHccModuleLaunchKernel:
             case HIP_API_ID_hipLaunchKernel:
-                UTILS_DEBUG( "Recording kernel %s execution from correlation id %" PRIu64 ", "
-                             "translated %" PRIu64 " duration, original %" PRIu64 " duration",
-                             SCOREP_RegionHandle_GetName( e->payload.launch.kernel_region ),
+                UTILS_DEBUG( "D%" PRIu64 ": [%d:%u]: kernel %s execution: %" PRIu64 ":%" PRIu64,
                              record->correlation_id,
-                             record->end_ns - record->begin_ns,
-                             end_time - begin_time );
+                             e->payload.launch.stream->device_id,
+                             e->payload.launch.stream->stream_seq,
+                             SCOREP_RegionHandle_GetName( e->payload.launch.kernel_region ),
+                             begin_time, end_time );
 
                 SCOREP_Location_EnterRegion( e->payload.launch.stream->device_location,
                                              begin_time,
@@ -1695,8 +1767,10 @@ activity_cb( const char* begin,
             case HIP_API_ID_hipMemcpyHtoD:
             case HIP_API_ID_hipMemcpyDtoH:
             case HIP_API_ID_hipMemcpyDtoD:
-                UTILS_DEBUG( "Recording RMA completion from correlation id %d, %" PRIu64 ":%" PRIu64,
+                UTILS_DEBUG( "D%" PRIu64 ": [%d:%u]: RMA completion: %" PRIu64 ":%" PRIu64,
                              record->correlation_id,
+                             e->payload.memcpy.stream->device_id,
+                             e->payload.memcpy.stream->stream_seq,
                              begin_time, end_time );
 
                 if ( e->payload.memcpy.kind == hipMemcpyHostToDevice )
@@ -1825,6 +1899,29 @@ scorep_hip_callbacks_init( void )
 
     enumerate_smi_devices();
 
+    /* Already create all HIP devices, so that we do not query the device
+     * properties inside a roctracer API callback. We create the corresponding
+     * Score-P device on demand though. */
+    int number_of_hip_devices;
+    hipGetDeviceCount( &number_of_hip_devices );
+    for ( int hip_device_id = 0; hip_device_id < number_of_hip_devices; hip_device_id++ )
+    {
+        /* Creates only the device struct, but not the Score-P definitions. */
+        create_device( hip_device_id );
+    }
+
+    /* Determine default stream priority.
+     * Taken from tests/src/runtimeApi/stream/hipStreamCreateWithPriority.cpp */
+    int priority_low;
+    int priority_high;
+    hipDeviceGetStreamPriorityRange( &priority_low, &priority_high );
+    if ( ( priority_low != 0 || priority_high != 0 )
+         && ( ( priority_low - priority_high ) > 1 ) )
+    {
+        default_stream_priority = ( priority_low + priority_high ) / 2;
+        have_stream_priorities  = true;
+    }
+
     hip_file_handle = SCOREP_Definitions_NewSourceFile( "HIP" );
 
     if ( scorep_hip_features & SCOREP_HIP_FEATURE_KERNEL_CALLSITE )
@@ -1842,6 +1939,20 @@ scorep_hip_callbacks_init( void )
 
         attribute_allocation_size   = SCOREP_AllocMetric_GetAllocationSizeAttribute();
         attribute_deallocation_size = SCOREP_AllocMetric_GetDeallocationSizeAttribute();
+    }
+
+    if ( scorep_hip_features & SCOREP_HIP_FEATURE_MEMCPY )
+    {
+        /* create interim communicator once for a process */
+        scorep_hip_interim_communicator_handle = SCOREP_Definitions_NewInterimCommunicator(
+            SCOREP_INVALID_INTERIM_COMMUNICATOR,
+            SCOREP_PARADIGM_HIP,
+            0,
+            NULL );
+        scorep_hip_window_handle = SCOREP_Definitions_NewRmaWindow(
+            "HIP_WINDOW",
+            scorep_hip_interim_communicator_handle,
+            SCOREP_RMA_WINDOW_FLAG_NONE );
     }
 
     // Must be called at least once on one of HIP_API, HCC_OPS, or its alias
@@ -1897,6 +2008,11 @@ scorep_hip_callbacks_enable( void )
     {
         /* These are all allowed to be filtered, thus setting callback arg to !NULL */
         SCOREP_ROCTRACER_CALL( roctracer_enable_domain_callback( ACTIVITY_DOMAIN_HIP_API, api_cb, ( void* )1 ) );
+#if !HAVE( DECL_HIPGETDEVICEFORSTREAM )
+        /* We need to call this in our own callback, but it destroys correlation IDs
+         * thus disable it in pre-5.6 ROCm */
+        SCOREP_ROCTRACER_CALL( roctracer_disable_op_callback( ACTIVITY_DOMAIN_HIP_API, HIP_API_ID_hipGetDevice ) );
+#endif      /* !HAVE( DECL_HIPGETDEVICEFORSTREAM ) */
     }
 
     bool need_stream_api_tracing = false;
@@ -2021,7 +2137,19 @@ scorep_hip_callbacks_enable( void )
 
     if ( need_activity_tracing )
     {
+#if HAVE( HIP_OP_ID_T )
+        if ( scorep_hip_features & SCOREP_HIP_FEATURE_KERNEL )
+        {
+            SCOREP_ROCTRACER_CALL( roctracer_enable_op_activity( ACTIVITY_DOMAIN_HIP_OPS, HIP_OP_ID_DISPATCH ) );
+        }
+
+        if ( scorep_hip_features & SCOREP_HIP_FEATURE_MEMCPY )
+        {
+            SCOREP_ROCTRACER_CALL( roctracer_enable_op_activity( ACTIVITY_DOMAIN_HIP_OPS, HIP_OP_ID_COPY ) );
+        }
+#else
         SCOREP_ROCTRACER_CALL( roctracer_enable_domain_activity( ACTIVITY_DOMAIN_HIP_OPS ) );
+#endif  /* HAVE( HIP_OP_ID_T ) */
     }
 
     if ( scorep_hip_features & SCOREP_HIP_FEATURE_USER )
@@ -2059,7 +2187,10 @@ report_leaked( device_table_key_t   k,
                device_table_value_t v,
                void*                unused )
 {
-    SCOREP_AllocMetric_ReportLeaked( v->alloc_metric );
+    if ( v->alloc_metric )
+    {
+        SCOREP_AllocMetric_ReportLeaked( v->alloc_metric );
+    }
 }
 
 // Stop tracing routine
