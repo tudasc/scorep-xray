@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012, 2015, 2017-2019, 2022,
+ * Copyright (c) 2009-2012, 2015, 2017-2019, 2022, 2024,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -230,7 +230,7 @@ SCOREP_Memory_CreateTracingPageManager( bool forEvents )
     {
         /* do not allocate under the memory_lock */
         struct tracing_page_manager_list* new_entry =
-            SCOREP_Memory_AllocForMisc( sizeof( *new_entry ) );
+            malloc( sizeof( *new_entry ) );
 
         new_entry->page_manager = page_manager;
 
@@ -279,7 +279,9 @@ SCOREP_Memory_DeleteTracingPageManager( SCOREP_Allocator_PageManager* pageManage
         if ( *it )
         {
             /* Remove element from list */
+            struct tracing_page_manager_list* to_delete = *it;
             *it = ( *it )->next;
+            free( to_delete );
         }
         UTILS_MutexUnlock( &memory_lock );
     }
