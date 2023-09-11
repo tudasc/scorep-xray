@@ -47,6 +47,8 @@ libscorep_adapter_mpi_mgmt_la_SOURCES = \
     $(SRC_ROOT)src/adapters/mpi/scorep_mpi_io_mgmt.c           \
     $(SRC_ROOT)src/adapters/mpi/scorep_mpi_io_mgmt.h           \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Reg.c               \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_coll.h              \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_coll.c              \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Reg.h
 libscorep_adapter_mpi_mgmt_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                       \
@@ -287,3 +289,7 @@ libscorep_adapter_mpi_event_fortran_f08_abort_la_SOURCES = \
 endif HAVE_MPI_FORTRAN_SUPPORT
 
 endif HAVE_MPI_SUPPORT
+
+EXTRA_DIST += \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_coll.inc.h \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_coll.inc.c

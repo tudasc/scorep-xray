@@ -11,3 +11,4 @@ include ../test/jacobi/Makefile.mpi.inc.am
 include ../test/mpi_omp/Makefile.mpi.inc.am
 include ../test/services/metric/Makefile.mpi.inc.am
 include ../test/io/Makefile.mpi.inc.am
+include ../test/adapters/mpi/Makefile.mpi.inc.am

@@ -125,6 +125,8 @@ SCOREP::Wrapgen::handler::mpi::_initialize
     func_handlers[ "comm:parent" ]        = handler::mpi::comm_parent;
     func_handlers[ "comm:parent_handle" ] = handler::mpi::comm_parent_handle;
     func_handlers[ "group:new" ]          = handler::mpi::group_new;
+    func_handlers[ "mpi:sendrecvbytes" ]  = handler::mpi::sendrecvbytes;
+    func_handlers[ "root" ]               = handler::mpi::root;
 
     /** - Fortran<->C conversion types */
     f2c_types[ "MPI_Status" ]   = "PMPI_Status";
@@ -1308,4 +1310,44 @@ SCOREP::Wrapgen::handler::mpi::group_new
               << func.get_name() << "' which does not have one."  << std::endl;
     exit( EXIT_FAILURE );
     return "";
+}
+
+string
+SCOREP::Wrapgen::handler::mpi::sendrecvbytes
+(
+    const Func& func
+)
+{
+    string coll_bytes_fun  = func.get_attribute( "coll_bytes_fun" );
+    string coll_bytes_args = func.get_attribute( "coll_bytes_args" );
+
+    coll_bytes_args = trim( coll_bytes_args );
+    // Add a ',' to the end of non-empty string if not already there
+    if ( coll_bytes_args.size() > 0 && coll_bytes_args[ coll_bytes_args.size() - 1 ] != ',' )
+    {
+        coll_bytes_args = coll_bytes_args + ", ";
+    }
+
+    coll_bytes_args = coll_bytes_args + "comm, &sendbytes, &recvbytes";
+
+    string call = "scorep_mpi_coll_bytes_" + coll_bytes_fun + "(" + coll_bytes_args + ");";
+
+    return call;
+}
+
+string
+SCOREP::Wrapgen::handler::mpi::root
+(
+    const Func& func
+)
+{
+    const string kind = func.get_attribute( "kind" );
+    if ( kind == "COLL_ALL2ONE" || kind == "COLL_ONE2ALL" )
+    {
+        return "scorep_mpi_get_scorep_mpi_rank( root )";
+    }
+    else
+    {
+        return "SCOREP_INVALID_ROOT_RANK";
+    }
 }

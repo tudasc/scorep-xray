@@ -19,14 +19,15 @@ ${proto:c}
   const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON;
   const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_${group|uppercase});
   ${rtype} return_val;
-  ${decl}
+
+  uint64_t sendbytes = 0, recvbytes = 0;
 
   if (event_gen_active)
     {
       SCOREP_MPI_EVENT_GEN_OFF();
       if (event_gen_active_for_group)
         {
-          ${xblock}
+          ${mpi:sendrecvbytes}
 
           SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
           SCOREP_MpiCollectiveBegin();
@@ -46,10 +47,10 @@ ${proto:c}
       if (event_gen_active_for_group)
         {
           SCOREP_MpiCollectiveEnd(SCOREP_MPI_COMM_HANDLE(comm),
-                                  root_loc,
+                                  ${root},
                                   SCOREP_MPI_COLLECTIVE__${name|uppercase},
-                                  ${mpi:sendcount},
-                                  ${mpi:recvcount});
+                                  sendbytes,
+                                  recvbytes);
           SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
         }
       else if ( SCOREP_IsUnwindingEnabled() )

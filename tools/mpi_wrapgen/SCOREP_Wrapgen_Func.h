@@ -57,6 +57,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <stdexcept>
 
 #include "SCOREP_Wrapgen_Funcparam.h"
 using SCOREP::Wrapgen::Funcparam;
@@ -145,7 +146,12 @@ public:
     get_attribute
         ( const std::string& attribute ) const
     {
-        return m_attributes.find( attribute )->second;
+        std::map<std::string, std::string>::const_iterator it = m_attributes.find( attribute );
+        if ( it == m_attributes.end() )
+        {
+            throw( std::runtime_error( "No attribute with id " + attribute + " found in prototype " + get_name() ) );
+        }
+        return it->second;
     };
 
     /** set the extended attribute

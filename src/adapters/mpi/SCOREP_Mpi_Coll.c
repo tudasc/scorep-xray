@@ -62,6 +62,7 @@
 #include "SCOREP_Mpi.h"
 #include "scorep_mpi_communicator.h"
 #include "scorep_mpi_request_mgmt.h"
+#include "scorep_mpi_coll.h"
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
@@ -101,43 +102,14 @@ MPI_Allgather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype 
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL );
     int       return_val;
 
-    int            recvsz, sendsz, N, M;
-    uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = SCOREP_INVALID_ROOT_RANK;
-
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
-            PMPI_Comm_size( comm, &N );
-            PMPI_Type_size( recvtype, &recvsz );
-
-            int is_inter_comm = 0;
-            PMPI_Comm_test_inter( comm, &is_inter_comm );
-            if ( !is_inter_comm )
-            {
-                if ( sendbuf != MPI_IN_PLACE )
-                {
-                    PMPI_Type_size( sendtype, &sendsz );
-                    sendbytes = ( uint64_t )N * sendcount * sendsz;
-                    recvbytes = ( uint64_t )N * recvcount * recvsz;
-                }
-                else
-                {
-                    sendbytes = recvbytes = ( uint64_t )( N - 1 ) * recvcount * recvsz;
-                }
-            }
-            else
-            {
-                PMPI_Comm_remote_size( comm, &M );
-                PMPI_Type_size( sendtype, &sendsz );
-
-                sendbytes = ( uint64_t )M * sendcount * sendsz;
-                recvbytes = ( uint64_t )M * recvcount * recvsz;
-            }
-
+            scorep_mpi_coll_bytes_allgather( sendcount, sendtype, recvcount, recvtype, ( sendbuf == MPI_IN_PLACE ), comm, &sendbytes, &recvbytes );
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLGATHER ] );
             SCOREP_MpiCollectiveBegin();
@@ -157,7 +129,7 @@ MPI_Allgather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype 
         if ( event_gen_active_for_group )
         {
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
-                                     root_loc,
+                                     SCOREP_INVALID_ROOT_RANK,
                                      SCOREP_MPI_COLLECTIVE__MPI_ALLGATHER,
                                      sendbytes,
                                      recvbytes );
@@ -206,60 +178,14 @@ MPI_Allgatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL );
     int       return_val;
 
-    int32_t        recvcount = 0, recvsz, sendsz, i, N, M, me;
-    uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = SCOREP_INVALID_ROOT_RANK;
-
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
-            PMPI_Comm_size( comm, &N );
-            PMPI_Type_size( recvtype, &recvsz );
-
-            int is_inter_comm = 0;
-            PMPI_Comm_test_inter( comm, &is_inter_comm );
-            if ( !is_inter_comm )
-            {
-                PMPI_Comm_rank( comm, &me );
-
-                if ( sendbuf != MPI_IN_PLACE )
-                {
-                    PMPI_Type_size( sendtype, &sendsz );
-                    sendbytes = ( uint64_t )N * sendcount * sendsz;
-                }
-                else
-                {
-                    sendbytes = ( uint64_t )( N - 1 ) * recvcounts[ me ] * recvsz;
-                }
-
-                for ( i = 0; i < N; i++ )
-                {
-                    recvcount += recvcounts[ i ];
-                }
-
-                if ( sendbuf == MPI_IN_PLACE )
-                {
-                    recvcount -= recvcounts[ me ];
-                }
-                recvbytes = ( uint64_t )recvcount * recvsz;
-            }
-            else
-            {
-                PMPI_Comm_remote_size( comm, &M );
-                PMPI_Type_size( sendtype, &sendsz );
-
-                for ( i = 0; i < M; i++ )
-                {
-                    recvcount += recvcounts[ i ];
-                }
-
-                sendbytes = ( uint64_t )M * sendcount * sendsz;
-                recvbytes = ( uint64_t )recvcount * recvsz;
-            }
-
+            scorep_mpi_coll_bytes_allgatherv( sendcount, sendtype, recvcounts, recvtype, ( sendbuf == MPI_IN_PLACE ), comm, &sendbytes, &recvbytes );
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLGATHERV ] );
             SCOREP_MpiCollectiveBegin();
@@ -279,7 +205,7 @@ MPI_Allgatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype
         if ( event_gen_active_for_group )
         {
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
-                                     root_loc,
+                                     SCOREP_INVALID_ROOT_RANK,
                                      SCOREP_MPI_COLLECTIVE__MPI_ALLGATHERV,
                                      sendbytes,
                                      recvbytes );
@@ -326,35 +252,14 @@ MPI_Allreduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MP
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL );
     int       return_val;
 
-    int32_t        sz, N;
-    uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = SCOREP_INVALID_ROOT_RANK;
-
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
-            PMPI_Type_size( datatype, &sz );
-
-            int is_inter_comm = 0;
-            PMPI_Comm_test_inter( comm, &is_inter_comm );
-            if ( !is_inter_comm )
-            {
-                PMPI_Comm_size( comm, &N );
-                if ( sendbuf == MPI_IN_PLACE )
-                {
-                    N--;
-                }
-            }
-            else
-            {
-                PMPI_Comm_remote_size( comm, &N );
-            }
-
-            sendbytes = recvbytes = ( uint64_t )N * count * sz;
-
+            scorep_mpi_coll_bytes_allreduce( count, datatype, ( sendbuf == MPI_IN_PLACE ), comm, &sendbytes, &recvbytes );
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLREDUCE ] );
             SCOREP_MpiCollectiveBegin();
@@ -374,7 +279,7 @@ MPI_Allreduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MP
         if ( event_gen_active_for_group )
         {
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
-                                     root_loc,
+                                     SCOREP_INVALID_ROOT_RANK,
                                      SCOREP_MPI_COLLECTIVE__MPI_ALLREDUCE,
                                      sendbytes,
                                      recvbytes );
@@ -422,41 +327,14 @@ MPI_Alltoall( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype s
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL );
     int       return_val;
 
-    int32_t        recvsz, sendsz, N;
-    uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = SCOREP_INVALID_ROOT_RANK;
-
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
-            int is_inter_comm = 0;
-            PMPI_Comm_test_inter( comm, &is_inter_comm );
-            if ( !is_inter_comm )
-            {
-                PMPI_Type_size( recvtype, &recvsz );
-                PMPI_Comm_size( comm, &N );
-
-                if ( sendbuf == MPI_IN_PLACE )
-                {
-                    --N;
-                }
-
-                sendbytes = ( uint64_t )N * recvcount * recvsz;
-                recvbytes = sendbytes;
-            }
-            else
-            {
-                PMPI_Comm_remote_size( comm, &N );
-                PMPI_Type_size( recvtype, &recvsz );
-                PMPI_Type_size( sendtype, &sendsz );
-
-                sendbytes = ( uint64_t )N * sendcount * sendsz;
-                recvbytes = ( uint64_t )N * recvcount * recvsz;
-            }
-
+            scorep_mpi_coll_bytes_alltoall( sendcount, sendtype, recvcount, recvtype, ( sendbuf == MPI_IN_PLACE ), comm, &sendbytes, &recvbytes );
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLTOALL ] );
             SCOREP_MpiCollectiveBegin();
@@ -476,7 +354,7 @@ MPI_Alltoall( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype s
         if ( event_gen_active_for_group )
         {
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
-                                     root_loc,
+                                     SCOREP_INVALID_ROOT_RANK,
                                      SCOREP_MPI_COLLECTIVE__MPI_ALLTOALL,
                                      sendbytes,
                                      recvbytes );
@@ -526,58 +404,14 @@ MPI_Alltoallv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* s
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL );
     int       return_val;
 
-    int            recvcount = 0, recvsz, sendsz, N, i, me;
-    uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = SCOREP_INVALID_ROOT_RANK;
-
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
-            int is_inter_comm = 0;
-            PMPI_Comm_test_inter( comm, &is_inter_comm );
-            if ( !is_inter_comm )
-            {
-                PMPI_Comm_size( comm, &N );
-                PMPI_Type_size( recvtype, &recvsz );
-
-                if ( sendbuf != MPI_IN_PLACE )
-                {
-                    PMPI_Type_size( sendtype, &sendsz );
-                    for ( i = 0; i < N; i++ )
-                    {
-                        recvbytes += ( uint64_t )recvcounts[ i ] * recvsz;
-                        sendbytes += ( uint64_t )sendcounts[ i ] * sendsz;
-                    }
-                }
-                else
-                {
-                    PMPI_Comm_rank( comm, &me );
-                    for ( i = 0; i < N; i++ )
-                    {
-                        recvcount += recvcounts[ i ];
-                    }
-
-                    recvcount -= recvcounts[ me ];
-
-                    sendbytes = recvbytes = ( uint64_t )recvcount * recvsz;
-                }
-            }
-            else
-            {
-                PMPI_Comm_remote_size( comm, &N );
-                PMPI_Type_size( recvtype, &recvsz );
-                PMPI_Type_size( sendtype, &sendsz );
-
-                for ( i = 0; i < N; i++ )
-                {
-                    recvbytes += ( uint64_t )recvcounts[ i ] * recvsz;
-                    sendbytes += ( uint64_t )sendcounts[ i ] * sendsz;
-                }
-            }
-
+            scorep_mpi_coll_bytes_alltoallv( sendcounts, sendtype, recvcounts, recvtype, ( sendbuf == MPI_IN_PLACE ), comm, &sendbytes, &recvbytes );
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLTOALLV ] );
             SCOREP_MpiCollectiveBegin();
@@ -597,7 +431,7 @@ MPI_Alltoallv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* s
         if ( event_gen_active_for_group )
         {
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
-                                     root_loc,
+                                     SCOREP_INVALID_ROOT_RANK,
                                      SCOREP_MPI_COLLECTIVE__MPI_ALLTOALLV,
                                      sendbytes,
                                      recvbytes );
@@ -647,62 +481,14 @@ MPI_Alltoallw( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int se
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL );
     int       return_val;
 
-    int            recvsz, sendsz, N, i, me;
-    uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = SCOREP_INVALID_ROOT_RANK;
-
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
-            int is_inter_comm = 0;
-            PMPI_Comm_test_inter( comm, &is_inter_comm );
-            if ( !is_inter_comm )
-            {
-                PMPI_Comm_size( comm, &N );
-
-                if ( sendbuf != MPI_IN_PLACE )
-                {
-                    for ( i = 0; i < N; i++ )
-                    {
-                        PMPI_Type_size( recvtypes[ i ], &recvsz );
-                        recvbytes += ( uint64_t )recvcounts[ i ] * recvsz;
-
-                        PMPI_Type_size( sendtypes[ i ], &sendsz );
-                        sendbytes += ( uint64_t )sendcounts[ i ] * sendsz;
-                    }
-                }
-                else
-                {
-                    PMPI_Comm_rank( comm, &me );
-
-                    for ( i = 0; i < N; i++ )
-                    {
-                        PMPI_Type_size( recvtypes[ i ], &recvsz );
-                        recvbytes += ( uint64_t )recvcounts[ i ] * recvsz;
-                    }
-
-                    PMPI_Type_size( recvtypes[ me ], &recvsz );
-                    recvbytes -= ( uint64_t )recvcounts[ me ] * recvsz;
-
-                    sendbytes = recvbytes;
-                }
-            }
-            else
-            {
-                PMPI_Comm_remote_size( comm, &N );
-
-                for ( i = 0; i < N; i++ )
-                {
-                    PMPI_Type_size( recvtypes[ i ], &recvsz );
-                    PMPI_Type_size( sendtypes[ i ], &sendsz );
-                    recvbytes += ( uint64_t )recvcounts[ i ] * recvsz;
-                    sendbytes += ( uint64_t )sendcounts[ i ] * sendsz;
-                }
-            }
-
+            scorep_mpi_coll_bytes_alltoallw( sendcounts, sendtypes, recvcounts, recvtypes, ( sendbuf == MPI_IN_PLACE ), comm, &sendbytes, &recvbytes );
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLTOALLW ] );
             SCOREP_MpiCollectiveBegin();
@@ -722,7 +508,7 @@ MPI_Alltoallw( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int se
         if ( event_gen_active_for_group )
         {
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
-                                     root_loc,
+                                     SCOREP_INVALID_ROOT_RANK,
                                      SCOREP_MPI_COLLECTIVE__MPI_ALLTOALLW,
                                      sendbytes,
                                      recvbytes );
@@ -760,16 +546,19 @@ int
 MPI_Barrier( MPI_Comm comm )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    const int      event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
-    const int      event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL );
-    int            return_val;
-    SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
+    const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+    const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL );
+    int       return_val;
+
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
+            scorep_mpi_coll_bytes_barrier( comm, &sendbytes, &recvbytes );
+
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_BARRIER ] );
             SCOREP_MpiCollectiveBegin();
         }
@@ -788,10 +577,10 @@ MPI_Barrier( MPI_Comm comm )
         if ( event_gen_active_for_group )
         {
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
-                                     root_loc,
+                                     SCOREP_INVALID_ROOT_RANK,
                                      SCOREP_MPI_COLLECTIVE__MPI_BARRIER,
-                                     0,
-                                     0 );
+                                     sendbytes,
+                                     recvbytes );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_BARRIER ] );
         }
         else if ( SCOREP_IsUnwindingEnabled() )
@@ -834,54 +623,14 @@ MPI_Bcast( void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm co
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL );
     int       return_val;
 
-    int32_t        sz, N, me;
-    int32_t        participant = 1;
-    uint64_t       sendbytes   = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc    = scorep_mpi_get_scorep_mpi_rank( root );
-
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
-            PMPI_Type_size( datatype, &sz );
-
-            int is_inter_comm = 0;
-            PMPI_Comm_test_inter( comm, &is_inter_comm );
-            if ( !is_inter_comm )
-            {
-                PMPI_Comm_rank( comm, &me );
-                if ( me == root )
-                {
-                    PMPI_Comm_size( comm, &N );
-                }
-                else
-                {
-                    N = 0;
-                }
-            }
-            else
-            {
-                if ( root == MPI_ROOT )
-                {
-                    PMPI_Comm_remote_size( comm, &N );
-                    participant = 0;
-                }
-                else if ( root == MPI_PROC_NULL )
-                {
-                    participant = 0;
-                    N           = 0;
-                }
-                else
-                {
-                    N = 0;
-                }
-            }
-
-            sendbytes = ( uint64_t )N * count * sz;
-            recvbytes = ( uint64_t )participant * count * sz;
-
+            scorep_mpi_coll_bytes_bcast( count, datatype, root, comm, &sendbytes, &recvbytes );
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_BCAST ] );
             SCOREP_MpiCollectiveBegin();
@@ -901,7 +650,7 @@ MPI_Bcast( void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm co
         if ( event_gen_active_for_group )
         {
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
-                                     root_loc,
+                                     scorep_mpi_get_scorep_mpi_rank( root ),
                                      SCOREP_MPI_COLLECTIVE__MPI_BCAST,
                                      sendbytes,
                                      recvbytes );
@@ -948,23 +697,14 @@ MPI_Exscan( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_D
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL );
     int       return_val;
 
-    int32_t        sz, me, N;
-    uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = SCOREP_INVALID_ROOT_RANK;
-
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
-            PMPI_Type_size( datatype, &sz );
-            PMPI_Comm_rank( comm, &me );
-            PMPI_Comm_size( comm, &N );
-
-            sendbytes = ( uint64_t )( N - me - 1 ) * sz * count;
-            recvbytes = ( uint64_t )me * sz * count;
-
+            scorep_mpi_coll_bytes_exscan( count, datatype, ( sendbuf == MPI_IN_PLACE ), comm, &sendbytes, &recvbytes );
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_EXSCAN ] );
             SCOREP_MpiCollectiveBegin();
@@ -984,7 +724,7 @@ MPI_Exscan( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_D
         if ( event_gen_active_for_group )
         {
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
-                                     root_loc,
+                                     SCOREP_INVALID_ROOT_RANK,
                                      SCOREP_MPI_COLLECTIVE__MPI_EXSCAN,
                                      sendbytes,
                                      recvbytes );
@@ -1033,54 +773,14 @@ MPI_Gather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype sen
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL );
     int       return_val;
 
-    int            sendsz, recvsz, N, me;
-    uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = scorep_mpi_get_scorep_mpi_rank( root );
-
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
-            int is_inter_comm = 0;
-            PMPI_Comm_test_inter( comm, &is_inter_comm );
-            if ( !is_inter_comm )
-            {
-                if ( sendbuf != MPI_IN_PLACE )
-                {
-                    PMPI_Type_size( sendtype, &sendsz );
-                    sendbytes = ( uint64_t )sendcount * sendsz;
-                }
-                /* MPI_IN_PLACE: sendbytes is initialized to 0 */
-
-                PMPI_Comm_rank( comm, &me );
-                if ( me == root )
-                {
-                    PMPI_Comm_size( comm, &N );
-                    PMPI_Type_size( recvtype, &recvsz );
-                    if ( sendbuf == MPI_IN_PLACE )
-                    {
-                        --N;
-                    }
-                    recvbytes = ( uint64_t )N * recvcount * recvsz;
-                }
-            }
-            else
-            {
-                if ( root == MPI_ROOT )
-                {
-                    PMPI_Comm_remote_size( comm, &N );
-                    PMPI_Type_size( recvtype, &recvsz );
-                    recvbytes = ( uint64_t )N * recvcount * recvsz;
-                }
-                else if ( root != MPI_PROC_NULL )
-                {
-                    PMPI_Type_size( sendtype, &sendsz );
-                    sendbytes = ( uint64_t )sendcount * sendsz;
-                }
-            }
-
+            scorep_mpi_coll_bytes_gather( sendcount, sendtype, recvcount, recvtype, root, ( sendbuf == MPI_IN_PLACE ), comm, &sendbytes, &recvbytes );
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GATHER ] );
             SCOREP_MpiCollectiveBegin();
@@ -1100,7 +800,7 @@ MPI_Gather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype sen
         if ( event_gen_active_for_group )
         {
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
-                                     root_loc,
+                                     scorep_mpi_get_scorep_mpi_rank( root ),
                                      SCOREP_MPI_COLLECTIVE__MPI_GATHER,
                                      sendbytes,
                                      recvbytes );
@@ -1150,63 +850,14 @@ MPI_Gatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype se
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL );
     int       return_val;
 
-    int            recvsz, sendsz, me, N, i;
-    uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = scorep_mpi_get_scorep_mpi_rank( root );
-
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
-            int is_inter_comm = 0;
-            PMPI_Comm_test_inter( comm, &is_inter_comm );
-            if ( !is_inter_comm )
-            {
-                if ( sendbuf != MPI_IN_PLACE )
-                {
-                    PMPI_Type_size( sendtype, &sendsz );
-                    sendbytes = ( uint64_t )sendcount * sendsz;
-                }
-                /* MPI_IN_PLACE: sendbytes is initialized to 0 */
-
-                PMPI_Comm_rank( comm, &me );
-                if ( me == root )
-                {
-                    PMPI_Comm_size( comm, &N );
-                    PMPI_Type_size( recvtype, &recvsz );
-
-                    for ( i = 0; i < N; ++i )
-                    {
-                        recvbytes += ( uint64_t )recvcounts[ i ] * recvsz;
-                    }
-
-                    if ( sendbuf == MPI_IN_PLACE )
-                    {
-                        recvbytes -= ( uint64_t )recvcounts[ me ] * recvsz;
-                    }
-                }
-            }
-            else
-            {
-                if ( root == MPI_ROOT )
-                {
-                    PMPI_Comm_remote_size( comm, &N );
-                    PMPI_Type_size( recvtype, &recvsz );
-
-                    for ( i = 0; i < N; ++i )
-                    {
-                        recvbytes += ( uint64_t )recvcounts[ i ] * recvsz;
-                    }
-                }
-                else if ( root != MPI_PROC_NULL )
-                {
-                    PMPI_Type_size( sendtype, &sendsz );
-                    sendbytes = ( uint64_t )sendcount * sendsz;
-                }
-            }
-
+            scorep_mpi_coll_bytes_gatherv( sendcount, sendtype, recvcounts, recvtype, root, ( sendbuf == MPI_IN_PLACE ), comm, &sendbytes, &recvbytes );
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GATHERV ] );
             SCOREP_MpiCollectiveBegin();
@@ -1226,7 +877,7 @@ MPI_Gatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype se
         if ( event_gen_active_for_group )
         {
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
-                                     root_loc,
+                                     scorep_mpi_get_scorep_mpi_rank( root ),
                                      SCOREP_MPI_COLLECTIVE__MPI_GATHERV,
                                      sendbytes,
                                      recvbytes );
@@ -1274,51 +925,14 @@ MPI_Reduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_D
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL );
     int       return_val;
 
-    int            sz, me, N;
-    uint64_t       sendbytes = 0, recvbytes = 0, participant = 1;
-    SCOREP_MpiRank root_loc  = scorep_mpi_get_scorep_mpi_rank( root );
-
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
-            PMPI_Type_size( datatype, &sz );
-            PMPI_Comm_rank( comm, &me );
-            PMPI_Comm_size( comm, &N );
-
-            int is_inter_comm = 0;
-            PMPI_Comm_test_inter( comm, &is_inter_comm );
-            if ( !is_inter_comm )
-            {
-                if ( sendbuf != MPI_IN_PLACE )
-                {
-                    sendbytes = ( uint64_t )count * sz;
-                }
-                else
-                {
-                    --N;
-                }
-
-                if ( root == me )
-                {
-                    recvbytes = ( uint64_t )N * count * sz;
-                }
-            }
-            else
-            {
-                if ( root == MPI_ROOT )
-                {
-                    PMPI_Comm_remote_size( comm, &N );
-                    recvbytes = ( uint64_t )N * count * sz;
-                }
-                else if ( root != MPI_PROC_NULL )
-                {
-                    sendbytes = ( uint64_t )count * sz;
-                }
-            }
-
+            scorep_mpi_coll_bytes_reduce( count, datatype, root, ( sendbuf == MPI_IN_PLACE ), comm, &sendbytes, &recvbytes );
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REDUCE ] );
             SCOREP_MpiCollectiveBegin();
@@ -1338,7 +952,7 @@ MPI_Reduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_D
         if ( event_gen_active_for_group )
         {
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
-                                     root_loc,
+                                     scorep_mpi_get_scorep_mpi_rank( root ),
                                      SCOREP_MPI_COLLECTIVE__MPI_REDUCE,
                                      sendbytes,
                                      recvbytes );
@@ -1385,49 +999,14 @@ MPI_Reduce_scatter( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, SCOREP_M
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL );
     int       return_val;
 
-    int            i, sz, me, N, M, count = 0;
-    uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = SCOREP_INVALID_ROOT_RANK;
-
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
-            PMPI_Type_size( datatype, &sz );
-            PMPI_Comm_rank( comm, &me );
-            PMPI_Comm_size( comm, &N );
-
-            for ( i = 0; i < N; i++ )
-            {
-                count += recvcounts[ i ];
-            }
-
-            int is_inter_comm = 0;
-            PMPI_Comm_test_inter( comm, &is_inter_comm );
-            if ( !is_inter_comm )
-            {
-                if ( sendbuf == MPI_IN_PLACE )
-                {
-                    count    -= recvcounts[ me ];
-                    sendbytes = ( uint64_t )count * sz;
-                    recvbytes = ( uint64_t )( N - 1 ) * recvcounts[ me ] * sz;
-                }
-                else
-                {
-                    sendbytes = ( uint64_t )count * sz;
-                    recvbytes = ( uint64_t )N * recvcounts[ me ] * sz;
-                }
-            }
-            else
-            {
-                PMPI_Comm_remote_size( comm, &M );
-
-                sendbytes = ( uint64_t )count * sz;
-                recvbytes = ( uint64_t )M * recvcounts[ me ] * sz;
-            }
-
+            scorep_mpi_coll_bytes_reduce_scatter( recvcounts, datatype, ( sendbuf == MPI_IN_PLACE ), comm, &sendbytes, &recvbytes );
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REDUCE_SCATTER ] );
             SCOREP_MpiCollectiveBegin();
@@ -1447,7 +1026,7 @@ MPI_Reduce_scatter( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, SCOREP_M
         if ( event_gen_active_for_group )
         {
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
-                                     root_loc,
+                                     SCOREP_INVALID_ROOT_RANK,
                                      SCOREP_MPI_COLLECTIVE__MPI_REDUCE_SCATTER,
                                      sendbytes,
                                      recvbytes );
@@ -1494,27 +1073,14 @@ MPI_Reduce_scatter_block( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, in
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL );
     int       return_val;
 
-    int            sz, N;
-    uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = SCOREP_INVALID_ROOT_RANK;
-
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
-            PMPI_Type_size( datatype, &sz );
-            PMPI_Comm_size( comm, &N );
-
-            if ( sendbuf == MPI_IN_PLACE )
-            {
-                --N;
-            }
-
-            sendbytes = ( uint64_t )N * recvcount * sz;
-            recvbytes = sendbytes;
-
+            scorep_mpi_coll_bytes_reduce_scatter_block( recvcount, datatype, ( sendbuf == MPI_IN_PLACE ), comm, &sendbytes, &recvbytes );
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REDUCE_SCATTER_BLOCK ] );
             SCOREP_MpiCollectiveBegin();
@@ -1534,7 +1100,7 @@ MPI_Reduce_scatter_block( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, in
         if ( event_gen_active_for_group )
         {
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
-                                     root_loc,
+                                     SCOREP_INVALID_ROOT_RANK,
                                      SCOREP_MPI_COLLECTIVE__MPI_REDUCE_SCATTER_BLOCK,
                                      sendbytes,
                                      recvbytes );
@@ -1581,31 +1147,14 @@ MPI_Scan( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_Dat
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL );
     int       return_val;
 
-    int            sz, me, N;
-    uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = SCOREP_INVALID_ROOT_RANK;
-
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
-            PMPI_Type_size( datatype, &sz );
-            PMPI_Comm_rank( comm, &me );
-            PMPI_Comm_size( comm, &N );
-
-            if ( sendbuf == MPI_IN_PLACE )
-            {
-                sendbytes = ( uint64_t )( N - me - 1 ) * count * sz;
-                recvbytes = ( uint64_t )me * count * sz;
-            }
-            else
-            {
-                sendbytes = ( uint64_t )( N - me ) * count * sz;
-                recvbytes = ( uint64_t )( me + 1 ) * count * sz;
-            }
-
+            scorep_mpi_coll_bytes_scan( count, datatype, ( sendbuf == MPI_IN_PLACE ), comm, &sendbytes, &recvbytes );
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SCAN ] );
             SCOREP_MpiCollectiveBegin();
@@ -1625,7 +1174,7 @@ MPI_Scan( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_Dat
         if ( event_gen_active_for_group )
         {
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
-                                     root_loc,
+                                     SCOREP_INVALID_ROOT_RANK,
                                      SCOREP_MPI_COLLECTIVE__MPI_SCAN,
                                      sendbytes,
                                      recvbytes );
@@ -1674,56 +1223,14 @@ MPI_Scatter( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype se
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL );
     int       return_val;
 
-    int            sendsz, recvsz, N, me;
-    uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = scorep_mpi_get_scorep_mpi_rank( root );
-
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
-            int is_inter_comm = 0;
-            PMPI_Comm_test_inter( comm, &is_inter_comm );
-            if ( !is_inter_comm )
-            {
-                if ( recvbuf != MPI_IN_PLACE )
-                {
-                    PMPI_Comm_rank( comm, &me );
-                    if ( me == root )
-                    {
-                        PMPI_Comm_size( comm, &N );
-                        PMPI_Type_size( sendtype, &sendsz );
-                        sendbytes = ( uint64_t )N * sendcount * sendsz;
-                    }
-
-                    PMPI_Type_size( recvtype, &recvsz );
-                    recvbytes = ( uint64_t )recvcount * recvsz;
-                }
-                else
-                {
-                    PMPI_Comm_size( comm, &N );
-                    PMPI_Type_size( sendtype, &sendsz );
-                    sendbytes = ( uint64_t )( N - 1 ) * sendcount * sendsz;
-                    /* recvbytes is initialized to 0 */
-                }
-            }
-            else
-            {
-                if ( root == MPI_ROOT )
-                {
-                    PMPI_Comm_remote_size( comm, &N );
-                    PMPI_Type_size( sendtype, &sendsz );
-                    sendbytes = ( uint64_t )N * sendcount * sendsz;
-                }
-                else if ( root != MPI_PROC_NULL )
-                {
-                    PMPI_Type_size( recvtype, &recvsz );
-                    recvbytes = ( uint64_t )recvcount * recvsz;
-                }
-            }
-
+            scorep_mpi_coll_bytes_scatter( sendcount, sendtype, recvcount, recvtype, root, ( recvbuf == MPI_IN_PLACE ), comm, &sendbytes, &recvbytes );
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SCATTER ] );
             SCOREP_MpiCollectiveBegin();
@@ -1743,7 +1250,7 @@ MPI_Scatter( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype se
         if ( event_gen_active_for_group )
         {
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
-                                     root_loc,
+                                     scorep_mpi_get_scorep_mpi_rank( root ),
                                      SCOREP_MPI_COLLECTIVE__MPI_SCATTER,
                                      sendbytes,
                                      recvbytes );
@@ -1793,64 +1300,14 @@ MPI_Scatterv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* se
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL );
     int       return_val;
 
-    int            sendcount = 0, sendsz = 0, recvsz, me, N, i;
-    uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = scorep_mpi_get_scorep_mpi_rank( root );
-
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
-            int is_inter_comm = 0;
-            PMPI_Comm_test_inter( comm, &is_inter_comm );
-            if ( !is_inter_comm )
-            {
-                if ( recvbuf != MPI_IN_PLACE )
-                {
-                    PMPI_Type_size( recvtype, &recvsz );
-                    recvbytes = ( uint64_t )recvcount * recvsz;
-                }
-                /* MPI_IN_PLACE: recvbytes is initialized to 0 */
-
-                PMPI_Comm_rank( comm, &me );
-                if ( me == root )
-                {
-                    PMPI_Comm_size( comm, &N );
-                    PMPI_Type_size( sendtype, &sendsz );
-                    for ( i = 0; i < N; i++ )
-                    {
-                        sendcount += sendcounts[ i ];
-                    }
-
-                    if ( recvbuf == MPI_IN_PLACE )
-                    {
-                        sendcount -= sendcounts[ me ];
-                    }
-                }
-                sendbytes = ( uint64_t )sendcount * sendsz;
-            }
-            else
-            {
-                if ( root == MPI_ROOT )
-                {
-                    PMPI_Comm_remote_size( comm, &N );
-                    PMPI_Type_size( sendtype, &sendsz );
-
-                    for ( i = 0; i < N; i++ )
-                    {
-                        sendcount += sendcounts[ i ];
-                    }
-                    sendbytes = ( uint64_t )sendcount * sendsz;
-                }
-                else if ( root != MPI_PROC_NULL )
-                {
-                    PMPI_Type_size( recvtype, &recvsz );
-                    recvbytes = ( uint64_t )recvcount * recvsz;
-                }
-            }
-
+            scorep_mpi_coll_bytes_scatterv( sendcounts, sendtype, recvcount, recvtype, root, ( recvbuf == MPI_IN_PLACE ), comm, &sendbytes, &recvbytes );
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SCATTERV ] );
             SCOREP_MpiCollectiveBegin();
@@ -1870,7 +1327,7 @@ MPI_Scatterv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* se
         if ( event_gen_active_for_group )
         {
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
-                                     root_loc,
+                                     scorep_mpi_get_scorep_mpi_rank( root ),
                                      SCOREP_MPI_COLLECTIVE__MPI_SCATTERV,
                                      sendbytes,
                                      recvbytes );
@@ -1921,10 +1378,7 @@ MPI_Iallgather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype
     int                 return_val;
     SCOREP_MpiRequestId reqid;
 
-    int            recvsz, sendsz, N, M;
-    uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = SCOREP_INVALID_ROOT_RANK;
-
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
@@ -1932,33 +1386,7 @@ MPI_Iallgather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
-            PMPI_Comm_size( comm, &N );
-            PMPI_Type_size( recvtype, &recvsz );
-
-            int is_inter_comm = 0;
-            PMPI_Comm_test_inter( comm, &is_inter_comm );
-            if ( !is_inter_comm )
-            {
-                if ( sendbuf != MPI_IN_PLACE )
-                {
-                    PMPI_Type_size( sendtype, &sendsz );
-                    sendbytes = ( uint64_t )N * sendcount * sendsz;
-                    recvbytes = ( uint64_t )N * recvcount * recvsz;
-                }
-                else
-                {
-                    sendbytes = recvbytes = ( uint64_t )( N - 1 ) * recvcount * recvsz;
-                }
-            }
-            else
-            {
-                PMPI_Comm_remote_size( comm, &M );
-                PMPI_Type_size( sendtype, &sendsz );
-
-                sendbytes = ( uint64_t )M * sendcount * sendsz;
-                recvbytes = ( uint64_t )M * recvcount * recvsz;
-            }
-
+            scorep_mpi_coll_bytes_allgather( sendcount, sendtype, recvcount, recvtype, ( sendbuf == MPI_IN_PLACE ), comm, &sendbytes, &recvbytes );
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLGATHER ] );
             SCOREP_MpiNonBlockingCollectiveRequest( reqid );
@@ -1980,7 +1408,7 @@ MPI_Iallgather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype
             if ( return_val == MPI_SUCCESS )
             {
                 scorep_mpi_request_icoll_create( *request, SCOREP_MPI_REQUEST_FLAG_NONE, SCOREP_MPI_COLLECTIVE__MPI_IALLGATHER,
-                                                 root_loc, sendbytes, recvbytes, comm, reqid );
+                                                 SCOREP_INVALID_ROOT_RANK, sendbytes, recvbytes, comm, reqid );
             }
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLGATHER ] );
         }
@@ -2029,10 +1457,7 @@ MPI_Iallgatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatyp
     int                 return_val;
     SCOREP_MpiRequestId reqid;
 
-    int32_t        recvcount = 0, recvsz, sendsz, i, N, M, me;
-    uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = SCOREP_INVALID_ROOT_RANK;
-
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
@@ -2040,50 +1465,7 @@ MPI_Iallgatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatyp
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
-            PMPI_Comm_size( comm, &N );
-            PMPI_Type_size( recvtype, &recvsz );
-
-            int is_inter_comm = 0;
-            PMPI_Comm_test_inter( comm, &is_inter_comm );
-            if ( !is_inter_comm )
-            {
-                PMPI_Comm_rank( comm, &me );
-
-                if ( sendbuf != MPI_IN_PLACE )
-                {
-                    PMPI_Type_size( sendtype, &sendsz );
-                    sendbytes = ( uint64_t )N * sendcount * sendsz;
-                }
-                else
-                {
-                    sendbytes = ( uint64_t )( N - 1 ) * recvcounts[ me ] * recvsz;
-                }
-
-                for ( i = 0; i < N; i++ )
-                {
-                    recvcount += recvcounts[ i ];
-                }
-
-                if ( sendbuf == MPI_IN_PLACE )
-                {
-                    recvcount -= recvcounts[ me ];
-                }
-                recvbytes = ( uint64_t )recvcount * recvsz;
-            }
-            else
-            {
-                PMPI_Comm_remote_size( comm, &M );
-                PMPI_Type_size( sendtype, &sendsz );
-
-                for ( i = 0; i < M; i++ )
-                {
-                    recvcount += recvcounts[ i ];
-                }
-
-                sendbytes = ( uint64_t )M * sendcount * sendsz;
-                recvbytes = ( uint64_t )recvcount * recvsz;
-            }
-
+            scorep_mpi_coll_bytes_allgatherv( sendcount, sendtype, recvcounts, recvtype, ( sendbuf == MPI_IN_PLACE ), comm, &sendbytes, &recvbytes );
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLGATHERV ] );
             SCOREP_MpiNonBlockingCollectiveRequest( reqid );
@@ -2105,7 +1487,7 @@ MPI_Iallgatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatyp
             if ( return_val == MPI_SUCCESS )
             {
                 scorep_mpi_request_icoll_create( *request, SCOREP_MPI_REQUEST_FLAG_NONE, SCOREP_MPI_COLLECTIVE__MPI_IALLGATHERV,
-                                                 root_loc, sendbytes, recvbytes, comm, reqid );
+                                                 SCOREP_INVALID_ROOT_RANK, sendbytes, recvbytes, comm, reqid );
             }
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLGATHERV ] );
         }
@@ -2152,10 +1534,7 @@ MPI_Iallreduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, M
     int                 return_val;
     SCOREP_MpiRequestId reqid;
 
-    int32_t        sz, N;
-    uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = SCOREP_INVALID_ROOT_RANK;
-
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
@@ -2163,25 +1542,7 @@ MPI_Iallreduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, M
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
-            PMPI_Type_size( datatype, &sz );
-
-            int is_inter_comm = 0;
-            PMPI_Comm_test_inter( comm, &is_inter_comm );
-            if ( !is_inter_comm )
-            {
-                PMPI_Comm_size( comm, &N );
-                if ( sendbuf == MPI_IN_PLACE )
-                {
-                    N--;
-                }
-            }
-            else
-            {
-                PMPI_Comm_remote_size( comm, &N );
-            }
-
-            sendbytes = recvbytes = ( uint64_t )N * count * sz;
-
+            scorep_mpi_coll_bytes_allreduce( count, datatype, ( sendbuf == MPI_IN_PLACE ), comm, &sendbytes, &recvbytes );
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLREDUCE ] );
             SCOREP_MpiNonBlockingCollectiveRequest( reqid );
@@ -2203,7 +1564,7 @@ MPI_Iallreduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, M
             if ( return_val == MPI_SUCCESS )
             {
                 scorep_mpi_request_icoll_create( *request, SCOREP_MPI_REQUEST_FLAG_NONE, SCOREP_MPI_COLLECTIVE__MPI_IALLREDUCE,
-                                                 root_loc, sendbytes, recvbytes, comm, reqid );
+                                                 SCOREP_INVALID_ROOT_RANK, sendbytes, recvbytes, comm, reqid );
             }
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLREDUCE ] );
         }
@@ -2251,10 +1612,7 @@ MPI_Ialltoall( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype 
     int                 return_val;
     SCOREP_MpiRequestId reqid;
 
-    int32_t        recvsz, sendsz, N;
-    uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = SCOREP_INVALID_ROOT_RANK;
-
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
@@ -2262,31 +1620,7 @@ MPI_Ialltoall( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype 
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
-            int is_inter_comm = 0;
-            PMPI_Comm_test_inter( comm, &is_inter_comm );
-            if ( !is_inter_comm )
-            {
-                PMPI_Type_size( recvtype, &recvsz );
-                PMPI_Comm_size( comm, &N );
-
-                if ( sendbuf == MPI_IN_PLACE )
-                {
-                    --N;
-                }
-
-                sendbytes = ( uint64_t )N * recvcount * recvsz;
-                recvbytes = sendbytes;
-            }
-            else
-            {
-                PMPI_Comm_remote_size( comm, &N );
-                PMPI_Type_size( sendtype, &sendsz );
-                PMPI_Type_size( recvtype, &recvsz );
-
-                sendbytes = ( uint64_t )N * sendcount * sendsz;
-                recvbytes = ( uint64_t )N * recvcount * recvsz;
-            }
-
+            scorep_mpi_coll_bytes_alltoall( sendcount, sendtype, recvcount, recvtype, ( sendbuf == MPI_IN_PLACE ), comm, &sendbytes, &recvbytes );
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLTOALL ] );
             SCOREP_MpiNonBlockingCollectiveRequest( reqid );
@@ -2308,7 +1642,7 @@ MPI_Ialltoall( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype 
             if ( return_val == MPI_SUCCESS )
             {
                 scorep_mpi_request_icoll_create( *request, SCOREP_MPI_REQUEST_FLAG_NONE, SCOREP_MPI_COLLECTIVE__MPI_IALLTOALL,
-                                                 root_loc, sendbytes, recvbytes, comm, reqid );
+                                                 SCOREP_INVALID_ROOT_RANK, sendbytes, recvbytes, comm, reqid );
             }
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLTOALL ] );
         }
@@ -2358,10 +1692,7 @@ MPI_Ialltoallv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* 
     int                 return_val;
     SCOREP_MpiRequestId reqid;
 
-    int            recvcount = 0, recvsz, sendsz, N, i, me;
-    uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = SCOREP_INVALID_ROOT_RANK;
-
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
@@ -2369,48 +1700,7 @@ MPI_Ialltoallv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* 
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
-            int is_inter_comm = 0;
-            PMPI_Comm_test_inter( comm, &is_inter_comm );
-            if ( !is_inter_comm )
-            {
-                PMPI_Comm_size( comm, &N );
-                PMPI_Type_size( recvtype, &recvsz );
-
-                if ( sendbuf != MPI_IN_PLACE )
-                {
-                    PMPI_Type_size( sendtype, &sendsz );
-                    for ( i = 0; i < N; i++ )
-                    {
-                        recvbytes += ( uint64_t )recvcounts[ i ] * recvsz;
-                        sendbytes += ( uint64_t )sendcounts[ i ] * sendsz;
-                    }
-                }
-                else
-                {
-                    PMPI_Comm_rank( comm, &me );
-                    for ( i = 0; i < N; i++ )
-                    {
-                        recvcount += recvcounts[ i ];
-                    }
-
-                    recvcount -= recvcounts[ me ];
-
-                    sendbytes = recvbytes = ( uint64_t )recvcount * recvsz;
-                }
-            }
-            else
-            {
-                PMPI_Comm_remote_size( comm, &N );
-                PMPI_Type_size( recvtype, &recvsz );
-                PMPI_Type_size( sendtype, &sendsz );
-
-                for ( i = 0; i < N; i++ )
-                {
-                    recvbytes += ( uint64_t )recvcounts[ i ] * recvsz;
-                    sendbytes += ( uint64_t )sendcounts[ i ] * sendsz;
-                }
-            }
-
+            scorep_mpi_coll_bytes_alltoallv( sendcounts, sendtype, recvcounts, recvtype, ( sendbuf == MPI_IN_PLACE ), comm, &sendbytes, &recvbytes );
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLTOALLV ] );
             SCOREP_MpiNonBlockingCollectiveRequest( reqid );
@@ -2432,7 +1722,7 @@ MPI_Ialltoallv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* 
             if ( return_val == MPI_SUCCESS )
             {
                 scorep_mpi_request_icoll_create( *request, SCOREP_MPI_REQUEST_FLAG_NONE, SCOREP_MPI_COLLECTIVE__MPI_IALLTOALLV,
-                                                 root_loc, sendbytes, recvbytes, comm, reqid );
+                                                 SCOREP_INVALID_ROOT_RANK, sendbytes, recvbytes, comm, reqid );
             }
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLTOALLV ] );
         }
@@ -2482,10 +1772,7 @@ MPI_Ialltoallw( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int s
     int                 return_val;
     SCOREP_MpiRequestId reqid;
 
-    int            recvsz, sendsz, N, i, me;
-    uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = SCOREP_INVALID_ROOT_RANK;
-
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
@@ -2493,52 +1780,7 @@ MPI_Ialltoallw( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int s
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
-            int is_inter_comm = 0;
-            PMPI_Comm_test_inter( comm, &is_inter_comm );
-            if ( !is_inter_comm )
-            {
-                PMPI_Comm_size( comm, &N );
-
-                if ( sendbuf != MPI_IN_PLACE )
-                {
-                    for ( i = 0; i < N; i++ )
-                    {
-                        PMPI_Type_size( recvtypes[ i ], &recvsz );
-                        recvbytes += ( uint64_t )recvcounts[ i ] * recvsz;
-
-                        PMPI_Type_size( sendtypes[ i ], &sendsz );
-                        sendbytes += ( uint64_t )sendcounts[ i ] * sendsz;
-                    }
-                }
-                else
-                {
-                    PMPI_Comm_rank( comm, &me );
-
-                    for ( i = 0; i < N; i++ )
-                    {
-                        PMPI_Type_size( recvtypes[ i ], &recvsz );
-                        recvbytes += ( uint64_t )recvcounts[ i ] * recvsz;
-                    }
-
-                    PMPI_Type_size( recvtypes[ me ], &recvsz );
-                    recvbytes -= ( uint64_t )recvcounts[ me ] * recvsz;
-
-                    sendbytes = recvbytes;
-                }
-            }
-            else
-            {
-                PMPI_Comm_remote_size( comm, &N );
-
-                for ( i = 0; i < N; i++ )
-                {
-                    PMPI_Type_size( recvtypes[ i ], &recvsz );
-                    PMPI_Type_size( sendtypes[ i ], &sendsz );
-                    recvbytes += ( uint64_t )recvcounts[ i ] * recvsz;
-                    sendbytes += ( uint64_t )sendcounts[ i ] * sendsz;
-                }
-            }
-
+            scorep_mpi_coll_bytes_alltoallw( sendcounts, sendtypes, recvcounts, recvtypes, ( sendbuf == MPI_IN_PLACE ), comm, &sendbytes, &recvbytes );
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLTOALLW ] );
             SCOREP_MpiNonBlockingCollectiveRequest( reqid );
@@ -2560,7 +1802,7 @@ MPI_Ialltoallw( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int s
             if ( return_val == MPI_SUCCESS )
             {
                 scorep_mpi_request_icoll_create( *request, SCOREP_MPI_REQUEST_FLAG_NONE, SCOREP_MPI_COLLECTIVE__MPI_IALLTOALLW,
-                                                 root_loc, sendbytes, recvbytes, comm, reqid );
+                                                 SCOREP_INVALID_ROOT_RANK, sendbytes, recvbytes, comm, reqid );
             }
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLTOALLW ] );
         }
@@ -2601,7 +1843,8 @@ MPI_Ibarrier( MPI_Comm comm, MPI_Request* request )
     const int           event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL );
     int                 return_val;
     SCOREP_MpiRequestId reqid;
-    SCOREP_MpiRank      root_loc = SCOREP_INVALID_ROOT_RANK;
+
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
@@ -2609,6 +1852,8 @@ MPI_Ibarrier( MPI_Comm comm, MPI_Request* request )
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
+            scorep_mpi_coll_bytes_barrier( comm, &sendbytes, &recvbytes );
+
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IBARRIER ] );
             SCOREP_MpiNonBlockingCollectiveRequest( reqid );
         }
@@ -2629,7 +1874,7 @@ MPI_Ibarrier( MPI_Comm comm, MPI_Request* request )
             if ( return_val == MPI_SUCCESS )
             {
                 scorep_mpi_request_icoll_create( *request, SCOREP_MPI_REQUEST_FLAG_NONE, SCOREP_MPI_COLLECTIVE__MPI_IBARRIER,
-                                                 root_loc, 0, 0, comm, reqid );
+                                                 SCOREP_INVALID_ROOT_RANK, sendbytes, recvbytes, comm, reqid );
             }
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IBARRIER ] );
         }
@@ -2675,11 +1920,7 @@ MPI_Ibcast( void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm c
     int                 return_val;
     SCOREP_MpiRequestId reqid;
 
-    int32_t        sz, N, me;
-    int32_t        participant = 1;
-    uint64_t       sendbytes   = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc    = scorep_mpi_get_scorep_mpi_rank( root );
-
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
@@ -2687,43 +1928,7 @@ MPI_Ibcast( void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm c
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
-            PMPI_Type_size( datatype, &sz );
-
-            int is_inter_comm = 0;
-            PMPI_Comm_test_inter( comm, &is_inter_comm );
-            if ( !is_inter_comm )
-            {
-                PMPI_Comm_rank( comm, &me );
-                if ( me == root )
-                {
-                    PMPI_Comm_size( comm, &N );
-                }
-                else
-                {
-                    N = 0;
-                }
-            }
-            else
-            {
-                if ( root == MPI_ROOT )
-                {
-                    PMPI_Comm_remote_size( comm, &N );
-                    participant = 0;
-                }
-                else if ( root == MPI_PROC_NULL )
-                {
-                    participant = 0;
-                    N           = 0;
-                }
-                else
-                {
-                    N = 0;
-                }
-            }
-
-            sendbytes = ( uint64_t )N * count * sz;
-            recvbytes = ( uint64_t )participant * count * sz;
-
+            scorep_mpi_coll_bytes_bcast( count, datatype, root, comm, &sendbytes, &recvbytes );
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IBCAST ] );
             SCOREP_MpiNonBlockingCollectiveRequest( reqid );
@@ -2745,7 +1950,7 @@ MPI_Ibcast( void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm c
             if ( return_val == MPI_SUCCESS )
             {
                 scorep_mpi_request_icoll_create( *request, SCOREP_MPI_REQUEST_FLAG_NONE, SCOREP_MPI_COLLECTIVE__MPI_IBCAST,
-                                                 root_loc, sendbytes, recvbytes, comm, reqid );
+                                                 scorep_mpi_get_scorep_mpi_rank( root ), sendbytes, recvbytes, comm, reqid );
             }
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IBCAST ] );
         }
@@ -2792,10 +1997,7 @@ MPI_Iexscan( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_
     int                 return_val;
     SCOREP_MpiRequestId reqid;
 
-    int32_t        sz, me, N;
-    uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = SCOREP_INVALID_ROOT_RANK;
-
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
@@ -2803,13 +2005,7 @@ MPI_Iexscan( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
-            PMPI_Type_size( datatype, &sz );
-            PMPI_Comm_rank( comm, &me );
-            PMPI_Comm_size( comm, &N );
-
-            sendbytes = ( uint64_t )( N - me - 1 ) * sz * count;
-            recvbytes = ( uint64_t )me * sz * count;
-
+            scorep_mpi_coll_bytes_exscan( count, datatype, ( sendbuf == MPI_IN_PLACE ), comm, &sendbytes, &recvbytes );
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IEXSCAN ] );
             SCOREP_MpiNonBlockingCollectiveRequest( reqid );
@@ -2831,7 +2027,7 @@ MPI_Iexscan( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_
             if ( return_val == MPI_SUCCESS )
             {
                 scorep_mpi_request_icoll_create( *request, SCOREP_MPI_REQUEST_FLAG_NONE, SCOREP_MPI_COLLECTIVE__MPI_IEXSCAN,
-                                                 root_loc, sendbytes, recvbytes, comm, reqid );
+                                                 SCOREP_INVALID_ROOT_RANK, sendbytes, recvbytes, comm, reqid );
             }
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IEXSCAN ] );
         }
@@ -2880,10 +2076,7 @@ MPI_Igather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype se
     int                 return_val;
     SCOREP_MpiRequestId reqid;
 
-    int            sendsz, recvsz, N, me;
-    uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = scorep_mpi_get_scorep_mpi_rank( root );
-
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
@@ -2891,44 +2084,7 @@ MPI_Igather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype se
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
-            int is_inter_comm = 0;
-            PMPI_Comm_test_inter( comm, &is_inter_comm );
-            if ( !is_inter_comm )
-            {
-                if ( sendbuf != MPI_IN_PLACE )
-                {
-                    PMPI_Type_size( sendtype, &sendsz );
-                    sendbytes = ( uint64_t )sendcount * sendsz;
-                }
-                /* MPI_IN_PLACE: sendbytes is initialized to 0 */
-
-                PMPI_Comm_rank( comm, &me );
-                if ( me == root )
-                {
-                    PMPI_Comm_size( comm, &N );
-                    PMPI_Type_size( recvtype, &recvsz );
-                    if ( sendbuf == MPI_IN_PLACE )
-                    {
-                        --N;
-                    }
-                    recvbytes = ( uint64_t )N * recvcount * recvsz;
-                }
-            }
-            else
-            {
-                if ( root == MPI_ROOT )
-                {
-                    PMPI_Comm_remote_size( comm, &N );
-                    PMPI_Type_size( recvtype, &recvsz );
-                    recvbytes = ( uint64_t )N * recvcount * recvsz;
-                }
-                else if ( root != MPI_PROC_NULL )
-                {
-                    PMPI_Type_size( sendtype, &sendsz );
-                    sendbytes = ( uint64_t )sendcount * sendsz;
-                }
-            }
-
+            scorep_mpi_coll_bytes_gather( sendcount, sendtype, recvcount, recvtype, root, ( sendbuf == MPI_IN_PLACE ), comm, &sendbytes, &recvbytes );
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IGATHER ] );
             SCOREP_MpiNonBlockingCollectiveRequest( reqid );
@@ -2950,7 +2106,7 @@ MPI_Igather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype se
             if ( return_val == MPI_SUCCESS )
             {
                 scorep_mpi_request_icoll_create( *request, SCOREP_MPI_REQUEST_FLAG_NONE, SCOREP_MPI_COLLECTIVE__MPI_IGATHER,
-                                                 root_loc, sendbytes, recvbytes, comm, reqid );
+                                                 scorep_mpi_get_scorep_mpi_rank( root ), sendbytes, recvbytes, comm, reqid );
             }
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IGATHER ] );
         }
@@ -3000,10 +2156,7 @@ MPI_Igatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype s
     int                 return_val;
     SCOREP_MpiRequestId reqid;
 
-    int            recvsz, sendsz, me, N, i;
-    uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = scorep_mpi_get_scorep_mpi_rank( root );
-
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
@@ -3011,53 +2164,7 @@ MPI_Igatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype s
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
-            int is_inter_comm = 0;
-            PMPI_Comm_test_inter( comm, &is_inter_comm );
-            if ( !is_inter_comm )
-            {
-                if ( sendbuf != MPI_IN_PLACE )
-                {
-                    PMPI_Type_size( sendtype, &sendsz );
-                    sendbytes = ( uint64_t )sendcount * sendsz;
-                }
-                /* MPI_IN_PLACE: sendbytes is initialized to 0 */
-
-                PMPI_Comm_rank( comm, &me );
-                if ( me == root )
-                {
-                    PMPI_Comm_size( comm, &N );
-                    PMPI_Type_size( recvtype, &recvsz );
-
-                    for ( i = 0; i < N; ++i )
-                    {
-                        recvbytes += ( uint64_t )recvcounts[ i ] * recvsz;
-                    }
-
-                    if ( sendbuf == MPI_IN_PLACE )
-                    {
-                        recvbytes -= ( uint64_t )recvcounts[ me ] * recvsz;
-                    }
-                }
-            }
-            else
-            {
-                if ( root == MPI_ROOT )
-                {
-                    PMPI_Comm_remote_size( comm, &N );
-                    PMPI_Type_size( recvtype, &recvsz );
-
-                    for ( i = 0; i < N; ++i )
-                    {
-                        recvbytes += ( uint64_t )recvcounts[ i ] * recvsz;
-                    }
-                }
-                else if ( root != MPI_PROC_NULL )
-                {
-                    PMPI_Type_size( sendtype, &sendsz );
-                    sendbytes = ( uint64_t )sendcount * sendsz;
-                }
-            }
-
+            scorep_mpi_coll_bytes_gatherv( sendcount, sendtype, recvcounts, recvtype, root, ( sendbuf == MPI_IN_PLACE ), comm, &sendbytes, &recvbytes );
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IGATHERV ] );
             SCOREP_MpiNonBlockingCollectiveRequest( reqid );
@@ -3079,7 +2186,7 @@ MPI_Igatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype s
             if ( return_val == MPI_SUCCESS )
             {
                 scorep_mpi_request_icoll_create( *request, SCOREP_MPI_REQUEST_FLAG_NONE, SCOREP_MPI_COLLECTIVE__MPI_IGATHERV,
-                                                 root_loc, sendbytes, recvbytes, comm, reqid );
+                                                 scorep_mpi_get_scorep_mpi_rank( root ), sendbytes, recvbytes, comm, reqid );
             }
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IGATHERV ] );
         }
@@ -3127,10 +2234,7 @@ MPI_Ireduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_
     int                 return_val;
     SCOREP_MpiRequestId reqid;
 
-    int            sz, me, N;
-    uint64_t       sendbytes = 0, recvbytes = 0, participant = 1;
-    SCOREP_MpiRank root_loc  = scorep_mpi_get_scorep_mpi_rank( root );
-
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
@@ -3138,41 +2242,7 @@ MPI_Ireduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
-            PMPI_Type_size( datatype, &sz );
-            PMPI_Comm_rank( comm, &me );
-            PMPI_Comm_size( comm, &N );
-
-            int is_inter_comm = 0;
-            PMPI_Comm_test_inter( comm, &is_inter_comm );
-            if ( !is_inter_comm )
-            {
-                if ( sendbuf != MPI_IN_PLACE )
-                {
-                    sendbytes = ( uint64_t )count * sz;
-                }
-                else
-                {
-                    --N;
-                }
-
-                if ( root == me )
-                {
-                    recvbytes = ( uint64_t )N * count * sz;
-                }
-            }
-            else
-            {
-                if ( root == MPI_ROOT )
-                {
-                    PMPI_Comm_remote_size( comm, &N );
-                    recvbytes = ( uint64_t )N * count * sz;
-                }
-                else if ( root != MPI_PROC_NULL )
-                {
-                    sendbytes = ( uint64_t )count * sz;
-                }
-            }
-
+            scorep_mpi_coll_bytes_reduce( count, datatype, root, ( sendbuf == MPI_IN_PLACE ), comm, &sendbytes, &recvbytes );
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IREDUCE ] );
             SCOREP_MpiNonBlockingCollectiveRequest( reqid );
@@ -3194,7 +2264,7 @@ MPI_Ireduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_
             if ( return_val == MPI_SUCCESS )
             {
                 scorep_mpi_request_icoll_create( *request, SCOREP_MPI_REQUEST_FLAG_NONE, SCOREP_MPI_COLLECTIVE__MPI_IREDUCE,
-                                                 root_loc, sendbytes, recvbytes, comm, reqid );
+                                                 scorep_mpi_get_scorep_mpi_rank( root ), sendbytes, recvbytes, comm, reqid );
             }
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IREDUCE ] );
         }
@@ -3241,10 +2311,7 @@ MPI_Ireduce_scatter( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, SCOREP_
     int                 return_val;
     SCOREP_MpiRequestId reqid;
 
-    int            i, sz, me, N, M, count = 0;
-    uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = SCOREP_INVALID_ROOT_RANK;
-
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
@@ -3252,39 +2319,7 @@ MPI_Ireduce_scatter( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, SCOREP_
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
-            PMPI_Type_size( datatype, &sz );
-            PMPI_Comm_rank( comm, &me );
-            PMPI_Comm_size( comm, &N );
-
-            for ( i = 0; i < N; i++ )
-            {
-                count += recvcounts[ i ];
-            }
-
-            int is_inter_comm = 0;
-            PMPI_Comm_test_inter( comm, &is_inter_comm );
-            if ( !is_inter_comm )
-            {
-                if ( sendbuf == MPI_IN_PLACE )
-                {
-                    count    -= recvcounts[ me ];
-                    sendbytes = ( uint64_t )count * sz;
-                    recvbytes = ( uint64_t )( N - 1 ) * recvcounts[ me ] * sz;
-                }
-                else
-                {
-                    sendbytes = ( uint64_t )count * sz;
-                    recvbytes = ( uint64_t )N * recvcounts[ me ] * sz;
-                }
-            }
-            else
-            {
-                PMPI_Comm_remote_size( comm, &M );
-
-                sendbytes = ( uint64_t )count * sz;
-                recvbytes = ( uint64_t )M * recvcounts[ me ] * sz;
-            }
-
+            scorep_mpi_coll_bytes_reduce_scatter( recvcounts, datatype, ( sendbuf == MPI_IN_PLACE ), comm, &sendbytes, &recvbytes );
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IREDUCE_SCATTER ] );
             SCOREP_MpiNonBlockingCollectiveRequest( reqid );
@@ -3306,7 +2341,7 @@ MPI_Ireduce_scatter( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, SCOREP_
             if ( return_val == MPI_SUCCESS )
             {
                 scorep_mpi_request_icoll_create( *request, SCOREP_MPI_REQUEST_FLAG_NONE, SCOREP_MPI_COLLECTIVE__MPI_IREDUCE_SCATTER,
-                                                 root_loc, sendbytes, recvbytes, comm, reqid );
+                                                 SCOREP_INVALID_ROOT_RANK, sendbytes, recvbytes, comm, reqid );
             }
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IREDUCE_SCATTER ] );
         }
@@ -3353,10 +2388,7 @@ MPI_Ireduce_scatter_block( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, i
     int                 return_val;
     SCOREP_MpiRequestId reqid;
 
-    int            sz, N;
-    uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = SCOREP_INVALID_ROOT_RANK;
-
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
@@ -3364,17 +2396,7 @@ MPI_Ireduce_scatter_block( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, i
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
-            PMPI_Type_size( datatype, &sz );
-            PMPI_Comm_size( comm, &N );
-
-            if ( sendbuf == MPI_IN_PLACE )
-            {
-                --N;
-            }
-
-            sendbytes = ( uint64_t )N * recvcount * sz;
-            recvbytes = sendbytes;
-
+            scorep_mpi_coll_bytes_reduce_scatter_block( recvcount, datatype, ( sendbuf == MPI_IN_PLACE ), comm, &sendbytes, &recvbytes );
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IREDUCE_SCATTER_BLOCK ] );
             SCOREP_MpiNonBlockingCollectiveRequest( reqid );
@@ -3396,7 +2418,7 @@ MPI_Ireduce_scatter_block( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, i
             if ( return_val == MPI_SUCCESS )
             {
                 scorep_mpi_request_icoll_create( *request, SCOREP_MPI_REQUEST_FLAG_NONE, SCOREP_MPI_COLLECTIVE__MPI_IREDUCE_SCATTER_BLOCK,
-                                                 root_loc, sendbytes, recvbytes, comm, reqid );
+                                                 SCOREP_INVALID_ROOT_RANK, sendbytes, recvbytes, comm, reqid );
             }
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IREDUCE_SCATTER_BLOCK ] );
         }
@@ -3443,10 +2465,7 @@ MPI_Iscan( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_Da
     int                 return_val;
     SCOREP_MpiRequestId reqid;
 
-    int            sz, me, N;
-    uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = SCOREP_INVALID_ROOT_RANK;
-
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
@@ -3454,21 +2473,7 @@ MPI_Iscan( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_Da
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
-            PMPI_Type_size( datatype, &sz );
-            PMPI_Comm_rank( comm, &me );
-            PMPI_Comm_size( comm, &N );
-
-            if ( sendbuf == MPI_IN_PLACE )
-            {
-                sendbytes = ( uint64_t )( N - me - 1 ) * count * sz;
-                recvbytes = ( uint64_t )me * count * sz;
-            }
-            else
-            {
-                sendbytes = ( uint64_t )( N - me ) * count * sz;
-                recvbytes = ( uint64_t )( me + 1 ) * count * sz;
-            }
-
+            scorep_mpi_coll_bytes_scan( count, datatype, ( sendbuf == MPI_IN_PLACE ), comm, &sendbytes, &recvbytes );
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISCAN ] );
             SCOREP_MpiNonBlockingCollectiveRequest( reqid );
@@ -3490,7 +2495,7 @@ MPI_Iscan( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_Da
             if ( return_val == MPI_SUCCESS )
             {
                 scorep_mpi_request_icoll_create( *request, SCOREP_MPI_REQUEST_FLAG_NONE, SCOREP_MPI_COLLECTIVE__MPI_ISCAN,
-                                                 root_loc, sendbytes, recvbytes, comm, reqid );
+                                                 SCOREP_INVALID_ROOT_RANK, sendbytes, recvbytes, comm, reqid );
             }
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISCAN ] );
         }
@@ -3539,10 +2544,7 @@ MPI_Iscatter( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype s
     int                 return_val;
     SCOREP_MpiRequestId reqid;
 
-    int            sendsz, recvsz, N, me;
-    uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = scorep_mpi_get_scorep_mpi_rank( root );
-
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
@@ -3550,46 +2552,7 @@ MPI_Iscatter( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype s
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
-            int is_inter_comm = 0;
-            PMPI_Comm_test_inter( comm, &is_inter_comm );
-            if ( !is_inter_comm )
-            {
-                if ( recvbuf != MPI_IN_PLACE )
-                {
-                    PMPI_Comm_rank( comm, &me );
-                    if ( me == root )
-                    {
-                        PMPI_Comm_size( comm, &N );
-                        PMPI_Type_size( sendtype, &sendsz );
-                        sendbytes = ( uint64_t )N * sendcount * sendsz;
-                    }
-
-                    PMPI_Type_size( recvtype, &recvsz );
-                    recvbytes = ( uint64_t )recvcount * recvsz;
-                }
-                else
-                {
-                    PMPI_Comm_size( comm, &N );
-                    PMPI_Type_size( sendtype, &sendsz );
-                    sendbytes = ( uint64_t )( N - 1 ) * sendcount * sendsz;
-                    /* recvbytes is initialized to 0 */
-                }
-            }
-            else
-            {
-                if ( root == MPI_ROOT )
-                {
-                    PMPI_Comm_remote_size( comm, &N );
-                    PMPI_Type_size( sendtype, &sendsz );
-                    sendbytes = ( uint64_t )N * sendcount * sendsz;
-                }
-                else if ( root != MPI_PROC_NULL )
-                {
-                    PMPI_Type_size( recvtype, &recvsz );
-                    recvbytes = ( uint64_t )recvcount * recvsz;
-                }
-            }
-
+            scorep_mpi_coll_bytes_scatter( sendcount, sendtype, recvcount, recvtype, root, ( recvbuf == MPI_IN_PLACE ), comm, &sendbytes, &recvbytes );
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISCATTER ] );
             SCOREP_MpiNonBlockingCollectiveRequest( reqid );
@@ -3611,7 +2574,7 @@ MPI_Iscatter( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype s
             if ( return_val == MPI_SUCCESS )
             {
                 scorep_mpi_request_icoll_create( *request, SCOREP_MPI_REQUEST_FLAG_NONE, SCOREP_MPI_COLLECTIVE__MPI_ISCATTER,
-                                                 root_loc, sendbytes, recvbytes, comm, reqid );
+                                                 scorep_mpi_get_scorep_mpi_rank( root ), sendbytes, recvbytes, comm, reqid );
             }
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISCATTER ] );
         }
@@ -3661,10 +2624,7 @@ MPI_Iscatterv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* s
     int                 return_val;
     SCOREP_MpiRequestId reqid;
 
-    int            sendcount = 0, sendsz = 0, recvsz, me, N, i;
-    uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = scorep_mpi_get_scorep_mpi_rank( root );
-
+    uint64_t sendbytes = 0, recvbytes = 0;
 
     if ( event_gen_active )
     {
@@ -3672,54 +2632,7 @@ MPI_Iscatterv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* s
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
-            int is_inter_comm = 0;
-            PMPI_Comm_test_inter( comm, &is_inter_comm );
-            if ( !is_inter_comm )
-            {
-                if ( recvbuf != MPI_IN_PLACE )
-                {
-                    PMPI_Type_size( recvtype, &recvsz );
-                    recvbytes = ( uint64_t )recvcount * recvsz;
-                }
-                /* MPI_IN_PLACE: recvbytes is initialized to 0 */
-
-                PMPI_Comm_rank( comm, &me );
-                if ( me == root )
-                {
-                    PMPI_Comm_size( comm, &N );
-                    PMPI_Type_size( sendtype, &sendsz );
-                    for ( i = 0; i < N; i++ )
-                    {
-                        sendcount += sendcounts[ i ];
-                    }
-
-                    if ( recvbuf == MPI_IN_PLACE )
-                    {
-                        sendcount -= sendcounts[ me ];
-                    }
-                }
-                sendbytes = ( uint64_t )sendcount * sendsz;
-            }
-            else
-            {
-                if ( root == MPI_ROOT )
-                {
-                    PMPI_Comm_remote_size( comm, &N );
-                    PMPI_Type_size( sendtype, &sendsz );
-
-                    for ( i = 0; i < N; i++ )
-                    {
-                        sendcount += sendcounts[ i ];
-                    }
-                    sendbytes = ( uint64_t )sendcount * sendsz;
-                }
-                else if ( root != MPI_PROC_NULL )
-                {
-                    PMPI_Type_size( recvtype, &recvsz );
-                    recvbytes = ( uint64_t )recvcount * recvsz;
-                }
-            }
-
+            scorep_mpi_coll_bytes_scatterv( sendcounts, sendtype, recvcount, recvtype, root, ( recvbuf == MPI_IN_PLACE ), comm, &sendbytes, &recvbytes );
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISCATTERV ] );
             SCOREP_MpiNonBlockingCollectiveRequest( reqid );
@@ -3741,7 +2654,7 @@ MPI_Iscatterv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* s
             if ( return_val == MPI_SUCCESS )
             {
                 scorep_mpi_request_icoll_create( *request, SCOREP_MPI_REQUEST_FLAG_NONE, SCOREP_MPI_COLLECTIVE__MPI_ISCATTERV,
-                                                 root_loc, sendbytes, recvbytes, comm, reqid );
+                                                 scorep_mpi_get_scorep_mpi_rank( root ), sendbytes, recvbytes, comm, reqid );
             }
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISCATTERV ] );
         }
