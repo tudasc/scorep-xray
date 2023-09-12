@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2022,
+ * Copyright (c) 2009-2014, 2022-2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -122,6 +122,14 @@ scorep_definitions_unify_location_group( SCOREP_LocationGroupDef*      definitio
     UTILS_ASSERT( definition );
     UTILS_ASSERT( handlesPageManager );
 
+    if ( !definition->has_children )
+    {
+        /* In case this location group has no locations. if this group doesn't have a
+         * location it shouldn't be unified.
+         */
+        return;
+    }
+
     SCOREP_SystemTreeNodeHandle unified_system_tree_parent = SCOREP_INVALID_SYSTEM_TREE_NODE;
     if ( definition->system_tree_parent != SCOREP_INVALID_SYSTEM_TREE_NODE )
     {
@@ -183,6 +191,8 @@ define_location_group( SCOREP_DefinitionManager*   definition_manager,
     new_definition->system_tree_parent      = systemTreeParent;
     new_definition->location_group_type     = locationGroupType;
     new_definition->creating_location_group = creatingLocationGroup;
+    /* Will be set to true from any child locations */
+    new_definition->has_children = false;
 
     /* Does return if it is a duplicate */
     SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( LocationGroup, location_group );

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2022,
+ * Copyright (c) 2009-2014, 2022-2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -192,6 +192,21 @@ scorep_definitions_unify_sampling_set( SCOREP_SamplingSetDef*        definition,
                       "Invalid scoped sampling set definition: missing location" );
         UTILS_BUG_ON( scoped_definition->scope_handle == SCOREP_MOVABLE_NULL,
                       "Invalid scoped sampling set definition: missing scope" );
+        /* If a scope doesn't get unified the scoped sampling set doesn't need to either. */
+        if ( scoped_definition->scope_type == SCOREP_METRIC_SCOPE_LOCATION_GROUP )
+        {
+            if ( !SCOREP_HANDLE_DEREF( scoped_definition->scope_handle, LocationGroup, handlesPageManager )->has_children )
+            {
+                return;
+            }
+        }
+        else if ( scoped_definition->scope_type == SCOREP_METRIC_SCOPE_SYSTEM_TREE_NODE )
+        {
+            if ( !SCOREP_HANDLE_DEREF( scoped_definition->scope_handle, SystemTreeNode, handlesPageManager )->has_children )
+            {
+                return;
+            }
+        }
 
         definition->unified = define_scoped_sampling_set(
             scorep_unified_definition_manager,

@@ -68,6 +68,8 @@ Bugfixes:
 - Restore HIP memory transfer recording.
 - Limit metrics to CPU thread locations, to avoid aborts when used in
   combination with accelerator recording.
+- Fix erroneous creation of system tree branches without locations as
+  leafs as they don't contribute and conflict the Cube system tree model.
 
 ------------------- Released version 8.1 -----------------------------
 
