@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2011, 2015, 2017, 2019,
+## Copyright (c) 2009-2011, 2015, 2017, 2019, 2023,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -117,3 +117,21 @@ $(SCOREP_RECURSIVE_TARGETS):
 	if test "$$dot_seen" = "no"; then \
 	  $(MAKE) $(AM_MAKEFLAGS) "$$target-sp" || exit 1; \
 	fi; test -z "$$fail"
+
+
+###############################################################################
+## Append commit, version, and date-released to $(distdir)/CITATION.cff.
+## Intended to be used as dist-hook prerequisite when building from git.
+
+if GIT_CONTROLLED
+
+append-to-citation-cff:
+	@echo "commit: $$(cat $(distdir)/build-config/REVISION)" >> $(distdir)/CITATION.cff
+	@echo "date-released: $$(date +%Y-%m-%d)" >> $(distdir)/CITATION.cff
+	@echo "version: $$($(srcdir)/build-config/common/generate-package-version.sh $(distdir)/build-config/VERSION)" >> $(distdir)/CITATION.cff
+
+else !GIT_CONTROLLED
+
+append-to-citation-cff:
+
+endif  !GIT_CONTROLLED
