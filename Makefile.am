@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2015, 2017, 2020, 2022,
+## Copyright (c) 2009-2015, 2017, 2020, 2022-2023,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -51,8 +51,9 @@ include build-config/common/platforms.am
 ## directory will be recursively copied into the distribution. Please note that
 ## this will also copy everything in the directory, including CVS/RCS version
 ## control files. We recommend against using this feature.
-EXTRA_DIST += $(srcdir)/README.md                                         \
+EXTRA_DIST += $(srcdir)/CITATION.cff                                      \
               $(srcdir)/OPEN_ISSUES                                       \
+              $(srcdir)/README.md                                         \
               $(srcdir)/THANKS                                            \
               $(srcdir)/build-config/downloads                            \
               $(srcdir)/doc/doxygen-user/main_1.dox.in                    \
@@ -102,6 +103,7 @@ pkgdata_DATA = @PACKAGE@.summary \
                $(srcdir)/doc/doxygen-user/scorep_info_ldaudit_help.md
 
 doc_DATA = $(srcdir)/ChangeLog \
+           $(srcdir)/CITATION.cff \
            $(srcdir)/COPYING \
            $(srcdir)/OPEN_ISSUES
 
@@ -134,7 +136,7 @@ install-data-hook:
 
 uninstall-hook: doxygen-uninstall common-uninstall
 
-dist-hook: doc/doxygen-user/main.dox doxygen-user-generate prohibit-make-dist
+dist-hook: doc/doxygen-user/main.dox doxygen-user-generate prohibit-make-dist append-to-citation-cff
 
 prohibit-make-dist:
 	@$(am__tty_colors); \

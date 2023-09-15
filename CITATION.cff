@@ -1,0 +1,182 @@
+# What is a CITATION.cff file?
+# See https://citation-file-format.github.io/
+
+cff-version: 1.2.0
+title: Score-P
+abstract: >-
+  The instrumentation and measurement framework Score-P, together with
+  analysis tools build on top of its output formats, provides insight
+  into massively parallel HPC applications, their communication,
+  synchronization, I/O, and scaling behaviour to pinpoint performance
+  bottlenecks and their causes.
+message: >-
+  If you use this software, please cite it using the metadata from
+  this file.
+type: software
+identifiers:
+  - description: "The concept DOI of this software"
+    type: doi
+    value: 10.5281/zenodo.1240731
+repository-code: 'https://gitlab.com/score-p/scorep'
+url: 'https://score-p.org'
+repository-artifact: 'https://perftools.pages.jsc.fz-juelich.de/cicd/scorep/'
+keywords:
+  - Performance measurement
+  - Instrumentation
+  - Sampling
+  - Profiling
+  - Tracing
+license: BSD-3-Clause
+contact:
+  - email: support@score-p.org
+references:
+  - title: >-
+      Score-P: A Joint Performance Measurement Run-Time Infrastructure
+      for Periscope, Scalasca, TAU, and Vampir
+    type: conference-paper
+    authors:
+     - name: Knüpfer et al.
+    doi: 10.1007/978-3-642-31476-6_7
+# Authors of Score-P, in chronological order:
+authors:
+  - family-names: Feld
+    given-names: Christian
+    email: c.feld@fz-juelich.de
+    orcid: https://orcid.org/0000-0001-7685-3497
+  - family-names: Jäkel
+    given-names: René
+    email: rene.jaekel@zih.tu-dresden.de
+    orcid: https://orcid.org/0000-0001-6260-5222
+  - family-names: Lorenz
+    given-names: Daniel
+    email: lorenz@cs.tu-darmstadt.de
+  - family-names: Wesarg
+    given-names: Bert
+    email: bert.wesarg@tu-dresden.de
+    orcid: https://orcid.org/0000-0003-2647-0628
+  - family-names: Schmidl
+    given-names: Dirk
+    email: schmidl@rz.rwth-aachen.de
+  - family-names: Tschüter
+    given-names: Ronny
+    email: ronny.tschueter@zih.tu-dresden.de
+  - family-names: Oleynik
+    given-names: Yury
+    email: oleynik@in.tum.de
+  - family-names: Wagner
+    given-names: Michael
+    email: michael.wagner@zih.tu-dresden.de
+    orcid: https://orcid.org/0000-0002-5767-1716
+  - family-names: Eschweiler
+    given-names: Dominic
+    email: eschweiler@fias.uni-frankfurt.de
+  - family-names: Spazier
+    given-names: Johannes
+    email: johannes.spazier@tu-dresden.de
+  - family-names: Knüpfer
+    given-names: Andreas
+    email: andreas.knuepfer@zih.tu-dresden.de
+    orcid: https://orcid.org/0000-0003-3591-397X
+  - family-names: Shende
+    given-names: Sameer
+    email: sameer@cs.uoregon.edu
+    orcid: https://orcid.org/0000-0002-2592-669X
+  - family-names: Millstein
+    given-names: Suzanne
+    email: smillst@cs.uoregon.edu
+  - family-names: Biersdorff
+    given-names: Scott
+    email: scottb@cs.uoregon.edu
+    orcid: https://orcid.org/0000-0003-4210-7335
+  - family-names: Geimer
+    given-names: Markus
+    email: m.geimer@fz-juelich.de
+    orcid: https://orcid.org/0000-0002-5575-8287
+  - family-names: Schlütter
+    given-names: Marc
+    email: m.schluetter@fz-juelich.de
+    orcid: https://orcid.org/0000-0002-1353-4912
+  - family-names: Schmitt
+    given-names: Felix
+    email: felix.schmitt@zih.tu-dresden.de
+  - family-names: Ziegenbalg
+    given-names: Johannes
+    email: johannes.ziegenbalg@zih.tu-dresden.de
+  - family-names: Zhukov
+    given-names: Ilya
+    email: i.zhukov@fz-juelich.de
+    orcid: https://orcid.org/0000-0003-4650-3773
+  - family-names: Dietrich
+    given-names: Robert
+    email: robert.dietrich@tu-dresden.de
+    orcid: https://orcid.org/0000-0002-2501-5095
+  - family-names: Geyer
+    given-names: Robin
+    email: robin.geyer@tu-dresden.de
+    orcid: https://orcid.org/0000-0001-6967-8707
+  - family-names: Saviankou
+    given-names: Pavel
+    email: p.saviankou@fz-juelich.de
+    orcid: https://orcid.org/0000-0002-5662-9524
+  - family-names: Knobloch
+    given-names: Michael
+    email: m.knobloch@fz-juelich.de
+    orcid: https://orcid.org/0000-0003-3116-4393
+  - family-names: Mijaković
+    given-names: Robert
+    email: mijakovi@in.tum.de
+    orcid: https://orcid.org/0000-0001-6077-4049
+  - family-names: Schöne
+    given-names: Robert
+    email: robert.schoene@tu-dresden.de
+  - family-names: Winkler
+    given-names: Frank
+    email: winklerf@ornl.gov
+    orcid: https://orcid.org/0000-0003-1648-9747
+  - family-names: Ilsche
+    given-names: Thomas
+    email: thomas.ilsche@tu-dresden.de
+    orcid: https://orcid.org/0000-0002-5437-3887
+  - family-names: Hermanns
+    given-names: Marc-André
+    email: hermanns@itc.rwth-aachen.de
+    orcid: https://orcid.org/0000-0003-3895-7791
+  - family-names: Brendel
+    given-names: Ronny
+    email: ronny.brendel@tu-dresden.de
+  - family-names: Oeste
+    given-names: Sebastian
+    email: sebastian.oeste@tu-dresden.de
+    orcid: https://orcid.org/0009-0002-3540-4657
+  - family-names: Herold
+    given-names: Christian
+    email: christian.herold@tu-dresden.de
+  - family-names: Sigl
+    given-names: Severin
+    email: severin.sigl@tu-dresden.de
+  - family-names: Hilbrich
+    given-names: Tobias
+    email: tobias.hilbrich@tu-dresden.de
+  - family-names: Williams
+    given-names: Bill
+    email: william.williams@mailbox.tu-dresden.de
+    orcid: https://orcid.org/0000-0001-5806-3176
+  - family-names: Klotz
+    given-names: Sven
+    email: klotz@itc.rwth-aachen.de
+    orcid: https://orcid.org/0009-0004-4200-8534
+  - family-names: Corbin
+    given-names: Gregor
+    email: g.corbin@fz-juelich.de
+    orcid: https://orcid.org/0000-0002-7106-5149
+  - family-names: Reuter
+    given-names: Jan André
+    email: j.reuter@fz-juelich.de
+    orcid: https://orcid.org/0000-0002-1219-0310
+  - family-names: Grund
+    given-names: Alexander
+    email: alexander.grund@tu-dresden.de
+    orcid: https://orcid.org/0000-0002-7196-8452
+  - family-names: Sander
+    given-names: Maximilian
+    email: maximilian.sander1@tu-dresden.de

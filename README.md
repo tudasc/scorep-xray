@@ -109,6 +109,17 @@ Start the container with:
    [container]$ make
    ```
 
+## Citing
+
+Please refer to the Score-P measurement infrastructure by citing the
+overview article
+_[Score-P: A Joint Performance Measurement Run-Time Infrastructure for Periscope, Scalasca, TAU, and Vampir](https://link.springer.com/chapter/10.1007/978-3-642-31476-6_7)_
+
+Version-specific DOIs of the software can be found on
+[Score-P's Zenodo page](https://zenodo.org/record/1240731).
+
+See also CITATION.cff for machine-readable citation information.
+
 Have fun!
 
 Please report bugs to <support@score-p.org>.
