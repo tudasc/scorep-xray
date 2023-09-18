@@ -71,6 +71,7 @@ Bugfixes:
 - Fix erroneous creation of system tree branches without locations as
   leafs as they don't contribute and conflict the Cube system tree model.
 - Allow per-component SCOREP_METRIC configurations in MPMD scenarios.
+- Fix calculation of put and get bytes in MPI accumulate functions.
 
 ------------------- Released version 8.1 -----------------------------
 
