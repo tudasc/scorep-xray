@@ -32,7 +32,6 @@ ${proto:c}
       {
         uint64_t bytes_get = ${attribute(get_count)};
         uint64_t bytes_put = ${attribute(put_count)};
-        ${xblock:pre}
         /*
          * The following code block is only used if the prototype
          * definition specifies:

@@ -69,6 +69,19 @@
 /** internal id counter for rma operations */
 static int scorep_rma_id = 0;
 
+
+static inline int
+get_datatype_size(MPI_Datatype datatype)
+{
+  int datatype_size = 0;
+  if ( datatype != MPI_DATATYPE_NULL )
+  {
+    PMPI_Type_size( datatype, &datatype_size );
+  }
+  return datatype_size;
+}
+
+
 /**
  * @name C wrappers for access functions
  * @{
