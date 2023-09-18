@@ -30,8 +30,8 @@ ${proto:c}
       SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
       if (target_rank != MPI_PROC_NULL)
       {
-        uint64_t bytes_get = ${attribute(get_count)};
-        uint64_t bytes_put = ${attribute(put_count)};
+        uint64_t bytes_get = ${attribute(bytes_get)};
+        uint64_t bytes_put = ${attribute(bytes_put)};
         /*
          * The following code block is only used if the prototype
          * definition specifies:

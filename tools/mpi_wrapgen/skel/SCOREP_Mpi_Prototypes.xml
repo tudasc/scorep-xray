@@ -12,8 +12,8 @@
     <attribute id="atomic_op">ACCUMULATE</attribute>
     <attribute id="rma_explicit_handle">false</attribute>
     <attribute id="rma_remote_completion">SEPARATE</attribute>
-    <attribute id="put_count">origin_count * get_datatype_size(origin_datatype)</attribute>
-    <attribute id="get_count">0</attribute>
+    <attribute id="bytes_put">origin_count * get_datatype_size(origin_datatype)</attribute>
+    <attribute id="bytes_get">0</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="origin_addr" />
     <param access="i" type_modifier="" type="int" name="origin_count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="origin_datatype" />
@@ -900,8 +900,8 @@
     <attribute id="atomic_op">COMPARE_AND_SWAP</attribute>
     <attribute id="rma_explicit_handle">false</attribute>
     <attribute id="rma_remote_completion">SEPARATE</attribute>
-    <attribute id="put_count">get_datatype_size(datatype)</attribute>
-    <attribute id="get_count">get_datatype_size(datatype)</attribute>
+    <attribute id="bytes_put">get_datatype_size(datatype)</attribute>
+    <attribute id="bytes_get">get_datatype_size(datatype)</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="origin_addr" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="compare_addr" />
     <param access="o" type_modifier="" type="void*" name="result_addr" />
@@ -1159,8 +1159,8 @@
     <attribute id="atomic_op">FETCH_AND_ACCUMULATE</attribute>
     <attribute id="rma_explicit_handle">false</attribute>
     <attribute id="rma_remote_completion">SEPARATE</attribute>
-    <attribute id="put_count">get_datatype_size(datatype)</attribute>
-    <attribute id="get_count">get_datatype_size(datatype)</attribute>
+    <attribute id="bytes_put">get_datatype_size(datatype)</attribute>
+    <attribute id="bytes_get">get_datatype_size(datatype)</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="origin_addr" />
     <param access="o" type_modifier="" type="void*" name="result_addr" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
@@ -2530,8 +2530,8 @@
     <attribute id="atomic_op">FETCH_AND_ACCUMULATE</attribute>
     <attribute id="rma_explicit_handle">false</attribute>
     <attribute id="rma_remote_completion">SEPARATE</attribute>
-    <attribute id="put_count">origin_count * get_datatype_size(origin_datatype)</attribute>
-    <attribute id="get_count">result_count * get_datatype_size(result_datatype)</attribute>
+    <attribute id="bytes_put">origin_count * get_datatype_size(origin_datatype)</attribute>
+    <attribute id="bytes_get">result_count * get_datatype_size(result_datatype)</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="origin_addr" />
     <param access="i" type_modifier="" type="int" name="origin_count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="origin_datatype" />
@@ -4591,8 +4591,8 @@
     <attribute id="atomic_op">ACCUMULATE</attribute>
     <attribute id="rma_explicit_handle">true</attribute>
     <attribute id="rma_remote_completion">SEPARATE</attribute>
-    <attribute id="put_count">origin_count * get_datatype_size(origin_datatype)</attribute>
-    <attribute id="get_count">0</attribute>
+    <attribute id="bytes_put">origin_count * get_datatype_size(origin_datatype)</attribute>
+    <attribute id="bytes_get">0</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="origin_addr" />
     <param access="i" type_modifier="" type="int" name="origin_count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="origin_datatype" />
@@ -4923,8 +4923,8 @@
     <attribute id="atomic_op">FETCH_AND_ACCUMULATE</attribute>
     <attribute id="rma_explicit_handle">true</attribute>
     <attribute id="rma_remote_completion">SEPARATE</attribute>
-    <attribute id="put_count">origin_count * get_datatype_size(origin_datatype)</attribute>
-    <attribute id="get_count">result_count * get_datatype_size(result_datatype)</attribute>
+    <attribute id="bytes_put">origin_count * get_datatype_size(origin_datatype)</attribute>
+    <attribute id="bytes_get">result_count * get_datatype_size(result_datatype)</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="origin_addr" />
     <param access="i" type_modifier="" type="int" name="origin_count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="origin_datatype" />
