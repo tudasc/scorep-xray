@@ -4,6 +4,9 @@
  * Copyright (c) 2016,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2023,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -65,6 +68,11 @@ SCOREP_Instrumenter_OpenACCAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLi
 void
 SCOREP_Instrumenter_OpenACCAdapter::printHelp( void )
 {
+    if ( m_unsupported )
+    {
+        return;
+    }
+
     std::cout << "  --openacc       Enables OpenACC instrumentation.\n"
               << "  --noopenacc     Disables OpenACC instrumentation."
               << std::endl;

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013, 2020,
+ * Copyright (c) 2013, 2020, 2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014-2017,
@@ -126,46 +126,47 @@ SCOREP_Instrumenter_Adapter::supportInstrumentFilters( void ) const
 void
 SCOREP_Instrumenter_Adapter::printHelp( void )
 {
-    static std::string space = "                  ";
-
-    if ( !m_unsupported )
+    if ( m_unsupported )
     {
-        std::cout << "  --" << m_name;
-        if ( m_use_params )
-        {
-            std::cout << "[=<parameter-list>]\n" << space;
-        }
-        else if ( m_name.length() > 14 )
-        {
-            std::cout << "\n" << space;
-        }
-        else
-        {
-            std::cout << space.substr( 0, 14 - m_name.length() );
-        }
-        std::cout << "Enables " << m_name << " instrumentation.\n";
-        if ( m_use_params )
-        {
-            std::cout << space << "You may add additional parameters that are passed to "
-                      << m_name << ".\n";
-        }
-
-        std::cout << wrap_lines( getDepList( m_requires,
-                                             "It requires and, thus, automatically enables" ),
-                                 18, 18 );
-        std::cout << wrap_lines( getDepList( m_prerequisites,
-                                             "It cannot be enabled, if not at least "
-                                             "one of the following is enabled:" ),
-                                 18, 18 );
-        std::cout << wrap_lines( getDepList( m_conflicts,
-                                             "It conflicts and, thus, automatically "
-                                             "disables" ),
-                                 18, 18 );
-        std::cout << wrap_lines( getDepList( m_default_on,
-                                             "By default, it enables also" ), 18, 18 );
-        std::cout << wrap_lines( getDepList( m_default_off,
-                                             "By default, it disables" ), 18, 18 );
+        return;
     }
+
+    static std::string space = "                  ";
+    std::cout << "  --" << m_name;
+    if ( m_use_params )
+    {
+        std::cout << "[=<parameter-list>]\n" << space;
+    }
+    else if ( m_name.length() > 14 )
+    {
+        std::cout << "\n" << space;
+    }
+    else
+    {
+        std::cout << space.substr( 0, 14 - m_name.length() );
+    }
+    std::cout << "Enables " << m_name << " instrumentation.\n";
+    if ( m_use_params )
+    {
+        std::cout << space << "You may add additional parameters that are passed to "
+                  << m_name << ".\n";
+    }
+
+    std::cout << wrap_lines( getDepList( m_requires,
+                                         "It requires and, thus, automatically enables" ),
+                             18, 18 );
+    std::cout << wrap_lines( getDepList( m_prerequisites,
+                                         "It cannot be enabled, if not at least "
+                                         "one of the following is enabled:" ),
+                             18, 18 );
+    std::cout << wrap_lines( getDepList( m_conflicts,
+                                         "It conflicts and, thus, automatically "
+                                         "disables" ),
+                             18, 18 );
+    std::cout << wrap_lines( getDepList( m_default_on,
+                                         "By default, it enables also" ), 18, 18 );
+    std::cout << wrap_lines( getDepList( m_default_off,
+                                         "By default, it disables" ), 18, 18 );
     std::cout << "  --no" << m_name;
     if ( m_name.length() > 12 )
     {

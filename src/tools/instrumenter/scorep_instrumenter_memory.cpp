@@ -7,7 +7,7 @@
  * Copyright (c) 2017,
  * Technische Universitaet Darmstadt, Germany
  *
- * Copyright (c) 2017,
+ * Copyright (c) 2017, 2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -57,10 +57,12 @@ SCOREP_Instrumenter_MemoryAdapter::SCOREP_Instrumenter_MemoryAdapter( void )
 void
 SCOREP_Instrumenter_MemoryAdapter::printHelp( void )
 {
-    if ( !m_unsupported )
+    if ( m_unsupported )
     {
-        std::cout << "  --memory        Enables memory usage instrumentation. It is enabled by default.\n";
+        return;
     }
+
+    std::cout << "  --memory        Enables memory usage instrumentation. It is enabled by default.\n";
     std::cout << "  --nomemory      Disables memory usage instrumentation.\n";
 }
 

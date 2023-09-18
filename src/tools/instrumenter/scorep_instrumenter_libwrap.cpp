@@ -4,6 +4,9 @@
  * Copyright (c) 2017,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2023,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -60,6 +63,11 @@ SCOREP_Instrumenter_LibwrapAdapter::SCOREP_Instrumenter_LibwrapAdapter( void )
 void
 SCOREP_Instrumenter_LibwrapAdapter::printHelp( void )
 {
+    if ( m_unsupported )
+    {
+        return;
+    }
+
     /** @todo Add a note to 'scorep-libwrap-init', how to generate a wrapper */
     std::cout
         << "\

@@ -4,6 +4,9 @@
  * Copyright (c) 2014-2015, 2017,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2023,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -70,6 +73,11 @@ SCOREP_Instrumenter_OpenCLAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLin
 void
 SCOREP_Instrumenter_OpenCLAdapter::printHelp( void )
 {
+    if ( m_unsupported )
+    {
+        return;
+    }
+
     std::cout << "  --opencl[:<wrap-mode>]\n"
               << "                  Enables OpenCL instrumentation.\n"
               << "  --noopencl      Disables OpenCL instrumentation."
