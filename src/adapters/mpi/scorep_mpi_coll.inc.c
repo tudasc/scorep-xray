@@ -162,9 +162,6 @@ COUNT_FUN( scorep_mpi_coll_bytes_gatherv )( COUNT_T        sendcount,
         int me;
         PMPI_Comm_rank( comm, &me );
 
-        COUNT_T sendsize;
-        TYPE_SIZE_FUN( sendtype, &sendsize );
-
         if ( me == root )
         {
             int num_ranks;
