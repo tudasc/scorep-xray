@@ -69,6 +69,19 @@
 /** internal id counter for rma operations */
 static int scorep_rma_id = 0;
 
+
+static inline int
+get_datatype_size( MPI_Datatype datatype )
+{
+    int datatype_size = 0;
+    if ( datatype != MPI_DATATYPE_NULL )
+    {
+        PMPI_Type_size( datatype, &datatype_size );
+    }
+    return datatype_size;
+}
+
+
 /**
  * @name C wrappers for access functions
  * @{
@@ -117,8 +130,7 @@ MPI_Accumulate( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, MPI_D
             if ( target_rank != MPI_PROC_NULL )
             {
                 uint64_t bytes_get = 0;
-                uint64_t bytes_put = origin_count;
-
+                uint64_t bytes_put = origin_count * get_datatype_size( origin_datatype );
                 /*
                  * The following code block is only used if the prototype
                  * definition specifies:
@@ -246,9 +258,8 @@ MPI_Compare_and_swap SCOREP_MPI_COMPARE_AND_SWAP_PROTO_ARGS
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMPARE_AND_SWAP ] );
             if ( target_rank != MPI_PROC_NULL )
             {
-                uint64_t bytes_get = 1;
-                uint64_t bytes_put = 1;
-
+                uint64_t bytes_get = get_datatype_size( datatype );
+                uint64_t bytes_put = get_datatype_size( datatype );
                 /*
                  * The following code block is only used if the prototype
                  * definition specifies:
@@ -374,9 +385,8 @@ MPI_Fetch_and_op SCOREP_MPI_FETCH_AND_OP_PROTO_ARGS
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FETCH_AND_OP ] );
             if ( target_rank != MPI_PROC_NULL )
             {
-                uint64_t bytes_get = 1;
-                uint64_t bytes_put = 1;
-
+                uint64_t bytes_get = get_datatype_size( datatype );
+                uint64_t bytes_put = get_datatype_size( datatype );
                 /*
                  * The following code block is only used if the prototype
                  * definition specifies:
@@ -648,9 +658,8 @@ MPI_Get_accumulate( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, M
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ACCUMULATE ] );
             if ( target_rank != MPI_PROC_NULL )
             {
-                uint64_t bytes_get = result_count;
-                uint64_t bytes_put = origin_count;
-
+                uint64_t bytes_get = result_count * get_datatype_size( result_datatype );
+                uint64_t bytes_put = origin_count * get_datatype_size( origin_datatype );
                 /*
                  * The following code block is only used if the prototype
                  * definition specifies:
@@ -916,8 +925,7 @@ MPI_Raccumulate SCOREP_MPI_RACCUMULATE_PROTO_ARGS
             if ( target_rank != MPI_PROC_NULL )
             {
                 uint64_t bytes_get = 0;
-                uint64_t bytes_put = origin_count;
-
+                uint64_t bytes_put = origin_count * get_datatype_size( origin_datatype );
                 /*
                  * The following code block is only used if the prototype
                  * definition specifies:
@@ -1191,9 +1199,8 @@ MPI_Rget_accumulate( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_RGET_ACCUMULATE ] );
             if ( target_rank != MPI_PROC_NULL )
             {
-                uint64_t bytes_get = result_count;
-                uint64_t bytes_put = origin_count;
-
+                uint64_t bytes_get = result_count * get_datatype_size( result_datatype );
+                uint64_t bytes_put = origin_count * get_datatype_size( origin_datatype );
                 /*
                  * The following code block is only used if the prototype
                  * definition specifies:
