@@ -23,6 +23,7 @@ Compatibility:
   deprecated. Use the `SCOREP_USER_*` macros instead.
 - Non-LLVM based CCE compilers are no longer supported. Please upgrade.
 - The HIP adapter requires the ROCm SMI library.
+- Score-P now requires CubeW and CubeLib in version 4.8.2.
 
 Bugfixes:
 
