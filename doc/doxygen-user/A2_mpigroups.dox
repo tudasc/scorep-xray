@@ -1033,6 +1033,14 @@ these groups are disabled as well.
   <td>SPAWN</td>
 </tr>
 <tr>
+  <td>MPI_Message_c2f</td>
+  <td>MISC</td>
+</tr>
+<tr>
+  <td>MPI_Message_f2c</td>
+  <td>MISC</td>
+</tr>
+<tr>
   <td>MPI_Mprobe</td>
   <td>P2P</td>
 </tr>
@@ -2072,6 +2080,8 @@ MPI_Info_get_nthkey,
 MPI_Info_get_string,
 MPI_Info_get_valuelen,
 MPI_Info_set,
+MPI_Message_c2f,
+MPI_Message_f2c,
 MPI_Op_c2f,
 MPI_Op_commutative,
 MPI_Op_create,

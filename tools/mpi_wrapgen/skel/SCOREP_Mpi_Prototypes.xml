@@ -1,5 +1,5 @@
 
-<prototypes count="429" family="mpi" >
+<prototypes count="431" family="mpi" >
 
 <prototype name="MPI_Abort" rtype="int" group="ext" guard="" >
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
@@ -4049,6 +4049,16 @@
     <param access="i" type_modifier="" type="MPI_Info" name="info" />
     <param access="o" type_modifier="" type="char*" name="port_name" />
     <version id="2.0" />
+</prototype>
+
+<prototype name="MPI_Message_c2f" rtype="MPI_Fint" group="misc" guard="extra,p2p,misc" >
+    <param access="i" type_modifier="" type="MPI_Message" name="message" />
+    <version id="3.0" />
+</prototype>
+
+<prototype name="MPI_Message_f2c" rtype="MPI_Message" group="misc" guard="extra,p2p,misc" >
+    <param access="i" type_modifier="" type="MPI_Fint" name="message" />
+    <version id="3.0" />
 </prototype>
 
 <prototype name="MPI_Mprobe" rtype="int" group="p2p" guard="p2p" >

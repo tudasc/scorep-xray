@@ -660,6 +660,8 @@ if test "x${scorep_mpi_supported}" = "xyes"; then
                         PMPI_Iscan,
                         PMPI_Iscatter,
                         PMPI_Iscatterv,
+                        PMPI_Message_c2f,
+                        PMPI_Message_f2c,
                         PMPI_Mprobe,
                         PMPI_Mrecv,
                         PMPI_Neighbor_allgather,

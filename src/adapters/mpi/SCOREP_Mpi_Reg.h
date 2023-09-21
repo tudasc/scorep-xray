@@ -717,6 +717,10 @@ enum scorep_mpi_regions
     SCOREP_MPI_REGION__MPI_KEYVAL_FREE,
     /** Score-P region ID for MPI_Lookup_name */
     SCOREP_MPI_REGION__MPI_LOOKUP_NAME,
+    /** Score-P region ID for MPI_Message_c2f */
+    SCOREP_MPI_REGION__MPI_MESSAGE_C2F,
+    /** Score-P region ID for MPI_Message_f2c */
+    SCOREP_MPI_REGION__MPI_MESSAGE_F2C,
     /** Score-P region ID for MPI_Mprobe */
     SCOREP_MPI_REGION__MPI_MPROBE,
     /** Score-P region ID for MPI_Mrecv */
