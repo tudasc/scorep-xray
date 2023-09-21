@@ -1293,12 +1293,20 @@ these groups are disabled as well.
   <td>P2P</td>
 </tr>
 <tr>
+  <td>MPI_Session_c2f</td>
+  <td>MISC</td>
+</tr>
+<tr>
   <td>MPI_Session_call_errhandler</td>
   <td>ENV</td>
 </tr>
 <tr>
   <td>MPI_Session_create_errhandler</td>
   <td>ENV</td>
+</tr>
+<tr>
+  <td>MPI_Session_f2c</td>
+  <td>MISC</td>
 </tr>
 <tr>
   <td>MPI_Session_finalize</td>
@@ -2089,6 +2097,8 @@ MPI_Op_f2c,
 MPI_Op_free,
 MPI_Request_c2f,
 MPI_Request_f2c,
+MPI_Session_c2f,
+MPI_Session_f2c,
 MPI_Status_c2f,
 MPI_Status_f2c,
 </td></tr>

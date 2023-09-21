@@ -847,10 +847,14 @@ enum scorep_mpi_regions
     SCOREP_MPI_REGION__MPI_SENDRECV,
     /** Score-P region ID for MPI_Sendrecv_replace */
     SCOREP_MPI_REGION__MPI_SENDRECV_REPLACE,
+    /** Score-P region ID for MPI_Session_c2f */
+    SCOREP_MPI_REGION__MPI_SESSION_C2F,
     /** Score-P region ID for MPI_Session_call_errhandler */
     SCOREP_MPI_REGION__MPI_SESSION_CALL_ERRHANDLER,
     /** Score-P region ID for MPI_Session_create_errhandler */
     SCOREP_MPI_REGION__MPI_SESSION_CREATE_ERRHANDLER,
+    /** Score-P region ID for MPI_Session_f2c */
+    SCOREP_MPI_REGION__MPI_SESSION_F2C,
     /** Score-P region ID for MPI_Session_finalize */
     SCOREP_MPI_REGION__MPI_SESSION_FINALIZE,
     /** Score-P region ID for MPI_Session_get_errhandler */

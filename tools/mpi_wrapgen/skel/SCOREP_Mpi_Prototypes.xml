@@ -1,5 +1,5 @@
 
-<prototypes count="431" family="mpi" >
+<prototypes count="433" family="mpi" >
 
 <prototype name="MPI_Abort" rtype="int" group="ext" guard="" >
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
@@ -5340,6 +5340,11 @@
 ]]></xblock>
 </prototype>
 
+<prototype name="MPI_Session_c2f" rtype="MPI_Fint" group="misc" guard="extra,env,misc" >
+    <param access="i" type_modifier="" type="MPI_Session" name="session" />
+    <version id="4.0" />
+</prototype>
+
 <prototype name="MPI_Session_call_errhandler" rtype="int" group="env" guard="env,err">
     <version id="4.0" />
     <param access="i" type_modifier="" type="MPI_Session" name="session" />
@@ -5350,6 +5355,11 @@
     <version id="4.0" />
     <param access="i" type_modifier="" type="MPI_Session_errhandler_function*" name="session_errhandler_fn" />
     <param access="o" type_modifier="" type="MPI_Errhandler*" name="errhandler" />
+</prototype>
+
+<prototype name="MPI_Session_f2c" rtype="MPI_Session" group="misc" guard="extra,env,misc" >
+    <param access="i" type_modifier="" type="MPI_Fint" name="session" />
+    <version id="4.0" />
 </prototype>
 
 <prototype name="MPI_Session_finalize" rtype="int" group="env">

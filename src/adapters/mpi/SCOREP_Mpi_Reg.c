@@ -4189,6 +4189,19 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
+#if HAVE( MPI_4_0_SYMBOL_PMPI_SESSION_C2F ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Session_c2f )
+    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
+    {
+        scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SESSION_C2F ] =
+            SCOREP_Definitions_NewRegion( "MPI_Session_c2f",
+                                          NULL,
+                                          file_id,
+                                          SCOREP_INVALID_LINE_NO,
+                                          SCOREP_INVALID_LINE_NO,
+                                          SCOREP_PARADIGM_MPI,
+                                          SCOREP_REGION_NONE );
+    }
+#endif
 #if HAVE( MPI_4_0_SYMBOL_PMPI_SESSION_CALL_ERRHANDLER ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Session_call_errhandler )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_ENV || SCOREP_IsUnwindingEnabled() )
     {
@@ -4207,6 +4220,19 @@ scorep_mpi_register_regions( void )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SESSION_CREATE_ERRHANDLER ] =
             SCOREP_Definitions_NewRegion( "MPI_Session_create_errhandler",
+                                          NULL,
+                                          file_id,
+                                          SCOREP_INVALID_LINE_NO,
+                                          SCOREP_INVALID_LINE_NO,
+                                          SCOREP_PARADIGM_MPI,
+                                          SCOREP_REGION_NONE );
+    }
+#endif
+#if HAVE( MPI_4_0_SYMBOL_PMPI_SESSION_F2C ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Session_f2c )
+    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
+    {
+        scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SESSION_F2C ] =
+            SCOREP_Definitions_NewRegion( "MPI_Session_f2c",
                                           NULL,
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
