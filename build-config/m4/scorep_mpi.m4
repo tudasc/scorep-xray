@@ -748,7 +748,9 @@ if test "x${scorep_mpi_supported}" = "xyes"; then
                         PMPI_Session_get_num_psets,
                         PMPI_Session_get_pset_info,
                         PMPI_Session_init,
-                        PMPI_Session_set_errhandler])
+                        PMPI_Session_set_errhandler,
+                        PMPI_Status_c2f08,
+                        PMPI_Status_f082c])
 
   AC_SCOREP_MPI_C_DATATYPES
   AC_SCOREP_MPI_COMPLIANCE

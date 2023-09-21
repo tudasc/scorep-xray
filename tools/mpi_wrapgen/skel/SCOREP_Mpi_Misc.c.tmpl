@@ -232,6 +232,8 @@ MPI_Free_mem( void* base )
 #pragma wrapgen single MPI_Session_c2f skel/SCOREP_Mpi_Std.w
 #pragma wrapgen single MPI_Session_f2c skel/SCOREP_Mpi_Std.w
 #pragma wrapgen single MPI_Status_c2f skel/SCOREP_Mpi_Std.w
+#pragma wrapgen single MPI_Status_c2f08 skel/SCOREP_Mpi_Std.w
+#pragma wrapgen single MPI_Status_f082c skel/SCOREP_Mpi_Std.w
 #pragma wrapgen single MPI_Status_f2c skel/SCOREP_Mpi_Std.w
 
 #pragma wrapgen multiple restrict(gmisc+n_Info+!nMPI_Info_delete+!nMPI_Info_get+!nMPI_Info_get_valuelen+!nMPI_Info_set+!nMPI_Address) skel/SCOREP_Mpi_Std.w

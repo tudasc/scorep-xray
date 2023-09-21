@@ -1,5 +1,5 @@
 
-<prototypes count="433" family="mpi" >
+<prototypes count="435" family="mpi" >
 
 <prototype name="MPI_Abort" rtype="int" group="ext" guard="" >
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
@@ -5484,6 +5484,20 @@
     <param access="o" type_modifier="" type="MPI_Fint*" name="f_status" />
     <version id="2.0" />
 </prototype>
+
+
+<prototype name="MPI_Status_c2f08" rtype="int" group="misc" guard="extra,misc" >
+    <param access="i" type_modifier="const" type="MPI_Status*" name="c_status" />
+    <param access="o" type_modifier="" type="MPI_F08_status*" name="f08_status" />
+    <version id="4.0" />
+</prototype>
+
+<prototype name="MPI_Status_f082c" rtype="int" group="misc" guard="extra,misc" >
+    <param access="i" type_modifier="" type="MPI_F08_status*" name="f08_status" />
+    <param access="o" type_modifier="const" type="MPI_Status*" name="c_status" />
+    <version id="4.0" />
+</prototype>
+
 
 <prototype name="MPI_Status_f2c" rtype="int" group="misc" guard="extra,misc" >
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="MPI_Fint*" name="f_status" />
