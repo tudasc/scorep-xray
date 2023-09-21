@@ -1,5 +1,5 @@
 
-<prototypes count="427" family="mpi" >
+<prototypes count="429" family="mpi" >
 
 <prototype name="MPI_Abort" rtype="int" group="ext" guard="" >
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
@@ -1065,10 +1065,20 @@
     <version id="2.2" />
 </prototype>
 
+<prototype name="MPI_Errhandler_c2f" rtype="MPI_Fint" group="misc" guard="extra,err,misc" >
+    <param access="i" type_modifier="" type="MPI_Errhandler" name="errhandler" />
+    <version id="2.1" />
+</prototype>
+
 <prototype name="MPI_Errhandler_create" rtype="int" group="err" guard="extra,err" >
     <param access="i" type_modifier="" type="MPI_Handler_function*" name="function" />
     <param access="o" type_modifier="" type="MPI_Errhandler*" name="errhandler" />
     <version id="1.0" />
+</prototype>
+
+<prototype name="MPI_Errhandler_f2c" rtype="MPI_Errhandler" group="misc" guard="extra,err,misc" >
+    <param access="i" type_modifier="" type="MPI_Fint" name="errhandler" />
+    <version id="2.1" />
 </prototype>
 
 <prototype name="MPI_Errhandler_free" rtype="int" group="err" guard="extra,err" >

@@ -369,8 +369,16 @@ these groups are disabled as well.
   <td>TOPO</td>
 </tr>
 <tr>
+  <td>MPI_Errhandler_c2f</td>
+  <td>MISC</td>
+</tr>
+<tr>
   <td>MPI_Errhandler_create</td>
   <td>ERR</td>
+</tr>
+<tr>
+  <td>MPI_Errhandler_f2c</td>
+  <td>MISC</td>
 </tr>
 <tr>
   <td>MPI_Errhandler_free</td>
@@ -2046,6 +2054,8 @@ MPI_Wtime,
 <tr><td>
 MPI_Address,
 MPI_Alloc_mem,
+MPI_Errhandler_c2f,
+MPI_Errhandler_f2c,
 MPI_Free_mem,
 MPI_Get_address,
 MPI_Get_version,

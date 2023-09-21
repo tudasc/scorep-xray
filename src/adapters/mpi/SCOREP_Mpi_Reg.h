@@ -385,8 +385,12 @@ enum scorep_mpi_regions
     SCOREP_MPI_REGION__MPI_DIST_GRAPH_NEIGHBORS,
     /** Score-P region ID for MPI_Dist_graph_neighbors_count */
     SCOREP_MPI_REGION__MPI_DIST_GRAPH_NEIGHBORS_COUNT,
+    /** Score-P region ID for MPI_Errhandler_c2f */
+    SCOREP_MPI_REGION__MPI_ERRHANDLER_C2F,
     /** Score-P region ID for MPI_Errhandler_create */
     SCOREP_MPI_REGION__MPI_ERRHANDLER_CREATE,
+    /** Score-P region ID for MPI_Errhandler_f2c */
+    SCOREP_MPI_REGION__MPI_ERRHANDLER_F2C,
     /** Score-P region ID for MPI_Errhandler_free */
     SCOREP_MPI_REGION__MPI_ERRHANDLER_FREE,
     /** Score-P region ID for MPI_Errhandler_get */

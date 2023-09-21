@@ -611,6 +611,10 @@ if test "x${scorep_mpi_supported}" = "xyes"; then
   dnl not in Open MPI, thus check individual to speed up the common case
   SCOREP_CHECK_SYMBOLS([MPI 2.0], [], [], [PMPI_Sizeof])
 
+  SCOREP_CHECK_SYMBOLS([MPI 2.1], [], [],
+                       [PMPI_Errhandler_c2f,
+                        PMPI_Errhandler_f2c])
+
   SCOREP_CHECK_SYMBOLS([MPI 2.2], [], [],
                        [PMPI_Dist_graph_create,
                         PMPI_Dist_graph_create_adjacent,

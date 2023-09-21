@@ -221,6 +221,8 @@ MPI_Free_mem( void* base )
 
 #pragma wrapgen multiple restrict(gmisc+!n_c2f+!n_f2c+!n_Info+!nMPI_Address+!nMPI_Alloc_mem+!nMPI_Free_mem) skel/SCOREP_Mpi_Std.w
 
+#pragma wrapgen single MPI_Errhandler_c2f skel/SCOREP_Mpi_Std.w
+#pragma wrapgen single MPI_Errhandler_f2c skel/SCOREP_Mpi_Std.w
 #pragma wrapgen single MPI_Op_c2f skel/SCOREP_Mpi_Std.w
 #pragma wrapgen single MPI_Op_f2c skel/SCOREP_Mpi_Std.w
 #pragma wrapgen single MPI_Request_c2f skel/SCOREP_Mpi_Std.w
