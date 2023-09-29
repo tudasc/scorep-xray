@@ -370,6 +370,12 @@ various Score-P components.
     or user instrumentation instead of PDT instrumentation for all
     languages.
 
+  - With CMake and NVHPC, the preparations for OPARI2 instrumentation
+    might create empty source files due to the `-MD` flag added by
+    CMake during compilation. The compilation will abort with the
+    message `undefined reference to main`. For NVHPC 23.7 and newer,
+    please use OMPT via `--thread=omp:ompt` instead.
+
   Applies to OpenMP target offloading when using Score-P compiler
   instrumentation:
 
