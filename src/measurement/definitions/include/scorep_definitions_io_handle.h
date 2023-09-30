@@ -113,7 +113,7 @@ SCOREP_IoHandleHandle_GetParentHandle( SCOREP_IoHandleHandle handle )
     return SCOREP_LOCAL_HANDLE_DEREF( handle, IoHandle )->parent_handle;
 }
 
-static inline SCOREP_IoHandleHandle
+static inline SCOREP_IoParadigmType
 SCOREP_IoHandleHandle_GetIoParadigm( SCOREP_IoHandleHandle handle )
 {
     return SCOREP_LOCAL_HANDLE_DEREF( handle, IoHandle )->io_paradigm_type;
