@@ -59,6 +59,7 @@ build-gcc:
   script:
     - configure_flags="
         --with-nocross-compiler-suite=gcc
+        --without-shmem
       "
     - *common-script
 
@@ -68,6 +69,7 @@ build-clang:
   script:
     - configure_flags="
         --with-nocross-compiler-suite=clang
+        --without-shmem
       "
     - *common-script
 
@@ -98,5 +100,6 @@ build-rocm:
   script:
     - configure_flags="
         --with-nocross-compiler-suite=amdclang
+        --without-shmem
       "
     - *common-script
