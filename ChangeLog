@@ -20,6 +20,8 @@ Compatibility:
 - Non-LLVM based CCE compilers are no longer supported. Please upgrade.
 
 Bugfixes:
+- Fix abort in OMPT adapter for OpenMP loops if runtime supports
+  reporting loop schedules.
 
 ------------------- Released version 8.2 -----------------------------
 
