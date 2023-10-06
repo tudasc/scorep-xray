@@ -247,9 +247,9 @@ static THREAD_LOCAL_STORAGE_SPECIFIER task_t* tasks_free_list;
 /* convenience */
 #define RELEASE_AT_TEAM_END( TASK, OMPT_TASK_DATA ) \
     UTILS_MutexWait(& ( TASK )->in_overdue_use, UTILS_ATOMIC_RELAXED ); \
+    ( OMPT_TASK_DATA )->ptr = ( TASK )->next; \
     release_parallel_region( ( TASK )->parallel_region ); \
     release_task_to_pool( TASK ); \
-    ( OMPT_TASK_DATA )->ptr = NULL;
 
 
 static inline parallel_t*
@@ -845,7 +845,13 @@ scorep_ompt_cb_host_implicit_task( ompt_scope_endpoint_t endpoint,
             task->tpd             = new_tpd;
             task->scorep_location = location;
             task->scorep_task     = scorep_task;
-
+            /* NVHPC might reuse the task_data->ptr if a parallel region only uses
+             * a single thread. Therefore, store the task as the next task and restore
+             * the task on implicit_task end */
+            if ( task_data->ptr )
+            {
+                task->next = task_data->ptr;
+            }
             task_data->ptr = task;
 
             /* store task_data->ptr as subsystem data to be able to trigger

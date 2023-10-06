@@ -22,6 +22,9 @@ Compatibility:
 Bugfixes:
 - Fix abort in OMPT adapter for OpenMP loops if runtime supports
   reporting loop schedules.
+- Fix 'inconsistent profile' abort in OMPT adapter seen with NVHPC and
+  nested OpenMP parallel region where the outer parallel region uses a
+  single thread only.
 
 ------------------- Released version 8.2 -----------------------------
 
