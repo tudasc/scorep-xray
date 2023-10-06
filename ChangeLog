@@ -1,10 +1,6 @@
 ------------------- Upcoming version 9.0 -----------------------------
 
 Features and improvements:
-- The OMPT adapter is now able to report the schedule type selected
-  in OpenMP loops. However, this needs to be supported by the runtime.
-- Communicators created with one of the procedures added in MPI 4.0 are now
-  properly tracked by Score-P.
 
 User tools and API improvements and changes:
 
@@ -22,6 +18,20 @@ Compatibility:
 - The usage of POMP user instrumentation, aka `#pragma pomp ...`, is
   deprecated. Use the `SCOREP_USER_*` macros instead.
 - Non-LLVM based CCE compilers are no longer supported. Please upgrade.
+
+Bugfixes:
+
+------------------- Released version 8.2 -----------------------------
+
+Features and improvements:
+
+- The OMPT adapter is now able to report the schedule type selected
+  in OpenMP loops. However, this needs to be supported by the runtime.
+- Communicators created with one of the procedures added in MPI 4.0 are now
+  properly tracked by Score-P.
+
+Compatibility:
+
 - The HIP adapter requires the ROCm SMI library.
 - Score-P now requires CubeW and CubeLib in version 4.8.2.
 
