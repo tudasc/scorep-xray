@@ -107,14 +107,8 @@ static inline io_split_table_value_t
 io_split_table_value_ctor( io_split_table_key_t* key,
                            void*                 ctorData )
 {
-    io_split_table_value_t io_split_ctor_data = ctorData;
-
     io_split_table_value_t value = SCOREP_Memory_AllocForMisc( sizeof( *value ) );
-    *value = *io_split_ctor_data;
-#if HAVE( MPI_2_0_SYMBOL_PMPI_TYPE_DUP )
-    PMPI_Type_dup( value->datatype, &value->datatype );
-#endif
-
+    *value = ( mpi_io_split_op ){0, MPI_DATATYPE_NULL, false };
     return value;
 }
 
@@ -128,18 +122,16 @@ scorep_mpi_io_split_begin( SCOREP_IoHandleHandle ioHandle,
                            uint64_t              matchingId,
                            MPI_Datatype          datatype )
 {
-    mpi_io_split_op io_split_ctor_data =
-    {
-        .matching_id = matchingId,
-        .datatype    = datatype, /* will get duplicated in the ctor */
-        .is_active   = false     /* newly ctored objects are not active */
-    };
-
     io_split_table_value_t split_op = NULL;
-    io_split_table_get_and_insert( ioHandle, &io_split_ctor_data, &split_op );
+    io_split_table_get_and_insert( ioHandle, NULL, &split_op );
 
     UTILS_BUG_ON( split_op->is_active, "Already active split I/O operation on handle %u", ioHandle );
 
+    split_op->matching_id = matchingId;
+    split_op->datatype    = datatype;
+#if HAVE( MPI_2_0_SYMBOL_PMPI_TYPE_DUP )
+    PMPI_Type_dup( split_op->datatype, &split_op->datatype );
+#endif
     split_op->is_active = true;
 }
 
@@ -157,5 +149,7 @@ scorep_mpi_io_split_end( SCOREP_IoHandleHandle ioHandle,
     *matchingId = split_op->matching_id;
     *datatype   = split_op->datatype;
 
-    split_op->is_active = false;
+    split_op->matching_id = 0;
+    split_op->datatype    = MPI_DATATYPE_NULL;
+    split_op->is_active   = false;
 }
