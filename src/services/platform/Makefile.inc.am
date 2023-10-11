@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2017, 2020-2022,
+## Copyright (c) 2009-2017, 2020-2023,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -104,18 +104,18 @@ libscorep_platform_la_CPPFLAGS += $(PMI_CPPFLAGS)
 else !HAVE_PMI
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_system_tree_generic.c
 endif !HAVE_PMI
-if !PLATFORM_CRAYUNKNOWN
+if !PLATFORM_CRAYGENERIC
 # We need to use either libcatamount or access /proc/cray_xt/nid. Available on
 # older Cray models but not on Cray EX
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_cray.c
-else PLATFORM_CRAYUNKNOWN
+else PLATFORM_CRAYGENERIC
 # Use PLATFORM_LINUX implementation as fallback
 if HAVE_POSIX_GETHOSTID
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_gethostid.c
 else !HAVE_POSIX_GETHOSTID
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_mockup.c
 endif !HAVE_POSIX_GETHOSTID
-endif PLATFORM_CRAYUNKNOWN
+endif PLATFORM_CRAYGENERIC
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_topology_mockup.c
 endif PLATFORM_CRAY
 

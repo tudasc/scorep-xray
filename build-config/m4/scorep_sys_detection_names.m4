@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2015, 2021,
+## Copyright (c) 2009-2015, 2021, 2023,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -46,7 +46,7 @@ AS_CASE([${ac_scorep_platform}],
     [crayxe],  [afs_scorep_platform_name="Cray XE"],
     [crayxk],  [afs_scorep_platform_name="Cray XK"],
     [crayxc],  [afs_scorep_platform_name="Cray XC"],
-    [crayunknown], [afs_scorep_platform_name="Cray unknown"],
+    [craygeneric], [afs_scorep_platform_name="Cray generic"],
     [arm],     [afs_scorep_platform_name="ARM"],
     [k],       [afs_scorep_platform_name="K"],
     [fx10],    [afs_scorep_platform_name="FX10"],
