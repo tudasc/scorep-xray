@@ -96,7 +96,7 @@ AS_IF([test "x${ac_scorep_compiler_suite_called}" != "x"],
     [AC_MSG_ERROR([cannot use [AC_SCOREP_WITH_COMPILER_SUITE] and [AC_SCOREP_WITH_NOCROSS_COMPILER_SUITE] in one configure.ac.])],
     [ac_scorep_compiler_suite_called="yes"])
 
-m4_define([_accepted_compiler_suites], [gcc|ibm|intel|oneapi|nvhpc|pgi|clang|aocc|amdclang])
+m4_define([_accepted_compiler_suites], [gcc|ibm|intel|oneapi|nvhpc|pgi|clang|aocc|amdclang|cray])
 
 AC_ARG_WITH([nocross-compiler-suite],
             [AS_HELP_STRING([--with-nocross-compiler-suite=(]_accepted_compiler_suites[)],
