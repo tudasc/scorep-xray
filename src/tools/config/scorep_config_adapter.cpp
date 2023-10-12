@@ -484,9 +484,12 @@ SCOREP_Config_HipAdapter::addCFlags( std::string&           cflags,
      * In this case we want to ensure that `-finstrument-functions*`
      * is restricted to host code only.
      */
-    std::string pattern     = "-finstrument-functions";
-    std::string replacement = "-Xarch_host -finstrument-functions";
-    cflags = replace_all( pattern, replacement, cflags );
+    const std::string pattern     = "-finstrument-functions";
+    const std::string replacement = "-Xarch_host -finstrument-functions";
+    if ( cflags.find( replacement ) == std::string::npos )
+    {
+        cflags = replace_all( pattern, replacement, cflags );
+    }
 }
 
 void
