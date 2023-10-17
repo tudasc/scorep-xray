@@ -53,6 +53,12 @@ dnl installation.
 AC_DEFUN([SCOREP_CUDA], [
 AFS_SUMMARY_PUSH
 
+AC_ARG_VAR([NVCC], [NVCC compiler])
+if test "x${ac_cv_env_NVCC_set}" != "xset"; then
+    NVCC=nvcc
+fi
+AC_SUBST([NVCC])
+
 scorep_have_cuda="no"
 scorep_have_cuda_libs="no"
 scorep_nvcc_works="no"
@@ -189,7 +195,7 @@ ccbin=${CXX%% *}
 # - nvcc 11.5 in conjunction with nvhpc 22.1 doesn't work.
 AC_LANG_PUSH([C++])
 CXX_save="${CXX}"
-CXX="nvcc -ccbin ${ccbin}"
+CXX="${NVCC} -ccbin ${ccbin}"
 CXXFLAGS_save="${CXXFLAGS}"
 ac_ext_save="${ac_ext}"
 ac_ext=cu
@@ -214,9 +220,9 @@ int main() {
         [scorep_nvcc_works=no])
 done
 AS_IF([test "x${scorep_nvcc_works}" = xno],
-    [AC_MSG_WARN([nvcc -ccbin ${ccbin} compilation failed. Disabling CUDA support.])
+    [AC_MSG_WARN([${NVCC} -ccbin ${ccbin} compilation failed. Disabling CUDA support.])
      scorep_nvcc_msg=no],
-    [scorep_nvcc_msg="yes, using nvcc -ccbin ${ccbin} ${ccbin_flags}"])
+    [scorep_nvcc_msg="yes, using ${NVCC} -ccbin ${ccbin} ${ccbin_flags}"])
 
 ac_ext="${ac_ext_save}"
 CXXFLAGS="${CXXFLAGS_save}"
