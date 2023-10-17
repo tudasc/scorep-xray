@@ -582,6 +582,8 @@ variables:
               Path to libunwind headers: libunwind.h
   LIBUNWIND_LIB
               Path to libunwind libraries.
+  NVCC
+              NVIDIA CUDA compiler command
   LIBCUDART_INCLUDE
               Path to libcudart headers: cuda.h cuda_runtime_api.h
   LIBCUDART_LIB
