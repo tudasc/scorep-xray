@@ -18,6 +18,8 @@ Compatibility:
 - The usage of POMP user instrumentation, aka `#pragma pomp ...`, is
   deprecated. Use the `SCOREP_USER_*` macros instead.
 - Non-LLVM based CCE compilers are no longer supported. Please upgrade.
+- Added the environment variable `NVCC` to change the compiler
+  command used for checking the NVIDIA CUDA compiler during configure.
 
 Bugfixes:
 - Fix crash when issuing multiple consecutive split collective IO operations on

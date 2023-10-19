@@ -16,7 +16,7 @@
 ## file       test/instrumenter_checks/cuda/Makefile.in
 
 CXX  = @SCOREP_INSTRUMENTER_CHECK_NVCC_CXX@
-NVCC = nvcc
+NVCC = @NVCC@
 LIBS =
 
 # -Ox does not work for all compilers. Use AM_CONDITIONAL here?

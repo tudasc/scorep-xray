@@ -53,19 +53,27 @@ dnl installation.
 AC_DEFUN([SCOREP_CUDA], [
 AFS_SUMMARY_PUSH
 
+AC_ARG_VAR([NVCC], [NVCC compiler])
+if test "x${ac_cv_env_NVCC_set}" != "xset"; then
+    NVCC=nvcc
+fi
+AC_SUBST([NVCC])
+
 scorep_have_cuda="no"
-scorep_have_cupti4="no"
+scorep_have_cuda_libs="no"
 scorep_nvcc_works="no"
 
 scorep_cuda_safe_CPPFLAGS=$CPPFLAGS
 scorep_cuda_safe_LDFLAGS=$LDFLAGS
 scorep_cuda_safe_LIBS=$LIBS
 
+dnl Check libcudart
 AC_SCOREP_BACKEND_LIB([libcudart], [cuda.h cuda_runtime_api.h])
 CPPFLAGS="$CPPFLAGS ${with_libcudart_cppflags}"
 LDFLAGS="$LDFLAGS ${with_libcudart_ldflags}"
 LIBS="$LIBS ${with_libcudart_libs}"
 
+dnl Check libcuda
 scorep_cuda_version="unknown"
 AC_SCOREP_BACKEND_LIB([libcuda])
 CPPFLAGS="$CPPFLAGS ${with_libcuda_cppflags}"
@@ -73,6 +81,7 @@ LDFLAGS="$LDFLAGS ${with_libcuda_ldflags}"
 LIBS="$LIBS ${with_libcuda_libs}"
 AC_SUBST([SCOREP_CUDA_VERSION], [${scorep_cuda_version}])
 
+dnl Check libcupti
 AS_UNSET([cupti_root])
 AS_IF([test "x${with_libcudart_lib}" = "xyes"],
       [for path in ${sys_lib_search_path_spec}; do
@@ -84,21 +93,24 @@ AS_IF([test "x${with_libcudart_lib}" = "xyes"],
        done],
       [AS_IF([test "x${with_libcudart}" != "xnot_set"],
              [cupti_root="${with_libcudart}/extras/CUPTI"])])
-
 AC_SCOREP_BACKEND_LIB([libcupti], [cupti.h], [${with_libcudart_cppflags}], [${cupti_root}])
+
+dnl Check libnvidia-ml
 AC_SCOREP_BACKEND_LIB([libnvidia-ml], [nvml.h], [${with_libcudart_cppflags}])
 
-_CUDA_NVCC_WORKS
+AS_IF([test "x${scorep_have_libcudart}" = "xyes" &&
+       test "x${scorep_have_libcupti}"  = "xyes" &&
+       test "x${scorep_have_libcuda}"   = "xyes"],
+       [scorep_have_cuda_libs="yes"
+        _CUDA_NVCC_WORKS
+        AS_IF([test "x${scorep_nvcc_works}" = "xyes"],
+              [scorep_have_cuda=yes])])
 
+dnl Reset flags for further configure checks
 CPPFLAGS=$scorep_cuda_safe_CPPFLAGS
 LDFLAGS=$scorep_cuda_safe_LDFLAGS
 LIBS=$scorep_cuda_safe_LIBS
 
-AS_IF([test "x${scorep_have_libcudart}" = "xyes" &&
-       test "x${scorep_have_libcupti}"  = "xyes" &&
-       test "x${scorep_have_libcuda}"   = "xyes" &&
-       test "x${scorep_nvcc_works}"     = "xyes"],
-      [scorep_have_cuda=yes])
 AC_ARG_ENABLE([cuda],
               [AS_HELP_STRING([--enable-cuda],
                               [Enable or disable support for CUDA. Fails if support cannot be satisfied but was requested.])],
@@ -143,15 +155,16 @@ AC_SCOREP_COND_HAVE([NVML_SUPPORT],
                     [Defined if NVIDIA NVML is available.])
 
 AC_SCOREP_COND_HAVE([CUDA_TESTS],
-    [test "x${scorep_have_cuda_tests}" = "xyes"],
-    [Defined if CUDA tests will be run.], [], [])
+                    [test "x${scorep_have_cuda_tests}" = "xyes"],
+                    [Defined if CUDA tests will be run.], [], [])
 
 dnl run_cuda_test.sh: no gold files available for supported CUDA
 AM_CONDITIONAL([HAVE_CUDA_TESTS_HAVE_GOLD], [false])
 
-AFS_SUMMARY([CUDA version], [${scorep_cuda_version}])
-
-AFS_SUMMARY([nvcc works], [${scorep_nvcc_msg}])
+dnl Add some entries to summary, if CUDA adapter is available
+AS_IF([test "x${scorep_have_cuda_libs}" = "xyes"],
+      [AFS_SUMMARY([nvcc works], [${scorep_nvcc_msg}])
+       AFS_SUMMARY([CUDA version], [${scorep_cuda_version}])])
 
 AFS_SUMMARY_POP([CUDA support], [${scorep_have_cuda}])
 
@@ -182,7 +195,7 @@ ccbin=${CXX%% *}
 # - nvcc 11.5 in conjunction with nvhpc 22.1 doesn't work.
 AC_LANG_PUSH([C++])
 CXX_save="${CXX}"
-CXX="nvcc -ccbin ${ccbin}"
+CXX="${NVCC} -ccbin ${ccbin}"
 CXXFLAGS_save="${CXXFLAGS}"
 ac_ext_save="${ac_ext}"
 ac_ext=cu
@@ -207,9 +220,9 @@ int main() {
         [scorep_nvcc_works=no])
 done
 AS_IF([test "x${scorep_nvcc_works}" = xno],
-    [AC_MSG_WARN([nvcc -ccbin ${ccbin} compilation failed. Disabling CUDA support.])
+    [AC_MSG_WARN([${NVCC} -ccbin ${ccbin} compilation failed. Disabling CUDA support.])
      scorep_nvcc_msg=no],
-    [scorep_nvcc_msg="yes, using nvcc -ccbin ${ccbin} ${ccbin_flags}"])
+    [scorep_nvcc_msg="yes, using ${NVCC} -ccbin ${ccbin} ${ccbin_flags}"])
 
 ac_ext="${ac_ext_save}"
 CXXFLAGS="${CXXFLAGS_save}"
