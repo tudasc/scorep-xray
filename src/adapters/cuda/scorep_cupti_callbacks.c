@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015, 2021-2022,
+ * Copyright (c) 2009-2013, 2015, 2021-2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -340,6 +340,9 @@ scorep_cupti_set_callback( CUpti_CallbackFunc callback )
 
         /* only one subscriber allowed at a time */
         SCOREP_CUPTI_CALL( cuptiSubscribe( &scorep_cupti_callbacks_subscriber, callback, NULL ) );
+#if HAVE( CUPTIACTIVITYREGISTERTIMESTAMPCALLBACK )
+        SCOREP_CUPTI_CALL( cuptiActivityRegisterTimestampCallback( SCOREP_Timer_GetClockTicks ) );
+#endif
     }
 }
 
