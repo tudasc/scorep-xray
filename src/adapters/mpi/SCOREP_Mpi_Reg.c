@@ -1186,11 +1186,37 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
+#if HAVE( MPI_2_1_SYMBOL_PMPI_ERRHANDLER_C2F ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Errhandler_c2f )
+    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
+    {
+        scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ERRHANDLER_C2F ] =
+            SCOREP_Definitions_NewRegion( "MPI_Errhandler_c2f",
+                                          NULL,
+                                          file_id,
+                                          SCOREP_INVALID_LINE_NO,
+                                          SCOREP_INVALID_LINE_NO,
+                                          SCOREP_PARADIGM_MPI,
+                                          SCOREP_REGION_NONE );
+    }
+#endif
 #if HAVE( MPI_1_0_SYMBOL_PMPI_ERRHANDLER_CREATE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Errhandler_create )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_ERR || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ERRHANDLER_CREATE ] =
             SCOREP_Definitions_NewRegion( "MPI_Errhandler_create",
+                                          NULL,
+                                          file_id,
+                                          SCOREP_INVALID_LINE_NO,
+                                          SCOREP_INVALID_LINE_NO,
+                                          SCOREP_PARADIGM_MPI,
+                                          SCOREP_REGION_NONE );
+    }
+#endif
+#if HAVE( MPI_2_1_SYMBOL_PMPI_ERRHANDLER_F2C ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Errhandler_f2c )
+    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
+    {
+        scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ERRHANDLER_F2C ] =
+            SCOREP_Definitions_NewRegion( "MPI_Errhandler_f2c",
                                           NULL,
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
@@ -3318,6 +3344,32 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
+#if HAVE( MPI_3_0_SYMBOL_PMPI_MESSAGE_C2F ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Message_c2f )
+    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
+    {
+        scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_MESSAGE_C2F ] =
+            SCOREP_Definitions_NewRegion( "MPI_Message_c2f",
+                                          NULL,
+                                          file_id,
+                                          SCOREP_INVALID_LINE_NO,
+                                          SCOREP_INVALID_LINE_NO,
+                                          SCOREP_PARADIGM_MPI,
+                                          SCOREP_REGION_NONE );
+    }
+#endif
+#if HAVE( MPI_3_0_SYMBOL_PMPI_MESSAGE_F2C ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Message_f2c )
+    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
+    {
+        scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_MESSAGE_F2C ] =
+            SCOREP_Definitions_NewRegion( "MPI_Message_f2c",
+                                          NULL,
+                                          file_id,
+                                          SCOREP_INVALID_LINE_NO,
+                                          SCOREP_INVALID_LINE_NO,
+                                          SCOREP_PARADIGM_MPI,
+                                          SCOREP_REGION_NONE );
+    }
+#endif
 #if HAVE( MPI_3_0_SYMBOL_PMPI_MPROBE ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Mprobe )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
     {
@@ -4137,6 +4189,19 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
+#if HAVE( MPI_4_0_SYMBOL_PMPI_SESSION_C2F ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Session_c2f )
+    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
+    {
+        scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SESSION_C2F ] =
+            SCOREP_Definitions_NewRegion( "MPI_Session_c2f",
+                                          NULL,
+                                          file_id,
+                                          SCOREP_INVALID_LINE_NO,
+                                          SCOREP_INVALID_LINE_NO,
+                                          SCOREP_PARADIGM_MPI,
+                                          SCOREP_REGION_NONE );
+    }
+#endif
 #if HAVE( MPI_4_0_SYMBOL_PMPI_SESSION_CALL_ERRHANDLER ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Session_call_errhandler )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_ENV || SCOREP_IsUnwindingEnabled() )
     {
@@ -4155,6 +4220,19 @@ scorep_mpi_register_regions( void )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SESSION_CREATE_ERRHANDLER ] =
             SCOREP_Definitions_NewRegion( "MPI_Session_create_errhandler",
+                                          NULL,
+                                          file_id,
+                                          SCOREP_INVALID_LINE_NO,
+                                          SCOREP_INVALID_LINE_NO,
+                                          SCOREP_PARADIGM_MPI,
+                                          SCOREP_REGION_NONE );
+    }
+#endif
+#if HAVE( MPI_4_0_SYMBOL_PMPI_SESSION_F2C ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Session_f2c )
+    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
+    {
+        scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SESSION_F2C ] =
+            SCOREP_Definitions_NewRegion( "MPI_Session_f2c",
                                           NULL,
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
@@ -4337,6 +4415,32 @@ scorep_mpi_register_regions( void )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_C2F ] =
             SCOREP_Definitions_NewRegion( "MPI_Status_c2f",
+                                          NULL,
+                                          file_id,
+                                          SCOREP_INVALID_LINE_NO,
+                                          SCOREP_INVALID_LINE_NO,
+                                          SCOREP_PARADIGM_MPI,
+                                          SCOREP_REGION_NONE );
+    }
+#endif
+#if HAVE( MPI_4_0_SYMBOL_PMPI_STATUS_C2F08 ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Status_c2f08 )
+    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
+    {
+        scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_C2F08 ] =
+            SCOREP_Definitions_NewRegion( "MPI_Status_c2f08",
+                                          NULL,
+                                          file_id,
+                                          SCOREP_INVALID_LINE_NO,
+                                          SCOREP_INVALID_LINE_NO,
+                                          SCOREP_PARADIGM_MPI,
+                                          SCOREP_REGION_NONE );
+    }
+#endif
+#if HAVE( MPI_4_0_SYMBOL_PMPI_STATUS_F082C ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Status_f082c )
+    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
+    {
+        scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_F082C ] =
+            SCOREP_Definitions_NewRegion( "MPI_Status_f082c",
                                           NULL,
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,

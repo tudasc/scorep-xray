@@ -385,8 +385,12 @@ enum scorep_mpi_regions
     SCOREP_MPI_REGION__MPI_DIST_GRAPH_NEIGHBORS,
     /** Score-P region ID for MPI_Dist_graph_neighbors_count */
     SCOREP_MPI_REGION__MPI_DIST_GRAPH_NEIGHBORS_COUNT,
+    /** Score-P region ID for MPI_Errhandler_c2f */
+    SCOREP_MPI_REGION__MPI_ERRHANDLER_C2F,
     /** Score-P region ID for MPI_Errhandler_create */
     SCOREP_MPI_REGION__MPI_ERRHANDLER_CREATE,
+    /** Score-P region ID for MPI_Errhandler_f2c */
+    SCOREP_MPI_REGION__MPI_ERRHANDLER_F2C,
     /** Score-P region ID for MPI_Errhandler_free */
     SCOREP_MPI_REGION__MPI_ERRHANDLER_FREE,
     /** Score-P region ID for MPI_Errhandler_get */
@@ -713,6 +717,10 @@ enum scorep_mpi_regions
     SCOREP_MPI_REGION__MPI_KEYVAL_FREE,
     /** Score-P region ID for MPI_Lookup_name */
     SCOREP_MPI_REGION__MPI_LOOKUP_NAME,
+    /** Score-P region ID for MPI_Message_c2f */
+    SCOREP_MPI_REGION__MPI_MESSAGE_C2F,
+    /** Score-P region ID for MPI_Message_f2c */
+    SCOREP_MPI_REGION__MPI_MESSAGE_F2C,
     /** Score-P region ID for MPI_Mprobe */
     SCOREP_MPI_REGION__MPI_MPROBE,
     /** Score-P region ID for MPI_Mrecv */
@@ -839,10 +847,14 @@ enum scorep_mpi_regions
     SCOREP_MPI_REGION__MPI_SENDRECV,
     /** Score-P region ID for MPI_Sendrecv_replace */
     SCOREP_MPI_REGION__MPI_SENDRECV_REPLACE,
+    /** Score-P region ID for MPI_Session_c2f */
+    SCOREP_MPI_REGION__MPI_SESSION_C2F,
     /** Score-P region ID for MPI_Session_call_errhandler */
     SCOREP_MPI_REGION__MPI_SESSION_CALL_ERRHANDLER,
     /** Score-P region ID for MPI_Session_create_errhandler */
     SCOREP_MPI_REGION__MPI_SESSION_CREATE_ERRHANDLER,
+    /** Score-P region ID for MPI_Session_f2c */
+    SCOREP_MPI_REGION__MPI_SESSION_F2C,
     /** Score-P region ID for MPI_Session_finalize */
     SCOREP_MPI_REGION__MPI_SESSION_FINALIZE,
     /** Score-P region ID for MPI_Session_get_errhandler */
@@ -871,6 +883,10 @@ enum scorep_mpi_regions
     SCOREP_MPI_REGION__MPI_STARTALL,
     /** Score-P region ID for MPI_Status_c2f */
     SCOREP_MPI_REGION__MPI_STATUS_C2F,
+    /** Score-P region ID for MPI_Status_c2f08 */
+    SCOREP_MPI_REGION__MPI_STATUS_C2F08,
+    /** Score-P region ID for MPI_Status_f082c */
+    SCOREP_MPI_REGION__MPI_STATUS_F082C,
     /** Score-P region ID for MPI_Status_f2c */
     SCOREP_MPI_REGION__MPI_STATUS_F2C,
     /** Score-P region ID for MPI_Status_set_cancelled */

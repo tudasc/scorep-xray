@@ -369,8 +369,16 @@ these groups are disabled as well.
   <td>TOPO</td>
 </tr>
 <tr>
+  <td>MPI_Errhandler_c2f</td>
+  <td>MISC</td>
+</tr>
+<tr>
   <td>MPI_Errhandler_create</td>
   <td>ERR</td>
+</tr>
+<tr>
+  <td>MPI_Errhandler_f2c</td>
+  <td>MISC</td>
 </tr>
 <tr>
   <td>MPI_Errhandler_free</td>
@@ -1025,6 +1033,14 @@ these groups are disabled as well.
   <td>SPAWN</td>
 </tr>
 <tr>
+  <td>MPI_Message_c2f</td>
+  <td>MISC</td>
+</tr>
+<tr>
+  <td>MPI_Message_f2c</td>
+  <td>MISC</td>
+</tr>
+<tr>
   <td>MPI_Mprobe</td>
   <td>P2P</td>
 </tr>
@@ -1277,12 +1293,20 @@ these groups are disabled as well.
   <td>P2P</td>
 </tr>
 <tr>
+  <td>MPI_Session_c2f</td>
+  <td>MISC</td>
+</tr>
+<tr>
   <td>MPI_Session_call_errhandler</td>
   <td>ENV</td>
 </tr>
 <tr>
   <td>MPI_Session_create_errhandler</td>
   <td>ENV</td>
+</tr>
+<tr>
+  <td>MPI_Session_f2c</td>
+  <td>MISC</td>
 </tr>
 <tr>
   <td>MPI_Session_finalize</td>
@@ -1338,6 +1362,14 @@ these groups are disabled as well.
 </tr>
 <tr>
   <td>MPI_Status_c2f</td>
+  <td>MISC</td>
+</tr>
+<tr>
+  <td>MPI_Status_c2f08</td>
+  <td>MISC</td>
+</tr>
+<tr>
+  <td>MPI_Status_f082c</td>
   <td>MISC</td>
 </tr>
 <tr>
@@ -2046,6 +2078,8 @@ MPI_Wtime,
 <tr><td>
 MPI_Address,
 MPI_Alloc_mem,
+MPI_Errhandler_c2f,
+MPI_Errhandler_f2c,
 MPI_Free_mem,
 MPI_Get_address,
 MPI_Get_version,
@@ -2062,6 +2096,8 @@ MPI_Info_get_nthkey,
 MPI_Info_get_string,
 MPI_Info_get_valuelen,
 MPI_Info_set,
+MPI_Message_c2f,
+MPI_Message_f2c,
 MPI_Op_c2f,
 MPI_Op_commutative,
 MPI_Op_create,
@@ -2069,7 +2105,11 @@ MPI_Op_f2c,
 MPI_Op_free,
 MPI_Request_c2f,
 MPI_Request_f2c,
+MPI_Session_c2f,
+MPI_Session_f2c,
 MPI_Status_c2f,
+MPI_Status_c2f08,
+MPI_Status_f082c,
 MPI_Status_f2c,
 </td></tr>
 </table>

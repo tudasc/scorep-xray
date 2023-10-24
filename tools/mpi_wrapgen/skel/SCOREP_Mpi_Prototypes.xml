@@ -1,5 +1,5 @@
 
-<prototypes count="427" family="mpi" >
+<prototypes count="435" family="mpi" >
 
 <prototype name="MPI_Abort" rtype="int" group="ext" guard="" >
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
@@ -636,7 +636,7 @@
 </prototype>
 
 <prototype name="MPI_Comm_c2f" rtype="MPI_Fint" group="cg_misc" guard="extra,cg,misc" >
-    <param access="o" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <version id="2.0" />
 </prototype>
 
@@ -725,7 +725,7 @@
 </prototype>
 
 <prototype name="MPI_Comm_f2c" rtype="MPI_Comm" group="cg_misc" guard="extra,cg,misc" >
-    <param access="o" type_modifier="" type="MPI_Fint" name="comm" />
+    <param access="i" type_modifier="" type="MPI_Fint" name="comm" />
     <version id="2.0" />
 </prototype>
 
@@ -1065,10 +1065,20 @@
     <version id="2.2" />
 </prototype>
 
+<prototype name="MPI_Errhandler_c2f" rtype="MPI_Fint" group="misc" guard="extra,err,misc" >
+    <param access="i" type_modifier="" type="MPI_Errhandler" name="errhandler" />
+    <version id="2.1" />
+</prototype>
+
 <prototype name="MPI_Errhandler_create" rtype="int" group="err" guard="extra,err" >
     <param access="i" type_modifier="" type="MPI_Handler_function*" name="function" />
     <param access="o" type_modifier="" type="MPI_Errhandler*" name="errhandler" />
     <version id="1.0" />
+</prototype>
+
+<prototype name="MPI_Errhandler_f2c" rtype="MPI_Errhandler" group="misc" guard="extra,err,misc" >
+    <param access="i" type_modifier="" type="MPI_Fint" name="errhandler" />
+    <version id="2.1" />
 </prototype>
 
 <prototype name="MPI_Errhandler_free" rtype="int" group="err" guard="extra,err" >
@@ -1222,7 +1232,7 @@
 </prototype>
 
 <prototype name="MPI_File_f2c" rtype="MPI_File" group="io_misc" guard="io,extra,misc" >
-    <param access="o" type_modifier="" type="MPI_Fint" name="file" />
+    <param access="i" type_modifier="" type="MPI_Fint" name="file" />
     <version id="2.0" />
 </prototype>
 
@@ -2677,7 +2687,7 @@
 </prototype>
 
 <prototype name="MPI_Group_c2f" rtype="MPI_Fint" group="cg_misc" guard="extra,cg,misc" >
-    <param access="o" type_modifier="" type="MPI_Group" name="group" />
+    <param access="i" type_modifier="" type="MPI_Group" name="group" />
     <version id="2.0" />
 </prototype>
 
@@ -2704,7 +2714,7 @@
 </prototype>
 
 <prototype name="MPI_Group_f2c" rtype="MPI_Group" group="cg_misc" guard="extra,cg,misc" >
-    <param access="o" type_modifier="" type="MPI_Fint" name="group" />
+    <param access="i" type_modifier="" type="MPI_Fint" name="group" />
     <version id="2.0" />
 </prototype>
 
@@ -3477,7 +3487,7 @@
 </prototype>
 
 <prototype name="MPI_Info_c2f" rtype="MPI_Fint" group="misc" guard="extra,misc" >
-    <param access="o" type_modifier="" type="MPI_Info" name="info" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
     <version id="2.0" />
 </prototype>
 
@@ -3506,7 +3516,7 @@
 </prototype>
 
 <prototype name="MPI_Info_f2c" rtype="MPI_Info" group="misc" guard="extra,misc" >
-    <param access="o" type_modifier="" type="MPI_Fint" name="info" />
+    <param access="i" type_modifier="" type="MPI_Fint" name="info" />
     <version id="2.0" />
 </prototype>
 
@@ -4039,6 +4049,16 @@
     <param access="i" type_modifier="" type="MPI_Info" name="info" />
     <param access="o" type_modifier="" type="char*" name="port_name" />
     <version id="2.0" />
+</prototype>
+
+<prototype name="MPI_Message_c2f" rtype="MPI_Fint" group="misc" guard="extra,p2p,misc" >
+    <param access="i" type_modifier="" type="MPI_Message" name="message" />
+    <version id="3.0" />
+</prototype>
+
+<prototype name="MPI_Message_f2c" rtype="MPI_Message" group="misc" guard="extra,p2p,misc" >
+    <param access="i" type_modifier="" type="MPI_Fint" name="message" />
+    <version id="3.0" />
 </prototype>
 
 <prototype name="MPI_Mprobe" rtype="int" group="p2p" guard="p2p" >
@@ -4856,12 +4876,12 @@
 </prototype>
 
 <prototype name="MPI_Request_c2f" rtype="MPI_Fint" group="misc" guard="extra,misc" >
-    <param access="o" type_modifier="" type="MPI_Request" name="request" />
+    <param access="i" type_modifier="" type="MPI_Request" name="request" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Request_f2c" rtype="MPI_Request" group="misc" guard="extra,misc" >
-    <param access="o" type_modifier="" type="MPI_Fint" name="request" />
+    <param access="i" type_modifier="" type="MPI_Fint" name="request" />
     <version id="2.0" />
 </prototype>
 
@@ -5320,6 +5340,11 @@
 ]]></xblock>
 </prototype>
 
+<prototype name="MPI_Session_c2f" rtype="MPI_Fint" group="misc" guard="extra,env,misc" >
+    <param access="i" type_modifier="" type="MPI_Session" name="session" />
+    <version id="4.0" />
+</prototype>
+
 <prototype name="MPI_Session_call_errhandler" rtype="int" group="env" guard="env,err">
     <version id="4.0" />
     <param access="i" type_modifier="" type="MPI_Session" name="session" />
@@ -5330,6 +5355,11 @@
     <version id="4.0" />
     <param access="i" type_modifier="" type="MPI_Session_errhandler_function*" name="session_errhandler_fn" />
     <param access="o" type_modifier="" type="MPI_Errhandler*" name="errhandler" />
+</prototype>
+
+<prototype name="MPI_Session_f2c" rtype="MPI_Session" group="misc" guard="extra,env,misc" >
+    <param access="i" type_modifier="" type="MPI_Fint" name="session" />
+    <version id="4.0" />
 </prototype>
 
 <prototype name="MPI_Session_finalize" rtype="int" group="env">
@@ -5455,6 +5485,20 @@
     <version id="2.0" />
 </prototype>
 
+
+<prototype name="MPI_Status_c2f08" rtype="int" group="misc" guard="extra,misc" >
+    <param access="i" type_modifier="const" type="MPI_Status*" name="c_status" />
+    <param access="o" type_modifier="" type="MPI_F08_status*" name="f08_status" />
+    <version id="4.0" />
+</prototype>
+
+<prototype name="MPI_Status_f082c" rtype="int" group="misc" guard="extra,misc" >
+    <param access="i" type_modifier="" type="MPI_F08_status*" name="f08_status" />
+    <param access="o" type_modifier="const" type="MPI_Status*" name="c_status" />
+    <version id="4.0" />
+</prototype>
+
+
 <prototype name="MPI_Status_f2c" rtype="int" group="misc" guard="extra,misc" >
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="MPI_Fint*" name="f_status" />
     <param access="o" type_modifier="" type="MPI_Status*" name="c_status" />
@@ -5579,7 +5623,7 @@
 </prototype>
 
 <prototype name="MPI_Type_c2f" rtype="MPI_Fint" group="type_misc" guard="extra,type,misc" >
-    <param access="o" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <version id="2.0" />
 </prototype>
 
@@ -5720,7 +5764,7 @@
 </prototype>
 
 <prototype name="MPI_Type_f2c" rtype="MPI_Datatype" group="type_misc" guard="extra,type,misc" >
-    <param access="o" type_modifier="" type="MPI_Fint" name="datatype" />
+    <param access="i" type_modifier="" type="MPI_Fint" name="datatype" />
     <version id="2.0" />
 </prototype>
 
@@ -6157,7 +6201,7 @@
 </prototype>
 
 <prototype name="MPI_Win_f2c" rtype="MPI_Win" group="rma_misc" guard="rma,misc,extra" >
-    <param access="o" type_modifier="" type="MPI_Fint" name="win" />
+    <param access="i" type_modifier="" type="MPI_Fint" name="win" />
     <version id="2.0" />
 </prototype>
 

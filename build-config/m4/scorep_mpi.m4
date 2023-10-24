@@ -611,6 +611,10 @@ if test "x${scorep_mpi_supported}" = "xyes"; then
   dnl not in Open MPI, thus check individual to speed up the common case
   SCOREP_CHECK_SYMBOLS([MPI 2.0], [], [], [PMPI_Sizeof])
 
+  SCOREP_CHECK_SYMBOLS([MPI 2.1], [], [],
+                       [PMPI_Errhandler_c2f,
+                        PMPI_Errhandler_f2c])
+
   SCOREP_CHECK_SYMBOLS([MPI 2.2], [], [],
                        [PMPI_Dist_graph_create,
                         PMPI_Dist_graph_create_adjacent,
@@ -656,6 +660,8 @@ if test "x${scorep_mpi_supported}" = "xyes"; then
                         PMPI_Iscan,
                         PMPI_Iscatter,
                         PMPI_Iscatterv,
+                        PMPI_Message_c2f,
+                        PMPI_Message_f2c,
                         PMPI_Mprobe,
                         PMPI_Mrecv,
                         PMPI_Neighbor_allgather,
@@ -742,7 +748,9 @@ if test "x${scorep_mpi_supported}" = "xyes"; then
                         PMPI_Session_get_num_psets,
                         PMPI_Session_get_pset_info,
                         PMPI_Session_init,
-                        PMPI_Session_set_errhandler])
+                        PMPI_Session_set_errhandler,
+                        PMPI_Status_c2f08,
+                        PMPI_Status_f082c])
 
   AC_SCOREP_MPI_C_DATATYPES
   AC_SCOREP_MPI_COMPLIANCE
