@@ -426,28 +426,7 @@ create_device( acc_device_t deviceType,
         ( scorep_openacc_device* )SCOREP_Memory_AllocForMisc(
             sizeof( scorep_openacc_device ) );
 
-    // "acc_mem_usage " + 2 digits for deviceType + ":"
-    // + 2 digits for device number + null termination
-    const size_t metric_length = 14 + 2 + 1 + 2 + 1;
-
-    // create a new metric handle
-    char* acc_metric_name =
-        ( char* )SCOREP_Memory_AllocForMisc( metric_length * sizeof( char ) );
-
-    if ( -1 == snprintf( acc_metric_name, metric_length,
-                         "acc_mem_usage %d:%i",
-                         deviceType, deviceNumber ) )
-    {
-        UTILS_WARNING( "[OpenACC] Could not create metric name for device type %d!",
-                       deviceType );
-        acc_metric_name = "acc_mem_usage";
-    }
-
-    struct SCOREP_AllocMetric* alloc_metric = NULL;
-
-    SCOREP_AllocMetric_New( acc_metric_name, &alloc_metric );
-
-    dev->alloc_metric = alloc_metric;
+    SCOREP_AllocMetric_New( "OpenACC Memory", &dev->alloc_metric );
 
     return dev;
 }
