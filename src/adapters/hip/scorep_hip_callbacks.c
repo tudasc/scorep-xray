@@ -497,8 +497,7 @@ define_device( scorep_hip_device* device )
 
     if ( scorep_hip_features & SCOREP_HIP_FEATURE_MALLOC )
     {
-        snprintf( buffer, 80, "HIP Context %d Memory", device->device_id );
-        SCOREP_AllocMetric_NewScoped( buffer, device->location_group, &device->alloc_metric );
+        SCOREP_AllocMetric_NewScoped( "HIP Memory", device->location_group, &device->alloc_metric );
     }
 }
 
@@ -1956,8 +1955,7 @@ scorep_hip_callbacks_init( void )
 
     if ( scorep_hip_features & SCOREP_HIP_FEATURE_MALLOC )
     {
-        const char* host_name = "HIP Host Memory";
-        SCOREP_AllocMetric_New( host_name, &host_alloc_metric );
+        SCOREP_AllocMetric_New( "HIP Memory", &host_alloc_metric );
 
         attribute_allocation_size   = SCOREP_AllocMetric_GetAllocationSizeAttribute();
         attribute_deallocation_size = SCOREP_AllocMetric_GetDeallocationSizeAttribute();
