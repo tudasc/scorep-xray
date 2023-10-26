@@ -887,8 +887,12 @@ enum scorep_mpi_regions
     SCOREP_MPI_REGION__MPI_STATUS_C2F08,
     /** Score-P region ID for MPI_Status_f082c */
     SCOREP_MPI_REGION__MPI_STATUS_F082C,
+    /** Score-P region ID for MPI_Status_f082f */
+    SCOREP_MPI_REGION__MPI_STATUS_F082F,
     /** Score-P region ID for MPI_Status_f2c */
     SCOREP_MPI_REGION__MPI_STATUS_F2C,
+    /** Score-P region ID for MPI_Status_f2f08 */
+    SCOREP_MPI_REGION__MPI_STATUS_F2F08,
     /** Score-P region ID for MPI_Status_set_cancelled */
     SCOREP_MPI_REGION__MPI_STATUS_SET_CANCELLED,
     /** Score-P region ID for MPI_Status_set_elements */

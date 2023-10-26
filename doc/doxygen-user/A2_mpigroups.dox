@@ -1373,7 +1373,15 @@ these groups are disabled as well.
   <td>MISC</td>
 </tr>
 <tr>
+  <td>MPI_Status_f082f</td>
+  <td>MISC</td>
+</tr>
+<tr>
   <td>MPI_Status_f2c</td>
+  <td>MISC</td>
+</tr>
+<tr>
+  <td>MPI_Status_f2f08</td>
   <td>MISC</td>
 </tr>
 <tr>
@@ -2110,7 +2118,9 @@ MPI_Session_f2c,
 MPI_Status_c2f,
 MPI_Status_c2f08,
 MPI_Status_f082c,
+MPI_Status_f082f,
 MPI_Status_f2c,
+MPI_Status_f2f08,
 </td></tr>
 </table>
 
