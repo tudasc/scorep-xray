@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2016, 2018-2019,
+ * Copyright (c) 2009-2016, 2018-2019, 2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -219,7 +219,7 @@ MPI_Free_mem( void* base )
 }
 #endif
 
-#pragma wrapgen multiple restrict(gmisc+!n_c2f+!n_f2c+!n_Info+!nMPI_Address+!nMPI_Alloc_mem+!nMPI_Free_mem) skel/SCOREP_Mpi_Std.w
+#pragma wrapgen multiple restrict(gmisc+!n_c2f+!n_c2f08+!n_f082c+!n_f082f+!n_f2c+!n_f2f08+!n_Info+!nMPI_Address+!nMPI_Alloc_mem+!nMPI_Free_mem) skel/SCOREP_Mpi_Std.w
 
 #pragma wrapgen single MPI_Errhandler_c2f skel/SCOREP_Mpi_Std.w
 #pragma wrapgen single MPI_Errhandler_f2c skel/SCOREP_Mpi_Std.w
@@ -234,7 +234,9 @@ MPI_Free_mem( void* base )
 #pragma wrapgen single MPI_Status_c2f skel/SCOREP_Mpi_Std.w
 #pragma wrapgen single MPI_Status_c2f08 skel/SCOREP_Mpi_Std.w
 #pragma wrapgen single MPI_Status_f082c skel/SCOREP_Mpi_Std.w
+#pragma wrapgen single MPI_Status_f082f skel/SCOREP_Mpi_Std.w
 #pragma wrapgen single MPI_Status_f2c skel/SCOREP_Mpi_Std.w
+#pragma wrapgen single MPI_Status_f2f08 skel/SCOREP_Mpi_Std.w
 
 #pragma wrapgen multiple restrict(gmisc+n_Info+!nMPI_Info_delete+!nMPI_Info_get+!nMPI_Info_get_valuelen+!nMPI_Info_set+!nMPI_Address) skel/SCOREP_Mpi_Std.w
 
