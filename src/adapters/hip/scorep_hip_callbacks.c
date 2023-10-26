@@ -533,6 +533,7 @@ typedef struct
     uint32_t         stream_seq;
     SCOREP_Location* device_location;
     uint32_t         local_rank;
+    uint64_t         last_scorep_time;
 } scorep_hip_stream;
 
 /**
@@ -617,10 +618,10 @@ stream_table_value_ctor( stream_table_key_t* key,
     UTILS_DEBUG( "Creating stream %p/%d -> [%d:%u]", key->stream, key->device_id, data->device_id, stream_seq );
 
     scorep_hip_stream* stream = SCOREP_Memory_AllocForMisc( sizeof( *stream ) );
-    stream->device_id  = key->device_id;
-    stream->stream     = key->stream;
-    stream->stream_seq = stream_seq;
-
+    stream->device_id        = key->device_id;
+    stream->stream           = key->stream;
+    stream->stream_seq       = stream_seq;
+    stream->last_scorep_time = 0;
     char thread_name[ 32 ];
     /* This is the software layer, thus we use the HIP device ID, not the
      * ROCm SMI device index. See the comment on "HIP Context".
@@ -1675,6 +1676,23 @@ sync_cb( uint32_t    domain,
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
+static inline uint64_t
+clamp_timestamp( scorep_hip_stream* stream,
+                 uint64_t           timestamp )
+{
+    if ( timestamp < stream->last_scorep_time )
+    {
+        UTILS_DEBUG( "[%d:%u]: Adjusting timestamp from: %" PRIu64 "to: %" PRIu64,
+                     stream->device_id, stream->stream_seq,
+                     timestamp, stream->last_scorep_time );
+        timestamp = stream->last_scorep_time;
+    }
+    stream->last_scorep_time = timestamp;
+
+    return timestamp;
+}
+
+
 // Activity tracing callback
 //
 // Called on activity buffer flush. Executes in a dedicated roctracer thread.
@@ -1740,6 +1758,7 @@ activity_cb( const char* begin,
                              SCOREP_RegionHandle_GetName( e->payload.launch.kernel_region ),
                              begin_time, end_time );
 
+                begin_time = clamp_timestamp( e->payload.launch.stream, begin_time );
                 SCOREP_Location_EnterRegion( e->payload.launch.stream->device_location,
                                              begin_time,
                                              e->payload.launch.kernel_region );
@@ -1752,6 +1771,7 @@ activity_cb( const char* begin,
                                                             e->payload.launch.callsite_hash );
                 }
 
+                end_time = clamp_timestamp( e->payload.launch.stream, end_time );
                 SCOREP_Location_ExitRegion( e->payload.launch.stream->device_location,
                                             end_time,
                                             e->payload.launch.kernel_region );
@@ -1773,6 +1793,7 @@ activity_cb( const char* begin,
                              e->payload.memcpy.stream->stream_seq,
                              begin_time, end_time );
 
+                begin_time = clamp_timestamp( e->payload.memcpy.stream, begin_time );
                 if ( e->payload.memcpy.kind == hipMemcpyHostToDevice )
                 {
                     SCOREP_Location_RmaGet( e->payload.memcpy.stream->device_location,
@@ -1792,6 +1813,7 @@ activity_cb( const char* begin,
                                             record->correlation_id );
                 }
 
+                end_time = clamp_timestamp( e->payload.memcpy.stream, end_time );
                 if ( e->payload.memcpy.kind == hipMemcpyHostToDevice
                      || e->payload.memcpy.kind == hipMemcpyDeviceToHost )
                 {

@@ -32,6 +32,10 @@ Bugfixes:
   the same file handle.
 - Fix linking issues with LLVM based compilers when OpenMP target flags
   are used and the compiler instrumentation is active.
+- HIP instrumentation is now consistent with CUDA instrumentation in its
+  handling of small rounding errors in device timestamp interpolation and
+  will simply adjust the beginning of the next event per stream according
+  to the events already seen.
 
 ------------------- Released version 8.3 -----------------------------
 
