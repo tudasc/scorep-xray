@@ -5493,8 +5493,8 @@
 </prototype>
 
 <prototype name="MPI_Status_f082c" rtype="int" group="misc" guard="extra,misc" >
-    <param access="i" type_modifier="" type="MPI_F08_status*" name="f08_status" />
-    <param access="o" type_modifier="const" type="MPI_Status*" name="c_status" />
+    <param access="i" type_modifier="const" type="MPI_F08_status*" name="f08_status" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="c_status" />
     <version id="4.0" />
 </prototype>
 

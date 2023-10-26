@@ -1280,8 +1280,8 @@ MPI_Status_c2f08( const MPI_Status* c_status, MPI_F08_status* f08_status )
  * Declaration of PMPI-symbol for MPI_Status_f082c
  */
 int
-PMPI_Status_f082c( MPI_F08_status*   f08_status,
-                   const MPI_Status* c_status );
+PMPI_Status_f082c( const MPI_F08_status* f08_status,
+                   MPI_Status*           c_status );
 
 /**
  * Measurement wrapper for MPI_Status_f082c
@@ -1293,7 +1293,7 @@ PMPI_Status_f082c( MPI_F08_status*   f08_status,
  * It wraps the MPI_Status_f082c call with enter and exit events.
  */
 int
-MPI_Status_f082c( MPI_F08_status* f08_status, const MPI_Status* c_status )
+MPI_Status_f082c( const MPI_F08_status* f08_status, MPI_Status* c_status )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
