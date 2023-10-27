@@ -26,10 +26,17 @@
             </cubepl>
             <cubeplinit>
             {
+                //--- Global callpath type masks ----------------------------
+                // Each type mask field contains one entry for each callpath,
+                // by default set to 0.  It is set to 1 if the callpath is of
+                // the corresponding category.
+
+                // Generic masks
                 global(execution);
                 global(overhead);
                 global(idle_gpus);
 
+                // MPI-specific masks
                 global(mpi);
                 global(mpi_mgmt_startup);
                 global(mpi_mgmt_comm);
@@ -53,6 +60,7 @@
                 global(mpi_request_start);
                 global(mpi_request_completion);
 
+                // SHMEM-specific masks
                 global(shmem);
                 global(shmem_mgmt_initfini);
                 global(shmem_mgmt_activesets);
@@ -68,6 +76,7 @@
                 global(shmem_event);
                 global(shmem_cache);
 
+                // OpenMP-specific masks
                 global(omp_sync_ebarrier);
                 global(omp_sync_ibarrier);
                 global(omp_sync_critical);
@@ -76,16 +85,19 @@
                 global(omp_sync_taskwait);
                 global(omp_flush);
 
+                // Pthread-specific masks
                 global(pthread_mgmt);
                 global(pthread_sync_mutex);
                 global(pthread_sync_condition);
 
+                // OpenACC-specific masks
                 global(openacc);
                 global(openacc_setup);
                 global(openacc_comm);
                 global(openacc_sync);
                 global(openacc_kernel_launches);
 
+                // OpenCL-specific masks
                 global(opencl);
                 global(opencl_setup);
                 global(opencl_comm);
@@ -93,6 +105,7 @@
                 global(opencl_kernel_launches);
                 global(opencl_kernel_executions);
 
+                // CUDA-specific masks
                 global(cuda);
                 global(cuda_setup);
                 global(cuda_comm);
@@ -100,6 +113,7 @@
                 global(cuda_kernel_launches);
                 global(cuda_kernel_executions);
 
+                // HIP-specific masks
                 global(hip);
                 global(hip_stream);
                 global(hip_malloc);
@@ -108,12 +122,20 @@
                 global(hip_kernel_launches);
                 global(hip_kernel_executions);
 
+                // File I/O-specific masks
                 global(fileio);
                 global(fileio_meta);
                 global(fileio_reading);
                 global(fileio_writing);
 
+                // Wrapped libraries masks
                 global(libwrap);
+
+                //--- Paradigm/feature flags --------------------------------
+                // These flags indicate which of the supported parallel
+                // programming paradigms and/or features are used in the
+                // experiment to later enable/disable the corresponding
+                // metric subtrees.
 
                 ${includesMPI}      = 0;
                 ${includesSHMEM}    = 0;
@@ -128,9 +150,15 @@
                 ${includesFILEIO}   = 0;
                 ${includesMEMORY}   = 0;
 
+
+                //--- Callpath categorization -------------------------------
+                // Each callpath is categorized by type and its global type
+                // mask entry is set accordingly.
+
                 ${i} = 0;
                 while ( ${i} < ${cube::#callpaths} )
                 {
+                    // Default: all callpaths are considered to be execution
                     ${execution}[${i}] = 1;
                     ${regionid}        = ${cube::callpath::calleeid}[${i}];
 
@@ -147,6 +175,7 @@
                     ${role}       = ${cube::region::role}[${regionid}];
                     ${sourcefile} = ${cube::region::mod}[${regionid}];
 
+                    //--- MPI-specific categorization ---
                     if ( ${paradigm} eq "mpi" )
                     {
                         ${includesMPI} = 1;
@@ -265,6 +294,7 @@
                         };
                     }
 
+                    //--- SHMEM-specific categorization ---
                     elseif ( ${paradigm} eq "shmem" )
                     {
                         ${includesSHMEM} = 1;
@@ -330,6 +360,7 @@
 
                     }
 
+                    //--- OpenMP-specific categorization ---
                     elseif ( ${paradigm} eq "openmp" )
                     {
                         ${includesOpenMP} = 1;
@@ -370,6 +401,7 @@
                         };
                     }
 
+                    //--- Pthread-specific categorization ---
                     elseif ( ${paradigm} eq "pthread" )
                     {
                         ${includesPthread} = 1;
@@ -390,6 +422,7 @@
                         };
                     }
 
+                    //--- OpenACC-specific categorization ---
                     elseif ( ${paradigm} eq "openacc" )
                     {
                         ${includesOpenACC} = 1;
@@ -417,6 +450,7 @@
                         };
                     }
 
+                    //--- OpenCL-specific categorization ---
                     elseif ( ${paradigm} eq "opencl" )
                     {
                         ${includesOpenCL} = 1;
@@ -464,6 +498,7 @@
                         };
                     }
 
+                    //--- CUDA-specific classification ---
                     elseif ( ${paradigm} eq "cuda" )
                     {
                         ${includesCUDA} = 1;
@@ -549,6 +584,7 @@
                         };
                     }
 
+                    //--- HIP-specific classification ---
                     elseif ( ${paradigm} eq "hip" )
                     {
                         ${includesHIP} = 1;
@@ -591,6 +627,7 @@
                         };
                     }
 
+                    //--- Internal measurement activity classification ---
                     elseif ( ${paradigm} eq "measurement" )
                     {
                         if ( ${name} eq "TRACE BUFFER FLUSH" )
@@ -600,12 +637,14 @@
                         };
                     }
 
+                    //--- Wrappen libraries classification ---
                     elseif ( ${paradigm} =~ /^libwrap:(.+)$/ )
                     {
                         ${includesLIBWRAP} = 1;
                         ${libwrap}[${i}] = 1;
                     }
 
+                    //--- File I/O-specific classification ---
                     elseif ( ${paradigm} eq "io" )
                     {
                         ${includesFILEIO} = 1;
@@ -627,6 +666,7 @@
                         };
                     }
 
+                    //--- Memory tracking classification ---
                     elseif ( ${paradigm} eq "memory" )
                     {
                         ${includesMEMORY} = 1;
@@ -634,6 +674,9 @@
 
                     ${i} = ${i} + 1;
                 };
+
+
+                //--- Disable unused metric subtrees ------------------------
 
                 if ( ${includesMPI} == 0 )
                 {
