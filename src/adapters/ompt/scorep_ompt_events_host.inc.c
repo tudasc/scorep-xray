@@ -119,7 +119,13 @@ typedef struct task_t
                                              * installment. */
 
     /* for explicit tasks only */
-    bool                is_undeferred; /* Undeferred tasks don't create SCOREP_ events. */
+    int undeferred_level;                   /* Undeferred tasks represent tasks which are executed by
+                                             * the same thread which encountered the task creation.
+                                             * Therefore, we can use the same task_t object for tracking.
+                                             * The tasks will not create any task events. However,
+                                             * to know when we need to switch between undeferred
+                                             * and deferred tasks and free the task_t objects, we need
+                                             * to keep track of the possible nesting. */
     SCOREP_RegionHandle region;
 
     struct task_t*      next;               /* free list handling */
@@ -171,12 +177,7 @@ typedef struct parallel_t
                                           array of size requested_parallelism, indexed
                                           by thread_num in task-create. */
 
-    /* Have a single undeferred task object per parallel region to be able to
-       ignore undeferred tasks in task-schedule. Will be passed via
-       task_data->ptr. */
-    struct task_t      undeferred_task;
-
-    struct parallel_t* next; /* free list */
+    struct parallel_t* next;           /* free list */
 } parallel_t;
 
 
@@ -194,8 +195,8 @@ static inline SCOREP_RegionHandle work_begin( task_t* task, const void* codeptrR
 static inline void enlarge_region_array( uint8_t* capacity, SCOREP_RegionHandle** regions );
 static inline SCOREP_RegionHandle work_end( task_t* task );
 static inline uint64_t get_mask( uint32_t width, uint32_t shift );
-static inline void task_schedule_handle_prior_task(task_t* priorTask, ompt_task_status_t priorTaskStatus );
-static inline void task_schedule_handle_next_task(task_t* priorTask, ompt_data_t* nextTaskData );
+static inline void task_schedule_handle_prior_task( task_t* priorTask, ompt_task_status_t priorTaskStatus );
+static inline void task_schedule_handle_next_task( task_t* priorTask, ompt_data_t* nextTaskData );
 static inline task_t* get_current_task( void );
 static inline void construct_mutex_acquire( task_t* task, const void* codeptrRa );
 static inline void construct_mutex_acquired( task_t* task, tool_event_t regionType, tool_event_t regionTypeSblock, ompt_mutex_t kind, ompt_wait_id_t waitId );
@@ -252,6 +253,11 @@ static THREAD_LOCAL_STORAGE_SPECIFIER task_t* tasks_free_list;
     ( OMPT_TASK_DATA )->ptr = ( TASK )->next; \
     release_parallel_region( ( TASK )->parallel_region ); \
     release_task_to_pool( TASK ); \
+
+
+/* convenience macros for tasking */
+#define UNDEFERRED_TASK_INIT ( 0 )
+#define UNDEFERRED_TASK_TO_BE_FREED ( -1 )
 
 
 static inline parallel_t*
@@ -330,6 +336,8 @@ get_task_from_pool( void )
     data->workshare_regions_capacity = workshare_regions_capacity;
     data->sync_regions               = sync_regions;
     data->sync_regions_capacity      = sync_regions_capacity;
+    /* Implicitly done by memset already */
+    data->undeferred_level = UNDEFERRED_TASK_INIT;
     return data;
 }
 
@@ -573,10 +581,6 @@ init_parallel_obj( parallel_t*                        parallel,
     size_t mem = sizeof( uint32_t ) * parallel->team_size;
     parallel->task_generation_numbers = realloc( parallel->task_generation_numbers, mem );
     memset( parallel->task_generation_numbers, 0, mem );
-
-    /* Init task_t object that gets passed around for undeferred tasks. */
-    parallel->undeferred_task.is_undeferred   = true;
-    parallel->undeferred_task.parallel_region = parallel;
 }
 
 
@@ -959,10 +963,8 @@ on_initial_task( int flags )
     initial_task.scorep_location = SCOREP_Location_GetCurrentCPULocation();
     initial_task.tpd             = tpd;
     UTILS_BUG_ON( initial_task.tpd == NULL );
-    /* The initial task has no SCOREP_ThreadForkJoin_TaskBegin and TaskEnd
-       events. Prevent TaskSwitch events by marking it 'undeferred'. */
-    initial_task.is_undeferred   = true;
-    initial_task.parallel_region = &implicit_parallel;
+    initial_task.undeferred_level = UNDEFERRED_TASK_INIT;
+    initial_task.parallel_region  = &implicit_parallel;
 }
 
 
@@ -1871,12 +1873,16 @@ scorep_ompt_cb_host_task_create( ompt_data_t*        encountering_task_data,
     if ( flags & ompt_task_taskwait )
     {
         task_t* next_task = get_task_from_pool();
-        next_task->is_undeferred     = flags & ompt_task_undeferred;
+        if ( flags & ompt_task_undeferred )
+        {
+            /* Since this task is already undeferred, increase the level by one. */
+            next_task->undeferred_level++;
+        }
         next_task->region            = get_region( codeptr_ra, TOOL_EVENT_TASKWAIT_DEPEND );
         next_task->belongs_to_league = task->belongs_to_league;
         next_task->parallel_region   = task->parallel_region;
         new_task_data->ptr           = next_task;
-        if ( !next_task->is_undeferred )
+        if ( next_task->undeferred_level == UNDEFERRED_TASK_INIT )
         {
             UTILS_WARN_ONCE( "Non-undeferred taskwait_complete is not implemented yet!" );
         }
@@ -2066,6 +2072,10 @@ scorep_ompt_cb_host_task_schedule( ompt_data_t*       prior_task_data,
     {
         task_schedule_handle_next_task( prior_task, next_task_data );
     }
+    if ( prior_task->undeferred_level == UNDEFERRED_TASK_TO_BE_FREED )
+    {
+        release_task_to_pool( prior_task );
+    }
 
     UTILS_DEBUG_EXIT();
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -2079,20 +2089,20 @@ task_schedule_handle_prior_task( task_t*            priorTask,
     switch ( priorTaskStatus )
     {
         case ompt_taskwait_complete:
-            if ( !priorTask->is_undeferred )
-            {
-                UTILS_WARN_ONCE( "Non-undeferred taskwait_complete is not implemented yet!" );
-                return;
-            }
-            else
+            /* See task_create for more information */
+            if ( priorTask->undeferred_level > UNDEFERRED_TASK_INIT )
             {
                 SCOREP_ExitRegion( priorTask->region );
             }
-            release_task_to_pool( priorTask );
+            else
+            {
+                UTILS_WARN_ONCE( "Non-undeferred taskwait_complete is not implemented yet!" );
+            }
+            priorTask->undeferred_level = UNDEFERRED_TASK_TO_BE_FREED; /* Task will be freed afterward */
             break;
         case ompt_task_complete:
         case ompt_task_detach:
-            if ( !priorTask->is_undeferred )
+            if ( priorTask->undeferred_level == UNDEFERRED_TASK_INIT ) /* deferred task */
             {
                 UTILS_BUG_ON( !( priorTask->type & ompt_task_explicit ),
                               "Expected only explicit tasks to show up with status %s.",
@@ -2100,7 +2110,6 @@ task_schedule_handle_prior_task( task_t*            priorTask,
                 SCOREP_ThreadForkJoin_TaskEnd( SCOREP_PARADIGM_OPENMP,
                                                priorTask->region,
                                                priorTask->scorep_task );
-                release_task_to_pool( priorTask );
                 UTILS_DEBUG( "(completing) task %p | atid %" PRIu32,
                              priorTask, adapter_tid );
             }
@@ -2109,6 +2118,7 @@ task_schedule_handle_prior_task( task_t*            priorTask,
                 UTILS_DEBUG( "(completing) undeferred task %p | atid %" PRIu32,
                              priorTask, adapter_tid );
             }
+            priorTask->undeferred_level--;
             break;
         case ompt_task_switch:
         case ompt_task_yield:
@@ -2139,9 +2149,9 @@ task_schedule_handle_next_task( task_t*      priorTask,
 
         if ( region == SCOREP_INVALID_REGION )
         {
-            /* Undeferred task, don't trigger SCOREP_ThreadForkJoin_TaskBegin.
-               Pass parallel-region's undeferred_task around. */
-            nextTaskData->ptr = &( parallel_region->undeferred_task );
+            /* Undeferred task, don't trigger SCOREP_ThreadForkJoin_TaskBegin. */
+            nextTaskData->ptr = priorTask;
+            priorTask->undeferred_level++;
             UTILS_DEBUG( "(starting) undeferred task %p | atid %" PRIu32,
                          nextTaskData->ptr, adapter_tid );
         }
@@ -2174,7 +2184,10 @@ task_schedule_handle_next_task( task_t*      priorTask,
     else
     {
         task_t* next_task = nextTaskData->ptr;
-        if ( !next_task->is_undeferred )
+        /* Previously, we marked initial_task as undeferred, thus skipping calling
+         * SCOREP_ThreadForkJoin_[x]. Now, we directly compare if our next_task is
+         * the initial_task, which means switching back to an undeferred task. */
+        if ( priorTask != next_task && next_task != &initial_task )
         {
             SCOREP_ThreadForkJoin_TaskSwitch( SCOREP_PARADIGM_OPENMP, next_task->scorep_task );
             UTILS_DEBUG( "(resuming) task %p | atid %" PRIu32,
