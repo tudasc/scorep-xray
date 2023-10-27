@@ -22,14 +22,7 @@
             <url>@mirror@scorep_metrics.html#execution</url>
             <descr>Execution time (does not include time allocated for idle threads)</descr>
             <cubepl>
-            {
-                ${tmp} = 0;
-                if ( ${execution}[${calculation::callpath::id}] == 1 )
-                {
-                    ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                };
-                return ${tmp};
-            }
+                ${execution}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
             </cubepl>
             <cubeplinit>
             {
@@ -810,14 +803,7 @@
                     <url>@mirror@scorep_metrics.html#io_time</url>
                     <descr>Time spent in file I/O</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${fileio}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${fileio}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                     <metric type="PREDERIVED_EXCLUSIVE">
                         <disp_name>Handling</disp_name>
@@ -827,14 +813,7 @@
                         <url>@mirror@scorep_metrics.html#io_meta_time</url>
                         <descr>Time spent in file I/O handling metadata</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${fileio_meta}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${fileio_meta}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                     <metric type="PREDERIVED_EXCLUSIVE">
@@ -845,14 +824,7 @@
                         <url>@mirror@scorep_metrics.html#io_reading_time</url>
                         <descr>Time spent in file I/O reading operations</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${fileio_reading}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${fileio_reading}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                     <metric type="PREDERIVED_EXCLUSIVE">
@@ -863,14 +835,7 @@
                         <url>@mirror@scorep_metrics.html#io_writing_time</url>
                         <descr>Time spent in file I/O writing operations</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${fileio_writing}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${fileio_writing}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                 </metric>
@@ -882,14 +847,7 @@
                     <url>@mirror@scorep_metrics.html#libwrap_time</url>
                     <descr>Time spent in wrapped libraries</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${libwrap}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${libwrap}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
                 <metric type="PREDERIVED_EXCLUSIVE">
@@ -900,14 +858,7 @@
                     <url>@mirror@scorep_metrics.html#opencl_kernel_executions</url>
                     <descr>Time spent executing OpenCL kernels</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${opencl_kernel_executions}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${opencl_kernel_executions}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
                 <metric type="PREDERIVED_EXCLUSIVE">
@@ -918,14 +869,7 @@
                     <url>@mirror@scorep_metrics.html#cuda_kernel_executions</url>
                     <descr>Time spent executing CUDA kernels</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${cuda_kernel_executions}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${cuda_kernel_executions}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
                 <metric type="PREDERIVED_EXCLUSIVE">
@@ -936,14 +880,7 @@
                     <url>@mirror@scorep_metrics.html#hip_kernel_executions</url>
                     <descr>Time spent executing HIP kernels</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${hip_kernel_executions}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${hip_kernel_executions}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
             </metric>
@@ -956,14 +893,7 @@
                 <url>@mirror@scorep_metrics.html#mpi</url>
                 <descr>Time spent in MPI calls</descr>
                 <cubepl>
-                {
-                    ${tmp} = 0;
-                    if ( ${mpi}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                    };
-                    return ${tmp};
-                }
+                    ${mpi}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                 </cubepl>
                 <metric type="POSTDERIVED">
                     <disp_name>Management</disp_name>
@@ -983,14 +913,7 @@
                         <url>@mirror@scorep_metrics.html#mpi_init_exit</url>
                         <descr>Time spent in MPI initialization/finalization calls</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${mpi_mgmt_startup}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${mpi_mgmt_startup}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                     <metric type="PREDERIVED_EXCLUSIVE">
@@ -1001,14 +924,7 @@
                         <url>@mirror@scorep_metrics.html#mpi_mgmt_comm</url>
                         <descr>Time spent in MPI communicator management calls</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${mpi_mgmt_comm}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${mpi_mgmt_comm}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                     <metric type="PREDERIVED_EXCLUSIVE">
@@ -1019,14 +935,7 @@
                         <url>@mirror@scorep_metrics.html#mpi_mgmt_file</url>
                         <descr>Time spent in MPI file management calls</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${mpi_mgmt_file}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${mpi_mgmt_file}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                     <metric type="PREDERIVED_EXCLUSIVE">
@@ -1037,14 +946,7 @@
                         <url>@mirror@scorep_metrics.html#mpi_mgmt_win</url>
                         <descr>Time spent in MPI window management calls</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${mpi_mgmt_win}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${mpi_mgmt_win}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                 </metric>
@@ -1066,14 +968,7 @@
                         <url>@mirror@scorep_metrics.html#mpi_sync_collective</url>
                         <descr>Time spent in MPI barriers</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${mpi_sync_collective}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${mpi_sync_collective}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                     <metric type="POSTDERIVED">
@@ -1094,14 +989,7 @@
                             <url>@mirror@scorep_metrics.html#mpi_rma_sync_active</url>
                             <descr>Time spent in MPI one-sided active target synchronization calls</descr>
                             <cubepl>
-                            {
-                                ${tmp} = 0;
-                                if ( ${mpi_sync_rma_active}[${calculation::callpath::id}] == 1 )
-                                {
-                                    ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                                };
-                                return ${tmp};
-                             }
+                                ${mpi_sync_rma_active}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                             </cubepl>
                         </metric>
                         <metric type="PREDERIVED_EXCLUSIVE">
@@ -1112,14 +1000,7 @@
                             <url>@mirror@scorep_metrics.html#mpi_rma_sync_passive</url>
                             <descr>Time spent in MPI one-sided passive target synchronization calls</descr>
                             <cubepl>
-                            {
-                                ${tmp} = 0;
-                                if ( ${mpi_sync_rma_passive}[${calculation::callpath::id}] == 1 )
-                                {
-                                    ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                                };
-                                return ${tmp};
-                            }
+                                ${mpi_sync_rma_passive}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                             </cubepl>
                         </metric>
                     </metric>
@@ -1142,14 +1023,7 @@
                         <url>@mirror@scorep_metrics.html#mpi_point2point</url>
                         <descr>Time spent in MPI point-to-point communication</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${mpi_comm_p2p}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${mpi_comm_p2p}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                     <metric type="PREDERIVED_EXCLUSIVE">
@@ -1160,14 +1034,7 @@
                         <url>@mirror@scorep_metrics.html#mpi_collective</url>
                         <descr>Time spent in MPI collective communication</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${mpi_comm_collective}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${mpi_comm_collective}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                     <metric type="PREDERIVED_EXCLUSIVE">
@@ -1178,14 +1045,7 @@
                         <url>@mirror@scorep_metrics.html#mpi_rma_communication</url>
                         <descr>Time spent in MPI one-sided communication</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${mpi_comm_rma}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${mpi_comm_rma}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                 </metric>
@@ -1207,14 +1067,7 @@
                         <url>@mirror@scorep_metrics.html#mpi_io_individual</url>
                         <descr>Time spent in individual MPI file I/O calls</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${mpi_file_individual}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${mpi_file_individual}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                     <metric type="PREDERIVED_EXCLUSIVE">
@@ -1225,14 +1078,7 @@
                         <url>@mirror@scorep_metrics.html#mpi_io_collective</url>
                         <descr>Time spent in collective MPI file I/O calls</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${mpi_file_collective}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${mpi_file_collective}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                 </metric>
@@ -1244,14 +1090,7 @@
                     <url>@mirror@scorep_metrics.html#mpi_request_handling</url>
                     <descr>Time spent handling requests</descr>
                     <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${mpi_request_handling}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                        ${mpi_request_handling}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                     <metric type="PREDERIVED_EXCLUSIVE">
                         <disp_name>Request Start</disp_name>
@@ -1261,14 +1100,7 @@
                         <url>@mirror@scorep_metrics.html#mpi_request_start</url>
                         <descr>Time spent starting persistent requests</descr>
                         <cubepl>
-                            {
-                                ${tmp} = 0;
-                                if ( ${mpi_request_start}[${calculation::callpath::id}] == 1 )
-                                {
-                                    ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                                };
-                                return ${tmp};
-                            }
+                            ${mpi_request_start}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                     <metric type="PREDERIVED_EXCLUSIVE">
@@ -1279,14 +1111,7 @@
                         <url>@mirror@scorep_metrics.html#mpi_request_completion</url>
                         <descr>Time spent completing requests.</descr>
                         <cubepl>
-                            {
-                                ${tmp} = 0;
-                                if ( ${mpi_request_completion}[${calculation::callpath::id}] == 1 )
-                                {
-                                    ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                                };
-                                return ${tmp};
-                            }
+                            ${mpi_request_completion}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                 </metric>
@@ -1300,14 +1125,7 @@
                 <url>@mirror@scorep_metrics.html#shmem</url>
                 <descr>Time spent in SHMEM calls</descr>
                 <cubepl>
-                {
-                    ${tmp} = 0;
-                    if ( ${shmem}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                    };
-                    return ${tmp};
-                }
+                    ${shmem}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                 </cubepl>
 
                 <metric type="POSTDERIVED">
@@ -1329,14 +1147,7 @@
                         <url>@mirror@scorep_metrics.html#shmem_mgmt_initfini</url>
                         <descr>Time spent in SHMEM initialization/finalization calls</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${shmem_mgmt_initfini}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${shmem_mgmt_initfini}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
 
@@ -1348,14 +1159,7 @@
                         <url>@mirror@scorep_metrics.html#shmem_mgmt_activesets</url>
                         <descr>Time spent in SHMEM active sets/teams management calls</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${shmem_mgmt_activesets}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${shmem_mgmt_activesets}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
 
@@ -1367,14 +1171,7 @@
                         <url>@mirror@scorep_metrics.html#shmem_mgmt_query</url>
                         <descr>Time spent in SHMEM query calls</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${shmem_mgmt_query}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${shmem_mgmt_query}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
 
@@ -1399,14 +1196,7 @@
                         <url>@mirror@scorep_metrics.html#shmem_comm_rma</url>
                         <descr>Time spent in SHMEM RMA operations</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${shmem_comm_rma}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${shmem_comm_rma}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
 
@@ -1418,14 +1208,7 @@
                         <url>@mirror@scorep_metrics.html#shmem_comm_atomic</url>
                         <descr>Time spent in SHMEM atomic operations</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${shmem_comm_atomic}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${shmem_comm_atomic}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
 
@@ -1437,14 +1220,7 @@
                         <url>@mirror@scorep_metrics.html#shmem_comm_coll</url>
                         <descr>Time spent in SHMEM collective operations</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${shmem_comm_coll}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${shmem_comm_coll}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
 
@@ -1469,14 +1245,7 @@
                         <url>@mirror@scorep_metrics.html#shmem_sync_rma</url>
                         <descr>Time spent in SHMEM RMA synchronizations</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${shmem_sync_rma}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${shmem_sync_rma}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
 
@@ -1488,14 +1257,7 @@
                         <url>@mirror@scorep_metrics.html#shmem_sync_coll</url>
                         <descr>Time spent in SHMEM collective synchronizations</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${shmem_sync_coll}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${shmem_sync_coll}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
 
@@ -1507,14 +1269,7 @@
                         <url>@mirror@scorep_metrics.html#shmem_sync_locking</url>
                         <descr>Time spent in SHMEM locking operations</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${shmem_sync_locking}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${shmem_sync_locking}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
 
@@ -1539,14 +1294,7 @@
                         <url>@mirror@scorep_metrics.html#shmem_memory_mgmt</url>
                         <descr>Time spent in SHMEM memory management calls</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${shmem_memory_mgmt}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${shmem_memory_mgmt}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
 
@@ -1558,14 +1306,7 @@
                         <url>@mirror@scorep_metrics.html#shmem_memory_ordering</url>
                         <descr>Time spent in SHMEM memory orderings</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${shmem_memory_ordering}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${shmem_memory_ordering}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
 
@@ -1579,14 +1320,7 @@
                     <url>@mirror@scorep_metrics.html#shmem_event</url>
                     <descr>Time spent in SHMEM event calls</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${shmem_event}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${shmem_event}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
 
@@ -1598,14 +1332,7 @@
                     <url>@mirror@scorep_metrics.html#shmem_cache</url>
                     <descr>Time spent in SHMEM cache calls</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${shmem_cache}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${shmem_cache}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
 
@@ -1649,14 +1376,7 @@
                             <url>@mirror@scorep_metrics.html#omp_ebarrier</url>
                             <descr>Time spent in explicit OpenMP barrier synchronization</descr>
                             <cubepl>
-                            {
-                                ${tmp} = 0;
-                                if ( ${omp_sync_ebarrier}[${calculation::callpath::id}] == 1 )
-                                {
-                                    ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                                };
-                                return ${tmp};
-                            }
+                                ${omp_sync_ebarrier}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                             </cubepl>
                         </metric>
                         <metric type="PREDERIVED_EXCLUSIVE">
@@ -1667,14 +1387,7 @@
                             <url>@mirror@scorep_metrics.html#omp_ibarrier</url>
                             <descr>Time spent in implicit OpenMP barrier synchronization</descr>
                             <cubepl>
-                            {
-                                ${tmp} = 0;
-                                if ( ${omp_sync_ibarrier}[${calculation::callpath::id}] == 1 )
-                                {
-                                    ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                                };
-                                return ${tmp};
-                            }
+                                ${omp_sync_ibarrier}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                             </cubepl>
                         </metric>
                     </metric>
@@ -1686,14 +1399,7 @@
                         <url>@mirror@scorep_metrics.html#omp_critical</url>
                         <descr>Time spent waiting at OpenMP critical sections</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${omp_sync_critical}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${omp_sync_critical}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                     <metric type="PREDERIVED_EXCLUSIVE">
@@ -1704,14 +1410,7 @@
                         <url>@mirror@scorep_metrics.html#omp_lock_api</url>
                         <descr>Time spent in OpenMP lock API calls</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${omp_sync_lock_api}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${omp_sync_lock_api}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                     <metric type="PREDERIVED_EXCLUSIVE">
@@ -1722,14 +1421,7 @@
                         <url>@mirror@scorep_metrics.html#omp_ordered</url>
                         <descr>Time spent waiting at OpenMP ordered regions</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${omp_sync_ordered}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${omp_sync_ordered}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                     <metric type="PREDERIVED_EXCLUSIVE">
@@ -1740,14 +1432,7 @@
                         <url>@mirror@scorep_metrics.html#omp_taskwait</url>
                         <descr>Time spent waiting in OpenMP taskwait directives</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${omp_sync_taskwait}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${omp_sync_taskwait}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                 </metric>
@@ -1759,14 +1444,7 @@
                     <url>@mirror@scorep_metrics.html#omp_flush</url>
                     <descr>Time spent in OpenMP flush directives</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${omp_flush}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${omp_flush}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
             </metric>
@@ -1788,14 +1466,7 @@
                     <url>@mirror@scorep_metrics.html#pthread_management</url>
                     <descr>Time spent in POSIX threads management</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${pthread_mgmt}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${pthread_mgmt}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
                 <metric type="POSTDERIVED">
@@ -1816,14 +1487,7 @@
                         <url>@mirror@scorep_metrics.html#pthread_lock_api</url>
                         <descr>Time spent in POSIX threads mutex API calls</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${pthread_sync_mutex}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${pthread_sync_mutex}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                     <metric type="PREDERIVED_EXCLUSIVE">
@@ -1834,14 +1498,7 @@
                         <url>@mirror@scorep_metrics.html#pthread_conditional</url>
                         <descr>Time spent in POSIX threads condition API calls</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${pthread_sync_condition}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${pthread_sync_condition}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                 </metric>
@@ -1854,14 +1511,7 @@
                 <url>@mirror@scorep_metrics.html#openacc_time</url>
                 <descr>Time spent in the OpenACC run-time system and API</descr>
                 <cubepl>
-                {
-                    ${tmp} = 0;
-                    if ( ${openacc}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                    };
-                    return ${tmp};
-                }
+                    ${openacc}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                 </cubepl>
                 <metric type="PREDERIVED_EXCLUSIVE">
                     <disp_name>Initialization and Finalization</disp_name>
@@ -1871,14 +1521,7 @@
                     <url>@mirror@scorep_metrics.html#openacc_setup</url>
                     <descr>Time needed to initialize and finalize OpenACC</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${openacc_setup}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${openacc_setup}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
                 <metric type="PREDERIVED_EXCLUSIVE">
@@ -1889,14 +1532,7 @@
                     <url>@mirror@scorep_metrics.html#openacc_comm</url>
                     <descr>Time spent on memory management including data transfer from host to device and vice versa</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${openacc_comm}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${openacc_comm}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
                 <metric type="PREDERIVED_EXCLUSIVE">
@@ -1907,14 +1543,7 @@
                     <url>@mirror@scorep_metrics.html#openacc_sync</url>
                     <descr>Time spent on OpenACC synchronization</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${openacc_sync}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${openacc_sync}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
                 <metric type="PREDERIVED_EXCLUSIVE">
@@ -1925,14 +1554,7 @@
                     <url>@mirror@scorep_metrics.html#openacc_kernel_launches</url>
                     <descr>Time needed to launch OpenACC kernels</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${openacc_kernel_launches}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${openacc_kernel_launches}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
             </metric>
@@ -1944,14 +1566,7 @@
                 <url>@mirror@scorep_metrics.html#opencl_time</url>
                 <descr>Time spent in the OpenCL run-time system, API and on device</descr>
                 <cubepl>
-                {
-                    ${tmp} = 0;
-                    if ( ${opencl}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${tmp} = metric::time(e) - metric::opencl_kernel_executions(e) - metric::omp_idle_threads(e);
-                    };
-                    return ${tmp};
-                }
+                    ${opencl}[${calculation::callpath::id}] * ( metric::time(e) - metric::opencl_kernel_executions(e) - metric::omp_idle_threads(e) )
                 </cubepl>
                 <metric type="PREDERIVED_EXCLUSIVE">
                     <disp_name>General management</disp_name>
@@ -1961,14 +1576,7 @@
                     <url>@mirror@scorep_metrics.html#opencl_setup</url>
                     <descr>Time needed for general OpenCL setup, e.g. initialization, device and event control, etc.</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${opencl_setup}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${opencl_setup}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
                 <metric type="PREDERIVED_EXCLUSIVE">
@@ -1979,14 +1587,7 @@
                     <url>@mirror@scorep_metrics.html#opencl_comm</url>
                     <descr>Time spent on memory management including data transfer from host to device and vice versa</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${opencl_comm}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${opencl_comm}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
                 <metric type="PREDERIVED_EXCLUSIVE">
@@ -1997,14 +1598,7 @@
                     <url>@mirror@scorep_metrics.html#opencl_sync</url>
                     <descr>Time spent on OpenCL synchronization</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${opencl_sync}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${opencl_sync}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
                 <metric type="PREDERIVED_EXCLUSIVE">
@@ -2015,14 +1609,7 @@
                     <url>@mirror@scorep_metrics.html#opencl_kernel_launches</url>
                     <descr>Time needed to launch OpenCL kernels</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${opencl_kernel_launches}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${opencl_kernel_launches}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
             </metric>
@@ -2034,14 +1621,7 @@
                 <url>@mirror@scorep_metrics.html#cuda_time</url>
                 <descr>Time spent in the CUDA run-time system, API and on device</descr>
                 <cubepl>
-                {
-                    ${tmp} = 0;
-                    if ( ${cuda}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${tmp} = metric::time(e) - metric::cuda_kernel_executions(e) - metric::omp_idle_threads(e);
-                    };
-                    return ${tmp};
-                }
+                    ${cuda}[${calculation::callpath::id}] * ( metric::time(e) - metric::cuda_kernel_executions(e) - metric::omp_idle_threads(e) )
                 </cubepl>
                 <metric type="PREDERIVED_EXCLUSIVE">
                     <disp_name>General management</disp_name>
@@ -2051,14 +1631,7 @@
                     <url>@mirror@scorep_metrics.html#cuda_setup</url>
                     <descr>Time needed for general CUDA setup, e.g. initialization, control of version, device, primary context, context, streams, events, occupancy, etc.</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${cuda_setup}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${cuda_setup}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
                 <metric type="PREDERIVED_EXCLUSIVE">
@@ -2069,14 +1642,7 @@
                     <url>@mirror@scorep_metrics.html#cuda_comm</url>
                     <descr>Time spent on memory management including data transfer from host to device and vice versa. (Note: 'memset' operations are considered in 'Kernel launches').</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${cuda_comm}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${cuda_comm}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
                 <metric type="PREDERIVED_EXCLUSIVE">
@@ -2087,14 +1653,7 @@
                     <url>@mirror@scorep_metrics.html#cuda_sync</url>
                     <descr>Time spent on CUDA synchronization</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${cuda_sync}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${cuda_sync}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
                 <metric type="PREDERIVED_EXCLUSIVE">
@@ -2105,14 +1664,7 @@
                     <url>@mirror@scorep_metrics.html#cuda_kernel_launches</url>
                     <descr>Time spent to launch CUDA kernels, including 'memset' operations.</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${cuda_kernel_launches}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${cuda_kernel_launches}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
             </metric>
@@ -2125,14 +1677,7 @@
                 <url>@mirror@scorep_metrics.html#hip_time</url>
                 <descr>Time spent in the HIP API calls</descr>
                 <cubepl>
-                {
-                    ${tmp} = 0;
-                    if ( ${hip}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${tmp} = metric::time(e) - metric::hip_kernel_executions(e) - metric::omp_idle_threads(e);
-                    };
-                    return ${tmp};
-                }
+                    ${hip}[${calculation::callpath::id}] * ( metric::time(e) - metric::hip_kernel_executions(e) - metric::omp_idle_threads(e) )
                 </cubepl>
 
                 <metric type="PREDERIVED_EXCLUSIVE">
@@ -2143,14 +1688,7 @@
                     <url>@mirror@scorep_metrics.html#hip_stream</url>
                     <descr>Time needed for HIP stream management.</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${hip_stream}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${hip_stream}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
 
@@ -2162,14 +1700,7 @@
                     <url>@mirror@scorep_metrics.html#hip_malloc</url>
                     <descr>Time spent on memory allocations.</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${hip_malloc}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${hip_malloc}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
 
@@ -2181,14 +1712,7 @@
                     <url>@mirror@scorep_metrics.html#hip_memcpy</url>
                     <descr>Time spent on memory transfers.</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${hip_memcpy}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${hip_memcpy}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
 
@@ -2200,14 +1724,7 @@
                     <url>@mirror@scorep_metrics.html#hip_sync</url>
                     <descr>Time spent on HIP synchronization</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${hip_sync}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${hip_sync}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
 
@@ -2219,14 +1736,7 @@
                     <url>@mirror@scorep_metrics.html#hip_kernel_launches</url>
                     <descr>Time spent to launch HIP kernels.</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${hip_kernel_launches}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${hip_kernel_launches}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
             </metric>
@@ -2240,14 +1750,7 @@
             <url>@mirror@scorep_metrics.html#overhead</url>
             <descr>Time spent performing tasks related to trace generation</descr>
             <cubepl>
-            {
-                ${tmp} = 0;
-                if ( ${overhead}[${calculation::callpath::id}] == 1 )
-                {
-                    ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                };
-                return ${tmp};
-            }
+                ${overhead}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
             </cubepl>
         </metric>
         <metric>
@@ -2276,14 +1779,7 @@
             <url>@mirror@scorep_metrics.html#idle_gpus</url>
             <descr>Unused GPU reservation time</descr>
             <cubepl>
-            {
-                ${tmp} = 0;
-                if ( ${idle_gpus}[${calculation::callpath::id}] == 1 )
-                {
-                    ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                };
-                return ${tmp};
-            }
+                ${idle_gpus}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
             </cubepl>
         </metric>
     </metric>
@@ -2324,14 +1820,7 @@
                 <url>@mirror@scorep_metrics.html#bytes_sent_p2p</url>
                 <descr>Number of bytes sent in point-to-point communication operations</descr>
                 <cubepl>
-                {
-                    ${tmp} = 0;
-                    if ( ${mpi_comm_p2p}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${tmp} = metric::bytes_sent(e);
-                    };
-                    return ${tmp};
-                }
+                    ${mpi_comm_p2p}[${calculation::callpath::id}] * metric::bytes_sent(e)
                 </cubepl>
             </metric>
             <metric type="PREDERIVED_EXCLUSIVE">
@@ -2342,14 +1831,7 @@
                 <url>@mirror@scorep_metrics.html#bytes_received_p2p</url>
                 <descr>Number of bytes received in point-to-point communication operations</descr>
                 <cubepl>
-                {
-                    ${tmp} = 0;
-                    if ( ${mpi_comm_p2p}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${tmp} = metric::bytes_received(e);
-                    };
-                    return ${tmp};
-                }
+                    ${mpi_comm_p2p}[${calculation::callpath::id}] * metric::bytes_received(e)
                 </cubepl>
             </metric>
         </metric>
@@ -2371,14 +1853,7 @@
                 <url>@mirror@scorep_metrics.html#bytes_sent_coll</url>
                 <descr>Number of bytes sent in collective communication operations</descr>
                 <cubepl>
-                {
-                    ${tmp} = 0;
-                    if ( ${mpi_comm_collective}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${tmp} = metric::bytes_sent(e);
-                    };
-                    return ${tmp};
-                }
+                    ${mpi_comm_collective}[${calculation::callpath::id}] * metric::bytes_sent(e)
                 </cubepl>
             </metric>
             <metric type="PREDERIVED_EXCLUSIVE">
@@ -2389,14 +1864,7 @@
                 <url>@mirror@scorep_metrics.html#bytes_received_coll</url>
                 <descr>Number of bytes received in collective communication operations</descr>
                 <cubepl>
-                {
-                    ${tmp} = 0;
-                    if ( ${mpi_comm_collective}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${tmp} = metric::bytes_received(e);
-                    };
-                    return ${tmp};
-                }
+                    ${mpi_comm_collective}[${calculation::callpath::id}] * metric::bytes_received(e)
                 </cubepl>
             </metric>
         </metric>
@@ -2447,14 +1915,7 @@
                 <url>@mirror@scorep_metrics.html#bytes_sent_other</url>
                 <descr>Number of bytes sent in undetermined operations</descr>
                 <cubepl>
-                {
-                    ${tmp} = 0;
-                    if ( ${mpi_request_handling}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${tmp} = metric::bytes_sent(e);
-                    };
-                    return ${tmp};
-                }
+                    ${mpi_request_handling}[${calculation::callpath::id}] * metric::bytes_sent(e)
                 </cubepl>
             </metric>
             <metric type="PREDERIVED_EXCLUSIVE">
@@ -2465,14 +1926,7 @@
                 <url>@mirror@scorep_metrics.html#bytes_received_other</url>
                 <descr>Number of bytes received in undetermined operations</descr>
                 <cubepl>
-                {
-                    ${tmp} = 0;
-                    if ( ${mpi_request_handling}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${tmp} = metric::bytes_received(e);
-                    };
-                    return ${tmp};
-                }
+                    ${mpi_request_handling}[${calculation::callpath::id}] * metric::bytes_received(e)
                 </cubepl>
             </metric>
         </metric>
@@ -2495,14 +1949,7 @@
             <url>@mirror@scorep_metrics.html#mpi_file_iops</url>
             <descr>Number of individual MPI file operations</descr>
             <cubepl>
-            {
-                ${tmp} = 0;
-                if ( ${mpi_file_iops}[${calculation::callpath::id}] == 1 )
-                {
-                    ${tmp} = metric::visits(e);
-                };
-                return ${tmp};
-            }
+                ${mpi_file_iops}[${calculation::callpath::id}] * metric::visits(e)
             </cubepl>
             <metric type="PREDERIVED_EXCLUSIVE">
                 <disp_name>Reads</disp_name>
@@ -2512,14 +1959,7 @@
                 <url>@mirror@scorep_metrics.html#mpi_file_irops</url>
                 <descr>Number of individual MPI file read operations</descr>
                 <cubepl>
-                {
-                    ${tmp} = 0;
-                    if ( ${mpi_file_irops}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${tmp} = metric::visits(e);
-                    };
-                    return ${tmp};
-                }
+                    ${mpi_file_irops}[${calculation::callpath::id}] * metric::visits(e)
                 </cubepl>
             </metric>
             <metric type="PREDERIVED_EXCLUSIVE">
@@ -2530,14 +1970,7 @@
                 <url>@mirror@scorep_metrics.html#mpi_file_iwops</url>
                 <descr>Number of individual MPI file write operations</descr>
                 <cubepl>
-                {
-                    ${tmp} = 0;
-                    if ( ${mpi_file_iwops}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${tmp} = metric::visits(e);
-                    };
-                    return ${tmp};
-                }
+                    ${mpi_file_iwops}[${calculation::callpath::id}] * metric::visits(e)
                 </cubepl>
             </metric>
         </metric>
@@ -2549,14 +1982,7 @@
             <url>@mirror@scorep_metrics.html#mpi_file_cops</url>
             <descr>Number of collective MPI file operations</descr>
             <cubepl>
-            {
-                ${tmp} = 0;
-                if ( ${mpi_file_cops}[${calculation::callpath::id}] == 1 )
-                {
-                    ${tmp} = metric::visits(e);
-                };
-                return ${tmp};
-            }
+                ${mpi_file_cops}[${calculation::callpath::id}] * metric::visits(e)
             </cubepl>
             <metric type="PREDERIVED_EXCLUSIVE">
                 <disp_name>Reads</disp_name>
@@ -2566,14 +1992,7 @@
                 <url>@mirror@scorep_metrics.html#mpi_file_crops</url>
                 <descr>Number of collective MPI file read operations</descr>
                 <cubepl>
-                {
-                    ${tmp} = 0;
-                    if ( ${mpi_file_crops}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${tmp} = metric::visits(e);
-                    };
-                    return ${tmp};
-                }
+                    ${mpi_file_crops}[${calculation::callpath::id}] * metric::visits(e)
                 </cubepl>
             </metric>
             <metric type="PREDERIVED_EXCLUSIVE">
@@ -2584,14 +2003,7 @@
                 <url>@mirror@scorep_metrics.html#mpi_file_cwops</url>
                 <descr>Number of collective MPI file write operations</descr>
                 <cubepl>
-                {
-                    ${tmp} = 0;
-                    if ( ${mpi_file_cwops}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${tmp} = metric::visits(e);
-                    };
-                    return ${tmp};
-                }
+                    ${mpi_file_cwops}[${calculation::callpath::id}] * metric::visits(e)
                 </cubepl>
             </metric>
         </metric>
