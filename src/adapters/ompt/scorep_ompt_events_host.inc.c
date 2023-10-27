@@ -1861,9 +1861,30 @@ scorep_ompt_cb_host_task_create( ompt_data_t*        encountering_task_data,
         return;
     }
 
-    UTILS_BUG_ON( !( flags & ompt_task_explicit ), "Expected explicit task only." );
-
-    UTILS_BUG_ON( flags & ompt_task_taskwait, "taskwait-init not supported yet." );
+    /* For `taskwait depend` we only receive the completion of the `taskwait depend`
+     * during task_schedule, with the corresponding undeferred task being started here. This
+     * means that new_task_data will be used as the prior_task in task_schedule with no
+     * next_task_data being passed. Since this would cause a segmentation fault, when checking
+     * for OpenMP leagues, we create an artifical task which is used for handling this directive. */
+    if ( flags & ompt_task_taskwait )
+    {
+        task_t* next_task = get_task_from_pool();
+        next_task->is_undeferred     = flags & ompt_task_undeferred;
+        next_task->region            = get_region( codeptr_ra, TOOL_EVENT_TASKWAIT_DEPEND );
+        next_task->belongs_to_league = task->belongs_to_league;
+        next_task->parallel_region   = task->parallel_region;
+        new_task_data->ptr           = next_task;
+        if ( !next_task->is_undeferred )
+        {
+            UTILS_WARN_ONCE( "Non-undeferred taskwait_complete is not implemented yet!" );
+        }
+        else
+        {
+            SCOREP_EnterRegion( next_task->region );
+        }
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
 
     /* No scheduling events occur when switching to or from a merged task ... */
     if ( flags & ompt_task_merged )
@@ -2000,8 +2021,9 @@ scorep_ompt_cb_host_task_schedule( ompt_data_t*       prior_task_data,
     task_t* prior_task = prior_task_data->ptr;
 
     /* For now, prevent league events. We need to take prior and next task
-       into account. This is asking for trouble. */
-    if ( prior_task->belongs_to_league || next_task_data->value == 0 )
+       into account. This is asking for trouble. Check next_task_data specifically
+       for NULL as well since `taskwait depend` does not pass a pointer for the next task. */
+    if ( prior_task->belongs_to_league || ( next_task_data && next_task_data->value == 0 ) )
     {
         UTILS_WARN_ONCE( "OpenMP league task-schedule event detected. "
                          "Not handled yet. Score-P might crash." );
@@ -2016,12 +2038,33 @@ scorep_ompt_cb_host_task_schedule( ompt_data_t*       prior_task_data,
         return;
     }
 
-    UTILS_BUG_ON( prior_task_status == ompt_taskwait_complete,
-                  "taskwait-complete not supported yet" );
-
     /* Handle prior_task */
     switch ( prior_task_status )
     {
+        case ompt_taskwait_complete:
+            if ( !prior_task->is_undeferred )
+            {
+                UTILS_WARN_ONCE( "Non-undeferred taskwait_complete is not implemented yet!" );
+                return;
+            }
+            else
+            {
+                SCOREP_ExitRegion( prior_task->region );
+            }
+            release_task_to_pool( prior_task );
+            /* LLVM runtimes do not pass a next_task_data to task_schedule.
+             * Instead, runtimes start the waiting tasks immediately after creating
+             * it in task_create without dispatching additional callbacks. During
+             * task_schedule, they communicate the completion of all dependencies,
+             * indicating that the encountering task can continue execution.
+             * Since we're handling undeferred tasks here, we do not need to switch
+             * to the previous task. Therefore, return from the function and
+             * continue execution normally. */
+            if ( !next_task_data )
+            {
+                return;
+            }
+            break;
         case ompt_task_complete:
         case ompt_task_detach:
             if ( !prior_task->is_undeferred )

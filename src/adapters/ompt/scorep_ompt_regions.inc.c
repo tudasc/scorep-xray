@@ -39,6 +39,7 @@ typedef enum tool_event_t
     TOOL_EVENT_SECTIONS,
     TOOL_EVENT_WORKSHARE,
     TOOL_EVENT_TASKWAIT,
+    TOOL_EVENT_TASKWAIT_DEPEND,
     TOOL_EVENT_TASKGROUP,
     TOOL_EVENT_BARRIER,
     TOOL_EVENT_MASKED,
@@ -77,6 +78,7 @@ typedef struct region_fallback_t
 #define REGION_OMP_SECTIONS "!$omp sections"
 #define REGION_OMP_WORKSHARE "!$omp workshare"
 #define REGION_OMP_TASKWAIT "!$omp taskwait"
+#define REGION_OMP_TASKWAIT_DEPEND "!$omp taskwait depend"
 #define REGION_OMP_TASKGROUP "!$omp taskgroup"
 #define REGION_OMP_BARRIER "!$omp barrier"
 #define REGION_OMP_MASKED "!$omp masked"
@@ -103,7 +105,8 @@ static region_fallback_t region_fallback[ TOOL_EVENTS ] =
     { REGION_OMP_LOOP,            sizeof( REGION_OMP_LOOP ) - 1,            SCOREP_REGION_LOOP,             SCOREP_INVALID_REGION },
     { REGION_OMP_SECTIONS,        sizeof( REGION_OMP_SECTIONS ) - 1,        SCOREP_REGION_SECTIONS,         SCOREP_INVALID_REGION },
     { REGION_OMP_WORKSHARE,       sizeof( REGION_OMP_WORKSHARE ) - 1,       SCOREP_REGION_WORKSHARE,        SCOREP_INVALID_REGION },
-    { REGION_OMP_TASKWAIT,        sizeof( REGION_OMP_TASKWAIT ) - 1,        SCOREP_REGION_BARRIER,          SCOREP_INVALID_REGION },
+    { REGION_OMP_TASKWAIT,        sizeof( REGION_OMP_TASKWAIT ) - 1,        SCOREP_REGION_TASK_WAIT,        SCOREP_INVALID_REGION },
+    { REGION_OMP_TASKWAIT_DEPEND, sizeof( REGION_OMP_TASKWAIT_DEPEND ) - 1, SCOREP_REGION_TASK_WAIT,        SCOREP_INVALID_REGION },
     { REGION_OMP_TASKGROUP,       sizeof( REGION_OMP_TASKGROUP ) - 1,       SCOREP_REGION_BARRIER,          SCOREP_INVALID_REGION },
     { REGION_OMP_BARRIER,         sizeof( REGION_OMP_BARRIER ) - 1,         SCOREP_REGION_BARRIER,          SCOREP_INVALID_REGION },
     { REGION_OMP_MASKED,          sizeof( REGION_OMP_MASKED ) - 1,          SCOREP_REGION_MASTER,           SCOREP_INVALID_REGION },
@@ -129,6 +132,7 @@ static region_fallback_t region_fallback[ TOOL_EVENTS ] =
 #undef REGION_OMP_SECTIONS
 #undef REGION_OMP_WORKSHARE
 #undef REGION_OMP_TASKWAIT
+#undef REGION_OMP_TASKWAIT_DEPEND
 #undef REGION_OMP_TASKGROUP
 #undef REGION_OMP_BARRIER
 #undef REGION_OMP_MASKED
