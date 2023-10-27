@@ -1997,10 +1997,6 @@ scorep_ompt_cb_host_task_schedule( ompt_data_t*       prior_task_data,
                        next_task_data == NULL ? 0 : next_task_data->value );
     SCOREP_OMPT_RETURN_ON_INVALID_EVENT();
 
-    UTILS_BUG_ON( !( prior_task_status == ompt_task_switch )
-                  && !( prior_task_status == ompt_task_complete ),
-                  "Only prior_task_status complete and switch supported." );
-
     task_t* prior_task = prior_task_data->ptr;
 
     /* For now, prevent league events. We need to take prior and next task
@@ -2024,33 +2020,38 @@ scorep_ompt_cb_host_task_schedule( ompt_data_t*       prior_task_data,
                   "taskwait-complete not supported yet" );
 
     /* Handle prior_task */
-    if ( prior_task_status == ompt_task_complete )
+    switch ( prior_task_status )
     {
-        if ( !prior_task->is_undeferred )
-        {
-            UTILS_BUG_ON( !( prior_task->type & ompt_task_explicit ),
-                          "Expected only explicit tasks to show up with status "
-                          "ompt_task_complete." );
-            SCOREP_ThreadForkJoin_TaskEnd( SCOREP_PARADIGM_OPENMP,
-                                           prior_task->region,
-                                           prior_task->scorep_task );
-            release_task_to_pool( prior_task );
-            UTILS_DEBUG( "(completing) task %p | atid %" PRIu32,
+        case ompt_task_complete:
+        case ompt_task_detach:
+            if ( !prior_task->is_undeferred )
+            {
+                UTILS_BUG_ON( !( prior_task->type & ompt_task_explicit ),
+                              "Expected only explicit tasks to show up with status %s.",
+                              task_status2string( prior_task_status ) );
+                SCOREP_ThreadForkJoin_TaskEnd( SCOREP_PARADIGM_OPENMP,
+                                               prior_task->region,
+                                               prior_task->scorep_task );
+                release_task_to_pool( prior_task );
+                UTILS_DEBUG( "(completing) task %p | atid %" PRIu32,
+                             prior_task, adapter_tid );
+            }
+            else
+            {
+                UTILS_DEBUG( "(completing) undeferred task %p | atid %" PRIu32,
+                             prior_task, adapter_tid );
+            }
+            prior_task_data->ptr = NULL;
+            break;
+        case ompt_task_switch:
+        case ompt_task_yield:
+            UTILS_DEBUG( "(suspending) task %p | atid %" PRIu32,
                          prior_task, adapter_tid );
-        }
-        else
-        {
-            UTILS_DEBUG( "(completing) undeferred task %p | atid %" PRIu32,
-                         prior_task, adapter_tid );
-        }
-        prior_task_data->ptr = NULL;
+            break;
+        default:
+            UTILS_BUG( "Task status %s is not yet supported by the OMPT adapter!",
+                       task_status2string( prior_task_status ) );
     }
-    else
-    {
-        UTILS_DEBUG( "(suspending) task %p | atid %" PRIu32,
-                     prior_task, adapter_tid );
-    }
-
 
     /* Handle next_task. */
     UTILS_BUG_ON( next_task_data->ptr == NULL,
