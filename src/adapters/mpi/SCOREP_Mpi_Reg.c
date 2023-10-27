@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2019,
+ * Copyright (c) 2009-2019, 2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -4337,19 +4337,6 @@ scorep_mpi_register_regions( void )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SESSION_SET_ERRHANDLER ] =
             SCOREP_Definitions_NewRegion( "MPI_Session_set_errhandler",
-                                          NULL,
-                                          file_id,
-                                          SCOREP_INVALID_LINE_NO,
-                                          SCOREP_INVALID_LINE_NO,
-                                          SCOREP_PARADIGM_MPI,
-                                          SCOREP_REGION_NONE );
-    }
-#endif
-#if HAVE( MPI_2_0_SYMBOL_PMPI_SIZEOF ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Sizeof )
-    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
-    {
-        scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SIZEOF ] =
-            SCOREP_Definitions_NewRegion( "MPI_Sizeof",
                                           NULL,
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,

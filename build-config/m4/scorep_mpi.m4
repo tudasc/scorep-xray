@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ##    University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2015,
+## Copyright (c) 2009-2015, 2023,
 ##    Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -608,8 +608,6 @@ if test "x${scorep_mpi_supported}" = "xyes"; then
                         PMPI_Win_test,
                         PMPI_Win_unlock,
                         PMPI_Win_wait])
-  dnl not in Open MPI, thus check individual to speed up the common case
-  SCOREP_CHECK_SYMBOLS([MPI 2.0], [], [], [PMPI_Sizeof])
 
   SCOREP_CHECK_SYMBOLS([MPI 2.1], [], [],
                        [PMPI_Errhandler_c2f,

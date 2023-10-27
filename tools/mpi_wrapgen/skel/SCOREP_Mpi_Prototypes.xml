@@ -1,5 +1,5 @@
 
-<prototypes count="437" family="mpi" >
+<prototypes count="436" family="mpi" >
 
 <prototype name="MPI_Abort" rtype="int" group="ext" guard="" >
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
@@ -5413,12 +5413,6 @@
     <version id="4.0" />
     <param access="i" type_modifier="" type="MPI_Session" name="session" />
     <param access="i" type_modifier="" type="MPI_Errhandler" name="errhandler" />
-</prototype>
-
-<prototype name="MPI_Sizeof" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type_modifier="" type="MPI_Datatype" name="x" />
-    <param access="o" type_modifier="" type="int" name="size" />
-    <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Ssend" rtype="int" group="p2p" guard="p2p" >

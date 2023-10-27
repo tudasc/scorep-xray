@@ -1341,10 +1341,6 @@ these groups are disabled as well.
   <td>ENV</td>
 </tr>
 <tr>
-  <td>MPI_Sizeof</td>
-  <td>TYPE</td>
-</tr>
-<tr>
   <td>MPI_Ssend</td>
   <td>P2P</td>
 </tr>
@@ -2352,7 +2348,6 @@ MPI_Pack,
 MPI_Pack_external,
 MPI_Pack_external_size,
 MPI_Pack_size,
-MPI_Sizeof,
 MPI_Type_commit,
 MPI_Type_contiguous,
 MPI_Type_create_darray,

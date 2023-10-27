@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2019,
+ * Copyright (c) 2009-2019, 2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -871,8 +871,6 @@ enum scorep_mpi_regions
     SCOREP_MPI_REGION__MPI_SESSION_INIT,
     /** Score-P region ID for MPI_Session_set_errhandler */
     SCOREP_MPI_REGION__MPI_SESSION_SET_ERRHANDLER,
-    /** Score-P region ID for MPI_Sizeof */
-    SCOREP_MPI_REGION__MPI_SIZEOF,
     /** Score-P region ID for MPI_Ssend */
     SCOREP_MPI_REGION__MPI_SSEND,
     /** Score-P region ID for MPI_Ssend_init */
