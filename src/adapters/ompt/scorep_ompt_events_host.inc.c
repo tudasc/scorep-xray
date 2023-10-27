@@ -194,6 +194,8 @@ static inline SCOREP_RegionHandle work_begin( task_t* task, const void* codeptrR
 static inline void enlarge_region_array( uint8_t* capacity, SCOREP_RegionHandle** regions );
 static inline SCOREP_RegionHandle work_end( task_t* task );
 static inline uint64_t get_mask( uint32_t width, uint32_t shift );
+static inline void task_schedule_handle_prior_task(task_t* priorTask, ompt_task_status_t priorTaskStatus );
+static inline void task_schedule_handle_next_task(task_t* priorTask, ompt_data_t* nextTaskData );
 static inline task_t* get_current_task( void );
 static inline void construct_mutex_acquire( task_t* task, const void* codeptrRa );
 static inline void construct_mutex_acquired( task_t* task, tool_event_t regionType, tool_event_t regionTypeSblock, ompt_mutex_t kind, ompt_wait_id_t waitId );
@@ -2003,7 +2005,6 @@ scorep_ompt_cb_host_task_create( ompt_data_t*        encountering_task_data,
    } ompt_task_status_t;
  */
 
-
 void
 scorep_ompt_cb_host_task_schedule( ompt_data_t*       prior_task_data,
                                    ompt_task_status_t prior_task_status,
@@ -2017,6 +2018,12 @@ scorep_ompt_cb_host_task_schedule( ompt_data_t*       prior_task_data,
                        next_task_data == NULL ? NULL : next_task_data->ptr,
                        next_task_data == NULL ? 0 : next_task_data->value );
     SCOREP_OMPT_RETURN_ON_INVALID_EVENT();
+
+    if ( prior_task_status == ompt_task_early_fulfill || prior_task_status == ompt_task_late_fulfill )
+    {
+        /* task-fulfill events offer no analysis opportunity and no valid next_task_data. */
+        return;
+    }
 
     task_t* prior_task = prior_task_data->ptr;
 
@@ -2041,91 +2048,102 @@ scorep_ompt_cb_host_task_schedule( ompt_data_t*       prior_task_data,
         return;
     }
 
-    /* Handle prior_task */
-    switch ( prior_task_status )
+    /* Cancelled tasks did not start yet, therefore the prior task
+     * does not need to be handled */
+    if ( prior_task_status != ompt_task_cancel )
+    {
+        task_schedule_handle_prior_task( prior_task, prior_task_status );
+    }
+    /* LLVM runtimes do not pass a next_task_data to task_schedule for
+     * taskwait_complete. Instead, runtimes start the waiting task immediately
+     * after creating it in task_create without dispatching additional callbacks.
+     * During task_schedule, they communicate the completion of all dependencies,
+     * indicating that the encountering task can continue execution.
+     * Since we're handling undeferred tasks here, we do not need to switch
+     * to the previous task. Therefore, return from the function and
+     * continue execution normally. */
+    if ( !( prior_task_status == ompt_taskwait_complete && next_task_data == NULL ) )
+    {
+        task_schedule_handle_next_task( prior_task, next_task_data );
+    }
+
+    UTILS_DEBUG_EXIT();
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+
+static inline void
+task_schedule_handle_prior_task( task_t*            priorTask,
+                                 ompt_task_status_t priorTaskStatus )
+{
+    switch ( priorTaskStatus )
     {
         case ompt_taskwait_complete:
-            if ( !prior_task->is_undeferred )
+            if ( !priorTask->is_undeferred )
             {
                 UTILS_WARN_ONCE( "Non-undeferred taskwait_complete is not implemented yet!" );
                 return;
             }
             else
             {
-                SCOREP_ExitRegion( prior_task->region );
+                SCOREP_ExitRegion( priorTask->region );
             }
-            release_task_to_pool( prior_task );
-            /* LLVM runtimes do not pass a next_task_data to task_schedule.
-             * Instead, runtimes start the waiting tasks immediately after creating
-             * it in task_create without dispatching additional callbacks. During
-             * task_schedule, they communicate the completion of all dependencies,
-             * indicating that the encountering task can continue execution.
-             * Since we're handling undeferred tasks here, we do not need to switch
-             * to the previous task. Therefore, return from the function and
-             * continue execution normally. */
-            if ( !next_task_data )
-            {
-                return;
-            }
+            release_task_to_pool( priorTask );
             break;
         case ompt_task_complete:
         case ompt_task_detach:
-            if ( !prior_task->is_undeferred )
+            if ( !priorTask->is_undeferred )
             {
-                UTILS_BUG_ON( !( prior_task->type & ompt_task_explicit ),
+                UTILS_BUG_ON( !( priorTask->type & ompt_task_explicit ),
                               "Expected only explicit tasks to show up with status %s.",
-                              task_status2string( prior_task_status ) );
+                              task_status2string( priorTaskStatus ) );
                 SCOREP_ThreadForkJoin_TaskEnd( SCOREP_PARADIGM_OPENMP,
-                                               prior_task->region,
-                                               prior_task->scorep_task );
-                release_task_to_pool( prior_task );
+                                               priorTask->region,
+                                               priorTask->scorep_task );
+                release_task_to_pool( priorTask );
                 UTILS_DEBUG( "(completing) task %p | atid %" PRIu32,
-                             prior_task, adapter_tid );
+                             priorTask, adapter_tid );
             }
             else
             {
                 UTILS_DEBUG( "(completing) undeferred task %p | atid %" PRIu32,
-                             prior_task, adapter_tid );
+                             priorTask, adapter_tid );
             }
-            prior_task_data->ptr = NULL;
             break;
         case ompt_task_switch:
         case ompt_task_yield:
             UTILS_DEBUG( "(suspending) task %p | atid %" PRIu32,
-                         prior_task, adapter_tid );
+                         priorTask, adapter_tid );
             break;
-        case ompt_task_cancel:
-            /* Skip ending the task since it was never started */
-            break;
-        case ompt_task_early_fulfill:
-        case ompt_task_late_fulfill:
-            /* task-fulfill events offer no analysis opportunity and no valid next_task_data. */
-            return;
         default:
             UTILS_BUG( "Task status %s is not yet supported by the OMPT adapter!",
-                       task_status2string( prior_task_status ) );
+                       task_status2string( priorTaskStatus ) );
     }
+}
 
-    /* Handle next_task. */
-    UTILS_BUG_ON( next_task_data->ptr == NULL,
-                  "task_data not initialized, should not happen." );
 
-    if ( next_task_data->value & mask_new_task )
+static inline void
+task_schedule_handle_next_task( task_t*      priorTask,
+                                ompt_data_t* nextTaskData )
+{
+    UTILS_BUG_ON( nextTaskData->ptr == NULL, "task_data not initialized, should not happen." );
+
+    if ( nextTaskData->value & mask_new_task )
     {
         /* First task-schedule for next_task. Extract data collected in
-           task-create which was passed via next_task_data->value and create
+           task-create which was passed via nextTaskData->value and create
            real task object. */
-        uint64_t            task_create_data = next_task_data->value;
+        uint64_t            task_create_data = nextTaskData->value;
         SCOREP_RegionHandle region           = ( task_create_data & mask_region ) >> shift_region;
-        parallel_t*         parallel_region  = prior_task->parallel_region;
+        parallel_t*         parallel_region  = priorTask->parallel_region;
 
         if ( region == SCOREP_INVALID_REGION )
         {
             /* Undeferred task, don't trigger SCOREP_ThreadForkJoin_TaskBegin.
                Pass parallel-region's undeferred_task around. */
-            next_task_data->ptr = &( parallel_region->undeferred_task );
+            nextTaskData->ptr = &( parallel_region->undeferred_task );
             UTILS_DEBUG( "(starting) undeferred task %p | atid %" PRIu32,
-                         next_task_data->ptr, adapter_tid );
+                         nextTaskData->ptr, adapter_tid );
         }
         else
         {
@@ -2145,17 +2163,17 @@ scorep_ompt_cb_host_task_schedule( ompt_data_t*       prior_task_data,
                                                                           thread_num,
                                                                           task_generation_number );
 
-            next_task_data->ptr = next_task;
+            nextTaskData->ptr = next_task;
 
             UTILS_DEBUG( "(starting) task %p | atid %" PRIu32 " | thread_num %d | "
                          "task_generation_number %" PRIu32 " | task % " PRIu64,
                          next_task, adapter_tid, thread_num, task_generation_number,
-                         next_task_data->value );
+                         nextTaskData->value );
         }
     }
     else
     {
-        task_t* next_task = next_task_data->ptr;
+        task_t* next_task = nextTaskData->ptr;
         if ( !next_task->is_undeferred )
         {
             SCOREP_ThreadForkJoin_TaskSwitch( SCOREP_PARADIGM_OPENMP, next_task->scorep_task );
@@ -2168,9 +2186,6 @@ scorep_ompt_cb_host_task_schedule( ompt_data_t*       prior_task_data,
                          next_task, adapter_tid );
         }
     }
-
-    UTILS_DEBUG_EXIT();
-    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 
