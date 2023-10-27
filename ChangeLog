@@ -7,8 +7,8 @@ Features and improvements:
   CUDA versions still use the previous implementation. This may prevent
   timestamp issues seen with previous Score-P versions.
 - The OMPT adapter has these new features:
-  - Improved support for OpenMP tasks, including detach and yield,
-  taskwait depend and taskloops.
+- Improved support for OpenMP tasks, including detach, yield,
+  taskwait depend, taskloops and cancelled tasks.
 
 User tools and API improvements and changes:
 

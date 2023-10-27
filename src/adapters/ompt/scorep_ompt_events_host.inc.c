@@ -2022,8 +2022,10 @@ scorep_ompt_cb_host_task_schedule( ompt_data_t*       prior_task_data,
 
     /* For now, prevent league events. We need to take prior and next task
        into account. This is asking for trouble. Check next_task_data specifically
-       for NULL as well since `taskwait depend` does not pass a pointer for the next task. */
-    if ( prior_task->belongs_to_league || ( next_task_data && next_task_data->value == 0 ) )
+       for NULL as well since `taskwait depend` does not pass a pointer for the next task.
+       In addition, cancelled tasks still use the set value from task_create for their prior_task_data,
+       which can cause a segmentation fault. Therefore, skip the check for cancelled tasks. */
+    if ( ( prior_task_status != ompt_task_cancel && prior_task->belongs_to_league ) || ( next_task_data && next_task_data->value == 0 ) )
     {
         UTILS_WARN_ONCE( "OpenMP league task-schedule event detected. "
                          "Not handled yet. Score-P might crash." );
@@ -2090,6 +2092,9 @@ scorep_ompt_cb_host_task_schedule( ompt_data_t*       prior_task_data,
         case ompt_task_yield:
             UTILS_DEBUG( "(suspending) task %p | atid %" PRIu32,
                          prior_task, adapter_tid );
+            break;
+        case ompt_task_cancel:
+            /* Skip ending the task since it was never started */
             break;
         default:
             UTILS_BUG( "Task status %s is not yet supported by the OMPT adapter!",
