@@ -37,25 +37,25 @@ as usage examples under `PREFIX/share/doc/scorep`.
 If building and installing from the Git checkout, the following
 requirements are needed (assuming `PREFIX/bin` is in `$PATH`):
 
- - AfS-dev 05 (patched versions of Autotools):
+ - AfS-dev (patched versions of Autotools):
 
    Install via
 
    ```console
-   $ wget https://perftools.pages.jsc.fz-juelich.de/utils/afs-dev/afs-dev-05.tar.gz
-   $ tar xf afs-dev-05.tar.gz
-   $ cd afs-dev-05
+   $ wget https://perftools.pages.jsc.fz-juelich.de/utils/afs-dev/afs-dev-latest.tar.gz
+   $ tar xf afs-dev-latest.tar.gz
+   $ cd afs-dev-latest
    $ ./install-afs-dev.sh --continue-after-download --prefix=PREFIX
    ```
 
- - Perftools-dev 08 (code beautification and documentation generation):
+ - Perftools-dev (code beautification and documentation generation):
 
    Install via
 
    ```console
-   $ wget https://perftools.pages.jsc.fz-juelich.de/utils/perftools-dev/perftools-dev-08.tar.gz
-   $ tar xf perftools-dev-08.tar.gz
-   $ cd perftools-dev-08
+   $ wget https://perftools.pages.jsc.fz-juelich.de/utils/perftools-dev/perftools-dev-latest.tar.gz
+   $ tar xf perftools-dev-latest.tar.gz
+   $ cd perftools-dev-latest
    $ ./install-perftools-dev.sh --continue-after-download --prefix=PREFIX
    ```
 
