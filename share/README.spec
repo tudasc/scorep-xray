@@ -11,13 +11,6 @@ STATUS
       hierarchy to a subnode of a new 'Computation' metric.
     - Added subhierarchy for CUDA.
 
- * The file 'scorep_opt.spec' based on 'scorep.spec.in' with
-   some exceptions:
-    - The computation of the metrics uses multiplications
-      rather than more complicated if-constructs.
-    - <cubeplinit> uses local variables.
-    - Added some comments.
-
  * The file 'scorep_alt.spec' generates an alternative (not
    paradigm-centric) metric hierarchy. It focuses on global
    topics like synchonization, communication, management and
@@ -30,9 +23,6 @@ STATUS
 
 LIMITATIONS
 -----------
-
- * 'scorep_opt.spec' and 'scorep_alt.spec' _require_ Cube-4.3.3
-   due to bug fixes in the Cube library and extensions to CubePL.
 
  * The alternative hierarchy currently only addresses the 'Time'
    hierarchy. There is no handling for the other metric trees
