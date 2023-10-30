@@ -133,11 +133,13 @@ dnl
 # -g -Ntl_vtrc: Fujitsu
 # -g -Mx,129,0x800: intended for flang (https://github.com/flang-compiler/flang/issues/391), accepted by NVHPC
 AS_IF([test "x${scorep_have_addr2line}" = xyes],
-    [_CHECK_COMPILER_INSTRUMENTATION_FLAG([-g -finstrument-functions-after-inlining], ['__cyg_profile_func_enter$'], ['__cyg_profile_func_exit$'], [CYG_PROFILE_FUNC])
-     _CHECK_COMPILER_INSTRUMENTATION_FLAG([-g -finstrument-functions],                ['__cyg_profile_func_enter$'], ['__cyg_profile_func_exit$'], [CYG_PROFILE_FUNC])
-     _CHECK_COMPILER_INSTRUMENTATION_FLAG([-g -Ntl_vtrc],                             ['__cyg_profile_func_enter$'], ['__cyg_profile_func_exit$'], [CYG_PROFILE_FUNC])
-     _CHECK_COMPILER_INSTRUMENTATION_FLAG([-Minstrument=functions],                   ['__cyg_profile_func_enter$'], ['__cyg_profile_func_exit$'], [CYG_PROFILE_FUNC])
-     _CHECK_COMPILER_INSTRUMENTATION_FLAG([-g -Mx,129,0x800],                         ['__cyg_profile_func_enter$'], ['__cyg_profile_func_exit$'], [CYG_PROFILE_FUNC])])
+    [_CHECK_COMPILER_INSTRUMENTATION_FLAG([-g -Xarch_host -finstrument-functions-after-inlining], ['__cyg_profile_func_enter$'], ['__cyg_profile_func_exit$'], [CYG_PROFILE_FUNC])
+     _CHECK_COMPILER_INSTRUMENTATION_FLAG([-g -finstrument-functions-after-inlining],             ['__cyg_profile_func_enter$'], ['__cyg_profile_func_exit$'], [CYG_PROFILE_FUNC])
+     _CHECK_COMPILER_INSTRUMENTATION_FLAG([-g -Xarch_host -finstrument-functions],                ['__cyg_profile_func_enter$'], ['__cyg_profile_func_exit$'], [CYG_PROFILE_FUNC])
+     _CHECK_COMPILER_INSTRUMENTATION_FLAG([-g -finstrument-functions],                            ['__cyg_profile_func_enter$'], ['__cyg_profile_func_exit$'], [CYG_PROFILE_FUNC])
+     _CHECK_COMPILER_INSTRUMENTATION_FLAG([-g -Ntl_vtrc],                                         ['__cyg_profile_func_enter$'], ['__cyg_profile_func_exit$'], [CYG_PROFILE_FUNC])
+     _CHECK_COMPILER_INSTRUMENTATION_FLAG([-Minstrument=functions],                               ['__cyg_profile_func_enter$'], ['__cyg_profile_func_exit$'], [CYG_PROFILE_FUNC])
+     _CHECK_COMPILER_INSTRUMENTATION_FLAG([-g -Mx,129,0x800],                                     ['__cyg_profile_func_enter$'], ['__cyg_profile_func_exit$'], [CYG_PROFILE_FUNC])])
 dnl
 # Intel compilers
 # API allows storing a handle, thus, no addr lookup needed

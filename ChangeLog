@@ -30,6 +30,8 @@ Bugfixes:
 
 - Fix crash when issuing multiple consecutive split collective IO operations on
   the same file handle.
+- Fix linking issues with LLVM based compilers when OpenMP target flags
+  are used and the compiler instrumentation is active.
 
 ------------------- Released version 8.3 -----------------------------
 
