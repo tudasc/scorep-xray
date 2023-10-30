@@ -4,6 +4,9 @@
  * Copyright (c) 2014-2015, 2022,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2023,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -142,6 +145,7 @@ scorep_cupti_activity_context_flush( scorep_cupti_context* context )
          * Get time synchronization factor between host and GPU time for measured
          * period
          */
+#if !HAVE( CUPTIACTIVITYREGISTERTIMESTAMPCALLBACK )
         {
             double gpu_diff = 0;
 
@@ -164,6 +168,7 @@ scorep_cupti_activity_context_flush( scorep_cupti_context* context )
             context_activity->sync.factor =
                 ( double )( hostStop - context_activity->sync.host_start ) / gpu_diff;
         }
+#endif
 
         /* expose Score-P CUPTI activity flush as measurement overhead */
         SCOREP_EnterRegion( scorep_cupti_buffer_flush_region_handle );
@@ -214,11 +219,13 @@ scorep_cupti_activity_context_flush( scorep_cupti_context* context )
 
         /* set new synchronization point, if no buffers are currently controlled by
            CUPTI */
+#if !HAVE( CUPTIACTIVITYREGISTERTIMESTAMPCALLBACK )
         if ( buffers_completed )
         {
             context_activity->sync.host_start = hostStop;
             context_activity->sync.gpu_start  = gpuStop;
         }
+#endif
 
         /* write exit event for activity flush */
         SCOREP_ExitRegion( scorep_cupti_buffer_flush_region_handle );

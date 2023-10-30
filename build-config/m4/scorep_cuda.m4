@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2012, 2020, 2022,
+## Copyright (c) 2009-2012, 2020, 2022-2023,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -94,6 +94,18 @@ AS_IF([test "x${with_libcudart_lib}" = "xyes"],
       [AS_IF([test "x${with_libcudart}" != "xnot_set"],
              [cupti_root="${with_libcudart}/extras/CUPTI"])])
 AC_SCOREP_BACKEND_LIB([libcupti], [cupti.h], [${with_libcudart_cppflags}], [${cupti_root}])
+
+dnl Do not only check for the function but also for the declaration,
+dnl since some CUPTI libraries contain a non-functional symbol for
+dnl cuptiActivityRegisterTimestampCallback causing issues during Score-P runtime.
+AS_IF([test "x${scorep_have_libcupti}" = "xyes" &&
+       test "${scorep_cuda_version}" -ge "11060"],
+      [CPPFLAGS="$CPPFLAGS ${with_libcupti_cppflags}"
+       LDFLAGS="$LDFLAGS ${with_libcupti_ldflags}"
+       LIBS="$LIBS ${with_libcupti_libs}"
+       AC_CHECK_DECL([cuptiActivityRegisterTimestampCallback],
+                     [AC_CHECK_FUNCS(cuptiActivityRegisterTimestampCallback)],
+                     [], [#include <cupti.h>])])
 
 dnl Check libnvidia-ml
 AC_SCOREP_BACKEND_LIB([libnvidia-ml], [nvml.h], [${with_libcudart_cppflags}])

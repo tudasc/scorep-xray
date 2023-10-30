@@ -2,6 +2,11 @@
 
 Features and improvements:
 
+- The CUDA adapter now uses Score-P timestamps for CUPTI events directly
+  instead of converting CUPTI timestamps with CUDA 11.6 and newer. Older
+  CUDA versions still use the previous implementation. This may prevent
+  timestamp issues seen with previous Score-P versions.
+
 User tools and API improvements and changes:
 
 - The 'xnonblock' option of SCOREP_MPI_ENABLE_GROUPS is deprecated.
@@ -22,6 +27,7 @@ Compatibility:
   command used for checking the NVIDIA CUDA compiler during configure.
 
 Bugfixes:
+
 - Fix crash when issuing multiple consecutive split collective IO operations on
   the same file handle.
 

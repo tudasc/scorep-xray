@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015, 2021,
+ * Copyright (c) 2009-2013, 2015, 2021, 2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -222,6 +222,7 @@ scorep_cupti_activity_context_create( CUcontext cudaContext )
     context_activity->scorep_last_gpu_time     = SCOREP_GetBeginEpoch();
     context_activity->gpu_idle                 = true;
 
+#if !HAVE( CUPTIACTIVITYREGISTERTIMESTAMPCALLBACK )
     /*
      * Get time synchronization factor between host and GPU time for measurement
      * interval
@@ -233,6 +234,7 @@ scorep_cupti_activity_context_create( CUcontext cudaContext )
         scorep_cupti_set_synchronization_point( &( context_activity->sync.gpu_start ),
                                                 &( context_activity->sync.host_start ) );
     }
+#endif
 
     /* set default CUPTI stream ID (needed for memory usage and idle tracing) */
     SCOREP_CUPTI_CALL( cuptiGetStreamId( cudaContext, NULL, &( context_activity->default_strm_id ) ) );
@@ -269,9 +271,11 @@ replace_context( uint32_t               newContextId,
                         "record context (ID: %d)",
                         ( *context )->context_id, newContextId );
 
+#if !HAVE( CUPTIACTIVITYREGISTERTIMESTAMPCALLBACK )
     /* get CUDA context for each individual record as records are mixed in buffer */
     /* update sync data of record's context with that of actually sync'd context */
     scorep_cupti_sync current_sync_data = ( *context )->activity->sync;
+#endif
 
     // get the record's context
     scorep_cupti_context* sync_context = scorep_cupti_context_get_by_id( newContextId );
@@ -281,11 +285,13 @@ replace_context( uint32_t               newContextId,
         //set record's context for write kernel/memcpy routine
         *context = sync_context;
 
+#if !HAVE( CUPTIACTIVITYREGISTERTIMESTAMPCALLBACK )
         //overwrite synchronization data of the records context
         ( *context )->activity->sync           = current_sync_data;
         ( *context )->activity->sync.host_stop = current_sync_data.host_stop;
         ( *context )->activity->sync.gpu_stop  = current_sync_data.gpu_stop;
         ( *context )->activity->sync.factor    = current_sync_data.factor;
+#endif
     }
 }
 
@@ -339,6 +345,10 @@ scorep_cupti_activity_write_kernel( CUpti_ActivityKernelType* kernel,
 
     /* write events */
     {
+#if HAVE( CUPTIACTIVITYREGISTERTIMESTAMPCALLBACK )
+        uint64_t start = kernel->start;
+        uint64_t stop  = kernel->end;
+#else
         uint64_t start = contextActivity->sync.host_start
                          + ( kernel->start - contextActivity->sync.gpu_start )
                          * contextActivity->sync.factor;
@@ -403,6 +413,7 @@ scorep_cupti_activity_write_kernel( CUpti_ActivityKernelType* kernel,
                 return;
             }
         }
+#endif
 
         /* set the last Score-P timestamp, written in this stream */
         stream->scorep_last_timestamp = stop;
@@ -494,14 +505,18 @@ scorep_cupti_activity_write_memcpy( CUpti_ActivityMemcpy* memcpy,
         return;
     }
 
+    /* get Score-P thread ID for the kernel's stream */
+    stream          = scorep_cupti_stream_get_create( context, memcpy->streamId );
+    stream_location = stream->scorep_location;
+
+#if HAVE( CUPTIACTIVITYREGISTERTIMESTAMPCALLBACK )
+    start = memcpy->start;
+    stop  = memcpy->end;
+#else
     start = contextActivity->sync.host_start
             + ( memcpy->start - contextActivity->sync.gpu_start )
             * contextActivity->sync.factor;
     stop = start + ( memcpy->end - memcpy->start ) * contextActivity->sync.factor;
-
-    /* get Score-P thread ID for the kernel's stream */
-    stream          = scorep_cupti_stream_get_create( context, memcpy->streamId );
-    stream_location = stream->scorep_location;
 
     /* if current activity's start time is before last written timestamp */
     if ( start < stream->scorep_last_timestamp )
@@ -557,6 +572,7 @@ scorep_cupti_activity_write_memcpy( CUpti_ActivityMemcpy* memcpy,
             return;
         }
     }
+#endif
 
     /* set the last Score-P timestamp, written in this stream */
     stream->scorep_last_timestamp = stop;
@@ -699,9 +715,10 @@ synchronize_context_list( void )
         {
             SCOREP_CUDA_DRIVER_CALL( cuCtxPopCurrent( &( context->cuda_context ) ) );
         }
-
+#if !HAVE( CUPTIACTIVITYREGISTERTIMESTAMPCALLBACK )
         scorep_cupti_set_synchronization_point( &( context->activity->sync.gpu_start ),
                                                 &( context->activity->sync.host_start ) );
+#endif
 
         context = context->next;
     }

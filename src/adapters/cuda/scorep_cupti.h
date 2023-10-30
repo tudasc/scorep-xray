@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015, 2019-2022,
+ * Copyright (c) 2009-2013, 2015, 2019-2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -121,6 +121,7 @@ typedef struct scorep_cupti_stream
 /*
  * Score-P CUPTI activity synchronization structure
  */
+#if !HAVE( CUPTIACTIVITYREGISTERTIMESTAMPCALLBACK )
 typedef struct
 {
     uint64_t host_start; /**< host measurement interval start timestamp */
@@ -129,6 +130,7 @@ typedef struct
     uint64_t gpu_stop;   /**< gpu measurement interval stop timestamp */
     double   factor;     /**< synchronization factor for time interval */
 } scorep_cupti_sync;
+#endif
 
 /**
  * State a CUPTI activity buffer is in
@@ -159,7 +161,9 @@ typedef struct scorep_cupti_buffer
 typedef struct
 {
     uint32_t             default_strm_id;          /**< CUPTI stream ID of default stream */
+#if !HAVE( CUPTIACTIVITYREGISTERTIMESTAMPCALLBACK )
     scorep_cupti_sync    sync;                     /**< store synchronization information */
+#endif
     scorep_cupti_buffer* buffers;                  /**< CUPTI activity buffers list */
     bool                 max_buffer_size_exceeded; /**< flag if the maximum allowed buffer size is reached */
     uint64_t             scorep_last_gpu_time;     /**< last written Score-P timestamp */
