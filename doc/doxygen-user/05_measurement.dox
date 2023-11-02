@@ -943,7 +943,7 @@ For example, the API <tt>hipLaunchKernel</tt> can be filtered if <b><tt>api</tt>
 If <b><tt>kernels</tt></b> is set additionally, then it is not allowed to filter this call anymore.
 
 ROCm uses an extra buffer to store its activity records.
-The size of this buffer can be controlled via the environment variable \confvar{SCOREP_HIP_ACTIVITY_BUFFER_SIZE} (default: 4096).
+The size of this buffer can be controlled via the environment variable \confvar{SCOREP_HIP_ACTIVITY_BUFFER_SIZE} (default: 1M).
 
 For each HIP stream a location is created with the name <b>HIP[D:S]</tt></b>.
 Where <tt>D</tt> denotes the HIP device and <tt>S</tt> a stream identifier.
