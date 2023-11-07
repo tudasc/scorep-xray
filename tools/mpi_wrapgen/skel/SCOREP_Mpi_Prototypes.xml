@@ -192,32 +192,6 @@
     <param access="i" type_modifier="" type="MPI_Op" name="op" />
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <version id="1.0" />
-    <countrules send="sendbytes" recv="recvbytes" />
-<decl><![CDATA[
-    int32_t sz, N;
-    uint64_t     sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
-]]></decl>
-<xblock><![CDATA[
-      PMPI_Type_size(datatype, &sz);
-
-      int is_inter_comm = 0;
-      PMPI_Comm_test_inter( comm, &is_inter_comm );
-      if ( !is_inter_comm )
-      {
-        PMPI_Comm_size(comm, &N);
-        if (sendbuf == MPI_IN_PLACE)
-        {
-          N--;
-        }
-      }
-      else
-      {
-        PMPI_Comm_remote_size( comm, &N );
-      }
-
-      sendbytes = recvbytes = (uint64_t)N * count * sz;
-]]></xblock>
 <xblock id="fortran"><![CDATA[
     if (sendbuf == scorep_mpi_fortran_in_place)
     {
@@ -4757,7 +4731,6 @@
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <param access="i" type_modifier="" type="MPI_Op" name="op" />
     <version id="2.2" />
-    <countrules send="0" recv="0" />
 </prototype>
 
 <prototype name="MPI_Reduce_scatter" rtype="int" group="coll" guard="coll" >
