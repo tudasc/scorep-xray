@@ -90,23 +90,7 @@ subroutine Init (myData)
 #endif
 
 !    /* MPI Initialization */
-#if !defined(MPI_VERSION) || (MPI_VERSION>=2)
-    integer :: required = MPI_THREAD_FUNNELED
     call MPI_Init_thread(MPI_THREAD_FUNNELED, provided, iErr)
-    if (iErr /= MPI_SUCCESS) then
-        print*, "Abort: MPI_Init_thread unsuccessful"
-        call MPI_Abort(MPI_COMM_WORLD, 38, iErr)
-    else if (provided < required) then
-        write (6,'(2(A,I1))') "Warning: MPI_Init_thread only provided level ", provided, "<", required
-    endif
-#else
-    call MPI_Init(iErr)
-    if (iErr /= MPI_SUCCESS) then
-        print*, "Abort: MPI_Init unsuccessful"
-        call MPI_Abort(MPI_COMM_WORLD, 38, iErr)
-    endif
-#endif
-
     call MPI_Comm_rank(MPI_COMM_WORLD, myData%iMyRank, iErr)
     call MPI_Comm_size(MPI_COMM_WORLD, myData%iNumProcs, iErr)
     if (myData%iMyRank == 0) then
@@ -130,35 +114,6 @@ subroutine Init (myData)
         myData%fRelax     = 1.0
         myData%fTolerance = 1e-10
         myData%iIterMax   = ITERATIONS
-#ifdef READ_INPUT
-        write (*,*) 'Input n - matrix size in x direction: '
-        read (5,*) myData%iCols
-        write (*,*) 'Input m - matrix size in y direction: '
-        read (5,*) myData%iRows
-        write (*,*) 'Input alpha - Helmholts constant:'
-        read (5,*) myData%fAlpha
-        write (*,*) 'Input relax - Successive over-relaxation parameter:'
-        read (5,*) myData%fRelax
-        write (*,*) 'Input tol - error tolerance for iterative solver:'
-        read (5,*) myData%fTolerance
-        write (*,*) 'Input mits - Maximum iterations for solver:'
-        read (5,*) myData%iIterMax
-#elif defined DATA_LARGE
-        myData%iCols      = 7000
-        myData%iRows      = 7000
-        myData%fAlpha     = 0.8
-        myData%fRelax     = 1.0
-        myData%fTolerance = 1e-12
-        myData%iIterMax   = 2
-
-#elif defined DATA_SMALL
-        myData%iCols      = 200
-        myData%iRows      = 200
-        myData%fAlpha     = 0.8
-        myData%fRelax     = 1.0
-        myData%fTolerance = 1e-7
-        myData%iIterMax   = 1000
-#endif
         write (*,327) "-> matrix size: ", myData%iCols, myData%iRows
         write (*,329) "-> alpha: " , myData%fAlpha
         write (*,329) "-> relax: ", myData%fRelax
@@ -181,7 +136,7 @@ subroutine Init (myData)
     typelist(6) = MPI_DOUBLE_PRECISION
     typelist(7) = MPI_DOUBLE_PRECISION
     typelist(8) = MPI_DOUBLE_PRECISION
-#if !defined(MPI_VERSION) || (MPI_VERSION>=2)
+#if !defined (MPI_VERSION) || (MPI_VERSION>=2)
     call MPI_GET_ADDRESS(myData%iRows, displacements(1), iErr)
     call MPI_GET_ADDRESS(myData%iCols, displacements(2), iErr)
     call MPI_GET_ADDRESS(myData%iRowFirst, displacements(3), iErr)
@@ -248,8 +203,7 @@ subroutine InitializeMatrix (myData)
 #line 241 "main.F90"
     type(JacobiData), intent(inout) :: myData
     !.. Local Scalars ..
-    integer :: i, j
-    double precision :: xx, yy
+    integer :: i, j, xx, yy
     !.. Intrinsic Functions ..
     intrinsic DBLE
 
@@ -271,8 +225,8 @@ subroutine InitializeMatrix (myData)
 !$omp          do
     do j = myData%iRowFirst, myData%iRowLast
         do i = 0, myData%iCols -1
-            xx = (-1.0 + myData%fDx*DBLE(i)) ! -1 < x < 1
-            yy = (-1.0 + myData%fDy*DBLE(j)) ! -1 < y < 1
+            xx = INT(-1.0 + myData%fDx*DBLE(i)) ! -1 < x < 1
+            yy = INT(-1.0 + myData%fDy*DBLE(j)) ! -1 < y < 1
             myData%afU(i, j) = 0.0d0
             myData%afF(i, j) = - myData%fAlpha * (1.0d0 - DBLE(xx*xx))  &
                 * (1.0d0 - DBLE(yy*yy)) - 2.0d0 * (1.0d0 - DBLE(xx*xx)) &

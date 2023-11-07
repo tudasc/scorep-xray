@@ -1,3 +1,4 @@
+#include <scorep/SCOREP_User.inc>
 module JacobiMod
     use VariableDef
     implicit none
@@ -103,27 +104,12 @@ module JacobiMod
         implicit none
         type(JacobiData), intent(inout) :: myData
         double precision, intent(inout) :: uold(0: myData%iCols -1, myData%iRowFirst : myData%iRowLast)
-        integer :: request(4), status(MPI_STATUS_SIZE, 4)
+        integer :: request(2), status(MPI_STATUS_SIZE, 2)
+        integer :: single_status(MPI_STATUS_SIZE)
         integer, parameter :: iTagMoveLeft = 10, iTagMoveRight = 11
         integer i, j, iErr, iReqCnt
 
         iReqCnt = 0
-        if (myData%iMyRank /= 0) then
-!!           /*  receive stripe mlo from left neighbour blocking */
-            iReqCnt = iReqCnt + 1
-            call MPI_Irecv( uold(0, myData%iRowFirst), myData%iCols, &
-                           MPI_DOUBLE_PRECISION, myData%iMyRank - 1, &
-                           iTagMoveRight, MPI_COMM_WORLD, request(iReqCnt), iErr)
-        end if
-
-        if (myData%iMyRank /= myData%iNumProcs - 1) then
-!!           /* receive stripe mhi from right neighbour blocking */
-            iReqCnt = iReqCnt + 1
-            call MPI_Irecv( uold(0, myData%iRowLast), myData%iCols,  &
-                           MPI_DOUBLE_PRECISION, myData%iMyRank + 1, &
-                           iTagMoveLeft, MPI_COMM_WORLD, request(iReqCnt), iErr)
-        end if
-
         if (myData%iMyRank /= myData%iNumProcs - 1) then
 !!           /* send stripe mhi-1 to right neighbour async */
             iReqCnt = iReqCnt + 1
@@ -139,11 +125,26 @@ module JacobiMod
                            MPI_DOUBLE_PRECISION, myData%iMyRank - 1,           &
                            iTagMoveLeft, MPI_COMM_WORLD, request(iReqCnt), iErr)
         end if
+
         do j = myData%iRowFirst + 1, myData%iRowLast - 1
             do i = 0, myData%iCols - 1
                 uold(i, j) = myData%afU(i, j)
             end do
         end do
+
+        if (myData%iMyRank /= 0) then
+!!           /*  receive stripe mlo from left neighbour blocking */
+            call MPI_Recv( uold(0, myData%iRowFirst), myData%iCols, &
+                           MPI_DOUBLE_PRECISION, myData%iMyRank - 1, &
+                           iTagMoveRight, MPI_COMM_WORLD, single_status, iErr)
+        end if
+
+        if (myData%iMyRank /= myData%iNumProcs - 1) then
+!!           /* receive stripe mhi from right neighbour blocking */
+            call MPI_Recv( uold(0, myData%iRowLast), myData%iCols,  &
+                           MPI_DOUBLE_PRECISION, myData%iMyRank + 1, &
+                           iTagMoveLeft, MPI_COMM_WORLD, single_status, iErr)
+        end if
 
         call MPI_Waitall(iReqCnt, request, status, iErr)
     end subroutine ExchangeJacobiMpiData

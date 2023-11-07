@@ -92,29 +92,12 @@ subroutine Init (myData)
     integer :: displacements(8), iStructDisp
 #endif
     SCOREP_USER_CARTESIAN_TOPOLOGY_DEFINE(mytopo)
-    integer old_comm, new_comm, ndims
-    integer dim_size(2)
     integer, dimension(2) :: coords
-    logical reorder, periods(2)
+    integer old_comm, new_comm, ndims, dim_size(2)
+    logical periods(2), reorder
 
 !    /* MPI Initialization */
-#if !defined(MPI_VERSION) || (MPI_VERSION>=2)
-    integer :: required = MPI_THREAD_FUNNELED
     call MPI_Init_thread(MPI_THREAD_FUNNELED, provided, iErr)
-    if (iErr /= MPI_SUCCESS) then
-        print*, "Abort: MPI_Init_thread unsuccessful"
-        call MPI_Abort(MPI_COMM_WORLD, 38, iErr)
-    else if (provided < required) then
-        write (6,'(2(A,I1))') "Warning: MPI_Init_thread only provided level ", provided, "<", required
-    endif
-#else
-    call MPI_Init(iErr)
-    if (iErr /= MPI_SUCCESS) then
-        print*, "Abort: MPI_Init unsuccessful"
-        call MPI_Abort(MPI_COMM_WORLD, 38, iErr)
-    endif
-#endif
-
     call MPI_Comm_rank(MPI_COMM_WORLD, myData%iMyRank, iErr)
     call MPI_Comm_size(MPI_COMM_WORLD, myData%iNumProcs, iErr)
 
@@ -125,7 +108,6 @@ subroutine Init (myData)
     coords = (/ MOD(myData%iMyRank,2), myData%iMyRank/2 /)
     SCOREP_USER_CARTESIAN_TOPOLOGY_SET_COORDS (mytopo, 2, coords)
 
-
     old_comm = MPI_COMM_WORLD
     ndims = 2
     dim_size(1) = 1
@@ -135,7 +117,6 @@ subroutine Init (myData)
     reorder = .TRUE.
 
     call MPI_Cart_create(old_comm,ndims,dim_size,periods,reorder,new_comm,ierr)
-
 
     if (myData%iMyRank == 0) then
         call get_environment_variable("ITERATIONS", env)
@@ -158,35 +139,6 @@ subroutine Init (myData)
         myData%fRelax     = 1.0
         myData%fTolerance = 1e-10
         myData%iIterMax   = ITERATIONS
-#ifdef READ_INPUT
-        write (*,*) 'Input n - matrix size in x direction: '
-        read (5,*) myData%iCols
-        write (*,*) 'Input m - matrix size in y direction: '
-        read (5,*) myData%iRows
-        write (*,*) 'Input alpha - Helmholts constant:'
-        read (5,*) myData%fAlpha
-        write (*,*) 'Input relax - Successive over-relaxation parameter:'
-        read (5,*) myData%fRelax
-        write (*,*) 'Input tol - error tolerance for iterative solver:'
-        read (5,*) myData%fTolerance
-        write (*,*) 'Input mits - Maximum iterations for solver:'
-        read (5,*) myData%iIterMax
-#elif defined DATA_LARGE
-        myData%iCols      = 7000
-        myData%iRows      = 7000
-        myData%fAlpha     = 0.8
-        myData%fRelax     = 1.0
-        myData%fTolerance = 1e-12
-        myData%iIterMax   = 2
-
-#elif defined DATA_SMALL
-        myData%iCols      = 200
-        myData%iRows      = 200
-        myData%fAlpha     = 0.8
-        myData%fRelax     = 1.0
-        myData%fTolerance = 1e-7
-        myData%iIterMax   = 1000
-#endif
         write (*,327) "-> matrix size: ", myData%iCols, myData%iRows
         write (*,329) "-> alpha: " , myData%fAlpha
         write (*,329) "-> relax: ", myData%fRelax
@@ -209,7 +161,7 @@ subroutine Init (myData)
     typelist(6) = MPI_DOUBLE_PRECISION
     typelist(7) = MPI_DOUBLE_PRECISION
     typelist(8) = MPI_DOUBLE_PRECISION
-#if !defined(MPI_VERSION) || (MPI_VERSION>=2)
+#if !defined (MPI_VERSION) || (MPI_VERSION>=2)
     call MPI_GET_ADDRESS(myData%iRows, displacements(1), iErr)
     call MPI_GET_ADDRESS(myData%iCols, displacements(2), iErr)
     call MPI_GET_ADDRESS(myData%iRowFirst, displacements(3), iErr)

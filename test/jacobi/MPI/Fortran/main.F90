@@ -193,8 +193,7 @@ subroutine InitializeMatrix (myData)
 
     type(JacobiData), intent(inout) :: myData
     !.. Local Scalars ..
-    integer :: i, j
-    double precision :: xx, yy
+    integer :: i, j, xx, yy
     !.. Intrinsic Functions ..
     intrinsic DBLE
 
@@ -202,8 +201,8 @@ subroutine InitializeMatrix (myData)
 
     do j = myData%iRowFirst, myData%iRowLast
         do i = 0, myData%iCols -1
-            xx = (-1.0 + myData%fDx*DBLE(i)) ! -1 < x < 1
-            yy = (-1.0 + myData%fDy*DBLE(j)) ! -1 < y < 1
+            xx = INT(-1.0 + myData%fDx*DBLE(i)) ! -1 < x < 1
+            yy = INT(-1.0 + myData%fDy*DBLE(j)) ! -1 < y < 1
             myData%afU(i, j) = 0.0d0
             myData%afF(i, j) = - myData%fAlpha * (1.0d0 - DBLE(xx*xx))  &
                 * (1.0d0 - DBLE(yy*yy)) - 2.0d0 * (1.0d0 - DBLE(xx*xx)) &
