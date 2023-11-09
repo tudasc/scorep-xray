@@ -92,7 +92,7 @@ typedef struct scorep_openacc_device
 {
     int                           device_id;
     acc_device_t                  device_type;
-    struct SCOREP_AllocMetric*    allocMetric;
+    struct SCOREP_AllocMetric*    alloc_metric;
     struct scorep_openacc_device* next;
 } scorep_openacc_device;
 
@@ -400,7 +400,7 @@ get_alloc_metric_handle( acc_device_t deviceType,
     {
         if ( dev->device_id == deviceNumber && dev->device_type == deviceType )
         {
-            return dev->allocMetric;
+            return dev->alloc_metric;
         }
 
         dev = dev->next;
@@ -443,11 +443,11 @@ create_device( acc_device_t deviceType,
         acc_metric_name = "acc_mem_usage";
     }
 
-    struct SCOREP_AllocMetric* allocMetric = NULL;
+    struct SCOREP_AllocMetric* alloc_metric = NULL;
 
-    SCOREP_AllocMetric_New( acc_metric_name, &allocMetric );
+    SCOREP_AllocMetric_New( acc_metric_name, &alloc_metric );
 
-    dev->allocMetric = allocMetric;
+    dev->alloc_metric = alloc_metric;
 
     return dev;
 }
@@ -466,7 +466,7 @@ scorep_openacc_get_alloc_metric_handle( acc_device_t deviceType,
         if ( allocHandle == NULL )
         {
             scorep_openacc_device* dev = create_device( deviceType, deviceNumber );
-            allocHandle = dev->allocMetric;
+            allocHandle = dev->alloc_metric;
 
             // prepend device to global device list
             dev->next   = device_list;

@@ -223,13 +223,13 @@ handle_alloc( acc_prof_info*  profInfo,
         //if( apiInfo->device_api == acc_devapi_cuda )
 
         // get metric handle for this device
-        struct SCOREP_AllocMetric* allocMetric = scorep_openacc_get_alloc_metric_handle(
+        struct SCOREP_AllocMetric* alloc_metric = scorep_openacc_get_alloc_metric_handle(
             profInfo->device_type, profInfo->device_number );
 
         switch ( profInfo->event_type )
         {
             case acc_ev_alloc:
-                SCOREP_AllocMetric_HandleAlloc( allocMetric,
+                SCOREP_AllocMetric_HandleAlloc( alloc_metric,
                                                 ( uint64_t )( data_info.device_ptr ),
                                                 data_info.bytes );
 
@@ -238,11 +238,11 @@ handle_alloc( acc_prof_info*  profInfo,
             case acc_ev_free:
             {
                 void* allocation = NULL;
-                SCOREP_AllocMetric_AcquireAlloc( allocMetric,
+                SCOREP_AllocMetric_AcquireAlloc( alloc_metric,
                                                  ( uint64_t )( data_info.device_ptr ),
                                                  &allocation );
 
-                SCOREP_AllocMetric_HandleFree( allocMetric,
+                SCOREP_AllocMetric_HandleFree( alloc_metric,
                                                allocation,
                                                NULL );
 

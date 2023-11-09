@@ -230,13 +230,13 @@ get_metric( const char* name )
     new_entry->next      = kokkos_alloc_metrics;
     kokkos_alloc_metrics = new_entry;
     memcpy( new_entry->kokkos_space, name, KOKKOSP_SPACE_NAME_LENGTH );
-    struct SCOREP_AllocMetric* allocMetric = NULL;
-    SCOREP_AllocMetric_New( name, &allocMetric );
-    new_entry->metric = allocMetric;
+    struct SCOREP_AllocMetric* alloc_metric = NULL;
+    SCOREP_AllocMetric_New( name, &alloc_metric );
+    new_entry->metric = alloc_metric;
 
     UTILS_MutexUnlock( &kokkos_alloc_metrics_mutex );
 
-    return allocMetric;
+    return alloc_metric;
 }
 
 
