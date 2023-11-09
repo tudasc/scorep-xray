@@ -76,7 +76,7 @@ memory_subsystem_init( void )
 
     if ( scorep_memory_recording )
     {
-        SCOREP_AllocMetric_New( "Process memory usage", &scorep_memory_metric );
+        SCOREP_AllocMetric_New( "Host Memory", &scorep_memory_metric );
         scorep_memory_attributes_init();
     }
 
