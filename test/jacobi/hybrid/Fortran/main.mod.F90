@@ -81,13 +81,9 @@ subroutine Init (myData)
     integer :: provided
     integer :: version, subversion
     integer :: iErr, i
+    integer :: iparam_buf(5)
+    double precision :: fparam_buf(3)
     integer :: omp_get_max_threads
-    integer :: block_lengths(8), typelist(8), MPI_JacobiData
-#if !defined(MPI_VERSION) || (MPI_VERSION>=2)
-    integer (kind=MPI_ADDRESS_KIND) :: displacements(8), iStructDisp
-#else
-    integer :: displacements(8), iStructDisp
-#endif
 
 !    /* MPI Initialization */
     call MPI_Init_thread(MPI_THREAD_FUNNELED, provided, iErr)
@@ -126,50 +122,20 @@ subroutine Init (myData)
 
     end if
 
-!    /* Send input parameters to all procs */
-    block_lengths = 1
-    typelist(1) = MPI_INTEGER
-    typelist(2) = MPI_INTEGER
-    typelist(3) = MPI_INTEGER
-    typelist(4) = MPI_INTEGER
-    typelist(5) = MPI_INTEGER
-    typelist(6) = MPI_DOUBLE_PRECISION
-    typelist(7) = MPI_DOUBLE_PRECISION
-    typelist(8) = MPI_DOUBLE_PRECISION
-#if !defined (MPI_VERSION) || (MPI_VERSION>=2)
-    call MPI_GET_ADDRESS(myData%iRows, displacements(1), iErr)
-    call MPI_GET_ADDRESS(myData%iCols, displacements(2), iErr)
-    call MPI_GET_ADDRESS(myData%iRowFirst, displacements(3), iErr)
-    call MPI_GET_ADDRESS(myData%iRowLast, displacements(4), iErr)
-    call MPI_GET_ADDRESS(myData%iIterMax, displacements(5), iErr)
-    call MPI_GET_ADDRESS(myData%fAlpha, displacements(6), iErr)
-    call MPI_GET_ADDRESS(myData%fRelax, displacements(7), iErr)
-    call MPI_GET_ADDRESS(myData%fTolerance, displacements(8), iErr)
-    call MPI_GET_ADDRESS(myData, iStructDisp, iErr)
-#else
-    call MPI_ADDRESS(myData%iRows, displacements(1), iErr)
-    call MPI_ADDRESS(myData%iCols, displacements(2), iErr)
-    call MPI_ADDRESS(myData%iRowFirst, displacements(3), iErr)
-    call MPI_ADDRESS(myData%iRowLast, displacements(4), iErr)
-    call MPI_ADDRESS(myData%iIterMax, displacements(5), iErr)
-    call MPI_ADDRESS(myData%fAlpha, displacements(6), iErr)
-    call MPI_ADDRESS(myData%fRelax, displacements(7), iErr)
-    call MPI_ADDRESS(myData%fTolerance, displacements(8), iErr)
-    call MPI_ADDRESS(myData, iStructDisp, iErr)
-#endif
 
-    displacements = displacements - iStructDisp
+    iparam_buf = (/myData%iRows, myData%iCols, myData%iRowFirst, myData%iRowLast, myData%iIterMax/)
+    fparam_buf = (/myData%fAlpha, myData%fRelax, myData%fTolerance/)
+    call MPI_Bcast(iparam_buf, 5, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+    call MPI_Bcast(fparam_buf, 3, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+    myData%iRows = iparam_buf(1)
+    myData%iCols = iparam_buf(2)
+    myData%iRowFirst = iparam_buf(3)
+    myData%iRowLast = iparam_buf(4)
+    myData%iIterMax = iparam_buf(5)
+    myData%fAlpha = fparam_buf(1)
+    myData%fRelax = fparam_buf(2)
+    myData%fTolerance = fparam_buf(3)
 
-#if !defined(MPI_VERSION) || (MPI_VERSION>=2)
-    call MPI_Type_create_struct(8, block_lengths, displacements, typelist, &
-                                MPI_JacobiData, iErr)
-#else
-    call MPI_Type_struct(8, block_lengths, displacements, typelist, &
-                                MPI_JacobiData, iErr)
-#endif
-    call MPI_Type_commit(MPI_JacobiData, iErr)
-
-    call MPI_Bcast(myData, 1, MPI_JacobiData, 0, MPI_COMM_WORLD, iErr)
 
 !    /* calculate bounds for the task working area */
     myData%iRowFirst = myData%iMyRank * (myData%iRows - 2) / myData%iNumProcs
@@ -298,7 +264,7 @@ subroutine CheckError(myData)
     type(JacobiData), intent(inout) :: myData
     !.. Local Scalars ..
     integer :: i, j, iErr
-    double precision :: error, temp, xx, yy
+    double precision :: error, ebs(1), ebr(1), temp, xx, yy
     !.. Intrinsic Functions ..
     intrinsic DBLE, SQRT
     ! ... Executable Statements ...
@@ -313,9 +279,10 @@ subroutine CheckError(myData)
         end do
     end do
 
-    myData%fError = error
-    call MPI_Reduce(myData%fError, error, 1, MPI_DOUBLE_PRECISION, MPI_SUM, 0, &
+    ebs(1) = error
+    call MPI_Reduce(ebs, ebr, 1, MPI_DOUBLE_PRECISION, MPI_SUM, 0, &
                     MPI_COMM_WORLD, iErr)
+    error = ebr(1)
     myData%fError = sqrt(error) / DBLE(myData%iCols * myData%iRows)
 
 end subroutine CheckError
