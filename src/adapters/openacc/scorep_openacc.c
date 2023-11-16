@@ -92,7 +92,7 @@ typedef struct scorep_openacc_device
 {
     int                           device_id;
     acc_device_t                  device_type;
-    struct SCOREP_AllocMetric*    allocMetric;
+    struct SCOREP_AllocMetric*    alloc_metric;
     struct scorep_openacc_device* next;
 } scorep_openacc_device;
 
@@ -400,7 +400,7 @@ get_alloc_metric_handle( acc_device_t deviceType,
     {
         if ( dev->device_id == deviceNumber && dev->device_type == deviceType )
         {
-            return dev->allocMetric;
+            return dev->alloc_metric;
         }
 
         dev = dev->next;
@@ -426,28 +426,7 @@ create_device( acc_device_t deviceType,
         ( scorep_openacc_device* )SCOREP_Memory_AllocForMisc(
             sizeof( scorep_openacc_device ) );
 
-    // "acc_mem_usage " + 2 digits for deviceType + ":"
-    // + 2 digits for device number + null termination
-    const size_t metric_length = 14 + 2 + 1 + 2 + 1;
-
-    // create a new metric handle
-    char* acc_metric_name =
-        ( char* )SCOREP_Memory_AllocForMisc( metric_length * sizeof( char ) );
-
-    if ( -1 == snprintf( acc_metric_name, metric_length,
-                         "acc_mem_usage %d:%i",
-                         deviceType, deviceNumber ) )
-    {
-        UTILS_WARNING( "[OpenACC] Could not create metric name for device type %d!",
-                       deviceType );
-        acc_metric_name = "acc_mem_usage";
-    }
-
-    struct SCOREP_AllocMetric* allocMetric = NULL;
-
-    SCOREP_AllocMetric_New( acc_metric_name, &allocMetric );
-
-    dev->allocMetric = allocMetric;
+    SCOREP_AllocMetric_New( "OpenACC Memory", &dev->alloc_metric );
 
     return dev;
 }
@@ -466,7 +445,7 @@ scorep_openacc_get_alloc_metric_handle( acc_device_t deviceType,
         if ( allocHandle == NULL )
         {
             scorep_openacc_device* dev = create_device( deviceType, deviceNumber );
-            allocHandle = dev->allocMetric;
+            allocHandle = dev->alloc_metric;
 
             // prepend device to global device list
             dev->next   = device_list;

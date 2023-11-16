@@ -489,9 +489,7 @@ scorep_cupti_context_create( CUcontext cudaContext )
 
     if ( scorep_cuda_record_gpumemusage )
     {
-        snprintf( context_name_buffer, sizeof( context_name_buffer ),
-                  "CUDA Context %u Memory", context->context_id );
-        SCOREP_AllocMetric_NewScoped( context_name_buffer,
+        SCOREP_AllocMetric_NewScoped( "CUDA Memory",
                                       context->location_group,
                                       &context->alloc_metric );
     }
