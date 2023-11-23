@@ -4,13 +4,15 @@
 
 - reference corresponding issue
 
-### Conformity (drop before merge)
+### Conformity
 
 - [ ] ChangeLog
 - [ ] Documentation
 - [ ] Copyright
-- [ ] No merge commits in history
-- [ ] No fixup commits in history
-- [ ] No apply suggestions commits in history
-- [ ] No "fix/please beautifier/whitespace hook" commits in history
-- [ ] No "update ChangeLog" commits in history
+
+The following commits **must not** appear in history:
+- [ ] _merge_ commits
+- [ ] _fixup_ commits
+- [ ] _apply suggestions_ commits
+- [ ] _fix/please beautifier/whitespace hook_ commits
+- [ ] _update ChangeLog_ commits
