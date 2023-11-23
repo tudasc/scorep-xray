@@ -32,7 +32,7 @@ module JacobiMod
 
         !.. Local Scalars ..
         integer :: i, j, iErr
-        double precision :: ax, ay, b, residual, fLRes, tmpResd
+        double precision :: ax, ay, b, residual(1), fLRes, tmpResd(1)
 
         !.. Local Arrays ..
         double precision, allocatable :: uold(:,:)
@@ -64,11 +64,11 @@ module JacobiMod
             call POMP2_Begin( pomp_user_region_handle, &
               "90*regionType=userRegion*sscl=jacobi.F90:63:63*escl=jacobi.F90:102:102*userRegionName=userloop**" )
 #endif
-            do while (myData%iIterCount < myData%iIterMax .and. residual > myData%fTolerance)
+            do while (myData%iIterCount < myData%iIterMax .and. residual(1) > myData%fTolerance)
                 SCOREP_USER_REGION_BEGIN( main_loop, "main_loop", SCOREP_USER_REGION_TYPE_DYNAMIC )
                 residual = 0.0d0
 
-                ! Copy new solution into old
+            ! Copy new solution into old
                 call ExchangeJacobiMpiData(myData, uold)
 !$omp parallel private(fLRes, tmpResd, i)
 !$omp do reduction(+:residual)
@@ -100,11 +100,12 @@ module JacobiMod
                  SCOREP_USER_REGION_END( main_loop )
             ! End iteration loop
             end do
+
 #ifdef SCOREP_POMP_USER
             call POMP2_End( pomp_user_region_handle );
 #endif
 
-            myData%fResidual = residual
+            myData%fResidual = residual(1)
             deallocate(uold)
         else
            write (*,*) 'Error: cant allocate memory'
@@ -119,31 +120,18 @@ module JacobiMod
         implicit none
         type(JacobiData), intent(inout) :: myData
         double precision, intent(inout) :: uold(0: myData%iCols -1, myData%iRowFirst : myData%iRowLast)
-        integer :: request(4), status(MPI_STATUS_SIZE, 4)
+        integer :: request(2), status(MPI_STATUS_SIZE, 2)
+        integer :: single_status(MPI_STATUS_SIZE)
         integer, parameter :: iTagMoveLeft = 10, iTagMoveRight = 11
         integer i, j, iErr, iReqCnt
+        double precision :: rbl(0:myData%iCols-1), rbr(0:myData%iCols-1), sbl(0:myData%iCols-1), sbr(0:myData%iCols-1)
 
         iReqCnt = 0
-        if (myData%iMyRank /= 0) then
-!!           /*  receive stripe mlo from left neighbour blocking */
-            iReqCnt = iReqCnt + 1
-            call MPI_Irecv( uold(0, myData%iRowFirst), myData%iCols, &
-                           MPI_DOUBLE_PRECISION, myData%iMyRank - 1, &
-                           iTagMoveRight, MPI_COMM_WORLD, request(iReqCnt), iErr)
-        end if
-
-        if (myData%iMyRank /= myData%iNumProcs - 1) then
-!!           /* receive stripe mhi from right neighbour blocking */
-            iReqCnt = iReqCnt + 1
-            call MPI_Irecv( uold(0, myData%iRowLast), myData%iCols,  &
-                           MPI_DOUBLE_PRECISION, myData%iMyRank + 1, &
-                           iTagMoveLeft, MPI_COMM_WORLD, request(iReqCnt), iErr)
-        end if
-
         if (myData%iMyRank /= myData%iNumProcs - 1) then
 !!           /* send stripe mhi-1 to right neighbour async */
             iReqCnt = iReqCnt + 1
-            call MPI_Isend( myData%afU(0, myData%iRowLast - 1), myData%iCols, &
+            sbr = myData%afU(:,myData%iRowLast-1)
+            call MPI_Isend( sbr, myData%iCols, &
                             MPI_DOUBLE_PRECISION, myData%iMyRank + 1,         &
                             iTagMoveRight, MPI_COMM_WORLD, request(iReqCnt), iErr)
         end if
@@ -151,10 +139,12 @@ module JacobiMod
         if (myData%iMyRank /= 0) then
 !!           /* send stripe mlo+1 to left neighbour async */
             iReqCnt = iReqCnt + 1
-            call MPI_Isend( myData%afU(0, myData%iRowFirst + 1), myData%iCols, &
+            sbl = myData%afU(:, myData%iRowFirst+1)
+            call MPI_Isend( sbl, myData%iCols, &
                            MPI_DOUBLE_PRECISION, myData%iMyRank - 1,           &
                            iTagMoveLeft, MPI_COMM_WORLD, request(iReqCnt), iErr)
         end if
+
 !$omp parallel
 !$omp do
         do j = myData%iRowFirst + 1, myData%iRowLast - 1
@@ -164,6 +154,22 @@ module JacobiMod
         end do
 !$omp end do
 !$omp end parallel
+
+        if (myData%iMyRank /= 0) then
+!!           /*  receive stripe mlo from left neighbour blocking */
+            call MPI_Recv( rbl, myData%iCols, &
+                           MPI_DOUBLE_PRECISION, myData%iMyRank - 1, &
+                           iTagMoveRight, MPI_COMM_WORLD, single_status, iErr)
+            uold(:, myData%iRowFirst) = rbl
+        end if
+
+        if (myData%iMyRank /= myData%iNumProcs - 1) then
+!!           /* receive stripe mhi from right neighbour blocking */
+            call MPI_Recv( rbr,  myData%iCols,  &
+                           MPI_DOUBLE_PRECISION, myData%iMyRank + 1, &
+                           iTagMoveLeft, MPI_COMM_WORLD, single_status, iErr)
+            uold(:, myData%iRowLast) = rbr
+        end if
 
         call MPI_Waitall(iReqCnt, request, status, iErr)
     end subroutine ExchangeJacobiMpiData
