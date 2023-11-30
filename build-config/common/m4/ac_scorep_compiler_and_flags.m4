@@ -148,41 +148,45 @@ AC_ARG_WITH([mpi],
          [scorep_mpi_user_disabled=yes
           ac_scorep_compilers_mpi="compiler-mpi-without"
          ],
-         [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" && test "x${ac_scorep_platform}" != "xaix"],
-              [AS_CASE([$withval],
-                   ["bullxmpi"], [ac_scorep_compilers_mpi="compiler-mpi-bullxmpi"],
-                   ["hp"], [ac_scorep_compilers_mpi="compiler-mpi-hp"],
-                   ["ibmpoe"], [ac_scorep_compilers_mpi="compiler-mpi-ibmpoe"],
-                   ["intel"], [ac_scorep_compilers_mpi="compiler-mpi-intel"],
-                   ["intel2"], [ac_scorep_compilers_mpi="compiler-mpi-intel2"],
-                   ["intel3"], [ac_scorep_compilers_mpi="compiler-mpi-intel3"],
-                   ["impi"], [AC_MSG_WARN([option 'impi' to --with-mpi deprecated, use 'intel2' instead.])
-                              ac_scorep_compilers_mpi="compiler-mpi-intel2"],
-                   ["intelpoe"], [ac_scorep_compilers_mpi="compiler-mpi-intelpoe"],
-                   ["lam"], [ac_scorep_compilers_mpi="compiler-mpi-lam"],
-                   ["mpibull2"], [ac_scorep_compilers_mpi="compiler-mpi-mpibull2"],
-                   ["mpich"], [ac_scorep_compilers_mpi="compiler-mpi-mpich"],
-                   ["mpich2"], [ac_scorep_compilers_mpi="compiler-mpi-mpich2"],
-                   ["mpich3"], [ac_scorep_compilers_mpi="compiler-mpi-mpich3"],
-                   ["mpich4"], [ac_scorep_compilers_mpi="compiler-mpi-mpich4"],
-                   ["openmpi"], [ac_scorep_compilers_mpi="compiler-mpi-openmpi"],
-                   ["openmpi3"], [ac_scorep_compilers_mpi="compiler-mpi-openmpi3"],
-                   ["platform"], [ac_scorep_compilers_mpi="compiler-mpi-platform"],
-                   ["scali"], [ac_scorep_compilers_mpi="compiler-mpi-scali"],
-                   ["sgimpt"], [ac_scorep_compilers_mpi="compiler-mpi-sgimpt"],
-                   ["sgimptwrapper"], [ac_scorep_compilers_mpi="compiler-mpi-sgimptwrapper"],
-                   ["spectrum"], [ac_scorep_compilers_mpi="compiler-mpi-spectrum"],
-                   ["sun"], [ac_scorep_compilers_mpi="compiler-mpi-sun"],
-                   [AC_MSG_ERROR([MPI compiler suite "${withval}" not supported by --with-mpi.])])
-              ],
-              [AC_MSG_ERROR([Option --with-mpi ignored on cross-compiling platforms. MPI compiler suite automatically selected.])
+         [AS_IF([test "x${afs_custom_compilers_given}" != xyes],
+              [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" && test "x${ac_scorep_platform}" != "xaix"],
+                   [AS_CASE([$withval],
+                        ["bullxmpi"], [ac_scorep_compilers_mpi="compiler-mpi-bullxmpi"],
+                        ["hp"], [ac_scorep_compilers_mpi="compiler-mpi-hp"],
+                        ["ibmpoe"], [ac_scorep_compilers_mpi="compiler-mpi-ibmpoe"],
+                        ["intel"], [ac_scorep_compilers_mpi="compiler-mpi-intel"],
+                        ["intel2"], [ac_scorep_compilers_mpi="compiler-mpi-intel2"],
+                        ["intel3"], [ac_scorep_compilers_mpi="compiler-mpi-intel3"],
+                        ["impi"], [AC_MSG_WARN([option 'impi' to --with-mpi deprecated, use 'intel2' instead.])
+                                   ac_scorep_compilers_mpi="compiler-mpi-intel2"],
+                        ["intelpoe"], [ac_scorep_compilers_mpi="compiler-mpi-intelpoe"],
+                        ["lam"], [ac_scorep_compilers_mpi="compiler-mpi-lam"],
+                        ["mpibull2"], [ac_scorep_compilers_mpi="compiler-mpi-mpibull2"],
+                        ["mpich"], [ac_scorep_compilers_mpi="compiler-mpi-mpich"],
+                        ["mpich2"], [ac_scorep_compilers_mpi="compiler-mpi-mpich2"],
+                        ["mpich3"], [ac_scorep_compilers_mpi="compiler-mpi-mpich3"],
+                        ["mpich4"], [ac_scorep_compilers_mpi="compiler-mpi-mpich4"],
+                        ["openmpi"], [ac_scorep_compilers_mpi="compiler-mpi-openmpi"],
+                        ["openmpi3"], [ac_scorep_compilers_mpi="compiler-mpi-openmpi3"],
+                        ["platform"], [ac_scorep_compilers_mpi="compiler-mpi-platform"],
+                        ["scali"], [ac_scorep_compilers_mpi="compiler-mpi-scali"],
+                        ["sgimpt"], [ac_scorep_compilers_mpi="compiler-mpi-sgimpt"],
+                        ["sgimptwrapper"], [ac_scorep_compilers_mpi="compiler-mpi-sgimptwrapper"],
+                        ["spectrum"], [ac_scorep_compilers_mpi="compiler-mpi-spectrum"],
+                        ["sun"], [ac_scorep_compilers_mpi="compiler-mpi-sun"],
+                        [AC_MSG_ERROR([MPI compiler suite "${withval}" not supported by --with-mpi.])])
+                   ],
+                   [AC_MSG_ERROR([Option --with-mpi ignored on cross-compiling platforms. MPI compiler suite automatically selected.])
+                   ])
               ])
          ])
      # omit check "if in PATH" for now. Will fail in build-mpi configure.
     ],
-    [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" && test "x${ac_scorep_platform}" != "xaix"],
-         [AFS_COMPILER_MPI
-          ac_scorep_compilers_mpi="compiler-mpi-${afs_compiler_mpi}"])
+    [AS_IF([test "x${afs_custom_compilers_given}" != xyes],
+         [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" && test "x${ac_scorep_platform}" != "xaix"],
+              [AFS_COMPILER_MPI
+               ac_scorep_compilers_mpi="compiler-mpi-${afs_compiler_mpi}"])
+         ])
     ])
 
 AS_IF([test "x${scorep_mpi_user_disabled}" = xno],
@@ -242,24 +246,28 @@ AC_ARG_WITH([shmem],
          [scorep_shmem_user_disabled=yes
           ac_scorep_compilers_shmem="compiler-shmem-without"
          ],
-         [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" && test "x${ac_scorep_platform}" != "xaix"],
-              [AS_CASE([$withval],
-                   ["openshmem"], [ac_scorep_compilers_shmem="compiler-shmem-openshmem"],
-                   ["openmpi"], [ac_scorep_compilers_shmem="compiler-shmem-openmpi"],
-                   ["openmpi3"], [ac_scorep_compilers_shmem="compiler-shmem-openmpi3"],
-                   ["sgimpt"], [ac_scorep_compilers_shmem="compiler-shmem-sgimpt"],
-                   ["sgimptwrapper"], [ac_scorep_compilers_shmem="compiler-shmem-sgimptwrapper"],
-                   ["spectrum"], [ac_scorep_compilers_shmem="compiler-shmem-spectrum"],
-                   [AC_MSG_ERROR([SHMEM compiler suite "${withval}" not supported by --with-shmem.])])
-              ],
-              [AC_MSG_ERROR([Option --with-shmem ignored on cross-compiling platforms. SHMEM compiler suite automatically selected.])
+         [AS_IF([test "x${afs_custom_compilers_given}" != xyes],
+              [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" && test "x${ac_scorep_platform}" != "xaix"],
+                   [AS_CASE([$withval],
+                        ["openshmem"], [ac_scorep_compilers_shmem="compiler-shmem-openshmem"],
+                        ["openmpi"], [ac_scorep_compilers_shmem="compiler-shmem-openmpi"],
+                        ["openmpi3"], [ac_scorep_compilers_shmem="compiler-shmem-openmpi3"],
+                        ["sgimpt"], [ac_scorep_compilers_shmem="compiler-shmem-sgimpt"],
+                        ["sgimptwrapper"], [ac_scorep_compilers_shmem="compiler-shmem-sgimptwrapper"],
+                        ["spectrum"], [ac_scorep_compilers_shmem="compiler-shmem-spectrum"],
+                        [AC_MSG_ERROR([SHMEM compiler suite "${withval}" not supported by --with-shmem.])])
+                   ],
+                   [AC_MSG_ERROR([Option --with-shmem ignored on cross-compiling platforms. SHMEM compiler suite automatically selected.])
+                   ])
               ])
          ])
      # omit check "if in PATH" for now.
     ],
-    [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" && test "x${ac_scorep_platform}" != "xaix"],
-         [AFS_COMPILER_SHMEM
-          ac_scorep_compilers_shmem="compiler-shmem-${afs_compiler_shmem}"])
+    [AS_IF([test "x${afs_custom_compilers_given}" != xyes],
+         [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" && test "x${ac_scorep_platform}" != "xaix"],
+              [AFS_COMPILER_SHMEM
+               ac_scorep_compilers_shmem="compiler-shmem-${afs_compiler_shmem}"])
+         ])
     ])
 
 AS_IF([test "x${scorep_shmem_user_disabled}" = xno],
