@@ -51,7 +51,12 @@ ${proto:c}
             {
               SCOREP_CommCreate(new_comm_handle);
             }
-            SCOREP_MpiCollectiveEnd( ${comm:parent_handle},
+            else
+            {
+              /* The communicator creation was a local operation, hence we use MPI_COMM_SELF for the collective */
+              new_comm_handle = SCOREP_MPI_COMM_HANDLE(MPI_COMM_SELF);
+            }
+            SCOREP_MpiCollectiveEnd(new_comm_handle,
                                     SCOREP_INVALID_ROOT_RANK,
                                     SCOREP_COLLECTIVE_CREATE_HANDLE,
                                     0,

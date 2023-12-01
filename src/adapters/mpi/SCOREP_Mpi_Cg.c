@@ -657,7 +657,12 @@ MPI_Comm_create_group( MPI_Comm comm, MPI_Group group, int tag, MPI_Comm* newcom
             {
                 SCOREP_CommCreate( new_comm_handle );
             }
-            SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
+            else
+            {
+                /* The communicator creation was a local operation, hence we use MPI_COMM_SELF for the collective */
+                new_comm_handle = SCOREP_MPI_COMM_HANDLE( MPI_COMM_SELF );
+            }
+            SCOREP_MpiCollectiveEnd( new_comm_handle,
                                      SCOREP_INVALID_ROOT_RANK,
                                      SCOREP_COLLECTIVE_CREATE_HANDLE,
                                      0,
@@ -734,7 +739,12 @@ MPI_Comm_create_from_group( MPI_Group group, const char* stringtag, MPI_Info inf
             {
                 SCOREP_CommCreate( new_comm_handle );
             }
-            SCOREP_MpiCollectiveEnd( SCOREP_INVALID_INTERIM_COMMUNICATOR,
+            else
+            {
+                /* The communicator creation was a local operation, hence we use MPI_COMM_SELF for the collective */
+                new_comm_handle = SCOREP_MPI_COMM_HANDLE( MPI_COMM_SELF );
+            }
+            SCOREP_MpiCollectiveEnd( new_comm_handle,
                                      SCOREP_INVALID_ROOT_RANK,
                                      SCOREP_COLLECTIVE_CREATE_HANDLE,
                                      0,
@@ -814,7 +824,12 @@ MPI_Intercomm_create_from_groups( MPI_Group local_group, int local_leader, MPI_G
             {
                 SCOREP_CommCreate( new_comm_handle );
             }
-            SCOREP_MpiCollectiveEnd( SCOREP_INVALID_INTERIM_COMMUNICATOR,
+            else
+            {
+                /* The communicator creation was a local operation, hence we use MPI_COMM_SELF for the collective */
+                new_comm_handle = SCOREP_MPI_COMM_HANDLE( MPI_COMM_SELF );
+            }
+            SCOREP_MpiCollectiveEnd( new_comm_handle,
                                      SCOREP_INVALID_ROOT_RANK,
                                      SCOREP_COLLECTIVE_CREATE_HANDLE,
                                      0,
