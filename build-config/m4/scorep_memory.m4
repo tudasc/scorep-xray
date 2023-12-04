@@ -3,7 +3,7 @@ dnl -*- mode: autoconf -*-
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2016-2017,
+dnl Copyright (c) 2016-2017, 2023,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2022,
@@ -34,21 +34,21 @@ scorep_memory_summary_reason=
 AM_COND_IF([HAVE_LIBWRAP_LINKTIME_SUPPORT],
            [],
            [scorep_memory_support="no"
-            scorep_memory_summary_reason+=", missing linktime library wrapping support"])
+            AS_VAR_APPEND([scorep_memory_summary_reason], [", missing linktime library wrapping support"])])
 
 # check result of TLS
 AS_IF([test "x${scorep_memory_support}" = "xyes"],
     [AM_COND_IF([HAVE_THREAD_LOCAL_STORAGE],
         [],
         [scorep_memory_support="no"
-         scorep_memory_summary_reason+=", missing TLS support"])])
+         AS_VAR_APPEND([scorep_memory_summary_reason], [", missing TLS support"])])])
 
 # check malloc.h header
 AS_IF([test "x${scorep_memory_support}" = "xyes"],
     [AC_CHECK_HEADER(["malloc.h"],
         [],
         [scorep_memory_support="no"
-         scorep_memory_summary_reason+=", missing malloc.h header"])])
+         AS_VAR_APPEND([scorep_memory_summary_reason], [", missing malloc.h header"])])])
 
 # setting output variables/defines
 AC_SCOREP_COND_HAVE([MEMORY_SUPPORT],
