@@ -6,7 +6,7 @@ dnl
 dnl Copyright (c) 2013-2014, 2022,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
-dnl Copyright (c) 2013, 2017,
+dnl Copyright (c) 2013, 2017, 2023,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl This software may be modified and distributed under the terms of
@@ -148,16 +148,16 @@ AS_IF([test "x${scorep_pthread_support}" = x1],
     [AM_COND_IF([HAVE_LIBWRAP_LINKTIME_SUPPORT],
         [],
         [scorep_pthread_support=0
-         scorep_pthread_summary_reason+=", missing linktime library wrapping support"])],
+         AS_VAR_APPEND([scorep_pthread_summary_reason], [", missing linktime library wrapping support"])])],
     [scorep_pthread_support=0
-     scorep_pthread_summary_reason+=", missing pthread header or library"])
+     AS_VAR_APPEND([scorep_pthread_summary_reason], [", missing pthread header or library"])])
 
 # check result of TLS
 AS_IF([test "x${scorep_pthread_support}" = x1],
     [AM_COND_IF([HAVE_THREAD_LOCAL_STORAGE],
         [],
         [scorep_pthread_support=0
-         scorep_pthread_summary_reason+=", missing TLS support"])])
+         AS_VAR_APPEND([scorep_pthread_summary_reason], [", missing TLS support"])])])
 
 AC_SUBST([SCOREP_HAVE_PTHREAD_SUPPORT], [${scorep_pthread_support}])
 AFS_AM_CONDITIONAL([HAVE_PTHREAD_SUPPORT], [test "x${scorep_pthread_support}" = x1], [false])

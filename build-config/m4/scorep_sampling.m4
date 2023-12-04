@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2012,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2012, 2014-2017, 2020,
+## Copyright (c) 2009-2012, 2014-2017, 2020, 2023,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -96,12 +96,12 @@ scorep_unwinding_summary_reason=${scorep_libunwind_summary_reason}
 
 AS_IF([test "x${afs_have_thread_local_storage}" != "xyes"],
       [scorep_unwinding_support=no
-       scorep_unwinding_summary_reason+=", missing TLS support"])
+       AS_VAR_APPEND([scorep_unwinding_summary_reason], [", missing TLS support"])])
 
 SCOREP_CHECK_SYSCALL([SYS_gettid],
                      [],
                      [scorep_unwinding_support=no
-                      scorep_unwinding_summary_reason+=", missing gettid() support"])
+                      AS_VAR_APPEND([scorep_unwinding_summary_reason], [", missing gettid() support"])])
 
 # Covers: GNU, Intel, IBM, Cray, Clang
 scorep_return_address=0
@@ -153,7 +153,7 @@ AC_SCOREP_COND_HAVE([SAMPLING_SUPPORT],
                             test "x${has_sampling_siginfo_t}" = "xyes"],
                            [AC_DEFINE([HAVE_SAMPLING_SIGACTION], [1],
                                       [Defined if struct member sigaction.sa_sigaction and type siginfo_t are available.])
-                            sampling_summary+=", sa_sigaction"])],
+                            AS_VAR_APPEND([sampling_summary], [", sa_sigaction"])])],
                     [has_sampling="no"
                      AS_IF([test "x${have_interrupt_generators}" = "xno"],
                            [sampling_summary="no, cannot find any interrupt generator"],

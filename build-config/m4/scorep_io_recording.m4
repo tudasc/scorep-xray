@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2015-2017, 2020,
+## Copyright (c) 2015-2017, 2020, 2023,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2022,
@@ -134,13 +134,13 @@ scorep_posix_io_summary_reason=
 AS_IF([test x"${scorep_libwrap_linktime_support}" != x"yes" &&
        test x"${scorep_libwrap_runtime_support}" != x"yes"],
       [scorep_posix_io_support="no"
-       scorep_posix_io_summary_reason+=", missing library wrapping support"])
+       AS_VAR_APPEND([scorep_posix_io_summary_reason], [", missing library wrapping support"])])
 
 # check result of TLS
 AS_IF([test x"${scorep_posix_io_support}" = x"yes"],
       [AS_IF([test x"${afs_have_thread_local_storage}" != x"yes"],
              [scorep_posix_io_support="no"
-              scorep_posix_io_summary_reason+=", missing TLS support"])])
+              AS_VAR_APPEND([scorep_posix_io_summary_reason], [", missing TLS support"])])])
 
 AC_SCOREP_COND_HAVE([POSIX_IO_SUPPORT],
                     [test x"${scorep_posix_io_support}" = x"yes"],
@@ -164,14 +164,14 @@ scorep_posix_aio_summary_reason=
 # check result of TLS
 AS_IF([test x"${afs_have_thread_local_storage}" != x"yes"],
       [scorep_posix_aio_support="no"
-       scorep_posix_aio_summary_reason+=", missing TLS support"])
+       AS_VAR_APPEND([scorep_posix_aio_summary_reason], [", missing TLS support"])])
 
 AS_IF([test x"${scorep_posix_aio_support}" = x"yes"],
       [AC_CHECK_HEADER([aio.h],
                        [],
                        [AC_MSG_NOTICE([no aio.h file found])
                         scorep_posix_aio_support="no"
-                        scorep_posix_aio_summary_reason+=", missing aio.h header"])])
+                        AS_VAR_APPEND([scorep_posix_aio_summary_reason], [", missing aio.h header"])])])
 
 AS_IF([test x"${scorep_posix_aio_support}" = x"yes"],
       [AC_SEARCH_LIBS([aio_read],
@@ -181,13 +181,13 @@ AS_IF([test x"${scorep_posix_aio_support}" = x"yes"],
                                [with_posix_aio_libs="${ac_cv_search_aio_read}"])],
                       [AC_MSG_NOTICE([no library found providing aio_read])
                        scorep_posix_aio_support="no"
-                       scorep_posix_aio_summary_reason+=", missing aio library"])])
+                       AS_VAR_APPEND([scorep_posix_aio_summary_reason], [", missing aio library"])])])
 
 AS_IF([test x"${scorep_posix_aio_support}" = x"yes"],
       [AC_CHECK_MEMBER([struct aiocb.__return_value], [],
                        [AC_MSG_NOTICE([we need 'struct aiocb.__return_value' member])
                         scorep_posix_aio_support="no"
-                        scorep_posix_aio_summary_reason+=", missing struct aiocb.__return_value member"],
+                        AS_VAR_APPEND([scorep_posix_aio_summary_reason], [", missing struct aiocb.__return_value member"])],
                        [[#include <aio.h>]])])
 
 AC_SCOREP_COND_HAVE([POSIX_AIO_SUPPORT],
