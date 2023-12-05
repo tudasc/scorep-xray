@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013, 2020,
+ * Copyright (c) 2013, 2020, 2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014-2017,
@@ -97,28 +97,30 @@ SCOREP_Instrumenter_Paradigm::supportInstrumentFilters( void ) const
 void
 SCOREP_Instrumenter_Paradigm::printHelp( void )
 {
+    if ( m_unsupported )
+    {
+        return;
+    }
+
     static std::string space = "                  ";
 
-    if ( !m_unsupported )
-    {
-        std::cout << "              " << getName() << "\n";
-        std::cout << wrap_lines( m_description, 18, 18 ) << "\n";
+    std::cout << "              " << getName() << "\n";
+    std::cout << wrap_lines( m_description, 18, 18 ) << "\n";
 
-        std::cout << wrap_lines( SCOREP_Instrumenter_Adapter::getDepList(
-                                     m_requires, "It requires and, thus, "
-                                     "automatically enables" ),
-                                 18, 18 );
-        std::cout << wrap_lines( SCOREP_Instrumenter_Adapter::getDepList(
-                                     m_conflicts, "It conflicts and, thus, "
-                                     "automatically disables" ),
-                                 18, 18 );
-        std::cout << wrap_lines( SCOREP_Instrumenter_Adapter::getDepList(
-                                     m_default_on, "By default, it enables also" ),
-                                 18, 18 );
-        std::cout << wrap_lines( SCOREP_Instrumenter_Adapter::getDepList(
-                                     m_default_off, "By default, it disables" ),
-                                 18, 18 );
-    }
+    std::cout << wrap_lines( SCOREP_Instrumenter_Adapter::getDepList(
+                                 m_requires, "It requires and, thus, "
+                                 "automatically enables" ),
+                             18, 18 );
+    std::cout << wrap_lines( SCOREP_Instrumenter_Adapter::getDepList(
+                                 m_conflicts, "It conflicts and, thus, "
+                                 "automatically disables" ),
+                             18, 18 );
+    std::cout << wrap_lines( SCOREP_Instrumenter_Adapter::getDepList(
+                                 m_default_on, "By default, it enables also" ),
+                             18, 18 );
+    std::cout << wrap_lines( SCOREP_Instrumenter_Adapter::getDepList(
+                                 m_default_off, "By default, it disables" ),
+                             18, 18 );
 }
 
 bool

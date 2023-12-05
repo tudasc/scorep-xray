@@ -17,6 +17,8 @@ User tools and API improvements and changes:
   maximal filter including all filterable regions. This serves as
   starting point for a fully manual approach without the need to
   copy and paste from the default output.
+- The help command of the Score-P instrumenter `scorep --help` will now
+  only print the help for available Score-P adapters for its installation.
 
 Compatibility:
 

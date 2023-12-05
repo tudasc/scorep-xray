@@ -135,6 +135,11 @@ SCOREP_Instrumenter_OpariAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine
 void
 SCOREP_Instrumenter_OpariAdapter::printHelp( void )
 {
+    if ( m_unsupported )
+    {
+        return;
+    }
+
     std::cout << "  --pomp          Deprecated, consider using manual region instrumentation (--user)\n";
     std::cout << "                  instead.  Enables OPARI2 pomp user instrumentation. By default, it\n";
     std::cout << "                  also enables preprocessing.\n";

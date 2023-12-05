@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013, 2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2017,
@@ -54,6 +54,11 @@ SCOREP_Instrumenter_CudaAdapter::SCOREP_Instrumenter_CudaAdapter( void )
 void
 SCOREP_Instrumenter_CudaAdapter::printHelp( void )
 {
+    if ( m_unsupported )
+    {
+        return;
+    }
+
     std::cout
         << "\
   --cuda          Enables CUDA instrumentation. Enabled by default, if the\n\
