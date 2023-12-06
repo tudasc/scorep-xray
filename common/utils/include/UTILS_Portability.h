@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software ecosystem (http://www.score-p.org)
  *
- * Copyright (c) 2016,
+ * Copyright (c) 2016, 2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2017,
@@ -29,30 +29,40 @@
  * @def   UTILS_FUNCTION_NAME
  * @brief Portable macro to retrieve the current function name
  *
- * While C99 specifies the predefined identifier <tt>__func__</tt> to retrieve
- * the current function name, it is not part of the C++98 standard.  However,
- * many compilers support it also in C++98 mode or provide compiler-specific
- * alternatives.  This preprocessor macro addresses this issue by providing a
- * mapping to the corresponding predefined identifier.
+ * While C99 and C++11 specify the predefined identifier <tt>__func__</tt> to
+ * retrieve the current function name, it is not part of the C++98 standard.
+ * However, many compilers support it also in C++98 mode or provide
+ * compiler-specific alternatives.  This preprocessor macro addresses this
+ * issue by providing a mapping to the corresponding predefined identifier.
  */
-#if defined( __cplusplus ) && defined( __FUJITSU )
+#if defined( __cplusplus ) && ( __cplusplus < 201103L ) && defined( __FUJITSU )
     #define UTILS_FUNCTION_NAME __FUNCTION__
 #else
     #define UTILS_FUNCTION_NAME __func__
 #endif
 
 /**
- * @def   UTILS_DECLSPEC_NORETURN
- * @def   UTILS_ATTRIBUTE_NORETURN
+ * @def   UTILS_PREDECL_ATTR_NORETURN
+ * @def   UTILS_POSTDECL_ATTR_NORETURN
  * @brief Portable macros to mark a function that it will not return to the caller.
  *
  */
-#if defined( _WIN32 )
-    #define UTILS_DECLSPEC_NORETURN __declspec( noreturn )
-    #define UTILS_ATTRIBUTE_NORETURN /*  */
+#if defined( __cplusplus ) && ( __cplusplus >= 201103L )
+/* *INDENT-OFF*   Prevent uncrustify from adding spaces between brackets */
+    #define UTILS_PREDECL_ATTR_NORETURN  [[noreturn]]
+    #define UTILS_POSTDECL_ATTR_NORETURN /*  */
+/* *INDENT-ON* */
+#elif defined( __STDC_VERSION__ ) && ( __STDC_VERSION__ >= 201112L )
+    #define UTILS_PREDECL_ATTR_NORETURN  _Noreturn
+    #define UTILS_POSTDECL_ATTR_NORETURN /*  */
 #else
-    #define UTILS_DECLSPEC_NORETURN  /*  */
-    #define UTILS_ATTRIBUTE_NORETURN __attribute__( ( noreturn ) )
+    #if defined( _WIN32 )
+        #define UTILS_PREDECL_ATTR_NORETURN  __declspec( noreturn )
+        #define UTILS_POSTDECL_ATTR_NORETURN /*  */
+    #else
+        #define UTILS_PREDECL_ATTR_NORETURN  /*  */
+        #define UTILS_POSTDECL_ATTR_NORETURN __attribute__( ( noreturn ) )
+    #endif
 #endif
 
 #endif /* UTILS_PORTABILITY_H */
