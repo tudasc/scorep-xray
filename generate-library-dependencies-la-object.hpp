@@ -71,9 +71,32 @@ struct la_object
     {
     }
 
+    /**
+     * Regular constructor for old, i.e., parsing la-files library
+     * dependency generation. Obsolete once all projects back away
+     * from parsing la-files.
+     */
+    la_object( const std::string&             lib_name,
+               const std::string&             build_dir,
+               const std::string&             install_dir,
+               const std::deque<std::string>& libs,
+               const std::deque<std::string>& ldflags,
+               const std::deque<std::string>& rpaths,
+               const std::deque<std::string>& dependency_las )
+        :
+        m_lib_name( lib_name ),
+        m_build_dir( build_dir ),
+        m_install_dir( install_dir ),
+        m_libs( libs ),
+        m_ldflags( ldflags ),
+        m_rpath( rpaths ),
+        m_dependency_las( dependency_las )
+    {
+    }
+
 
     /**
-     * Regular constructor.
+     * Regular constructor for improved library dependency generation.
      */
     la_object( const std::string& lib_name,
                const std::string& build_dir,
