@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2012, 2018,
+## Copyright (c) 2009-2012, 2018, 2023,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -34,7 +34,8 @@ check_PROGRAMS += error_test
 error_test_SOURCES = \
     $(SRC_ROOT)common/utils/test/exception/utils_error_test.c
 error_test_LDADD = \
-    libutils.la
+    libutils.la \
+    $(libutils_la_needs_LIBS)
 error_test_LDFLAGS = \
     $(AM_LDFLAGS) \
     $(LINKMODE_FLAGS)

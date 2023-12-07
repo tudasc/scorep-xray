@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2012, 2022,
+## Copyright (c) 2009-2012, 2022-2023,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -42,7 +42,9 @@ if ! HAVE_GCC_ATOMIC_BUILTINS
 libutils_la_LIBADD += \
     libutils_atomic.la \
     libutils_mutex.la
-endif ! HAVE_GCC_ATOMIC_BUILTINS
+else HAVE_GCC_ATOMIC_BUILTINS
+libutils_la_needs_LIBS = $(GCC_ATOMIC_BUILTINS_LIB)
+endif HAVE_GCC_ATOMIC_BUILTINS
 
 EXTRA_DIST += \
     $(SRC_ROOT)common/utils/COPYING \

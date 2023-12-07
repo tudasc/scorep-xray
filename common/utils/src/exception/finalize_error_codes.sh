@@ -6,6 +6,7 @@ PACKAGE="$1"
 ERRORS="$2"
 HEADER="$3"
 DECLS="$4"
+TEMPLATE="${5-$HEADER}"
 
 cleanup()
 {
@@ -13,8 +14,10 @@ cleanup()
 }
 trap cleanup EXIT
 
-exec 5>"$HEADER.2"
+mkdir -p "$(dirname "$HEADER")"
 mkdir -p "$(dirname "$DECLS")"
+
+exec 5>"$HEADER.2"
 exec 6>"$DECLS"
 
 last=
@@ -41,10 +44,11 @@ exec 6<&-
 # remove last comma
 sed -e "s/^    ${last},/    ${last}/" $HEADER.2 >$HEADER.3
 
-sed -e "
+sed \
+    -e "s/@AFS_PACKAGE_NAME@/${PACKAGE}/g" \
+    -e "
 /^    @PACKAGE_SPECIFIC_ERROR_CODES@/ {
     g
     r $HEADER.3
-}" "$HEADER" >"$HEADER.1"
+}" "$TEMPLATE" >"$HEADER.1"
 mv -f "$HEADER.1" "$HEADER"
-exit 0

@@ -1,0 +1,2542 @@
+	.file	"UTILS_Atomic.inc.c"
+	.option pic
+	.text
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_TestAndSet
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_TestAndSet, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_TestAndSet:
+	andi	a5,a0,3
+	slliw	a5,a5,3
+	li	a3,1
+	andi	a0,a0,-4
+	sllw	a3,a3,a5
+	fence iorw,ow; amoor.w.aq a4,a3,0(a0)
+	srlw	a0,a4,a5
+	andi	a0,a0,0xff
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_TestAndSet, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_TestAndSet
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_clear
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_clear, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_clear:
+	fence	iorw,iorw
+	sb	zero,0(a0)
+	fence	iorw,iorw
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_clear, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_clear
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_ThreadFence
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_ThreadFence, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_ThreadFence:
+	fence	iorw,iorw
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_ThreadFence, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_ThreadFence
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_void_ptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_void_ptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_void_ptr:
+	fence	iorw,iorw
+	ld	a0,0(a0)
+	fence	iorw,iorw
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_void_ptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_void_ptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_void_ptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_void_ptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_void_ptr:
+	fence iorw,ow; amoswap.d.aq zero,a1,0(a0)
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_void_ptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_void_ptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_void_ptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_void_ptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_void_ptr:
+	fence iorw,ow; amoswap.d.aq a1,a1,0(a0)
+	mv	a0,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_void_ptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_void_ptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_void_ptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_void_ptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_void_ptr:
+	ld	a5,0(a1)
+	fence iorw,ow;  1: lr.d.aq a4,0(a0); bne a4,a5,1f; sc.d.aq a3,a2,0(a0); bnez a3,1b; 1:
+	sub	a5,a4,a5
+	seqz	a0,a5
+	beq	a5,zero,.L9
+	sd	a4,0(a1)
+.L9:
+	andi	a0,a0,1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_void_ptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_void_ptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_void_ptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_void_ptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_void_ptr:
+	mv	a5,a0
+	fence iorw,ow; amoadd.d.aq a0,a1,0(a5)
+	add	a0,a1,a0
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_void_ptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_void_ptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_void_ptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_void_ptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_void_ptr:
+	neg	a1,a1
+	fence iorw,ow; amoadd.d.aq a5,a1,0(a0)
+	add	a0,a5,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_void_ptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_void_ptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_void_ptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_void_ptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_void_ptr:
+	mv	a5,a0
+	fence iorw,ow; amoand.d.aq a0,a1,0(a5)
+	and	a0,a1,a0
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_void_ptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_void_ptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_void_ptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_void_ptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_void_ptr:
+	mv	a5,a0
+	fence iorw,ow; amoxor.d.aq a0,a1,0(a5)
+	xor	a0,a1,a0
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_void_ptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_void_ptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_void_ptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_void_ptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_void_ptr:
+	mv	a5,a0
+	fence iorw,ow; amoor.d.aq a0,a1,0(a5)
+	or	a0,a1,a0
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_void_ptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_void_ptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_void_ptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_void_ptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_void_ptr:
+	ld	a5,0(a0)
+	mv	a4,a0
+.L16:
+	and	a0,a1,a5
+	mv	a3,a5
+	not	a0,a0
+	 1: lr.d a5,0(a4); bne a5,a3,1f; sc.d.aq a2,a0,0(a4); bnez a2,1b; 1:
+	bne	a5,a3,.L16
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_void_ptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_void_ptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_void_ptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_void_ptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_void_ptr:
+	mv	a5,a0
+	fence iorw,ow; amoadd.d.aq a0,a1,0(a5)
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_void_ptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_void_ptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_void_ptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_void_ptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_void_ptr:
+	mv	a5,a0
+	neg	a1,a1
+	fence iorw,ow; amoadd.d.aq a0,a1,0(a5)
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_void_ptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_void_ptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_void_ptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_void_ptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_void_ptr:
+	mv	a5,a0
+	fence iorw,ow; amoand.d.aq a0,a1,0(a5)
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_void_ptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_void_ptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_void_ptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_void_ptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_void_ptr:
+	mv	a5,a0
+	fence iorw,ow; amoxor.d.aq a0,a1,0(a5)
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_void_ptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_void_ptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_void_ptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_void_ptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_void_ptr:
+	mv	a5,a0
+	fence iorw,ow; amoor.d.aq a0,a1,0(a5)
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_void_ptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_void_ptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_void_ptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_void_ptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_void_ptr:
+	ld	a5,0(a0)
+	mv	a4,a0
+.L25:
+	and	a3,a1,a5
+	mv	a0,a5
+	not	a3,a3
+	 1: lr.d a5,0(a4); bne a5,a0,1f; sc.d.aq a2,a3,0(a4); bnez a2,1b; 1:
+	bne	a5,a0,.L25
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_void_ptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_void_ptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_bool
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_bool, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_bool:
+	fence	iorw,iorw
+	lbu	a0,0(a0)
+	fence	iorw,iorw
+	snez	a0,a0
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_bool, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_bool
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_bool
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_bool, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_bool:
+	fence	iorw,iorw
+	sb	a1,0(a0)
+	fence	iorw,iorw
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_bool, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_bool
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_bool
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_bool, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_bool:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	addi	sp,sp,-16
+	sd	ra,8(sp)
+	call	__atomic_exchange_1@plt
+	ld	ra,8(sp)
+	sext.w	a0,a0
+	snez	a0,a0
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_bool, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_bool
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_bool
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_bool, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_bool:
+	slli	a6,a5,32
+	srli	a5,a6,30
+	slli	a6,a4,32
+	srli	a4,a6,30
+	lla	a3,.LANCHOR0
+	add	a5,a3,a5
+	add	a3,a3,a4
+	lw	a3,0(a3)
+	lw	a4,0(a5)
+	addi	sp,sp,-16
+	sd	ra,8(sp)
+	call	__atomic_compare_exchange_1@plt
+	ld	ra,8(sp)
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_bool, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_bool
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_char
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_char, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_char:
+	fence	iorw,iorw
+	lbu	a0,0(a0)
+	fence	iorw,iorw
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_char, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_char
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_char
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_char, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_char:
+	fence	iorw,iorw
+	sb	a1,0(a0)
+	fence	iorw,iorw
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_char, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_char
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_char
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_char, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_char:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	tail	__atomic_exchange_1@plt
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_char, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_char
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_char
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_char, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_char:
+	slli	a6,a5,32
+	srli	a5,a6,30
+	slli	a6,a4,32
+	srli	a4,a6,30
+	lla	a3,.LANCHOR0
+	add	a5,a3,a5
+	add	a3,a3,a4
+	lw	a3,0(a3)
+	lw	a4,0(a5)
+	addi	sp,sp,-16
+	sd	ra,8(sp)
+	call	__atomic_compare_exchange_1@plt
+	ld	ra,8(sp)
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_char, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_char
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_char
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_char, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_char:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	addi	sp,sp,-16
+	sd	s0,0(sp)
+	sd	ra,8(sp)
+	mv	s0,a1
+	call	__atomic_fetch_add_1@plt
+	ld	ra,8(sp)
+	addw	a0,a0,s0
+	ld	s0,0(sp)
+	andi	a0,a0,0xff
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_char, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_char
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_char
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_char, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_char:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	addi	sp,sp,-16
+	sd	s0,0(sp)
+	sd	ra,8(sp)
+	mv	s0,a1
+	call	__atomic_fetch_sub_1@plt
+	ld	ra,8(sp)
+	subw	a0,a0,s0
+	ld	s0,0(sp)
+	andi	a0,a0,0xff
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_char, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_char
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_char
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_char, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_char:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	addi	sp,sp,-16
+	sd	s0,0(sp)
+	sd	ra,8(sp)
+	mv	s0,a1
+	call	__atomic_fetch_and_1@plt
+	ld	ra,8(sp)
+	and	a0,a0,s0
+	ld	s0,0(sp)
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_char, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_char
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_char
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_char, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_char:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	addi	sp,sp,-16
+	sd	s0,0(sp)
+	sd	ra,8(sp)
+	mv	s0,a1
+	call	__atomic_fetch_xor_1@plt
+	ld	ra,8(sp)
+	xor	a0,a0,s0
+	ld	s0,0(sp)
+	andi	a0,a0,0xff
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_char, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_char
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_char
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_char, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_char:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	addi	sp,sp,-16
+	sd	s0,0(sp)
+	sd	ra,8(sp)
+	mv	s0,a1
+	call	__atomic_fetch_or_1@plt
+	ld	ra,8(sp)
+	or	a0,a0,s0
+	ld	s0,0(sp)
+	andi	a0,a0,0xff
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_char, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_char
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_char
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_char, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_char:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	addi	sp,sp,-16
+	sd	s0,0(sp)
+	sd	ra,8(sp)
+	mv	s0,a1
+	call	__atomic_fetch_nand_1@plt
+	ld	ra,8(sp)
+	and	a0,a0,s0
+	ld	s0,0(sp)
+	not	a0,a0
+	andi	a0,a0,0xff
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_char, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_char
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_char
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_char, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_char:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	tail	__atomic_fetch_add_1@plt
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_char, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_char
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_char
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_char, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_char:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	tail	__atomic_fetch_sub_1@plt
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_char, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_char
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_char
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_char, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_char:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	tail	__atomic_fetch_and_1@plt
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_char, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_char
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_char
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_char, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_char:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	tail	__atomic_fetch_xor_1@plt
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_char, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_char
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_char
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_char, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_char:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	tail	__atomic_fetch_or_1@plt
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_char, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_char
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_char
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_char, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_char:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	tail	__atomic_fetch_nand_1@plt
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_char, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_char
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_uint8
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_uint8, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_uint8:
+	fence	iorw,iorw
+	lbu	a0,0(a0)
+	fence	iorw,iorw
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_uint8, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_uint8
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_uint8
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_uint8, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_uint8:
+	fence	iorw,iorw
+	sb	a1,0(a0)
+	fence	iorw,iorw
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_uint8, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_uint8
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_uint8
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_uint8, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_uint8:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	tail	__atomic_exchange_1@plt
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_uint8, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_uint8
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_uint8
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_uint8, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_uint8:
+	slli	a6,a5,32
+	srli	a5,a6,30
+	slli	a6,a4,32
+	srli	a4,a6,30
+	lla	a3,.LANCHOR0
+	add	a5,a3,a5
+	add	a3,a3,a4
+	lw	a3,0(a3)
+	lw	a4,0(a5)
+	addi	sp,sp,-16
+	sd	ra,8(sp)
+	call	__atomic_compare_exchange_1@plt
+	ld	ra,8(sp)
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_uint8, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_uint8
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_uint8
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_uint8, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_uint8:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	addi	sp,sp,-16
+	sd	s0,0(sp)
+	sd	ra,8(sp)
+	mv	s0,a1
+	call	__atomic_fetch_add_1@plt
+	ld	ra,8(sp)
+	addw	a0,a0,s0
+	ld	s0,0(sp)
+	andi	a0,a0,0xff
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_uint8, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_uint8
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_uint8
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_uint8, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_uint8:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	addi	sp,sp,-16
+	sd	s0,0(sp)
+	sd	ra,8(sp)
+	mv	s0,a1
+	call	__atomic_fetch_sub_1@plt
+	ld	ra,8(sp)
+	subw	a0,a0,s0
+	ld	s0,0(sp)
+	andi	a0,a0,0xff
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_uint8, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_uint8
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_uint8
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_uint8, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_uint8:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	addi	sp,sp,-16
+	sd	s0,0(sp)
+	sd	ra,8(sp)
+	mv	s0,a1
+	call	__atomic_fetch_and_1@plt
+	ld	ra,8(sp)
+	and	a0,a0,s0
+	ld	s0,0(sp)
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_uint8, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_uint8
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_uint8
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_uint8, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_uint8:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	addi	sp,sp,-16
+	sd	s0,0(sp)
+	sd	ra,8(sp)
+	mv	s0,a1
+	call	__atomic_fetch_xor_1@plt
+	ld	ra,8(sp)
+	xor	a0,a0,s0
+	ld	s0,0(sp)
+	andi	a0,a0,0xff
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_uint8, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_uint8
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_uint8
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_uint8, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_uint8:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	addi	sp,sp,-16
+	sd	s0,0(sp)
+	sd	ra,8(sp)
+	mv	s0,a1
+	call	__atomic_fetch_or_1@plt
+	ld	ra,8(sp)
+	or	a0,a0,s0
+	ld	s0,0(sp)
+	andi	a0,a0,0xff
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_uint8, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_uint8
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_uint8
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_uint8, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_uint8:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	addi	sp,sp,-16
+	sd	s0,0(sp)
+	sd	ra,8(sp)
+	mv	s0,a1
+	call	__atomic_fetch_nand_1@plt
+	ld	ra,8(sp)
+	and	a0,a0,s0
+	ld	s0,0(sp)
+	not	a0,a0
+	andi	a0,a0,0xff
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_uint8, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_uint8
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_uint8
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_uint8, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_uint8:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	tail	__atomic_fetch_add_1@plt
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_uint8, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_uint8
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_uint8
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_uint8, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_uint8:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	tail	__atomic_fetch_sub_1@plt
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_uint8, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_uint8
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_uint8
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_uint8, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_uint8:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	tail	__atomic_fetch_and_1@plt
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_uint8, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_uint8
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_uint8
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_uint8, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_uint8:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	tail	__atomic_fetch_xor_1@plt
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_uint8, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_uint8
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_uint8
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_uint8, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_uint8:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	tail	__atomic_fetch_or_1@plt
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_uint8, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_uint8
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_uint8
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_uint8, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_uint8:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	tail	__atomic_fetch_nand_1@plt
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_uint8, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_uint8
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_uint16
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_uint16, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_uint16:
+	fence	iorw,iorw
+	lhu	a0,0(a0)
+	fence	iorw,iorw
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_uint16, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_uint16
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_uint16
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_uint16, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_uint16:
+	fence	iorw,iorw
+	sh	a1,0(a0)
+	fence	iorw,iorw
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_uint16, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_uint16
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_uint16
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_uint16, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_uint16:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	tail	__atomic_exchange_2@plt
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_uint16, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_uint16
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_uint16
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_uint16, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_uint16:
+	slli	a6,a5,32
+	srli	a5,a6,30
+	slli	a6,a4,32
+	srli	a4,a6,30
+	lla	a3,.LANCHOR0
+	add	a5,a3,a5
+	add	a3,a3,a4
+	lw	a3,0(a3)
+	lw	a4,0(a5)
+	addi	sp,sp,-16
+	sd	ra,8(sp)
+	call	__atomic_compare_exchange_2@plt
+	ld	ra,8(sp)
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_uint16, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_uint16
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_uint16
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_uint16, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_uint16:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	addi	sp,sp,-16
+	sd	s0,0(sp)
+	sd	ra,8(sp)
+	mv	s0,a1
+	call	__atomic_fetch_add_2@plt
+	ld	ra,8(sp)
+	addw	a0,a0,s0
+	ld	s0,0(sp)
+	slli	a0,a0,48
+	srli	a0,a0,48
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_uint16, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_uint16
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_uint16
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_uint16, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_uint16:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	addi	sp,sp,-16
+	sd	s0,0(sp)
+	sd	ra,8(sp)
+	mv	s0,a1
+	call	__atomic_fetch_sub_2@plt
+	ld	ra,8(sp)
+	subw	a0,a0,s0
+	ld	s0,0(sp)
+	slli	a0,a0,48
+	srli	a0,a0,48
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_uint16, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_uint16
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_uint16
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_uint16, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_uint16:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	addi	sp,sp,-16
+	sd	s0,0(sp)
+	sd	ra,8(sp)
+	mv	s0,a1
+	call	__atomic_fetch_and_2@plt
+	ld	ra,8(sp)
+	and	a0,a0,s0
+	ld	s0,0(sp)
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_uint16, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_uint16
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_uint16
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_uint16, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_uint16:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	addi	sp,sp,-16
+	sd	s0,0(sp)
+	sd	ra,8(sp)
+	mv	s0,a1
+	call	__atomic_fetch_xor_2@plt
+	ld	ra,8(sp)
+	xor	a0,a0,s0
+	ld	s0,0(sp)
+	slli	a0,a0,48
+	srli	a0,a0,48
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_uint16, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_uint16
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_uint16
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_uint16, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_uint16:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	addi	sp,sp,-16
+	sd	s0,0(sp)
+	sd	ra,8(sp)
+	mv	s0,a1
+	call	__atomic_fetch_or_2@plt
+	ld	ra,8(sp)
+	or	a0,a0,s0
+	ld	s0,0(sp)
+	slli	a0,a0,48
+	srli	a0,a0,48
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_uint16, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_uint16
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_uint16
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_uint16, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_uint16:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	addi	sp,sp,-16
+	sd	s0,0(sp)
+	sd	ra,8(sp)
+	mv	s0,a1
+	call	__atomic_fetch_nand_2@plt
+	ld	ra,8(sp)
+	and	a0,a0,s0
+	ld	s0,0(sp)
+	not	a0,a0
+	slli	a0,a0,48
+	srli	a0,a0,48
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_uint16, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_uint16
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_uint16
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_uint16, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_uint16:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	tail	__atomic_fetch_add_2@plt
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_uint16, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_uint16
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_uint16
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_uint16, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_uint16:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	tail	__atomic_fetch_sub_2@plt
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_uint16, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_uint16
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_uint16
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_uint16, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_uint16:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	tail	__atomic_fetch_and_2@plt
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_uint16, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_uint16
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_uint16
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_uint16, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_uint16:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	tail	__atomic_fetch_xor_2@plt
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_uint16, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_uint16
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_uint16
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_uint16, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_uint16:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	tail	__atomic_fetch_or_2@plt
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_uint16, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_uint16
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_uint16
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_uint16, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_uint16:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	tail	__atomic_fetch_nand_2@plt
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_uint16, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_uint16
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_uint32
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_uint32, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_uint32:
+	fence	iorw,iorw
+	lw	a0,0(a0)
+	fence	iorw,iorw
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_uint32, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_uint32
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_uint32
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_uint32, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_uint32:
+	fence iorw,ow; amoswap.w.aq zero,a1,0(a0)
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_uint32, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_uint32
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_uint32
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_uint32, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_uint32:
+	fence iorw,ow; amoswap.w.aq a1,a1,0(a0)
+	sext.w	a0,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_uint32, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_uint32
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_uint32
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_uint32, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_uint32:
+	lw	a5,0(a1)
+	fence iorw,ow;  1: lr.w.aq a4,0(a0); bne a4,a5,1f; sc.w.aq a6,a2,0(a0); bnez a6,1b; 1:
+	subw	a5,a4,a5
+	seqz	a0,a5
+	beq	a5,zero,.L107
+	sw	a4,0(a1)
+.L107:
+	andi	a0,a0,1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_uint32, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_uint32
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_uint32
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_uint32, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_uint32:
+	mv	a5,a0
+	fence iorw,ow; amoadd.w.aq a0,a1,0(a5)
+	addw	a0,a0,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_uint32, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_uint32
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_uint32
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_uint32, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_uint32:
+	negw	a1,a1
+	fence iorw,ow; amoadd.w.aq a5,a1,0(a0)
+	addw	a0,a5,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_uint32, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_uint32
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_uint32
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_uint32, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_uint32:
+	fence iorw,ow; amoand.w.aq a5,a1,0(a0)
+	and	a1,a1,a5
+	sext.w	a0,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_uint32, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_uint32
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_uint32
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_uint32, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_uint32:
+	fence iorw,ow; amoxor.w.aq a5,a1,0(a0)
+	xor	a1,a1,a5
+	sext.w	a0,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_uint32, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_uint32
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_uint32
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_uint32, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_uint32:
+	fence iorw,ow; amoor.w.aq a5,a1,0(a0)
+	or	a1,a1,a5
+	sext.w	a0,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_uint32, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_uint32
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_uint32
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_uint32, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_uint32:
+	lw	a5,0(a0)
+.L114:
+	and	a4,a1,a5
+	not	a4,a4
+	mv	a3,a5
+	mv	a2,a4
+	 1: lr.w a5,0(a0); bne a5,a3,1f; sc.w.aq a6,a4,0(a0); bnez a6,1b; 1:
+	subw	a4,a5,a3
+	bne	a4,zero,.L114
+	sext.w	a0,a2
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_uint32, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_uint32
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_uint32
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_uint32, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_uint32:
+	fence iorw,ow; amoadd.w.aq a5,a1,0(a0)
+	sext.w	a0,a5
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_uint32, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_uint32
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_uint32
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_uint32, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_uint32:
+	negw	a1,a1
+	fence iorw,ow; amoadd.w.aq a5,a1,0(a0)
+	sext.w	a0,a5
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_uint32, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_uint32
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_uint32
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_uint32, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_uint32:
+	fence iorw,ow; amoand.w.aq a5,a1,0(a0)
+	sext.w	a0,a5
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_uint32, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_uint32
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_uint32
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_uint32, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_uint32:
+	fence iorw,ow; amoxor.w.aq a5,a1,0(a0)
+	sext.w	a0,a5
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_uint32, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_uint32
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_uint32
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_uint32, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_uint32:
+	fence iorw,ow; amoor.w.aq a5,a1,0(a0)
+	sext.w	a0,a5
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_uint32, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_uint32
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_uint32
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_uint32, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_uint32:
+	lw	a5,0(a0)
+.L123:
+	and	a4,a1,a5
+	mv	a3,a5
+	not	a4,a4
+	 1: lr.w a5,0(a0); bne a5,a3,1f; sc.w.aq a2,a4,0(a0); bnez a2,1b; 1:
+	subw	a4,a5,a3
+	bne	a4,zero,.L123
+	sext.w	a0,a3
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_uint32, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_uint32
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_uint64
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_uint64, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_uint64:
+	fence	iorw,iorw
+	ld	a0,0(a0)
+	fence	iorw,iorw
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_uint64, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_uint64
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_uint64
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_uint64, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_uint64:
+	fence iorw,ow; amoswap.d.aq zero,a1,0(a0)
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_uint64, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_uint64
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_uint64
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_uint64, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_uint64:
+	fence iorw,ow; amoswap.d.aq a1,a1,0(a0)
+	mv	a0,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_uint64, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_uint64
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_uint64
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_uint64, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_uint64:
+	ld	a5,0(a1)
+	fence iorw,ow;  1: lr.d.aq a4,0(a0); bne a4,a5,1f; sc.d.aq a3,a2,0(a0); bnez a3,1b; 1:
+	sub	a5,a4,a5
+	seqz	a0,a5
+	beq	a5,zero,.L130
+	sd	a4,0(a1)
+.L130:
+	andi	a0,a0,1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_uint64, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_uint64
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_uint64
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_uint64, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_uint64:
+	mv	a5,a0
+	fence iorw,ow; amoadd.d.aq a0,a1,0(a5)
+	add	a0,a0,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_uint64, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_uint64
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_uint64
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_uint64, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_uint64:
+	neg	a1,a1
+	fence iorw,ow; amoadd.d.aq a5,a1,0(a0)
+	add	a0,a5,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_uint64, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_uint64
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_uint64
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_uint64, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_uint64:
+	mv	a5,a0
+	fence iorw,ow; amoand.d.aq a0,a1,0(a5)
+	and	a0,a0,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_uint64, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_uint64
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_uint64
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_uint64, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_uint64:
+	mv	a5,a0
+	fence iorw,ow; amoxor.d.aq a0,a1,0(a5)
+	xor	a0,a0,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_uint64, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_uint64
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_uint64
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_uint64, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_uint64:
+	mv	a5,a0
+	fence iorw,ow; amoor.d.aq a0,a1,0(a5)
+	or	a0,a0,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_uint64, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_uint64
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_uint64
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_uint64, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_uint64:
+	ld	a5,0(a0)
+	mv	a4,a0
+.L137:
+	and	a0,a5,a1
+	mv	a3,a5
+	not	a0,a0
+	 1: lr.d a5,0(a4); bne a5,a3,1f; sc.d.aq a2,a0,0(a4); bnez a2,1b; 1:
+	bne	a5,a3,.L137
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_uint64, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_uint64
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_uint64
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_uint64, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_uint64:
+	mv	a5,a0
+	fence iorw,ow; amoadd.d.aq a0,a1,0(a5)
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_uint64, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_uint64
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_uint64
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_uint64, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_uint64:
+	mv	a5,a0
+	neg	a1,a1
+	fence iorw,ow; amoadd.d.aq a0,a1,0(a5)
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_uint64, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_uint64
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_uint64
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_uint64, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_uint64:
+	mv	a5,a0
+	fence iorw,ow; amoand.d.aq a0,a1,0(a5)
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_uint64, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_uint64
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_uint64
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_uint64, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_uint64:
+	mv	a5,a0
+	fence iorw,ow; amoxor.d.aq a0,a1,0(a5)
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_uint64, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_uint64
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_uint64
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_uint64, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_uint64:
+	mv	a5,a0
+	fence iorw,ow; amoor.d.aq a0,a1,0(a5)
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_uint64, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_uint64
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_uint64
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_uint64, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_uint64:
+	ld	a5,0(a0)
+	mv	a4,a0
+.L146:
+	and	a3,a5,a1
+	mv	a0,a5
+	not	a3,a3
+	 1: lr.d a5,0(a4); bne a5,a0,1f; sc.d.aq a2,a3,0(a4); bnez a2,1b; 1:
+	bne	a5,a0,.L146
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_uint64, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_uint64
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_uintptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_uintptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_uintptr:
+	fence	iorw,iorw
+	ld	a0,0(a0)
+	fence	iorw,iorw
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_uintptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_uintptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_uintptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_uintptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_uintptr:
+	fence iorw,ow; amoswap.d.aq zero,a1,0(a0)
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_uintptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_uintptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_uintptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_uintptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_uintptr:
+	fence iorw,ow; amoswap.d.aq a1,a1,0(a0)
+	mv	a0,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_uintptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_uintptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_uintptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_uintptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_uintptr:
+	ld	a5,0(a1)
+	fence iorw,ow;  1: lr.d.aq a4,0(a0); bne a4,a5,1f; sc.d.aq a3,a2,0(a0); bnez a3,1b; 1:
+	sub	a5,a4,a5
+	seqz	a0,a5
+	beq	a5,zero,.L153
+	sd	a4,0(a1)
+.L153:
+	andi	a0,a0,1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_uintptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_uintptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_uintptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_uintptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_uintptr:
+	mv	a5,a0
+	fence iorw,ow; amoadd.d.aq a0,a1,0(a5)
+	add	a0,a0,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_uintptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_uintptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_uintptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_uintptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_uintptr:
+	neg	a1,a1
+	fence iorw,ow; amoadd.d.aq a5,a1,0(a0)
+	add	a0,a5,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_uintptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_uintptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_uintptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_uintptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_uintptr:
+	mv	a5,a0
+	fence iorw,ow; amoand.d.aq a0,a1,0(a5)
+	and	a0,a0,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_uintptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_uintptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_uintptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_uintptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_uintptr:
+	mv	a5,a0
+	fence iorw,ow; amoxor.d.aq a0,a1,0(a5)
+	xor	a0,a0,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_uintptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_uintptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_uintptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_uintptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_uintptr:
+	mv	a5,a0
+	fence iorw,ow; amoor.d.aq a0,a1,0(a5)
+	or	a0,a0,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_uintptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_uintptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_uintptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_uintptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_uintptr:
+	ld	a5,0(a0)
+	mv	a4,a0
+.L160:
+	and	a0,a5,a1
+	mv	a3,a5
+	not	a0,a0
+	 1: lr.d a5,0(a4); bne a5,a3,1f; sc.d.aq a2,a0,0(a4); bnez a2,1b; 1:
+	bne	a5,a3,.L160
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_uintptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_uintptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_uintptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_uintptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_uintptr:
+	mv	a5,a0
+	fence iorw,ow; amoadd.d.aq a0,a1,0(a5)
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_uintptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_uintptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_uintptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_uintptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_uintptr:
+	mv	a5,a0
+	neg	a1,a1
+	fence iorw,ow; amoadd.d.aq a0,a1,0(a5)
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_uintptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_uintptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_uintptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_uintptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_uintptr:
+	mv	a5,a0
+	fence iorw,ow; amoand.d.aq a0,a1,0(a5)
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_uintptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_uintptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_uintptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_uintptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_uintptr:
+	mv	a5,a0
+	fence iorw,ow; amoxor.d.aq a0,a1,0(a5)
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_uintptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_uintptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_uintptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_uintptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_uintptr:
+	mv	a5,a0
+	fence iorw,ow; amoor.d.aq a0,a1,0(a5)
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_uintptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_uintptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_uintptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_uintptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_uintptr:
+	ld	a5,0(a0)
+	mv	a4,a0
+.L169:
+	and	a3,a5,a1
+	mv	a0,a5
+	not	a3,a3
+	 1: lr.d a5,0(a4); bne a5,a0,1f; sc.d.aq a2,a3,0(a4); bnez a2,1b; 1:
+	bne	a5,a0,.L169
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_uintptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_uintptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_int8
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_int8, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_int8:
+	fence	iorw,iorw
+	lbu	a0,0(a0)
+	fence	iorw,iorw
+	slliw	a0,a0,24
+	sraiw	a0,a0,24
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_int8, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_int8
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_int8
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_int8, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_int8:
+	fence	iorw,iorw
+	sb	a1,0(a0)
+	fence	iorw,iorw
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_int8, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_int8
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_int8
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_int8, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_int8:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	addi	sp,sp,-16
+	andi	a1,a1,0xff
+	sd	ra,8(sp)
+	call	__atomic_exchange_1@plt
+	ld	ra,8(sp)
+	slliw	a0,a0,24
+	sraiw	a0,a0,24
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_int8, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_int8
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_int8
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_int8, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_int8:
+	slli	a6,a5,32
+	srli	a5,a6,30
+	slli	a6,a4,32
+	srli	a4,a6,30
+	lla	a3,.LANCHOR0
+	add	a5,a3,a5
+	add	a3,a3,a4
+	lw	a3,0(a3)
+	lw	a4,0(a5)
+	addi	sp,sp,-16
+	andi	a2,a2,0xff
+	sd	ra,8(sp)
+	call	__atomic_compare_exchange_1@plt
+	ld	ra,8(sp)
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_int8, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_int8
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_int8
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_int8, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_int8:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	addi	sp,sp,-16
+	sd	s0,0(sp)
+	mv	s0,a1
+	andi	a1,a1,0xff
+	sd	ra,8(sp)
+	call	__atomic_fetch_add_1@plt
+	ld	ra,8(sp)
+	addw	a0,a0,s0
+	ld	s0,0(sp)
+	slliw	a0,a0,24
+	sraiw	a0,a0,24
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_int8, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_int8
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_int8
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_int8, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_int8:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	addi	sp,sp,-16
+	sd	s0,0(sp)
+	mv	s0,a1
+	andi	a1,a1,0xff
+	sd	ra,8(sp)
+	call	__atomic_fetch_sub_1@plt
+	ld	ra,8(sp)
+	subw	a0,a0,s0
+	ld	s0,0(sp)
+	slliw	a0,a0,24
+	sraiw	a0,a0,24
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_int8, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_int8
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_int8
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_int8, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_int8:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	addi	sp,sp,-16
+	sd	s0,0(sp)
+	mv	s0,a1
+	andi	a1,a1,0xff
+	sd	ra,8(sp)
+	call	__atomic_fetch_and_1@plt
+	ld	ra,8(sp)
+	and	a0,a0,s0
+	ld	s0,0(sp)
+	slliw	a0,a0,24
+	sraiw	a0,a0,24
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_int8, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_int8
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_int8
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_int8, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_int8:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	addi	sp,sp,-16
+	sd	s0,0(sp)
+	mv	s0,a1
+	andi	a1,a1,0xff
+	sd	ra,8(sp)
+	call	__atomic_fetch_xor_1@plt
+	ld	ra,8(sp)
+	xor	a0,a0,s0
+	ld	s0,0(sp)
+	slliw	a0,a0,24
+	sraiw	a0,a0,24
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_int8, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_int8
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_int8
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_int8, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_int8:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	addi	sp,sp,-16
+	sd	s0,0(sp)
+	mv	s0,a1
+	andi	a1,a1,0xff
+	sd	ra,8(sp)
+	call	__atomic_fetch_or_1@plt
+	ld	ra,8(sp)
+	or	a0,a0,s0
+	ld	s0,0(sp)
+	slliw	a0,a0,24
+	sraiw	a0,a0,24
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_int8, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_int8
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_int8
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_int8, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_int8:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	addi	sp,sp,-16
+	sd	s0,0(sp)
+	mv	s0,a1
+	andi	a1,a1,0xff
+	sd	ra,8(sp)
+	call	__atomic_fetch_nand_1@plt
+	ld	ra,8(sp)
+	and	a0,a0,s0
+	ld	s0,0(sp)
+	not	a0,a0
+	slliw	a0,a0,24
+	sraiw	a0,a0,24
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_int8, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_int8
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_int8
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_int8, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_int8:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	addi	sp,sp,-16
+	andi	a1,a1,0xff
+	sd	ra,8(sp)
+	call	__atomic_fetch_add_1@plt
+	ld	ra,8(sp)
+	slliw	a0,a0,24
+	sraiw	a0,a0,24
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_int8, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_int8
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_int8
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_int8, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_int8:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	addi	sp,sp,-16
+	andi	a1,a1,0xff
+	sd	ra,8(sp)
+	call	__atomic_fetch_sub_1@plt
+	ld	ra,8(sp)
+	slliw	a0,a0,24
+	sraiw	a0,a0,24
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_int8, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_int8
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_int8
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_int8, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_int8:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	addi	sp,sp,-16
+	andi	a1,a1,0xff
+	sd	ra,8(sp)
+	call	__atomic_fetch_and_1@plt
+	ld	ra,8(sp)
+	slliw	a0,a0,24
+	sraiw	a0,a0,24
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_int8, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_int8
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_int8
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_int8, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_int8:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	addi	sp,sp,-16
+	andi	a1,a1,0xff
+	sd	ra,8(sp)
+	call	__atomic_fetch_xor_1@plt
+	ld	ra,8(sp)
+	slliw	a0,a0,24
+	sraiw	a0,a0,24
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_int8, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_int8
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_int8
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_int8, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_int8:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	addi	sp,sp,-16
+	andi	a1,a1,0xff
+	sd	ra,8(sp)
+	call	__atomic_fetch_or_1@plt
+	ld	ra,8(sp)
+	slliw	a0,a0,24
+	sraiw	a0,a0,24
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_int8, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_int8
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_int8
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_int8, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_int8:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	addi	sp,sp,-16
+	andi	a1,a1,0xff
+	sd	ra,8(sp)
+	call	__atomic_fetch_nand_1@plt
+	ld	ra,8(sp)
+	slliw	a0,a0,24
+	sraiw	a0,a0,24
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_int8, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_int8
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_int16
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_int16, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_int16:
+	fence	iorw,iorw
+	lhu	a0,0(a0)
+	fence	iorw,iorw
+	slliw	a0,a0,16
+	sraiw	a0,a0,16
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_int16, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_int16
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_int16
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_int16, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_int16:
+	fence	iorw,iorw
+	sh	a1,0(a0)
+	fence	iorw,iorw
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_int16, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_int16
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_int16
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_int16, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_int16:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	slli	a1,a1,48
+	addi	sp,sp,-16
+	srli	a1,a1,48
+	sd	ra,8(sp)
+	call	__atomic_exchange_2@plt
+	ld	ra,8(sp)
+	slliw	a0,a0,16
+	sraiw	a0,a0,16
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_int16, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_int16
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_int16
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_int16, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_int16:
+	slli	a6,a5,32
+	srli	a5,a6,30
+	slli	a6,a4,32
+	srli	a4,a6,30
+	lla	a3,.LANCHOR0
+	add	a5,a3,a5
+	add	a3,a3,a4
+	lw	a3,0(a3)
+	lw	a4,0(a5)
+	slli	a2,a2,48
+	addi	sp,sp,-16
+	srli	a2,a2,48
+	sd	ra,8(sp)
+	call	__atomic_compare_exchange_2@plt
+	ld	ra,8(sp)
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_int16, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_int16
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_int16
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_int16, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_int16:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	addi	sp,sp,-16
+	lw	a2,0(a5)
+	sd	s0,0(sp)
+	mv	s0,a1
+	slli	a1,a1,48
+	srli	a1,a1,48
+	sd	ra,8(sp)
+	call	__atomic_fetch_add_2@plt
+	ld	ra,8(sp)
+	addw	a0,a0,s0
+	ld	s0,0(sp)
+	slliw	a0,a0,16
+	sraiw	a0,a0,16
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_int16, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_int16
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_int16
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_int16, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_int16:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	addi	sp,sp,-16
+	lw	a2,0(a5)
+	sd	s0,0(sp)
+	mv	s0,a1
+	slli	a1,a1,48
+	srli	a1,a1,48
+	sd	ra,8(sp)
+	call	__atomic_fetch_sub_2@plt
+	ld	ra,8(sp)
+	subw	a0,a0,s0
+	ld	s0,0(sp)
+	slliw	a0,a0,16
+	sraiw	a0,a0,16
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_int16, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_int16
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_int16
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_int16, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_int16:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	addi	sp,sp,-16
+	lw	a2,0(a5)
+	sd	s0,0(sp)
+	mv	s0,a1
+	slli	a1,a1,48
+	srli	a1,a1,48
+	sd	ra,8(sp)
+	call	__atomic_fetch_and_2@plt
+	ld	ra,8(sp)
+	and	a0,a0,s0
+	ld	s0,0(sp)
+	slliw	a0,a0,16
+	sraiw	a0,a0,16
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_int16, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_int16
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_int16
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_int16, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_int16:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	addi	sp,sp,-16
+	lw	a2,0(a5)
+	sd	s0,0(sp)
+	mv	s0,a1
+	slli	a1,a1,48
+	srli	a1,a1,48
+	sd	ra,8(sp)
+	call	__atomic_fetch_xor_2@plt
+	ld	ra,8(sp)
+	xor	a0,a0,s0
+	ld	s0,0(sp)
+	slliw	a0,a0,16
+	sraiw	a0,a0,16
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_int16, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_int16
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_int16
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_int16, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_int16:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	addi	sp,sp,-16
+	lw	a2,0(a5)
+	sd	s0,0(sp)
+	mv	s0,a1
+	slli	a1,a1,48
+	srli	a1,a1,48
+	sd	ra,8(sp)
+	call	__atomic_fetch_or_2@plt
+	ld	ra,8(sp)
+	or	a0,a0,s0
+	ld	s0,0(sp)
+	slliw	a0,a0,16
+	sraiw	a0,a0,16
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_int16, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_int16
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_int16
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_int16, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_int16:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	addi	sp,sp,-16
+	lw	a2,0(a5)
+	sd	s0,0(sp)
+	mv	s0,a1
+	slli	a1,a1,48
+	srli	a1,a1,48
+	sd	ra,8(sp)
+	call	__atomic_fetch_nand_2@plt
+	ld	ra,8(sp)
+	and	a0,a0,s0
+	ld	s0,0(sp)
+	not	a0,a0
+	slliw	a0,a0,16
+	sraiw	a0,a0,16
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_int16, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_int16
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_int16
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_int16, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_int16:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	slli	a1,a1,48
+	addi	sp,sp,-16
+	srli	a1,a1,48
+	sd	ra,8(sp)
+	call	__atomic_fetch_add_2@plt
+	ld	ra,8(sp)
+	slliw	a0,a0,16
+	sraiw	a0,a0,16
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_int16, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_int16
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_int16
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_int16, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_int16:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	slli	a1,a1,48
+	addi	sp,sp,-16
+	srli	a1,a1,48
+	sd	ra,8(sp)
+	call	__atomic_fetch_sub_2@plt
+	ld	ra,8(sp)
+	slliw	a0,a0,16
+	sraiw	a0,a0,16
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_int16, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_int16
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_int16
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_int16, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_int16:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	slli	a1,a1,48
+	addi	sp,sp,-16
+	srli	a1,a1,48
+	sd	ra,8(sp)
+	call	__atomic_fetch_and_2@plt
+	ld	ra,8(sp)
+	slliw	a0,a0,16
+	sraiw	a0,a0,16
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_int16, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_int16
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_int16
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_int16, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_int16:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	slli	a1,a1,48
+	addi	sp,sp,-16
+	srli	a1,a1,48
+	sd	ra,8(sp)
+	call	__atomic_fetch_xor_2@plt
+	ld	ra,8(sp)
+	slliw	a0,a0,16
+	sraiw	a0,a0,16
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_int16, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_int16
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_int16
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_int16, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_int16:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	slli	a1,a1,48
+	addi	sp,sp,-16
+	srli	a1,a1,48
+	sd	ra,8(sp)
+	call	__atomic_fetch_or_2@plt
+	ld	ra,8(sp)
+	slliw	a0,a0,16
+	sraiw	a0,a0,16
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_int16, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_int16
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_int16
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_int16, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_int16:
+	slli	a5,a2,32
+	srli	a2,a5,30
+	lla	a5,.LANCHOR0
+	add	a5,a5,a2
+	lw	a2,0(a5)
+	slli	a1,a1,48
+	addi	sp,sp,-16
+	srli	a1,a1,48
+	sd	ra,8(sp)
+	call	__atomic_fetch_nand_2@plt
+	ld	ra,8(sp)
+	slliw	a0,a0,16
+	sraiw	a0,a0,16
+	addi	sp,sp,16
+	jr	ra
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_int16, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_int16
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_int32
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_int32, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_int32:
+	fence	iorw,iorw
+	lw	a0,0(a0)
+	fence	iorw,iorw
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_int32, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_int32
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_int32
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_int32, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_int32:
+	fence iorw,ow; amoswap.w.aq zero,a1,0(a0)
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_int32, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_int32
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_int32
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_int32, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_int32:
+	fence iorw,ow; amoswap.w.aq a1,a1,0(a0)
+	sext.w	a0,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_int32, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_int32
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_int32
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_int32, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_int32:
+	lw	a5,0(a1)
+	fence iorw,ow;  1: lr.w.aq a4,0(a0); bne a4,a5,1f; sc.w.aq a6,a2,0(a0); bnez a6,1b; 1:
+	subw	a5,a4,a5
+	seqz	a0,a5
+	beq	a5,zero,.L236
+	sw	a4,0(a1)
+.L236:
+	andi	a0,a0,1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_int32, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_int32
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_int32
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_int32, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_int32:
+	mv	a5,a0
+	fence iorw,ow; amoadd.w.aq a0,a1,0(a5)
+	addw	a0,a0,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_int32, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_int32
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_int32
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_int32, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_int32:
+	negw	a1,a1
+	fence iorw,ow; amoadd.w.aq a5,a1,0(a0)
+	addw	a0,a5,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_int32, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_int32
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_int32
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_int32, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_int32:
+	fence iorw,ow; amoand.w.aq a5,a1,0(a0)
+	and	a1,a1,a5
+	sext.w	a0,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_int32, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_int32
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_int32
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_int32, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_int32:
+	fence iorw,ow; amoxor.w.aq a5,a1,0(a0)
+	xor	a1,a1,a5
+	sext.w	a0,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_int32, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_int32
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_int32
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_int32, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_int32:
+	fence iorw,ow; amoor.w.aq a5,a1,0(a0)
+	or	a1,a1,a5
+	sext.w	a0,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_int32, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_int32
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_int32
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_int32, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_int32:
+	lw	a5,0(a0)
+.L243:
+	and	a4,a1,a5
+	not	a4,a4
+	mv	a3,a5
+	mv	a2,a4
+	 1: lr.w a5,0(a0); bne a5,a3,1f; sc.w.aq a6,a4,0(a0); bnez a6,1b; 1:
+	subw	a4,a5,a3
+	bne	a4,zero,.L243
+	sext.w	a0,a2
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_int32, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_int32
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_int32
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_int32, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_int32:
+	fence iorw,ow; amoadd.w.aq a5,a1,0(a0)
+	sext.w	a0,a5
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_int32, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_int32
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_int32
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_int32, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_int32:
+	negw	a1,a1
+	fence iorw,ow; amoadd.w.aq a5,a1,0(a0)
+	sext.w	a0,a5
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_int32, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_int32
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_int32
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_int32, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_int32:
+	fence iorw,ow; amoand.w.aq a5,a1,0(a0)
+	sext.w	a0,a5
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_int32, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_int32
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_int32
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_int32, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_int32:
+	fence iorw,ow; amoxor.w.aq a5,a1,0(a0)
+	sext.w	a0,a5
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_int32, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_int32
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_int32
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_int32, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_int32:
+	fence iorw,ow; amoor.w.aq a5,a1,0(a0)
+	sext.w	a0,a5
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_int32, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_int32
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_int32
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_int32, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_int32:
+	lw	a5,0(a0)
+.L252:
+	and	a4,a1,a5
+	mv	a3,a5
+	not	a4,a4
+	 1: lr.w a5,0(a0); bne a5,a3,1f; sc.w.aq a2,a4,0(a0); bnez a2,1b; 1:
+	subw	a4,a5,a3
+	bne	a4,zero,.L252
+	sext.w	a0,a3
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_int32, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_int32
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_int64
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_int64, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_int64:
+	fence	iorw,iorw
+	ld	a0,0(a0)
+	fence	iorw,iorw
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_int64, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_int64
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_int64
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_int64, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_int64:
+	fence iorw,ow; amoswap.d.aq zero,a1,0(a0)
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_int64, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_int64
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_int64
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_int64, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_int64:
+	fence iorw,ow; amoswap.d.aq a1,a1,0(a0)
+	mv	a0,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_int64, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_int64
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_int64
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_int64, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_int64:
+	ld	a5,0(a1)
+	fence iorw,ow;  1: lr.d.aq a4,0(a0); bne a4,a5,1f; sc.d.aq a3,a2,0(a0); bnez a3,1b; 1:
+	sub	a5,a4,a5
+	seqz	a0,a5
+	beq	a5,zero,.L259
+	sd	a4,0(a1)
+.L259:
+	andi	a0,a0,1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_int64, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_int64
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_int64
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_int64, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_int64:
+	mv	a5,a0
+	fence iorw,ow; amoadd.d.aq a0,a1,0(a5)
+	add	a0,a0,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_int64, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_int64
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_int64
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_int64, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_int64:
+	neg	a1,a1
+	fence iorw,ow; amoadd.d.aq a5,a1,0(a0)
+	add	a0,a5,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_int64, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_int64
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_int64
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_int64, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_int64:
+	mv	a5,a0
+	fence iorw,ow; amoand.d.aq a0,a1,0(a5)
+	and	a0,a0,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_int64, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_int64
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_int64
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_int64, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_int64:
+	mv	a5,a0
+	fence iorw,ow; amoxor.d.aq a0,a1,0(a5)
+	xor	a0,a0,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_int64, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_int64
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_int64
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_int64, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_int64:
+	mv	a5,a0
+	fence iorw,ow; amoor.d.aq a0,a1,0(a5)
+	or	a0,a0,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_int64, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_int64
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_int64
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_int64, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_int64:
+	ld	a5,0(a0)
+	mv	a4,a0
+.L266:
+	and	a0,a5,a1
+	mv	a3,a5
+	not	a0,a0
+	 1: lr.d a5,0(a4); bne a5,a3,1f; sc.d.aq a2,a0,0(a4); bnez a2,1b; 1:
+	bne	a5,a3,.L266
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_int64, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_int64
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_int64
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_int64, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_int64:
+	mv	a5,a0
+	fence iorw,ow; amoadd.d.aq a0,a1,0(a5)
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_int64, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_int64
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_int64
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_int64, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_int64:
+	mv	a5,a0
+	neg	a1,a1
+	fence iorw,ow; amoadd.d.aq a0,a1,0(a5)
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_int64, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_int64
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_int64
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_int64, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_int64:
+	mv	a5,a0
+	fence iorw,ow; amoand.d.aq a0,a1,0(a5)
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_int64, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_int64
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_int64
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_int64, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_int64:
+	mv	a5,a0
+	fence iorw,ow; amoxor.d.aq a0,a1,0(a5)
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_int64, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_int64
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_int64
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_int64, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_int64:
+	mv	a5,a0
+	fence iorw,ow; amoor.d.aq a0,a1,0(a5)
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_int64, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_int64
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_int64
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_int64, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_int64:
+	ld	a5,0(a0)
+	mv	a4,a0
+.L275:
+	and	a3,a5,a1
+	mv	a0,a5
+	not	a3,a3
+	 1: lr.d a5,0(a4); bne a5,a0,1f; sc.d.aq a2,a3,0(a4); bnez a2,1b; 1:
+	bne	a5,a0,.L275
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_int64, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_int64
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_intptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_intptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_intptr:
+	fence	iorw,iorw
+	ld	a0,0(a0)
+	fence	iorw,iorw
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_intptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_LoadN_intptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_intptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_intptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_intptr:
+	fence iorw,ow; amoswap.d.aq zero,a1,0(a0)
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_intptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_StoreN_intptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_intptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_intptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_intptr:
+	fence iorw,ow; amoswap.d.aq a1,a1,0(a0)
+	mv	a0,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_intptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_ExchangeN_intptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_intptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_intptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_intptr:
+	ld	a5,0(a1)
+	fence iorw,ow;  1: lr.d.aq a4,0(a0); bne a4,a5,1f; sc.d.aq a3,a2,0(a0); bnez a3,1b; 1:
+	sub	a5,a4,a5
+	seqz	a0,a5
+	beq	a5,zero,.L282
+	sd	a4,0(a1)
+.L282:
+	andi	a0,a0,1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_intptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_CompareExchangeN_intptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_intptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_intptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_intptr:
+	mv	a5,a0
+	fence iorw,ow; amoadd.d.aq a0,a1,0(a5)
+	add	a0,a0,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_intptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_AddFetch_intptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_intptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_intptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_intptr:
+	neg	a1,a1
+	fence iorw,ow; amoadd.d.aq a5,a1,0(a0)
+	add	a0,a5,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_intptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_SubFetch_intptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_intptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_intptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_intptr:
+	mv	a5,a0
+	fence iorw,ow; amoand.d.aq a0,a1,0(a5)
+	and	a0,a0,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_intptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_AndFetch_intptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_intptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_intptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_intptr:
+	mv	a5,a0
+	fence iorw,ow; amoxor.d.aq a0,a1,0(a5)
+	xor	a0,a0,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_intptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_XorFetch_intptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_intptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_intptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_intptr:
+	mv	a5,a0
+	fence iorw,ow; amoor.d.aq a0,a1,0(a5)
+	or	a0,a0,a1
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_intptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_OrFetch_intptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_intptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_intptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_intptr:
+	ld	a5,0(a0)
+	mv	a4,a0
+.L289:
+	and	a0,a5,a1
+	mv	a3,a5
+	not	a0,a0
+	 1: lr.d a5,0(a4); bne a5,a3,1f; sc.d.aq a2,a0,0(a4); bnez a2,1b; 1:
+	bne	a5,a3,.L289
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_intptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_NandFetch_intptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_intptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_intptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_intptr:
+	mv	a5,a0
+	fence iorw,ow; amoadd.d.aq a0,a1,0(a5)
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_intptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAdd_intptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_intptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_intptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_intptr:
+	mv	a5,a0
+	neg	a1,a1
+	fence iorw,ow; amoadd.d.aq a0,a1,0(a5)
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_intptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchSub_intptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_intptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_intptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_intptr:
+	mv	a5,a0
+	fence iorw,ow; amoand.d.aq a0,a1,0(a5)
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_intptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchAnd_intptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_intptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_intptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_intptr:
+	mv	a5,a0
+	fence iorw,ow; amoxor.d.aq a0,a1,0(a5)
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_intptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchXor_intptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_intptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_intptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_intptr:
+	mv	a5,a0
+	fence iorw,ow; amoor.d.aq a0,a1,0(a5)
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_intptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchOr_intptr
+	.align	1
+	.globl	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_intptr
+	.type	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_intptr, @function
+@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_intptr:
+	ld	a5,0(a0)
+	mv	a4,a0
+.L298:
+	and	a3,a5,a1
+	mv	a0,a5
+	not	a3,a3
+	 1: lr.d a5,0(a4); bne a5,a0,1f; sc.d.aq a2,a3,0(a4); bnez a2,1b; 1:
+	bne	a5,a0,.L298
+	ret
+	.size	@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_intptr, .-@AFS_PACKAGE_NAME@_UTILS_Atomic_FetchNand_intptr
+	.section	.rodata
+	.align	3
+	.set	.LANCHOR0,. + 0
+	.type	gcc_memorder, @object
+	.size	gcc_memorder, 24
+gcc_memorder:
+	.word	0
+	.word	1
+	.word	2
+	.word	3
+	.word	4
+	.word	5
+	.ident	"GCC: (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0"
+	.section	.note.GNU-stack,"",@progbits
