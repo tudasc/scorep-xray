@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2017,
+ * Copyright (c) 2009-2013, 2017, 2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -38,6 +38,8 @@
 
 #include <string>
 #include <deque>
+#include <sstream>
+#include <algorithm>
 
 /**
  * Helper struct to represent the content of one .la file. Used in code
@@ -47,7 +49,7 @@
 struct la_object
 {
     /**
-     * Empty contructor. Needed to allow copies of STL containers containing this
+     * Empty constructor. Needed to allow copies of STL containers containing this
      * class
      */
     la_object( void )
@@ -69,9 +71,10 @@ struct la_object
     {
     }
 
-
     /**
-     * Regular constructor.
+     * Regular constructor for old, i.e., parsing la-files library
+     * dependency generation. Obsolete once all projects back away
+     * from parsing la-files.
      */
     la_object( const std::string&             lib_name,
                const std::string&             build_dir,
@@ -91,6 +94,25 @@ struct la_object
     {
     }
 
+
+    /**
+     * Regular constructor for improved library dependency generation.
+     */
+    la_object( const std::string& lib_name,
+               const std::string& build_dir,
+               const std::string& install_dir,
+               const std::string& libs,
+               const std::string& libdirs )
+        :
+        m_lib_name( lib_name ),
+        m_build_dir( build_dir ),
+        m_install_dir( install_dir ),
+        m_libs( gen_libs( libs ) ),
+        m_ldflags( gen_ldflags( libdirs ) ),
+        m_rpath( gen_rpaths( libdirs ) )
+    {
+    }
+
     /**
      * Destructor.
      */
@@ -105,10 +127,45 @@ struct la_object
     std::string             m_lib_name;
     std::string             m_build_dir;
     std::string             m_install_dir;
-    std::deque<std::string> m_libs;
-    std::deque<std::string> m_ldflags;
-    std::deque<std::string> m_rpath;
-    std::deque<std::string> m_dependency_las;
+    std::deque<std::string> m_libs;           // -l<lib>
+    std::deque<std::string> m_ldflags;        // -L<dir>
+    std::deque<std::string> m_rpath;          // -R<dir>
+    std::deque<std::string> m_dependency_las; // unused
+
+    // Helper methods to generate la_object members from strings in
+    // <builddir>/src/config-external-libs-@AFS_PACKAGE_BUILD_name@.h.
+
+    static std::deque<std::string>
+    gen_deque( std::stringstream ss, std::string prefix )
+    {
+        std::deque<std::string> output;
+        std::string             item;
+        while ( ss >> item )
+        {
+            output.push_back( prefix + item );
+        }
+        return output;
+    }
+
+    static std::deque<std::string>
+    gen_libs( std::string input )
+    {
+        return gen_deque( std::stringstream( input ), "" );
+    }
+
+    static std::deque<std::string>
+    gen_ldflags( std::string input )
+    {
+        std::replace( input.begin(), input.end(), ':', ' ' );
+        return gen_deque( std::stringstream( input ), "-L" );
+    }
+
+    static std::deque<std::string>
+    gen_rpaths( std::string input )
+    {
+        std::replace( input.begin(), input.end(), ':', ' ' );
+        return gen_deque( std::stringstream( input ), "-R" );
+    }
 };
 
 #endif /* COMMON_GENERATE_LIBRARY_DEPENDENCIES_LA_OBJECT_HPP */
