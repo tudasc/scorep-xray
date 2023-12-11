@@ -1128,8 +1128,8 @@ api_cb( uint32_t    domain,
         const void* callbackData,
         void*       arg )
 {
-    SCOREP_IN_MEASUREMENT_INCREMENT();
-    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
+    if ( !trigger || !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
@@ -1158,8 +1158,8 @@ stream_cb( uint32_t    domain,
            const void* callbackData,
            void*       arg )
 {
-    SCOREP_IN_MEASUREMENT_INCREMENT();
-    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
+    if ( !trigger || !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
@@ -1229,9 +1229,8 @@ kernel_cb( uint32_t    domain,
            const void* callbackData,
            void*       arg )
 {
-    SCOREP_IN_MEASUREMENT_INCREMENT();
-    // Early exit if we're already in measurement
-    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
+    if ( !trigger || !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
@@ -1341,8 +1340,8 @@ malloc_cb( uint32_t    domain,
            const void* callbackData,
            void*       arg )
 {
-    SCOREP_IN_MEASUREMENT_INCREMENT();
-    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
+    if ( !trigger || !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
@@ -1484,8 +1483,8 @@ free_cb( uint32_t    domain,
          const void* callbackData,
          void*       arg )
 {
-    SCOREP_IN_MEASUREMENT_INCREMENT();
-    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
+    if ( !trigger || !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
@@ -1547,8 +1546,8 @@ memcpy_cb( uint32_t    domain,
            const void* callbackData,
            void*       arg )
 {
-    SCOREP_IN_MEASUREMENT_INCREMENT();
-    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
+    if ( !trigger || !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
@@ -1662,8 +1661,8 @@ sync_cb( uint32_t    domain,
          const void* callbackData,
          void*       arg )
 {
-    SCOREP_IN_MEASUREMENT_INCREMENT();
-    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
+    if ( !trigger || !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
@@ -1858,8 +1857,8 @@ user_cb( uint32_t    domain,
 {
     ( void )arg;
 
-    SCOREP_IN_MEASUREMENT_INCREMENT();
-    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
+    if ( !trigger || !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
