@@ -69,9 +69,10 @@
  * @{
  */
 
-#pragma wrapgen multiple regex((Interc|C)omm_(create|create_group|dup|dup_with_info|merge|split|split_type)$) skel/SCOREP_Mpi_CommMgnt.w
-#pragma wrapgen single MPI_Comm_create_from_group skel/SCOREP_Mpi_CommMgnt.w
-#pragma wrapgen single MPI_Intercomm_create_from_groups skel/SCOREP_Mpi_CommMgnt.w
+#pragma wrapgen multiple regex((Interc|C)omm_(create|dup|dup_with_info|merge|split|split_type)$) skel/SCOREP_Mpi_CommMgnt.w
+#pragma wrapgen single MPI_Comm_create_group skel/SCOREP_Mpi_CommMgntSubset.w
+#pragma wrapgen single MPI_Comm_create_from_group skel/SCOREP_Mpi_CommMgntSubset.w
+#pragma wrapgen single MPI_Intercomm_create_from_groups skel/SCOREP_Mpi_CommMgntSubset.w
 
 #pragma wrapgen single MPI_Comm_idup skel/SCOREP_Mpi_CommIdup.w
 #pragma wrapgen single MPI_Comm_idup_with_info skel/SCOREP_Mpi_CommIdup.w
