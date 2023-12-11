@@ -617,7 +617,7 @@ stream_table_value_ctor( stream_table_key_t* key,
     UTILS_DEBUG( "Creating stream %p/%d -> [%d:%u]", key->stream, key->device_id, data->device_id, stream_seq );
 
     scorep_hip_stream* stream = SCOREP_Memory_AllocForMisc( sizeof( *stream ) );
-    stream->device_id        = key->device_id;
+    stream->device_id        = data->device_id;
     stream->stream           = key->stream;
     stream->stream_seq       = stream_seq;
     stream->last_scorep_time = 0;

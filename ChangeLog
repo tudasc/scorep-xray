@@ -65,7 +65,7 @@ Bugfixes:
   OpenMP tasks report task underflows.
 - Fix classification of various MPI functions (mostly introduced with
   MPI 4.0) by the report post-processing.
-- Fix build with ROCm 6.0.
+- Fix build with ROCm 6.0 and device ID in stream names `HIP[D:S]`.
 
 ------------------- Released version 8.3 -----------------------------
 
