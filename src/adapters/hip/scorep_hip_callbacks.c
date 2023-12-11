@@ -1295,6 +1295,17 @@ kernel_cb( uint32_t    domain,
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
+static inline enum hipMemoryType
+get_hip_memory_type( const hipPointerAttribute_t* attributes )
+{
+#if HAVE( HIPPOINTERATTRIBUTE_T_MEMORYTYPE )
+    /* pre ROCm 5.4 */
+    return attributes->memoryType;
+#else
+    return attributes->type;
+#endif
+}
+
 static void
 handle_alloc( const void* ptr,
               size_t      size )
@@ -1308,7 +1319,7 @@ handle_alloc( const void* ptr,
     }
 
     SCOREP_AllocMetric* metric = host_alloc_metric;
-    switch ( attributes.memoryType )
+    switch ( get_hip_memory_type( &attributes ) )
     {
         case hipMemoryTypeDevice:
         case hipMemoryTypeArray:
@@ -1444,7 +1455,7 @@ handle_free( uint64_t    correlationId,
     }
 
     SCOREP_AllocMetric* metric = host_alloc_metric;
-    switch ( attributes.memoryType )
+    switch ( get_hip_memory_type( &attributes ) )
     {
         case hipMemoryTypeDevice:
         case hipMemoryTypeArray:

@@ -64,6 +64,9 @@ AS_IF([test "x${scorep_have_hip}" = "xyes"],
 ]])
               AC_CHECK_DECLS([hipGetDeviceForStream], [], [], [[
 #include <hip/hip_runtime_api.h>
+]])
+              AC_CHECK_MEMBERS([hipPointerAttribute_t.memoryType], [], [], [[
+#include <hip/hip_runtime_api.h>
 ]])],
              [scorep_have_hip="no, missing HIP runtime library"])])
 
