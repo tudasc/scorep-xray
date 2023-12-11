@@ -62,7 +62,7 @@ AS_IF([test "x${scorep_have_hip}" = "xyes"],
               AC_CHECK_DECLS([hipDeviceGetUuid], [], [], [[
 #include <hip/hip_runtime.h>
 ]])
-              AC_CHECK_DECLS([hipGetDeviceForStream], [], [], [[
+              AC_CHECK_DECLS([hipGetStreamDeviceId], [], [], [[
 #include <hip/hip_runtime_api.h>
 ]])
               AC_CHECK_MEMBERS([hipPointerAttribute_t.memoryType], [], [], [[
