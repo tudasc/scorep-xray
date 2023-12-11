@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2017, 2022,
+ * Copyright (c) 2009-2014, 2017, 2022-2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -726,7 +726,9 @@ void
 scorep_mpi_request_tested( scorep_mpi_request* req )
 {
     if ( !req ||
-         !( req->flags & SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE ) )
+         ( req->flags & SCOREP_MPI_REQUEST_FLAG_IS_PERSISTENT &&
+           !( req->flags & SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE ) )
+         )
     {
         return;
     }
