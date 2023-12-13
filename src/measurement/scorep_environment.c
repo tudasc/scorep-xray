@@ -150,8 +150,8 @@ static const SCOREP_ConfigVariable core_confvars[] = {
         NULL,
         "16000k",
         "Total memory in bytes per process to be consumed by the measurement system",
-        "SCOREP_TOTAL_MEMORY will be split into pages of size SCOREP_PAGE_SIZE "
-        "(potentially reduced to a multiple of SCOREP_PAGE_SIZE). Maximum size is 4 GB"
+        "It will be split into pages of size SCOREP_PAGE_SIZE (potentially "
+        "reduced to a multiple of SCOREP_PAGE_SIZE). Maximum size is 4 GB"
         "minus one SCOREP_PAGE_SIZE."
     },
     {

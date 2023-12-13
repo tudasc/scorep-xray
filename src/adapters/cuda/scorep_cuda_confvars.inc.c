@@ -151,7 +151,7 @@ static const SCOREP_ConfigVariable scorep_cuda_confvars[] = {
         ( void* )cuda_enable_groups,
         "yes",                     /* default value */
         "CUDA measurement features",
-        "SCOREP_CUDA_ENABLE sets the CUDA measurement mode to capture.\n\n"
+        "Sets the CUDA measurement mode to capture.\n\n"
         "Notes:\n"
         "\240-\240Options required by other options will be included automatically.\n"
         "\240-\240idle and pure idle are mutually exclusive.\n"
