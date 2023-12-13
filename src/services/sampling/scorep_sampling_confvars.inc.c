@@ -51,7 +51,7 @@ static const SCOREP_ConfigVariable scorep_sampling_confvars[] = {
 #else
         "timer@10000",
 #endif
-        "Set the sampling event and period: <event>[@<period>]",
+        "Set the sampling event and period: `<event>[@<period>]`",
         "This selects the interrupt source for sampling.\n"
         "This is only in effect if SCOREP_ENABLE_UNWINDING is on.\n"
         "\n"
