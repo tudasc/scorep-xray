@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2015-2016, 2019,
+ * Copyright (c) 2009-2011, 2015-2016, 2019, 2024,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -826,11 +826,11 @@ SCOREP_ConfigHelp( bool  full,
                      html ? "</dd>" : "" );
             fprintf( out, "%sDefault:%s%s%s%s%s\n",
                      html ? "   <dt>" : "      ",
-                     html ? "</dt><dd>" : " ",
-                     config_type_need_quotes( variable->data.type ) ? ( html ? "&quot;" : "\"" ) : "",
+                     html ? "</dt><dd><tt>" : " `",
+                     config_type_need_quotes( variable->data.type ) && html ? "&quot;" : "",
                      variable->data.defaultValue,
-                     config_type_need_quotes( variable->data.type ) ? ( html ? "&quot;" : "\"" ) : "",
-                     html ? "</dd>\n  </dl>" : "" );
+                     config_type_need_quotes( variable->data.type ) && html ? "&quot;" : "",
+                     html ? "</tt></dd>\n  </dl>" : "`" );
 
             if ( full )
             {
@@ -871,9 +871,9 @@ SCOREP_ConfigHelp( bool  full,
                     while ( acceptedValues->name )
                     {
                         fprintf( out, "    %s%s%s",
-                                 html ? "<dt>" : "",
+                                 html ? "<dt><tt>" : "",
                                  acceptedValues->name,
-                                 html ? "</dt>\n    <dd>\n" : ": " );
+                                 html ? "</tt></dt>\n    <dd>\n" : ": " );
 
                         wrap_lines( acceptedValues->description,
                                     WRAP_MARGIN,
@@ -892,8 +892,8 @@ SCOREP_ConfigHelp( bool  full,
                     if ( SCOREP_CONFIG_TYPE_BITSET == variable->data.type )
                     {
                         fprintf( out, "    %snone/no%s%*s%s%s\n",
-                                 html ? "<dt>" : "",
-                                 html ? "</dt>\n    <dd>" : ": ",
+                                 html ? "<dt><tt>" : "",
+                                 html ? "</tt></dt>\n    <dd>" : ": ",
                                  html ? 0 : ( column_width - ( int )strlen( "none/no" ) ), "",
                                  "Disable feature",
                                  html ? "</dd>" : "" );

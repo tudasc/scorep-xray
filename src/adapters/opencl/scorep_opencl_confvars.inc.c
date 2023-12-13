@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014-2015,
+ * Copyright (c) 2014-2015, 2024,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -47,9 +47,9 @@ static const SCOREP_ConfigType_SetEntry opencl_enable_groups[] = {
         SCOREP_OPENCL_FEATURES_DEFAULT,
         "OpenCL API and GPU activities.\n"
         "Includes:\n"
-        "\240-\240api\n"
-        "\240-\240kernel\n"
-        "\240-\240  memcpy"
+        "\240-\240`api`\n"
+        "\240-\240`kernel`\n"
+        "\240-\240`memcpy`"
     },
     { NULL, 0, NULL }
 };

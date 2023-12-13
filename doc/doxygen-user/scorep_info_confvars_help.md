@@ -1,5 +1,5 @@
 Score-P allows to configure several measurement parameters via environment
-variables.  After the measurement run you can find a 'scorep.cfg' file in
+variables.  After the measurement run you can find a `scorep.cfg` file in
 your experiment directory which contains the configuration of the measurement
 run.  If you did not set any configuration values explicitly, this file will
 contain the default values.  This file is safe to be used as input for a POSIX
@@ -32,9 +32,9 @@ Boolean
 A Boolean value, no white space trimming is done.
 Accepted Boolean values for true are case insensitive and the following:
 
- - 'true'
- - 'yes'
- - 'on'
+ - `true`
+ - `yes`
+ - `on`
  - any positive decimal number
 
 Everything else is interpreted as the Boolean value false.
@@ -50,9 +50,9 @@ Number with size suffixes
 Like Number, but also accepts unit case insensitive suffixes after optional
 white space:
 
- - 'B', 'Kb', 'Mb', 'Gb', 'Tb', 'Pb', 'Eb'
+ - `B`, `Kb`, `Mb`, `Gb`, `Tb`, `Pb`, `Eb`
 
-The 'b' suffix can be omitted.
+The `b` suffix can be omitted.
 
 Set
 ---
@@ -62,14 +62,14 @@ variable.  Multiple values are allowed, are case insensitive, and are
 subject to white space trimming.  They can be separated with one of the
 following characters:
 
- - ' ' - space
- - ',' - comma
- - ':' - colon
- - ';' - semicolon
+ - '` `' - space
+ - '`,`' - comma
+ - '`:`' - colon
+ - '`;`' - semicolon
 
 Acceptable values can also have aliases, which are listed in the
-documentation and separated by '/'. Values can be negated by preceeding it
-with '~'. Order of evaluation is from left to right.
+documentation and separated by '`/`'. Values can be negated by preceeding it
+with '`~`'. Order of evaluation is from left to right.
 
 Option
 ------
