@@ -127,7 +127,7 @@ static const SCOREP_ConfigVariable core_enable_unwinding_confvars[] = {
         "applications.\n"
         "Note that when tracing is also enabled, Score-P does not write the "
         "usual Enter/Leave records into the OTF2 trace, but new records.\n"
-        "See also SCOREP_TRACING_CONVERT_CALLING_CONTEXT_EVENTS.\n"
+        "See also `SCOREP_TRACING_CONVERT_CALLING_CONTEXT_EVENTS`.\n"
         "Note also that this supresses events from the compiler instrumentation."
     },
     SCOREP_CONFIG_TERMINATOR
@@ -150,9 +150,9 @@ static const SCOREP_ConfigVariable core_confvars[] = {
         NULL,
         "16000k",
         "Total memory in bytes per process to be consumed by the measurement system",
-        "It will be split into pages of size SCOREP_PAGE_SIZE (potentially "
-        "reduced to a multiple of SCOREP_PAGE_SIZE). Maximum size is 4 GB"
-        "minus one SCOREP_PAGE_SIZE."
+        "It will be split into pages of size `SCOREP_PAGE_SIZE` (potentially "
+        "reduced to a multiple of `SCOREP_PAGE_SIZE`). Maximum size is 4 GB"
+        "minus one `SCOREP_PAGE_SIZE`."
     },
     {
         "page_size",
@@ -161,9 +161,9 @@ static const SCOREP_ConfigVariable core_confvars[] = {
         NULL,
         "8k",
         "Memory page size in bytes",
-        "If not a power of two, SCOREP_PAGE_SIZE will be increased to the next "
-        "larger power of two. SCOREP_TOTAL_MEMORY will be split up into pages "
-        "of (the adjusted) SCOREP_PAGE_SIZE. Minimum size is 512 bytes."
+        "If not a power of two, `SCOREP_PAGE_SIZE` will be increased to the next "
+        "larger power of two. `SCOREP_TOTAL_MEMORY` will be split up into pages "
+        "of (the adjusted) `SCOREP_PAGE_SIZE`. Minimum size is 512 bytes."
     },
     {
         "experiment_directory",

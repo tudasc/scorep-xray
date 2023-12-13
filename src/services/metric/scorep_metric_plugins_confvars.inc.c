@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2024,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -71,7 +71,7 @@ static const SCOREP_ConfigVariable scorep_metric_plugins_confvars[] = {
         NULL,
         ",",
         "Separator of plugin names",
-        "Character that separates plugin names in SCOREP_METRIC_PLUGINS."
+        "Character that separates plugin names in `SCOREP_METRIC_PLUGINS`."
     },
     SCOREP_CONFIG_TERMINATOR
 };

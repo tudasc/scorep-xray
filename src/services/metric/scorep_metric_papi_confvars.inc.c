@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2024,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -86,8 +86,8 @@ static const SCOREP_ConfigVariable scorep_metric_papi_confvars[] = {
         NULL,
         ",",
         "Separator of PAPI metric names",
-        "Character that separates metric names in SCOREP_METRIC_PAPI and "
-        "SCOREP_METRIC_PAPI_PER_PROCESS."
+        "Character that separates metric names in `SCOREP_METRIC_PAPI` and "
+        "`SCOREP_METRIC_PAPI_PER_PROCESS`."
     },
     SCOREP_CONFIG_TERMINATOR
 };

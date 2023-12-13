@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2015, 2024,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -84,8 +84,8 @@ static const SCOREP_ConfigVariable scorep_metric_rusage_confvars[] = {
         NULL,
         ",",
         "Separator of resource usage metric names",
-        "Character that separates metric names in SCOREP_METRIC_RUSAGE and "
-        "SCOREP_METRIC_RUSAGE_PER_PROCESS."
+        "Character that separates metric names in `SCOREP_METRIC_RUSAGE` and "
+        "`SCOREP_METRIC_RUSAGE_PER_PROCESS`."
     },
     SCOREP_CONFIG_TERMINATOR
 };

@@ -53,7 +53,7 @@ static const SCOREP_ConfigVariable scorep_sampling_confvars[] = {
 #endif
         "Set the sampling event and period: `<event>[@<period>]`",
         "This selects the interrupt source for sampling.\n"
-        "This is only in effect if SCOREP_ENABLE_UNWINDING is on.\n"
+        "This is only in effect if `SCOREP_ENABLE_UNWINDING` is on.\n"
         "\n"
         "Possible values:\n"
 #if HAVE_BACKEND( METRIC_PERF )
@@ -78,7 +78,7 @@ static const SCOREP_ConfigVariable scorep_sampling_confvars[] = {
         NULL,
         ",",
         "Separator of sampling event names",
-        "Character that separates sampling event names in SCOREP_SAMPLING_EVENTS"
+        "Character that separates sampling event names in `SCOREP_SAMPLING_EVENTS`"
     },
     SCOREP_CONFIG_TERMINATOR
 };
