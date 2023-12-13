@@ -696,7 +696,7 @@ wrap_lines( const char* message,
         switch ( nl )
         {
             case 0:
-                if ( firstIndent <= 0 )
+                if ( firstIndent < 0 )
                 {
                     fprintf( out, "\n%*s%s",
                              indent, "",
