@@ -27,6 +27,8 @@ Compatibility:
 - Non-LLVM based CCE compilers are no longer supported. Please upgrade.
 - Added the environment variable `NVCC` to change the compiler
   command used for checking the NVIDIA CUDA compiler during configure.
+- The classic Intel compilers will now use the flag `-diag-disable=10441`
+  to suppress the deprecation warning for each compilation unit.
 
 Bugfixes:
 

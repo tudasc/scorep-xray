@@ -15,7 +15,7 @@ dnl
 dnl Copyright (c) 2009-2012,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2014, 2021-2022,
+dnl Copyright (c) 2009-2014, 2021-2023,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2012,
@@ -186,7 +186,7 @@ AS_IF([test "x${instrumentation_[]_AC_LANG_ABBREV[]_api}" = x], [
     flag_accepted=no
     _AC_LANG_PREFIX[]FLAGS_save="$_AC_LANG_PREFIX[]FLAGS"
     _AC_LANG_PREFIX[]FLAGS="$_AC_LANG_PREFIX[]FLAGS $1"
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM()],
+    AFS_COMPILE_IFELSE_WERROR([AC_LANG_PROGRAM()],
         [$NM -u conftest.$OBJEXT > conftest.nm
          AS_IF([GREP_OPTIONS= ${GREP} -q -E $2 conftest.nm && GREP_OPTIONS= ${GREP} -q -E $3 conftest.nm],
              [flag_accepted=yes])
