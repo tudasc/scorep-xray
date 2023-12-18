@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017,
+ * Copyright (c) 2009-2017, 2024,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -198,14 +198,16 @@ is_library( const std::string& filename,
 {
     std::string basename  = remove_path( filename );
     std::string extension = get_extension( basename );
-    if ( basename.compare( 0, 3, "lib" ) != 0 || extension == "" )
-    {
-        return false;
-    }
 
+    /* library archives do not need to start with `lib` and are not searched in the library path */
     if ( allowStatic && extension == ".a" )
     {
         return true;
+    }
+
+    if ( basename.compare( 0, 3, "lib" ) != 0 || extension == "" )
+    {
+        return false;
     }
 
     if ( allowDynamic )
