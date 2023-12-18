@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017, 2021,
+ * Copyright (c) 2009-2017, 2021, 2024,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -607,8 +607,10 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
     }
 
     /* Detect input files */
-    if ( ( current[ 0 ] != '-' ) && is_library( current ) )
+    if ( ( current[ 0 ] != '-' ) && is_library( current, true, false ) )
     {
+        /* This is a shared library */
+
         /* extract library name */
         if ( is_interposition_library( get_library_name( current ) ) )
         {
@@ -616,6 +618,13 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
             m_current_flags         = &m_flags_after_interposition_lib;
         }
         add_library( current );
+    }
+    else if ( ( current[ 0 ] != '-' ) && is_library( current, false, true ) )
+    {
+        /* This is a static library, treat it as input file */
+
+        add_input_file( current );
+        return scorep_parse_mode_command;
     }
     else if ( ( current[ 0 ] != '-' ) &&
               ( is_source_file( current ) || is_object_file( current ) ) )

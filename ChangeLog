@@ -48,6 +48,8 @@ Bugfixes:
   `SCOREP_MPI_ENABLE_GROUPS=xreqtest`.
 - The configure check for `pthread_spin_init` now uses the correct
   data types for the arguments.
+- Library archives (`.a`) on a combined compile-and-link command with the
+  `nvcc` compiler will not fail anymore.
 
 ------------------- Released version 8.3 -----------------------------
 
