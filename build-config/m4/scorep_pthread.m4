@@ -3,7 +3,7 @@ dnl -*- mode: autoconf -*-
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2013-2014, 2022,
+dnl Copyright (c) 2013-2014, 2022-2023,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2013, 2017, 2023,
@@ -98,7 +98,7 @@ _SCOREP_PTHREAD_FEATURE([spinlock],
      ]],
      [[
      pthread_spinlock_t spinlock;
-     pthread_spin_init(&spinlock, NULL);
+     pthread_spin_init(&spinlock, 0);
      pthread_spin_lock (&spinlock);
      pthread_spin_unlock (&spinlock);
      pthread_spin_destroy(&spinlock);
