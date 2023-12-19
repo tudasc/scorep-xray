@@ -3,7 +3,7 @@ dnl -*- mode: autoconf -*-
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2013-2014,
+dnl Copyright (c) 2013-2014, 2024,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2014-2015, 2017,
@@ -19,8 +19,6 @@ dnl file build-includes/computenode.m4
 AFS_GNU_LINKER
 
 SCOREP_PTHREAD
-SCOREP_PTHREAD_MUTEX
-SCOREP_PTHREAD_SPINLOCK
 
 SCOREP_COMPILER_INSTRUMENTATION_FLAGS
 SCOREP_INSTRUMENTATION_FLAGS
