@@ -31,7 +31,10 @@ AS_IF([test "x${scorep_have_addr2line}${afs_have_thread_local_storage}${scorep_h
                AS_IF([test "x${have_ompt_remediable_checks_passed}" != xunknown],
                    [AFS_SUMMARY([OMPT remediable checks passed], [$have_ompt_remediable_checks_passed${ompt_reason_remediable_checks_passed:+, $ompt_reason_remediable_checks_passed}])])
                AS_IF([test "x${have_ompt_support}" = xyes && test "x${have_ompt_critical_checks_passed}" = xyes],
-                   [AFS_SUMMARY([OMPT is default], [$scorep_enable_default_ompt])])])])])
+                   [scorep_enable_default_ompt=yes
+                    AS_IF([test "x$scorep_enable_default_opari2" = xyes],
+                        [scorep_enable_default_ompt=no])
+                    AFS_SUMMARY([OMPT is default], [$scorep_enable_default_ompt])])])])])
 AFS_SUMMARY_POP([OMPT support], [$have_ompt_support${ompt_reason:+, $ompt_reason}])
 ]) dnl SCOREP_OMPT_SUMMARY
 
@@ -93,9 +96,6 @@ AC_SCOREP_COND_HAVE([SCOREP_OMPT_SUPPORT],
     [test "x$have_ompt_support" = xyes],
     [Defined if OMPT is supported for at least one language])
 dnl
-AC_SCOREP_COND_HAVE([SCOREP_DEFAULT_OMPT],
-    [test "x$have_ompt_support" = xyes && test "x$scorep_enable_default_ompt" = xyes],
-    [Defined if OMPT is the default OpenMP instrumentation method.])
 ])dnl SCOREP_OMPT
 
 

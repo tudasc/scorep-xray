@@ -19,6 +19,10 @@ User tools and API improvements and changes:
   copy and paste from the default output.
 - The help command of the Score-P instrumenter `scorep --help` will now
   only print the help for available Score-P adapters for its installation.
+- For OpenMP instrumentation, the OMPT adapter is now used by default,
+  if available. To use OPARI2 as the default instrumenter, please use
+  `--enable-default=opari2` during configure. The option
+  `--enable-default=ompt` will be removed in a future Score-P release.
 
 Compatibility:
 
