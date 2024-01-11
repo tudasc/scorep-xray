@@ -52,6 +52,8 @@ Bugfixes:
   `nvcc` compiler will not fail anymore.
 - Fix pointers getting cut off for OpenMP regions when the source code lookup
   fails.
+- Fix handling of multiple or unknown values for `--enable-default` during
+  configure.
 
 ------------------- Released version 8.3 -----------------------------
 
