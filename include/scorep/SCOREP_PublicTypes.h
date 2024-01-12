@@ -293,7 +293,7 @@ typedef uint64_t SCOREP_MpiRequestId;
  * Types:
  * - SCOREP_PARADIGM_CLASS_MPP refers to any multi processing based paradigms (e.g., MPI, SHMEM)
  * - SCOREP_PARADIGM_CLASS_THREAD_FORK_JOIN refers to any thread parallel fork-join based paradigms (e.g., OpenMP)
- * - SCOREP_PARADIGM_CLASS_THREAD_CREATE_WAIT refers to any thread parallel create wait based paradigms (e.g., PThreads)
+ * - SCOREP_PARADIGM_CLASS_THREAD_CREATE_WAIT refers to any thread parallel create wait based paradigms (e.g., Pthreads)
  * - SCOREP_PARADIGM_CLASS_ACCELERATOR refers to any accelerator based paradigms
  * - SCOREP_INVALID_PARADIGM_CLASS for internal use only
  */

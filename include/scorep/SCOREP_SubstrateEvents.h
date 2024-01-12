@@ -109,8 +109,8 @@ typedef enum SCOREP_Substrates_EventType
     SCOREP_EVENT_RMA_OP_COMPLETE_NON_BLOCKING,         /**< marks completion of a non-blocking RMA operation, see SCOREP_Substrates_RmaOpCompleteNonBlockingCb() */
     SCOREP_EVENT_RMA_OP_TEST,                          /**< marks a test for completion of a non-blocking RMA operation, see SCOREP_Substrates_RmaOpTestCb() */
     SCOREP_EVENT_RMA_OP_COMPLETE_REMOTE,               /**< marks a remote completion point, see SCOREP_Substrates_RmaOpCompleteRemoteCb() */
-    SCOREP_EVENT_THREAD_ACQUIRE_LOCK,                  /**< marks when a thread acquires a lock (pthreads, explicit and implicit OpenMP locks), see SCOREP_Substrates_ThreadAcquireLockCb() */
-    SCOREP_EVENT_THREAD_RELEASE_LOCK,                  /**< marks when a thread releases a lock (pthreads, explicit and implicit OpenMP locks), see SCOREP_Substrates_ThreadreleaseLockCb() */
+    SCOREP_EVENT_THREAD_ACQUIRE_LOCK,                  /**< marks when a thread acquires a lock (Pthreads, explicit and implicit OpenMP locks), see SCOREP_Substrates_ThreadAcquireLockCb() */
+    SCOREP_EVENT_THREAD_RELEASE_LOCK,                  /**< marks when a thread releases a lock (Pthreads, explicit and implicit OpenMP locks), see SCOREP_Substrates_ThreadreleaseLockCb() */
     SCOREP_EVENT_TRIGGER_COUNTER_INT64,                /**< called when an int64 counter is triggered, see SCOREP_Substrates_TriggerCounterInt64Cb() */
     SCOREP_EVENT_TRIGGER_COUNTER_UINT64,               /**< called when an uint64 counter is triggered, see SCOREP_Substrates_TriggerCounterUint64Cb() */
     SCOREP_EVENT_TRIGGER_COUNTER_DOUBLE,               /**< called when an double counter is triggered, see SCOREP_Substrates_TriggerCounterDoubleCb() */
@@ -125,10 +125,10 @@ typedef enum SCOREP_Substrates_EventType
     SCOREP_EVENT_THREAD_FORK_JOIN_TASK_SWITCH,         /**< switching of tasks in a fork-join based thread-parallel programming model (e.g., OpenMP), see SCOREP_Substrates_ThreadForkJoinTaskSwitchCb() */
     SCOREP_EVENT_THREAD_FORK_JOIN_TASK_BEGIN,          /**< begin of a task in a fork-join based thread-parallel programming model (e.g., OpenMP), see SCOREP_Substrates_ThreadForkJoinTaskBeginCb() */
     SCOREP_EVENT_THREAD_FORK_JOIN_TASK_END,            /**< end of a task in a fork-join based thread-parallel programming model (e.g., OpenMP), see SCOREP_Substrates_ThreadForkJoinTaskEndCb() */
-    SCOREP_EVENT_THREAD_CREATE_WAIT_CREATE,            /**< create a new thread in a create-wait based thread-parallel programming model (e.g., pthreads), called by parent, see SCOREP_Substrates_ThreadCreateWaitCreateCb() */
-    SCOREP_EVENT_THREAD_CREATE_WAIT_WAIT,              /**< wait and join a thread in a create-wait based thread-parallel programming model (e.g., pthreads), usually called by parent, see SCOREP_Substrates_ThreadCreateWaitWaitCb() */
-    SCOREP_EVENT_THREAD_CREATE_WAIT_BEGIN,             /**< begin a new thread in a create-wait based thread-parallel programming model (e.g., pthreads), called by new thread, see SCOREP_Substrates_ThreadCreateWaitBeginCb() */
-    SCOREP_EVENT_THREAD_CREATE_WAIT_END,               /**< end a thread in a create-wait based thread-parallel programming model (e.g., pthreads), see SCOREP_Substrates_ThreadCreateWaitEndCb() */
+    SCOREP_EVENT_THREAD_CREATE_WAIT_CREATE,            /**< create a new thread in a create-wait based thread-parallel programming model (e.g., Pthreads), called by parent, see SCOREP_Substrates_ThreadCreateWaitCreateCb() */
+    SCOREP_EVENT_THREAD_CREATE_WAIT_WAIT,              /**< wait and join a thread in a create-wait based thread-parallel programming model (e.g., Pthreads), usually called by parent, see SCOREP_Substrates_ThreadCreateWaitWaitCb() */
+    SCOREP_EVENT_THREAD_CREATE_WAIT_BEGIN,             /**< begin a new thread in a create-wait based thread-parallel programming model (e.g., Pthreads), called by new thread, see SCOREP_Substrates_ThreadCreateWaitBeginCb() */
+    SCOREP_EVENT_THREAD_CREATE_WAIT_END,               /**< end a thread in a create-wait based thread-parallel programming model (e.g., Pthreads), see SCOREP_Substrates_ThreadCreateWaitEndCb() */
     SCOREP_EVENT_TRACK_ALLOC,                          /**< track malloc/calloc memory allocation, see SCOREP_Substrates_TrackAllocCb() */
     SCOREP_EVENT_TRACK_REALLOC,                        /**< track realloc memory (de-)allocation, see SCOREP_Substrates_TrackReallocCb() */
     SCOREP_EVENT_TRACK_FREE,                           /**< track realloc memory deallocation, see SCOREP_Substrates_TrackFreeCb() */
@@ -1364,7 +1364,7 @@ typedef void ( * SCOREP_Substrates_ThreadForkJoinTaskEndCb )(
 /** @} */
 
 /**
- * process a thread event for a create/wait thread model instrumentation adapter e.g., pthreads
+ * process a thread event for a create/wait thread model instrumentation adapter e.g., Pthreads
  *
  * @param location location which creates this event
  *

@@ -178,9 +178,9 @@ The definitions of OpenMP events and adapters is postponed until the results fro
 
 
 @subsection thread_def Thread support.
-VampirTrace provides a wrapper library for PThreads. The library generates enter/exit events on functions of the PThread library and allows to distinguish threads.
+VampirTrace provides a wrapper library for Pthreads. The library generates enter/exit events on functions of the Pthread library and allows to distinguish threads.
 
-The extended SCALASCA tools support the same functionality for PThreads.
+The extended SCALASCA tools support the same functionality for Pthreads.
 
 
 @section hardware_counter Hardware counter support
@@ -203,10 +203,10 @@ The thread support of the PAPI library, needs a function pointer to a function w
 @section tread_support Thread support
 @subsection vampir_thread VampirTrace
 
-VampirTrace provides a wrapper library for PThreads. The library generates enter/exit events on functions of the PThread library and allows to distinguish threads.
+VampirTrace provides a wrapper library for Pthreads. The library generates enter/exit events on functions of the Pthread library and allows to distinguish threads.
 
 @subsection tau_thread TAU
-The same functionality for PThreads is supported.
+The same functionality for Pthreads is supported.
 
 subsection conclusions_tread Conclusions
 
@@ -292,7 +292,7 @@ When it becomes more clear, how the OpenMP and general Thread support may look l
 The second step includes:
 <ul>
   <li> OpenMP support
-  <li> PThread support
+  <li> Pthread support
   <li> Grouping
   <li> Filtering
   <li> Reconfigure hardware counter during measurement
@@ -322,7 +322,7 @@ The third step includes so far:
   <tr><td> Markers <td> 3 </tr>
   <tr><td> MPI support <td> core 1, full support 2 </tr>
   <tr><td> OpenMP support <td> 2 </tr>
-  <tr><td> PThreads support <td> 2 </tr>
+  <tr><td> Pthreads support <td> 2 </tr>
   <tr><td> Grouping <td> 2 </tr>
   <tr><td> Filtering <td> 2 </tr>
   <tr><td> Reconfiguring of performance counters <td> 2 </tr>
@@ -341,7 +341,7 @@ The third step includes so far:
   <tr><td> Other counter libraries support <td> 2 </tr>
   <tr><td> MPI adapter <td> 1 </tr>
   <tr><td> OpenMP adapter <td> 2 </tr>
-  <tr><td> PThread adapter <td> 2 </tr>
+  <tr><td> Pthread adapter <td> 2 </tr>
   <tr><td> Instrumentation tools wrapper <td> 1 </tr>
   <tr><td> POSIX wrapper adapter <td> 3 </tr>
   <tr><td> Memory allocation adapter <td> 3 </tr>

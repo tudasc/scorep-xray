@@ -40,7 +40,7 @@ Overview
 User library wrapping enables users to install library wrappers for any
 C or C++ library they want.
 
-In contrast to wrappers integrated into Score-P, e.g., PThreads, MPI, and
+In contrast to wrappers integrated into Score-P, e.g., Pthreads, MPI, and
 OpenCL, user library wrappers do not extract semantic information from the
 library. It only intercepts function calls and provides their timing
 information.
