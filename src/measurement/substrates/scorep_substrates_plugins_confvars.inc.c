@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2015-2016,
+ * Copyright (c) 2015-2016, 2024,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -49,7 +49,7 @@ static const SCOREP_ConfigVariable scorep_substrates_plugins_confvars[] = {
         NULL,
         ",",
         "Separator of substrate plugin names",
-        "Character that separates plugin names in SCOREP_SUBSTRATE_PLUGINS."
+        "Character that separates plugin names in `SCOREP_SUBSTRATE_PLUGINS`."
     },
     SCOREP_CONFIG_TERMINATOR
 };

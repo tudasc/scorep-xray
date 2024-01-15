@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2015-2016, 2019, 2022,
+ * Copyright (c) 2009-2011, 2015-2016, 2019, 2022, 2024,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -127,7 +127,7 @@ static const SCOREP_ConfigVariable core_enable_unwinding_confvars[] = {
         "applications.\n"
         "Note that when tracing is also enabled, Score-P does not write the "
         "usual Enter/Leave records into the OTF2 trace, but new records.\n"
-        "See also SCOREP_TRACING_CONVERT_CALLING_CONTEXT_EVENTS.\n"
+        "See also `SCOREP_TRACING_CONVERT_CALLING_CONTEXT_EVENTS`.\n"
         "Note also that this supresses events from the compiler instrumentation."
     },
     SCOREP_CONFIG_TERMINATOR
@@ -150,9 +150,9 @@ static const SCOREP_ConfigVariable core_confvars[] = {
         NULL,
         "16000k",
         "Total memory in bytes per process to be consumed by the measurement system",
-        "SCOREP_TOTAL_MEMORY will be split into pages of size SCOREP_PAGE_SIZE "
-        "(potentially reduced to a multiple of SCOREP_PAGE_SIZE). Maximum size is 4 GB"
-        "minus one SCOREP_PAGE_SIZE."
+        "It will be split into pages of size `SCOREP_PAGE_SIZE` (potentially "
+        "reduced to a multiple of `SCOREP_PAGE_SIZE`). Maximum size is 4 GB"
+        "minus one `SCOREP_PAGE_SIZE`."
     },
     {
         "page_size",
@@ -161,9 +161,9 @@ static const SCOREP_ConfigVariable core_confvars[] = {
         NULL,
         "8k",
         "Memory page size in bytes",
-        "If not a power of two, SCOREP_PAGE_SIZE will be increased to the next "
-        "larger power of two. SCOREP_TOTAL_MEMORY will be split up into pages "
-        "of (the adjusted) SCOREP_PAGE_SIZE. Minimum size is 512 bytes."
+        "If not a power of two, `SCOREP_PAGE_SIZE` will be increased to the next "
+        "larger power of two. `SCOREP_TOTAL_MEMORY` will be split up into pages "
+        "of (the adjusted) `SCOREP_PAGE_SIZE`. Minimum size is 512 bytes."
     },
     {
         "experiment_directory",
@@ -176,7 +176,7 @@ static const SCOREP_ConfigVariable core_confvars[] = {
         "directory. No parent directories will be created. The experiment "
         "directory is only created if it is requested by at least one substrate. "
         "When no experiment name is given (the default) Score-P names the "
-        "experiment directory `scorep-measurement-tmp' and renames this "
+        "experiment directory `scorep-measurement-tmp` and renames this "
         "after a successful measurement to a generated name based on the "
         "current time."
     },
@@ -237,11 +237,11 @@ static const SCOREP_ConfigVariable core_confvars[] = {
         NULL,
         "true",
         "Force the creation of experiment directory and configuration files",
-        "If this is set to 'true' (which is the default), the experiment directory "
+        "If this is set to `true` (which is the default), the experiment directory "
         " will be created along with some configuration files, even if no substrate "
         "writes data (i.e., profiling and tracing are disabled and no substrate "
         "plugin registered for writing).\n"
-        "If this is set to 'false', the directory will only be created if any "
+        "If this is set to `false`, the directory will only be created if any "
         "substrate actually writes data."
     },
     SCOREP_CONFIG_TERMINATOR

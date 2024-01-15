@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2015, 2024,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -88,7 +88,7 @@ static const SCOREP_ConfigVariable scorep_tracing_calling_context_confvars[] = {
         "records from OTF2 or they could be converted to the legacy Enter/Leave "
         "records.  This can be controlled with this variable, where the former is "
         "the false value.\n"
-        "This is only in effect if SCOREP_ENABLING_UNWINDING is on.\n"
+        "This is only in effect if `SCOREP_ENABLING_UNWINDING` is on.\n"
         "Note that enabling this will result in an increase of records per "
         "event and also of the loss of the source code locations.\n"
         "This option exists only for backwards compatibility for tools, which "

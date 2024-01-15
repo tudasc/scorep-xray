@@ -10,6 +10,8 @@
 /src/services/timer/cycle.h -hook-beautifier
 # Function envelop missing on purpose.
 /src/services/timer/scorep_timer_tsc.inc.c -hook-beautifier
+# need to close a @note section before including `scorep-info config-vars` output
+/doc/doxygen-user/main_7.dox.in -hook-trailing-nl
 # example code
 /doc/examples/hello_world.c -hook-config
 # Plugins do not need config.h

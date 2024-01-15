@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014-2016,
+ * Copyright (c) 2014-2016, 2024,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2016,
@@ -71,9 +71,9 @@ static const SCOREP_ConfigType_SetEntry openacc_enable_groups[] =
         SCOREP_OPENACC_FEATURES_DEFAULT,
         "OpenACC regions, enqueue and wait operations.\n"
         "Includes:\n"
-        "\240-\240regions\n"
-        "\240-\240wait\n"
-        "\240-\240enqueue"
+        "\240-\240`regions`\n"
+        "\240-\240`wait`\n"
+        "\240-\240`enqueue`"
     },
     { NULL, 0, NULL }
 };

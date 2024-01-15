@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012, 2016,
+ * Copyright (c) 2009-2012, 2016, 2024,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -66,14 +66,14 @@ static const SCOREP_ConfigType_SetEntry mpi_enable_groups[] = {
         SCOREP_MPI_ENABLED_DEFAULT,
         "Default configuration.\n"
         "Includes:\n"
-        "\240-\240cg\n"
-        "\240-\240coll\n"
-        "\240-\240env\n"
-        "\240-\240io\n"
-        "\240-\240p2p\n"
-        "\240-\240rma\n"
-        "\240-\240topo\n"
-        "\240-\240xnonblock"
+        "\240-\240`cg`\n"
+        "\240-\240`coll`\n"
+        "\240-\240`env`\n"
+        "\240-\240`io`\n"
+        "\240-\240`p2p`\n"
+        "\240-\240`rma`\n"
+        "\240-\240`topo`\n"
+        "\240-\240`xnonblock`"
     },
     {
         "env",

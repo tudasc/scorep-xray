@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2015, 2024,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -120,21 +120,21 @@ static const SCOREP_ConfigType_SetEntry cuda_enable_groups[] = {
          */
         "flushatexit",
         SCOREP_CUDA_FEATURE_FLUSHATEXIT,
-        "[DEPRECATED] Flush CUDA activity buffer at program exit (see 'dontflushatexit')"
+        "[DEPRECATED] Flush CUDA activity buffer at program exit (see `dontflushatexit`)"
     },
     {
         "default/yes/1",
         SCOREP_CUDA_FEATURES_DEFAULT,
         "CUDA runtime API and GPU activities.\n"
         "Includes:\n"
-        "\240-\240driver\n"
-        "\240-\240kernel\n"
-        "\240-\240kernel_counter\n"
-        "\240-\240memcpy\n"
-        "\240-\240idle\n"
-        "\240-\240sync\n"
-        "\240-\240gpumemusage\n"
-        "\240-\240references\n"
+        "\240-\240`driver`\n"
+        "\240-\240`kernel`\n"
+        "\240-\240`kernel_counter`\n"
+        "\240-\240`memcpy`\n"
+        "\240-\240`idle`\n"
+        "\240-\240`sync`\n"
+        "\240-\240`gpumemusage`\n"
+        "\240-\240`references`\n"
     },
     { NULL, 0, NULL }
 };
@@ -151,7 +151,7 @@ static const SCOREP_ConfigVariable scorep_cuda_confvars[] = {
         ( void* )cuda_enable_groups,
         "yes",                     /* default value */
         "CUDA measurement features",
-        "SCOREP_CUDA_ENABLE sets the CUDA measurement mode to capture.\n\n"
+        "Sets the CUDA measurement mode to capture.\n\n"
         "Notes:\n"
         "\240-\240Options required by other options will be included automatically.\n"
         "\240-\240idle and pure idle are mutually exclusive.\n"

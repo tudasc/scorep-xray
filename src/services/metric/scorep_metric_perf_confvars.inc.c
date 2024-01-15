@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015, 2024,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2015,
@@ -68,8 +68,8 @@ static const SCOREP_ConfigVariable scorep_metric_perf_confvars[] = {
         NULL,
         ",",
         "Separator of PERF metric names",
-        "Character that separates metric names in SCOREP_METRIC_PERF and "
-        "SCOREP_METRIC_PERF_PER_PROCESS."
+        "Character that separates metric names in `SCOREP_METRIC_PERF` and "
+        "`SCOREP_METRIC_PERF_PER_PROCESS`."
     },
     SCOREP_CONFIG_TERMINATOR
 };
