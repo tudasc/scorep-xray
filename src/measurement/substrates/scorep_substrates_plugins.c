@@ -4,7 +4,7 @@
  * Copyright (c) 2015-2019,
  * Technische Universitaet Dresden, Germany
  *
- * Copyright (c) 2018,
+ * Copyright (c) 2018, 2024,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -313,7 +313,7 @@ SCOREP_Substrate_Plugins_EarlyInit( void )
 void
 SCOREP_Substrate_Plugins_InitLocationData( SCOREP_Location* location )
 {
-    void** allocated = SCOREP_Memory_AllocForMisc( sizeof( void** ) * nr_registered_plugins );
+    void** allocated = SCOREP_Location_AllocForMisc( location, sizeof( void** ) * nr_registered_plugins );
     memset( allocated, 0, sizeof( void** ) * nr_registered_plugins );
     SCOREP_Location_SetSubstrateData( location, allocated, substrate_id );
 }
