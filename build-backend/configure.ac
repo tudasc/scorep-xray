@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2022,
+dnl Copyright (c) 2009-2022, 2024,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -73,7 +73,7 @@ SCOREP_COMPUTENODE_FC
 AFS_PROG_FC_SUMMARY
 SCOREP_COMPUTENODE_F77
 AFS_PROG_F77_SUMMARY
-AM_CONDITIONAL([HAVE_FORTRAN_SUPPORT], [test "x${afs_cv_prog_f77_works}" = "xyes" || test "x${afs_cv_prog_fc_works}" = "xyes"])
+AM_CONDITIONAL([HAVE_FORTRAN_SUPPORT], [test "x${afs_cv_prog_f77_works}" = "xyes" && test "x${afs_cv_prog_fc_works}" = "xyes"])
 
 LT_PREREQ([2.4.6])
 LT_INIT([disable-shared])
