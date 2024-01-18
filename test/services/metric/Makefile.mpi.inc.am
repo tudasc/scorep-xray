@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013, 2022,
+## Copyright (c) 2009-2013, 2022, 2024,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2014,
@@ -68,6 +68,12 @@ if HAVE_OPENMP_C_SUPPORT
 
 if HAVE_SCOREP_OMP_TPD
 
+# The sources use F77_FUNC_, which needs to be the same as in
+# build-backend, otherwise we might have, e.g., a pomp_tpd vs.
+# pomp_tpd_ mismatch. We assume F77_FUNC_ is the same if we have
+# Fortran support in build-backend and build-mpi.
+if HAVE_MPI_FORTRAN_SUPPORT
+
 check_PROGRAMS                       += jacobi_mpi_omp_c_metric_test
 jacobi_mpi_omp_c_metric_test_SOURCES  = $(SRC_ROOT)test/services/metric/data/jacobi/hybrid/C/jacobi.mod.c       \
                                         $(SRC_ROOT)test/services/metric/data/jacobi/hybrid/C/jacobi.c.opari.inc \
@@ -89,6 +95,8 @@ jacobi_mpi_omp_c_metric_test_LDFLAGS  = $(mpi_omp_ldflags)
 # cases. No metrics will be recorded because corresponding environment
 # variables aren't set.
 TESTS_MPI_OMP += jacobi_mpi_omp_c_metric_test
+
+endif HAVE_MPI_FORTRAN_SUPPORT
 
 endif HAVE_SCOREP_OMP_TPD
 

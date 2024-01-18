@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2011, 2013, 2016, 2021-2022,
+## Copyright (c) 2009-2011, 2013, 2016, 2021-2022, 2024,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011, 2014,
@@ -132,6 +132,9 @@ endif HAVE_SCOREP_OMP_TPD
 endif HAVE_OPENMP_CXX_SUPPORT
 
 ## Serial Fortran
+
+if HAVE_FORTRAN_SUPPORT
+
 if FORTRAN_SUPPORT_ALLOCATABLE
 
 # Specify fortran dependencies manually
@@ -206,5 +209,7 @@ endif HAVE_SCOREP_OMP_TPD
 endif HAVE_OPENMP_FC_SUPPORT
 
 endif FORTRAN_SUPPORT_ALLOCATABLE
+
+endif HAVE_FORTRAN_SUPPORT
 
 CLEANFILES += variabledef.mod jacobimod.mod

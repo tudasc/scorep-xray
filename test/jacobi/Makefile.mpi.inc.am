@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2011, 2014, 2021-2022,
+## Copyright (c) 2009-2011, 2014, 2021-2022, 2024,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011, 2014,
@@ -58,6 +58,12 @@ if HAVE_OPENMP_C_SUPPORT
 
 if HAVE_SCOREP_OMP_TPD
 
+# The sources use F77_FUNC_, which needs to be the same as in
+# build-backend, otherwise we might have, e.g., a pomp_tpd vs.
+# pomp_tpd_ mismatch. We assume F77_FUNC_ is the same if we have
+# Fortran support in build-backend and build-mpi.
+if HAVE_MPI_FORTRAN_SUPPORT
+
 check_PROGRAMS           += jacobi_mpi_omp_c
 jacobi_mpi_omp_c_SOURCES  = $(SRC_ROOT)test/jacobi/hybrid/C/jacobi.mod.c       \
                             $(SRC_ROOT)test/jacobi/hybrid/C/jacobi.c.opari.inc \
@@ -79,6 +85,7 @@ jacobi_mpi_omp_c_uninstrumented_LDADD   = -lm
 
 TESTS_MPI_OMP += jacobi_mpi_omp_c
 
+endif HAVE_MPI_FORTRAN_SUPPORT
 
 endif HAVE_SCOREP_OMP_TPD
 
@@ -108,6 +115,9 @@ if HAVE_OPENMP_CXX_SUPPORT
 
 if HAVE_SCOREP_OMP_TPD
 
+# See comment in C section
+if HAVE_MPI_FORTRAN_SUPPORT
+
 check_PROGRAMS             += jacobi_mpi_omp_cxx
 jacobi_mpi_omp_cxx_SOURCES  = $(SRC_ROOT)test/jacobi/hybrid/C++/jacobi.mod.cpp       \
                               $(SRC_ROOT)test/jacobi/hybrid/C++/jacobi.cpp.opari.inc \
@@ -129,6 +139,7 @@ jacobi_mpi_omp_cxx_uninstrumented_LDADD     = -lm
 
 TESTS_MPI_OMP += jacobi_mpi_omp_cxx
 
+endif HAVE_MPI_FORTRAN_SUPPORT
 
 endif HAVE_SCOREP_OMP_TPD
 
@@ -168,6 +179,10 @@ if HAVE_OPENMP_FC_SUPPORT
 
 if HAVE_SCOREP_OMP_TPD
 
+# See comment in C section.
+# Even if we use the FC compiler, F77_FUNC_ relies on  F77 to work.
+if HAVE_MPI_FORTRAN_SUPPORT
+
 if !SCOREP_COMPILER_FC_CRAY
 # The cray fortran compiler bails out on #line directives so we just
 # deactivate the tests with opari2-preinstrumented fortran sources.
@@ -202,6 +217,8 @@ jacobi_mpi_omp_f90_uninstrumented_LDADD     = -lm
 TESTS_MPI_OMP += jacobi_mpi_omp_f90
 
 endif !SCOREP_COMPILER_FC_CRAY
+
+endif HAVE_MPI_FORTRAN_SUPPORT
 
 endif HAVE_SCOREP_OMP_TPD
 

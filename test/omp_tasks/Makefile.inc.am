@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2011, 2013, 2018, 2022,
+## Copyright (c) 2009-2011, 2013, 2018, 2022, 2024,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011, 2014,
@@ -66,6 +66,7 @@ TESTS_OMP += $(srcdir)/../test/omp_tasks/run_omp_tasks.sh
 
 endif HAVE_OPENMP_C_SUPPORT
 
+if HAVE_FORTRAN_SUPPORT
 if SCOREP_COMPILER_FC_GNU
 if HAVE_OPENMP_FC_SUPPORT
 
@@ -84,6 +85,7 @@ TESTS_OMP += $(srcdir)/../test/omp_tasks/run_omp_tasks_untied.sh
 
 endif HAVE_OPENMP_FC_SUPPORT
 endif SCOREP_COMPILER_FC_GNU
+endif HAVE_FORTRAN_SUPPORT
 
 if HAVE_OPENMP_C_SUPPORT
 if !SCOREP_COMPILER_CC_PGI
