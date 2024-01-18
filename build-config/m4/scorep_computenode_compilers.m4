@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2012,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2013, 2020-2022,
+dnl Copyright (c) 2009-2013, 2020-2022, 2024,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2012, 2014,
@@ -47,7 +47,6 @@ dnl come with complex dependencies, AC_DEFUN leads to configure failures
 dnl if F77 is defunct. This might be fixable by patching autoconf.
 m4_define([SCOREP_COMPUTENODE_F77],[
     AFS_PROG_F77([optional])
-    AM_CONDITIONAL([SCOREP_HAVE_F77], [test "x${afs_cv_prog_f77_works}" = "xyes"])
     dnl do not use AS_IF here, as this expands AC_F77_LIBRARY_LDFLAGS before AS_IF,
     dnl which renders the if ineffective
     if test "x${afs_cv_prog_f77_works}" = "xyes"; then
@@ -79,7 +78,6 @@ dnl come with complex dependencies, AC_DEFUN leads to configure failures
 dnl if FC is defunct. This might be fixable by patching autoconf.
 m4_define([SCOREP_COMPUTENODE_FC],[
     AFS_PROG_FC([optional])
-    AM_CONDITIONAL([SCOREP_HAVE_FC], [test "x${afs_cv_prog_fc_works}" = "xyes"])
     AC_SUBST([SCOREP_HAVE_FC], $(if test "x${afs_cv_prog_fc_works}" = "xyes"; then echo 1; else echo 0; fi))
     dnl do not use AS_IF here, as this expands AC_F77_LIBRARY_LDFLAGS before AS_IF,
     dnl which renders the if ineffective

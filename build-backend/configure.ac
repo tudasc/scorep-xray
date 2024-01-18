@@ -335,10 +335,10 @@ AC_SUBST([LT_OBJDIR],                  ["$lt_cv_objdir/"])
 scorep_list_of_wrappers=
 
 additional_compiler_list=""
-AM_COND_IF([SCOREP_HAVE_F77], [
+AS_IF([test "x${afs_cv_prog_f77_works}" = xyes], [
     AS_VAR_APPEND([additional_compiler_list], [" F77"])
 ])
-AM_COND_IF([SCOREP_HAVE_FC], [
+AS_IF([test "x${afs_cv_prog_fc_works}" = xyes], [
     AS_VAR_APPEND([additional_compiler_list], [" FC"])
 ])
 
