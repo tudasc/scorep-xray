@@ -17,7 +17,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013, 2021-2022,
+## Copyright (c) 2009-2013, 2021-2022, 2024,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -48,6 +48,6 @@ CODES      = jacobi
 LANGUAGES  =
 @HAVE_OPENMP_C_SUPPORT_TRUE@LANGUAGES += cc
 @HAVE_OPENMP_CXX_SUPPORT_TRUE@LANGUAGES += cxx
-@HAVE_OPENMP_FC_SUPPORT_TRUE@@HAVE_MPIFC_TRUE@LANGUAGES += fc
+@HAVE_OPENMP_FC_SUPPORT_TRUE@@HAVE_MPI_FORTRAN_SUPPORT_TRUE@LANGUAGES += fc
 
 include  @abs_top_builddir@/../installcheck/instrumenter_checks/Makefile.instrument_configurations

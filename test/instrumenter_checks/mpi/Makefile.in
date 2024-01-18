@@ -17,7 +17,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013, 2021,
+## Copyright (c) 2009-2013, 2021, 2024,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -48,6 +48,6 @@ FCFLAGS  = -O3 @SCOREP_FORTRAN_ALLOW_ARGUMENT_MISMATCH@
 PARADIGM   = mpi
 CODES      = jacobi
 LANGUAGES  = cc cxx
-@HAVE_MPIFC_TRUE@LANGUAGES  = cc cxx fc
+@HAVE_MPI_FORTRAN_SUPPORT_TRUE@LANGUAGES += fc
 
 include  @abs_top_builddir@/../installcheck/instrumenter_checks/Makefile.instrument_configurations
