@@ -1,7 +1,7 @@
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2022-2023,
+dnl Copyright (c) 2022-2024,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl This software may be modified and distributed under the terms of
@@ -205,7 +205,9 @@ AC_LINK_IFELSE([_INPUT_IGNORED],
          ],
          [AC_MSG_FAILURE([TODO: handle real cross-compile systems])])
      cross_compiling="${cross_compiling_save}"],
-    [ompt_reason_[]_AC_LANG_ABBREV="tool cannot be linked"])
+    [# Do not override a known reason if linkage fails in next iteration
+     AS_IF([test "x${ompt_reason_[]_AC_LANG_ABBREV}" = x],
+         [ompt_reason_[]_AC_LANG_ABBREV="tool cannot be linked"])])
 ])dnl _CHECK_TOOL_ACTIVATION
 
 
@@ -219,6 +221,7 @@ m4_define([_CHECK_OMPT_SUPPORT], [
 _AC_LANG_PREFIX[]FLAGS_save="$_AC_LANG_PREFIX[]FLAGS"
 _AC_LANG_PREFIX[]FLAGS="$OPENMP_[]_AC_LANG_PREFIX[]FLAGS $_AC_LANG_PREFIX[]FLAGS"
 AS_UNSET([tool_got_activated])
+AS_UNSET([ompt_reason_]_AC_LANG_ABBREV)
 AC_COMPILE_IFELSE([AC_LANG_SOURCE(_INPUT_OPENMP_[]_AC_LANG_PREFIX)],
     [cp conftest.$ac_objext main.$ac_objext
      # use customized link command
@@ -245,7 +248,8 @@ AC_COMPILE_IFELSE([AC_LANG_SOURCE(_INPUT_OPENMP_[]_AC_LANG_PREFIX)],
                          test "x${tool_got_activated}" = xyes],
                       [break])
               done
-              ompt_[]_AC_LANG_ABBREV[]_ldflags="${extra_ldflags}"
+              AS_IF([test "x${have_ompt_[]_AC_LANG_ABBREV[]_support}" = xyes],
+                  [ompt_[]_AC_LANG_ABBREV[]_ldflags="${extra_ldflags}"])
               AC_SUBST([SCOREP_OMPT_LDFLAGS], [${ompt_[]_AC_LANG_ABBREV[]_ldflags}])],
          [LDFLAGS="${ompt_c_ldflags} ${LDFLAGS}"
           _CHECK_TOOL_ACTIVATION])
