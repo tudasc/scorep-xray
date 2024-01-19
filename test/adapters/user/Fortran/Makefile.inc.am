@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2014, 2022,
+## Copyright (c) 2009-2014, 2022, 2024,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2014,
@@ -29,7 +29,7 @@
 ## directory for details.
 ##
 
-if SCOREP_HAVE_FC
+if HAVE_FORTRAN_SUPPORT
 
 check_PROGRAMS += user_f90_test
 
@@ -57,7 +57,7 @@ user_f90_test_LDFLAGS  = $(serial_ldflags)
 TESTS_SERIAL += ./user_f90_test
 TESTS_SERIAL += ./../test/adapters/user/Fortran/run_selective_test.sh
 
-endif
+endif HAVE_FORTRAN_SUPPORT
 
 EXTRA_DIST       += \
     $(SRC_ROOT)test/adapters/user/Fortran/selective.cfg \

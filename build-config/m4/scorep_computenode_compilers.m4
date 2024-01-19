@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2012,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2013, 2020-2022,
+dnl Copyright (c) 2009-2013, 2020-2022, 2024,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2012, 2014,
@@ -47,8 +47,7 @@ dnl come with complex dependencies, AC_DEFUN leads to configure failures
 dnl if F77 is defunct. This might be fixable by patching autoconf.
 m4_define([SCOREP_COMPUTENODE_F77],[
     AFS_PROG_F77([optional])
-    AM_CONDITIONAL([SCOREP_HAVE_F77], [test "x${afs_cv_prog_f77_works}" = "xyes"])
-    dnl do not use AS_IF here, as this epands AC_F77_LIBRARY_LDFLAGS before AS_IF,
+    dnl do not use AS_IF here, as this expands AC_F77_LIBRARY_LDFLAGS before AS_IF,
     dnl which renders the if ineffective
     if test "x${afs_cv_prog_f77_works}" = "xyes"; then
         # AC_F*_LIBRARY_LDFLAGS should not be needed as we link the
@@ -63,6 +62,9 @@ m4_define([SCOREP_COMPUTENODE_F77],[
             [crayx*], [FLIBS=`echo ${FLIBS} | sed -e 's/-ltcmalloc_minimal //g' -e 's/-ltcmalloc_minimal$//g'`])
         AC_F77_WRAPPERS
     else
+        # We use the name mangling macro to interact with Fortran even if there is
+        # no working F77 compiler because it is convenient. Alternatively, we could
+        # use conditional compilation, but this would adversely affect readability.
         AC_DEFINE([F77_FUNC(name,NAME)], [name])
         AC_DEFINE([F77_FUNC_(name,NAME)], [name])
     fi
@@ -76,9 +78,8 @@ dnl come with complex dependencies, AC_DEFUN leads to configure failures
 dnl if FC is defunct. This might be fixable by patching autoconf.
 m4_define([SCOREP_COMPUTENODE_FC],[
     AFS_PROG_FC([optional])
-    AM_CONDITIONAL([SCOREP_HAVE_FC], [test "x${afs_cv_prog_fc_works}" = "xyes"])
     AC_SUBST([SCOREP_HAVE_FC], $(if test "x${afs_cv_prog_fc_works}" = "xyes"; then echo 1; else echo 0; fi))
-    dnl do not use AS_IF here, as this epands AC_F77_LIBRARY_LDFLAGS before AS_IF,
+    dnl do not use AS_IF here, as this expands AC_F77_LIBRARY_LDFLAGS before AS_IF,
     dnl which renders the if ineffective
     if test "x${afs_cv_prog_fc_works}" = "xyes"; then
         AC_FC_LIBRARY_LDFLAGS
@@ -86,6 +87,7 @@ m4_define([SCOREP_COMPUTENODE_FC],[
             [crayx*], [FCLIBS=`echo ${FCLIBS} | sed -e 's/-ltcmalloc_minimal //g' -e 's/-ltcmalloc_minimal$//g'`])
         AC_FC_WRAPPERS
     else
+        # Not used yet, but will be when we abandon F77.
         AC_DEFINE([FC_FUNC(name,NAME)], [name])
         AC_DEFINE([FC_FUNC_(name,NAME)], [name])
     fi

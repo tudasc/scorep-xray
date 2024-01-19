@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2011, 2014, 2022,
+## Copyright (c) 2009-2011, 2014, 2022, 2024,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011, 2014,
@@ -46,7 +46,7 @@ filter_test_LDADD    = $(serial_libadd)
 
 filter_test_LDFLAGS  = $(serial_ldflags)
 
-if SCOREP_HAVE_FC
+if HAVE_FORTRAN_SUPPORT
 
 check_PROGRAMS += filter_f_test
 
@@ -64,7 +64,7 @@ filter_f_test_LDFLAGS  = $(serial_ldflags)
 
 TESTS_SERIAL += ./../test/filtering/run_filter_test.sh
 
-endif SCOREP_HAVE_FC
+endif HAVE_FORTRAN_SUPPORT
 
 if HAVE_SCOREP_COMPILER_INSTRUMENTATION
 

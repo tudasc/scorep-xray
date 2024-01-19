@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2013, 2024,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -33,7 +33,7 @@
 
 if HAVE_SCOREP_OMP_TPD
 
-if SCOREP_HAVE_FC
+if HAVE_FORTRAN_SUPPORT
 
 check_LTLIBRARIES                += libfortran_c_alignment.la
 libfortran_c_alignment_la_SOURCES = $(SRC_ROOT)test/alignment/alignment_test_c.c
@@ -45,6 +45,6 @@ fortran_c_alignment_LDADD   = libfortran_c_alignment.la
 
 TESTS_SERIAL += fortran_c_alignment
 
-endif SCOREP_HAVE_FC
+endif HAVE_FORTRAN_SUPPORT
 
 endif HAVE_SCOREP_OMP_TPD

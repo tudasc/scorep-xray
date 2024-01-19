@@ -290,7 +290,6 @@ if test "x${scorep_mpi_supported}" = "xno"; then
 fi
 AM_CONDITIONAL([HAVE_MPI_SUPPORT], [test "x${scorep_mpi_supported}" = "xyes"])
 AM_CONDITIONAL([HAVE_MPI_FORTRAN_SUPPORT], [test "x${scorep_mpi_fortran_supported}" = "xyes"])
-AM_CONDITIONAL([HAVE_MPIFC], [test "x${scorep_mpi_f90_supported}" = "xyes"])
 
 if test "x${scorep_mpi_supported}" = "xyes"; then
 

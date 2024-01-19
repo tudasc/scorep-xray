@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2011, 2013, 2022,
+## Copyright (c) 2009-2011, 2013, 2022, 2024,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011, 2014,
@@ -41,6 +41,12 @@ mpi_omp_hello_world_uninstrumented_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 mpi_omp_hello_world_uninstrumented_CPPFLAGS = $(AM_CPPFLAGS)
 
 if HAVE_SCOREP_OMP_TPD
+
+# The sources use F77_FUNC_, which needs to be the same as in
+# build-backend, otherwise we might have, e.g., a pomp_tpd vs.
+# pomp_tpd_ mismatch. We assume F77_FUNC_ is the same if we have
+# Fortran support in build-backend and build-mpi.
+if HAVE_MPI_FORTRAN_SUPPORT
 
 check_PROGRAMS += mpi_omp_hello_world
 
@@ -72,6 +78,7 @@ sequence_definition_test_LDFLAGS  = $(mpi_omp_ldflags)
 
 TESTS_MPI_OMP += sequence_definition_test
 
+endif HAVE_MPI_FORTRAN_SUPPORT
 endif HAVE_SCOREP_OMP_TPD
 endif HAVE_OPENMP_C_SUPPORT
 endif HAVE_MPI_SUPPORT
