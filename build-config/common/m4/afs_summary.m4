@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2013, 2023,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -255,7 +255,7 @@ AC_DEFUN([AFS_SUMMARY_COLLECT], [
 
     AS_IF([test "x${MODULESHOME:+set}" = "xset"], [
         AS_ECHO([""])
-        AS_ECHO(["Loaded modules:"])
+        AS_ECHO(["Environment modules loaded:"])
         _afs_summary_sep=""
         AS_IF([test "x${LOADEDMODULES:+set}" = "xset"], [
             _afs_summary_prefix="  module load "
@@ -268,7 +268,27 @@ AC_DEFUN([AFS_SUMMARY_COLLECT], [
             ])
             AS_ECHO([""])
         ], [
-            AS_ECHO(["  No modules loaded"])
+            AS_ECHO(["  No environment modules loaded"])
+        ])
+    ])
+
+    AS_IF([test "x${SPACK_ROOT:+set}" = "xset"], [
+        AS_ECHO([""])
+        AS_ECHO(["Spack packages loaded:"])
+        _afs_summary_sep=""
+        AS_IF([test "x${SPACK_LOADED_HASHES:+set}" = "xset"], [
+            _afs_summary_prefix="  spack load "
+            printf "%-${_afs_summary_column_width}s" "${_afs_summary_prefix}"
+            spack_modules=$(spack find --format "{name}{@version}{%compiler}{arch=architecture}" --loaded | tr '\n' ' ')
+            IFS=': ' eval 'set x $spack_modules'
+            shift
+            AS_FOR([MODULE], [_afs_summary_module], [], [
+                AS_ECHO_N(["${_afs_summary_sep}${_afs_summary_module}"])
+                _afs_summary_sep=" \\$as_nl${_afs_summary_padding}"
+            ])
+            AS_ECHO([""])
+        ], [
+            AS_ECHO(["  No spack packages loaded"])
         ])
     ])
 
