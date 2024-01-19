@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2022,
+ * Copyright (c) 2022, 2024,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -361,7 +361,7 @@ codeptr_hash_value_ctor( codeptr_hash_key_t* key,
     else
     {
         /* Create unique name '<type> @0x<addr>' to distinguish regions. */
-        const size_t append = 13;
+        const size_t append = 21;
         char         unique_name[ type_strlen + append ];
         memcpy( &unique_name[ 0 ], region_fallback[ key->type ].name, type_strlen );
         snprintf( &unique_name[ type_strlen ], append, " @0x%08" PRIxPTR "", ( uintptr_t )key->codeptr_ra );
