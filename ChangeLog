@@ -50,6 +50,8 @@ Bugfixes:
   data types for the arguments.
 - Library archives (`.a`) on a combined compile-and-link command with the
   `nvcc` compiler will not fail anymore.
+- Fix pointers getting cut off for OpenMP regions when the source code lookup
+  fails.
 
 ------------------- Released version 8.3 -----------------------------
 
