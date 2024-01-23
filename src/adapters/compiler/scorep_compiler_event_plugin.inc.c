@@ -4,7 +4,7 @@
  * Copyright (c) 2012-2013, 2015-2016, 2020,
  * Technische Universitaet Dresden, Germany
  *
- * Copyright (c) 2022,
+ * Copyright (c) 2022-2024,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -18,10 +18,10 @@
  *
  */
 
-#include "scorep_compiler_gcc_plugin.h"
+#include "scorep_compiler_plugin.h"
 
 
-static UTILS_Mutex gcc_plugin_register_region_mutex = UTILS_MUTEX_INIT;
+static UTILS_Mutex compiler_plugin_register_region_mutex = UTILS_MUTEX_INIT;
 
 /* Called from the instrumented function, if the automatic register failed
  * for example, if the function lives in an shared library */
@@ -35,7 +35,7 @@ scorep_plugin_register_region( const scorep_compiler_region_description* regionD
     }
     /*
      * Do not handle SCOREP_IsUnwindingEnabled() here, will be done in
-     * scorep_compiler_gcc_plugin_register_region
+     * scorep_compiler_plugin_register_region
      */
     if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
@@ -43,14 +43,14 @@ scorep_plugin_register_region( const scorep_compiler_region_description* regionD
         return;
     }
 
-    UTILS_MutexLock( &gcc_plugin_register_region_mutex );
+    UTILS_MutexLock( &compiler_plugin_register_region_mutex );
 
     if ( *regionDescr->handle == SCOREP_INVALID_REGION )
     {
-        scorep_compiler_gcc_plugin_register_region( regionDescr );
+        scorep_compiler_plugin_register_region( regionDescr );
     }
 
-    UTILS_MutexUnlock( &gcc_plugin_register_region_mutex );
+    UTILS_MutexUnlock( &compiler_plugin_register_region_mutex );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2022,
+ * Copyright (c) 2022-2024,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -41,9 +41,9 @@
 
 #include "scorep_compiler_event_func_trace.inc.c"
 
-#if HAVE( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN )
-#include "scorep_compiler_event_gcc_plugin.inc.c"
-#endif /* SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN  */
+#if HAVE( SCOREP_COMPILER_INSTRUMENTATION_PLUGIN )
+#include "scorep_compiler_event_plugin.inc.c"
+#endif /* SCOREP_COMPILER_INSTRUMENTATION_PLUGIN  */
 
 #include "scorep_compiler_event_vt_intel.inc.c"
 

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013, 2019-2020, 2022,
+ * Copyright (c) 2013, 2019-2020, 2022-2024,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2013-2016, 2019, 2021,
@@ -159,7 +159,7 @@ SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdL
     if ( cmdLine.getVerbosity() >= 1 ) \
     { \
         std::ostringstream verbosity_arg; \
-        verbosity_arg << " --compiler-arg=-fplugin-arg-scorep_instrument_function-verbosity="; \
+        verbosity_arg << " --compiler-arg=-fplugin-arg-scorep_instrument_function_gcc-verbosity="; \
         verbosity_arg << cmdLine.getVerbosity(); \
         flags += verbosity_arg.str(); \
     } \
@@ -168,7 +168,7 @@ SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdL
           file_it != filter_files.end(); \
           ++file_it ) \
     { \
-        flags += " --compiler-arg=-fplugin-arg-scorep_instrument_function-filter="  + *file_it; \
+        flags += " --compiler-arg=-fplugin-arg-scorep_instrument_function_gcc-filter="  + *file_it; \
     }
 
 #define FILTER_INTEL \
@@ -263,22 +263,22 @@ void
 SCOREP_Instrumenter_CompilerAdapter::prelink( SCOREP_Instrumenter&         instrumenter,
                                               SCOREP_Instrumenter_CmdLine& cmdLine )
 {
-#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN )
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_PLUGIN )
     if ( !cmdLine.isTargetSharedLib() )
     {
         if ( cmdLine.isBuildCheck() )
         {
             instrumenter.prependInputFile(
-                cmdLine.getPathToBinary() + "../build-backend/scorep_compiler_gcc_plugin_begin." OBJEXT );
+                cmdLine.getPathToBinary() + "../build-backend/scorep_compiler_plugin_begin." OBJEXT );
             instrumenter.appendInputFile(
-                cmdLine.getPathToBinary() + "../build-backend/scorep_compiler_gcc_plugin_end." OBJEXT );
+                cmdLine.getPathToBinary() + "../build-backend/scorep_compiler_plugin_end." OBJEXT );
         }
         else
         {
             instrumenter.prependInputFile(
-                SCOREP_BACKEND_PKGLIBDIR "/scorep_compiler_gcc_plugin_begin." OBJEXT );
+                SCOREP_BACKEND_PKGLIBDIR "/scorep_compiler_plugin_begin." OBJEXT );
             instrumenter.appendInputFile(
-                SCOREP_BACKEND_PKGLIBDIR "/scorep_compiler_gcc_plugin_end." OBJEXT );
+                SCOREP_BACKEND_PKGLIBDIR "/scorep_compiler_plugin_end." OBJEXT );
         }
     }
 #endif

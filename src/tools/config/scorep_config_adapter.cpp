@@ -367,11 +367,11 @@ SCOREP_Config_CompilerAdapter::addCFlags( std::string&           cflags,
     if ( build_check )
     {
         extern std::string path_to_binary;
-        cflags += "-fplugin=" + path_to_binary + "../build-gcc-plugin/" LT_OBJDIR "scorep_instrument_function.so ";
+        cflags += "-fplugin=" + path_to_binary + "../build-gcc-plugin/" LT_OBJDIR "scorep_instrument_function_gcc.so ";
     }
     else
     {
-        cflags += "-fplugin=" SCOREP_PKGLIBDIR "/scorep_instrument_function.so ";
+        cflags += "-fplugin=" SCOREP_PKGLIBDIR "/scorep_instrument_function_gcc.so ";
     }
     cflags += m_cflags;
 #elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_VT_INTEL )

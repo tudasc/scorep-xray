@@ -4,7 +4,7 @@
  * Copyright (c) 2012-2013, 2015-2016, 2020,
  * Technische Universitaet Dresden, Germany
  *
- * Copyright (c) 2015, 2022,
+ * Copyright (c) 2015, 2022-2024,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -16,12 +16,13 @@
 /**
  * @file
  *
- * @brief Support for GNU-Compiler
- * Will be triggered by the '-fplugin' flag of the GNU compiler.
+ * @brief Support for GNU-Compiler and LLVM pass plugins
+ * Will be triggered by the '-fplugin' flag of the GNU compiler and the
+ * '-fpass-plugin' flag of the LLVM based compilers
  */
 
 
-#include "scorep_compiler_gcc_plugin.h"
+#include "scorep_compiler_plugin.h"
 
 #define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
@@ -42,7 +43,7 @@ extern const scorep_compiler_region_description scorep_region_descriptions_end;
 
 
 void
-scorep_compiler_gcc_plugin_register_region( const scorep_compiler_region_description* regionDescr )
+scorep_compiler_plugin_register_region( const scorep_compiler_region_description* regionDescr )
 {
     /*
      * If unwinding is enabled, we filter out all regions.
@@ -66,7 +67,7 @@ scorep_compiler_gcc_plugin_register_region( const scorep_compiler_region_descrip
                                       SCOREP_PARADIGM_COMPILER,
                                       SCOREP_REGION_FUNCTION );
 
-    UTILS_DEBUG( "registered %s:%d-%d:%s: \"%s\"",
+    UTILS_DEBUG( "Registered %s:%d-%d:%s: \"%s\"",
                  regionDescr->file,
                  regionDescr->begin_lno,
                  regionDescr->end_lno,
@@ -76,7 +77,7 @@ scorep_compiler_gcc_plugin_register_region( const scorep_compiler_region_descrip
 
 
 static void
-gcc_plugin_register_regions( void )
+plugin_register_regions( void )
 {
     /* Initialize plugin instrumentation */
     for ( const scorep_compiler_region_description* region_descr = &scorep_region_descriptions_begin + 1;
@@ -84,6 +85,6 @@ gcc_plugin_register_regions( void )
           region_descr++ )
     {
         /* This handles SCOREP_IsUnwindingEnabled() and sets all regions handles to `FILTERED`. */
-        scorep_compiler_gcc_plugin_register_region( region_descr );
+        scorep_compiler_plugin_register_region( region_descr );
     }
 }
