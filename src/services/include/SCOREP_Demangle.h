@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2022,
+ * Copyright (c) 2022, 2024,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -18,6 +18,8 @@
  *
  * @brief Provide demangling functionality.
  */
+
+UTILS_BEGIN_C_DECLS
 
 /* Options passed to SCOREP_Demangle() as 2nd parameter. */
 #define SCOREP_DEMANGLE_NO_OPTS 0
@@ -54,5 +56,7 @@ SCOREP_Demangle( const char* mangledName,
     return NULL;
 #endif /* !HAVE( SCOREP_DEMANGLE ) */
 }
+
+UTILS_END_C_DECLS
 
 #endif /* SCOREP_DEMANGLE_H */
