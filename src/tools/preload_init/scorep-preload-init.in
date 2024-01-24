@@ -6,6 +6,9 @@
 ## Copyright (c) 2017, 2022,
 ## Technische Universitaet Dresden, Germany
 ##
+## Copyright (c) 2024,
+## Forschungszentrum Juelich GmbH, Germany
+##
 ## This software may be modified and distributed under the terms of
 ## a BSD-style license.  See the COPYING file in the package base
 ## directory for details.
@@ -97,8 +100,8 @@ SHMEM_SUPPORT=false
 
 OMPT_SUPPORT=false
 @HAVE_SCOREP_OMPT_SUPPORT_TRUE@OMPT_SUPPORT=true
-@HAVE_SCOREP_DEFAULT_OMPT_TRUE@DEFAULT_OMPT_SUPPORT=true
-@HAVE_SCOREP_DEFAULT_OMPT_FALSE@DEFAULT_OMPT_SUPPORT=false
+@HAVE_SCOREP_DEFAULT_OPARI2_TRUE@DEFAULT_OMPT_SUPPORT=false
+@HAVE_SCOREP_DEFAULT_OPARI2_FALSE@DEFAULT_OMPT_SUPPORT=true
 
 SCOREP_CONFIG="${SCOREP_BINDIR}/scorep-config --nouser --nocompiler --noopenacc --noopencl --nocuda --nohip --thread=none"
 

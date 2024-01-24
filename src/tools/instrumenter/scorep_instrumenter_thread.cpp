@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014, 2016-2017, 2020, 2022-2023,
+ * Copyright (c) 2013-2014, 2016-2017, 2020, 2022-2024,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014,
@@ -283,12 +283,12 @@ SCOREP_Instrumenter_Thread::SCOREP_Instrumenter_Thread()
     : SCOREP_Instrumenter_Selector( "thread", false )
 {
     m_paradigm_list.push_back( new SCOREP_Instrumenter_SingleThreaded( this ) );
-#if HAVE( BACKEND_SCOREP_DEFAULT_OMPT )
-    m_paradigm_list.push_back( new SCOREP_Instrumenter_OmpOmpt( this ) );
+#if HAVE( BACKEND_SCOREP_DEFAULT_OPARI2 )
     m_paradigm_list.push_back( new SCOREP_Instrumenter_OmpOpari2( this ) );
+    m_paradigm_list.push_back( new SCOREP_Instrumenter_OmpOmpt( this ) );
 #else
-    m_paradigm_list.push_back( new SCOREP_Instrumenter_OmpOpari2( this ) );
     m_paradigm_list.push_back( new SCOREP_Instrumenter_OmpOmpt( this ) );
+    m_paradigm_list.push_back( new SCOREP_Instrumenter_OmpOpari2( this ) );
 #endif
     m_paradigm_list.push_back( new SCOREP_Instrumenter_Pthread( this ) );
     m_current_selection.push_back( m_paradigm_list.front() );
