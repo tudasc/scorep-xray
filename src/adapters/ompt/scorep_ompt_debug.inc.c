@@ -241,6 +241,8 @@ task_flag2string( ompt_task_flag_t t )
     return "";
 }
 
+#endif /* HAVE( UTILS_DEBUG ) */
+
 static const char*
 task_status2string( ompt_task_status_t t )
 {
@@ -266,8 +268,6 @@ task_status2string( ompt_task_status_t t )
     UTILS_BUG();
     return "";
 }
-
-#endif /* HAVE( UTILS_DEBUG ) */
 
 static const char*
 sync_region2string( ompt_sync_region_t t )

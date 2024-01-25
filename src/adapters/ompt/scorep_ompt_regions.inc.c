@@ -34,10 +34,12 @@ typedef enum tool_event_t
     TOOL_EVENT_TASK,
     TOOL_EVENT_TASK_UNTIED,
     TOOL_EVENT_TASK_CREATE,
+    TOOL_EVENT_TASKLOOP,
     TOOL_EVENT_LOOP,
     TOOL_EVENT_SECTIONS,
     TOOL_EVENT_WORKSHARE,
     TOOL_EVENT_TASKWAIT,
+    TOOL_EVENT_TASKWAIT_DEPEND,
     TOOL_EVENT_TASKGROUP,
     TOOL_EVENT_BARRIER,
     TOOL_EVENT_MASKED,
@@ -47,9 +49,6 @@ typedef enum tool_event_t
     TOOL_EVENT_ORDERED_SBLOCK,
     TOOL_EVENT_SECTION,
     TOOL_EVENT_FLUSH,
-#if 0
-    TOOL_EVENT_TASKLOOP,
-#endif
     TOOL_EVENTS,
 
     TOOL_EVENT_INVALID
@@ -74,10 +73,12 @@ typedef struct region_fallback_t
 #define REGION_OMP_TASK "!$omp task"
 #define REGION_OMP_TASK_UNTIED "!$omp task untied"
 #define REGION_OMP_CREATE_TASK "!$omp create task"
+#define REGION_OMP_TASKLOOP "!$omp taskloop"
 #define REGION_OMP_LOOP "!$omp for/do"
 #define REGION_OMP_SECTIONS "!$omp sections"
 #define REGION_OMP_WORKSHARE "!$omp workshare"
 #define REGION_OMP_TASKWAIT "!$omp taskwait"
+#define REGION_OMP_TASKWAIT_DEPEND "!$omp taskwait depend"
 #define REGION_OMP_TASKGROUP "!$omp taskgroup"
 #define REGION_OMP_BARRIER "!$omp barrier"
 #define REGION_OMP_MASKED "!$omp masked"
@@ -100,10 +101,12 @@ static region_fallback_t region_fallback[ TOOL_EVENTS ] =
     { REGION_OMP_TASK,            sizeof( REGION_OMP_TASK ) - 1,            SCOREP_REGION_TASK,             SCOREP_INVALID_REGION },
     { REGION_OMP_TASK_UNTIED,     sizeof( REGION_OMP_TASK_UNTIED ) - 1,     SCOREP_REGION_TASK_UNTIED,      SCOREP_INVALID_REGION },
     { REGION_OMP_CREATE_TASK,     sizeof( REGION_OMP_CREATE_TASK ) - 1,     SCOREP_REGION_TASK_CREATE,      SCOREP_INVALID_REGION },
+    { REGION_OMP_TASKLOOP,        sizeof( REGION_OMP_TASKLOOP ) - 1,        SCOREP_REGION_LOOP,             SCOREP_INVALID_REGION },
     { REGION_OMP_LOOP,            sizeof( REGION_OMP_LOOP ) - 1,            SCOREP_REGION_LOOP,             SCOREP_INVALID_REGION },
     { REGION_OMP_SECTIONS,        sizeof( REGION_OMP_SECTIONS ) - 1,        SCOREP_REGION_SECTIONS,         SCOREP_INVALID_REGION },
     { REGION_OMP_WORKSHARE,       sizeof( REGION_OMP_WORKSHARE ) - 1,       SCOREP_REGION_WORKSHARE,        SCOREP_INVALID_REGION },
-    { REGION_OMP_TASKWAIT,        sizeof( REGION_OMP_TASKWAIT ) - 1,        SCOREP_REGION_BARRIER,          SCOREP_INVALID_REGION },
+    { REGION_OMP_TASKWAIT,        sizeof( REGION_OMP_TASKWAIT ) - 1,        SCOREP_REGION_TASK_WAIT,        SCOREP_INVALID_REGION },
+    { REGION_OMP_TASKWAIT_DEPEND, sizeof( REGION_OMP_TASKWAIT_DEPEND ) - 1, SCOREP_REGION_TASK_WAIT,        SCOREP_INVALID_REGION },
     { REGION_OMP_TASKGROUP,       sizeof( REGION_OMP_TASKGROUP ) - 1,       SCOREP_REGION_BARRIER,          SCOREP_INVALID_REGION },
     { REGION_OMP_BARRIER,         sizeof( REGION_OMP_BARRIER ) - 1,         SCOREP_REGION_BARRIER,          SCOREP_INVALID_REGION },
     { REGION_OMP_MASKED,          sizeof( REGION_OMP_MASKED ) - 1,          SCOREP_REGION_MASTER,           SCOREP_INVALID_REGION },
@@ -113,11 +116,6 @@ static region_fallback_t region_fallback[ TOOL_EVENTS ] =
     { REGION_OMP_ORDERED_SBLOCK,  sizeof( REGION_OMP_ORDERED_SBLOCK ) - 1,  SCOREP_REGION_ORDERED_SBLOCK,   SCOREP_INVALID_REGION },
     { REGION_OMP_SECTION,         sizeof( REGION_OMP_SECTION ) - 1,         SCOREP_REGION_SECTION,          SCOREP_INVALID_REGION },
     { REGION_OMP_FLUSH,           sizeof( REGION_OMP_FLUSH ) - 1,           SCOREP_REGION_FLUSH,            SCOREP_INVALID_REGION },
-
-#if 0
-    { "!$omp taskloop",        SCOREP_REGION_TASKLOOP,                SCOREP_INVALID_REGION },
-    /* TODO barrier does not really fit for taskgroup (not handled by opari2). Invent something new? */
-#endif
     /* *INDENT-ON* */
 };
 
@@ -129,10 +127,12 @@ static region_fallback_t region_fallback[ TOOL_EVENTS ] =
 #undef REGION_OMP_TASK
 #undef REGION_OMP_TASK_UNTIED
 #undef REGION_OMP_CREATE_TASK
+#undef REGION_OMP_TASKLOOP
 #undef REGION_OMP_LOOP
 #undef REGION_OMP_SECTIONS
 #undef REGION_OMP_WORKSHARE
 #undef REGION_OMP_TASKWAIT
+#undef REGION_OMP_TASKWAIT_DEPEND
 #undef REGION_OMP_TASKGROUP
 #undef REGION_OMP_BARRIER
 #undef REGION_OMP_MASKED
