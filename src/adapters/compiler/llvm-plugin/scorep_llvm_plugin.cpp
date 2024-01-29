@@ -27,6 +27,7 @@
 
 #include "scorep_llvm_plugin.hpp"
 #include "scorep_llvm_plugin_function_instrumentation.hpp"
+#include "scorep_llvm_plugin_exception_handling.hpp"
 
 #include <llvm/ADT/StringSwitch.h>
 #include <llvm/Support/SHA1.h>
@@ -51,6 +52,11 @@ cl::opt<std::string> SCOREP::Compiler::LLVMPlugin::FunctionFilter( "scorep-plugi
 // Verbosity
 cl::opt<int> SCOREP::Compiler::LLVMPlugin::Verbosity( "scorep-plugin-config-verbosity", cl::init( 0 ),
                                                       cl::desc( "Compile time verbosity" ) );
+
+// Specific arguments which can be set by the user via `scorep --llvm-plugin-arg=`
+cl::opt<bool>SCOREP::Compiler::LLVMPlugin::EnableExceptionHandling( "scorep-plugin-exception-handling", cl::init( true ),
+                                                                    cl::desc( "Enable exception handling for functions to preserve functional profile on thrown exceptions. "
+                                                                              "Will introduce additional overhead." ) );
 
 std::string
 SCOREP::Compiler::LLVMPlugin::StringToSHA1( const StringRef& string )
@@ -77,11 +83,11 @@ SCOREP::Compiler::LLVMPlugin::DemangleFunctionName( const std::string& mangledNa
     {
         return "";
     }
-#if HAVE( LLVM_DEMANGLE )
+    #if HAVE( LLVM_DEMANGLE )
     return demangle( mangledName );
-#else
+    #else
     return mangledName;
-#endif
+    #endif
 }
 
 std::string
@@ -91,7 +97,7 @@ SCOREP::Compiler::LLVMPlugin::DemangleFunctionGetBasename( const std::string& ma
     {
         return "";
     }
-#if HAVE( LLVM_DEMANGLE )
+    #if HAVE( LLVM_DEMANGLE )
     ItaniumPartialDemangler demangler;
     if ( !demangler.partialDemangle( mangledName.c_str() ) )
     {
@@ -103,9 +109,9 @@ SCOREP::Compiler::LLVMPlugin::DemangleFunctionGetBasename( const std::string& ma
         return function_name;
     }
     return demangle( mangledName );
-#else
+    #else
     return mangledName;
-#endif
+    #endif
 }
 
 bool
@@ -296,9 +302,16 @@ getScorePInstrumentationPluginInfo()
              [ ]( PassBuilder& PB ) {
                  // LLVM 13.0 and older have OptimizationLevel inside the PassBuilder class.
                  // Newer versions use a separate header for it.
-#if not __has_include( "llvm/Passes/OptimizationLevel.h" )
+                 #if not __has_include( "llvm/Passes/OptimizationLevel.h" )
                  using OptimizationLevel = PassBuilder::OptimizationLevel;
-#endif
+                 #endif
+                 if ( SCOREP::Compiler::LLVMPlugin::EnableExceptionHandling )
+                 {
+                     PB.registerPipelineStartEPCallback(
+                         [ ]( llvm::ModulePassManager& PM, OptimizationLevel level ) -> void {
+                    PM.addPass( SCOREP::Compiler::LLVMPlugin::ExceptionHandling() );
+                } );
+                 }
                  PB.registerOptimizerLastEPCallback(
                      [ ]( llvm::ModulePassManager& PM, OptimizationLevel level ) -> void {
                 PM.addPass( SCOREP::Compiler::LLVMPlugin::FunctionInstrumentation() );

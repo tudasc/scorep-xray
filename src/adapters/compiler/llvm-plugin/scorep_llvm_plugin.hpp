@@ -34,6 +34,7 @@ namespace SCOREP::Compiler::LLVMPlugin
 {
 extern llvm::cl::opt<std::string> FunctionFilter;
 extern llvm::cl::opt<int>         Verbosity;
+extern llvm::cl::opt<bool>        EnableExceptionHandling;
 
 template<class ... Args>
 inline void

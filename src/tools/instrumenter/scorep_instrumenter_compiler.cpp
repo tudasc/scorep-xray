@@ -91,6 +91,26 @@ SCOREP_Instrumenter_CompilerAdapter::SCOREP_Instrumenter_CompilerAdapter( void )
 #endif /*!HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION )*/
 }
 
+void
+SCOREP_Instrumenter_CompilerAdapter::printHelp( void )
+{
+    if ( m_unsupported )
+    {
+        return;
+    }
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_LLVM_PLUGIN )
+    std::cout
+        << "\
+  --compiler-plugin-arg=<option>\n\
+                  Add additional arguments for compiler plugin.\n\
+                  Available options:\n\
+              exception-handling=<true|false>\n\
+                  Enables / disables exception handling for instrumentation.\n\
+                  May introduce additional overhead. It is enabled by default."
+        << std::endl;
+#endif
+}
+
 bool
 SCOREP_Instrumenter_CompilerAdapter::supportInstrumentFilters( void ) const
 {
@@ -189,6 +209,13 @@ SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdL
         flags += " --compiler-arg=-mllvm"; \
         flags += " --compiler-arg=-scorep-plugin-config-filter-file="  + *file_it; \
     }
+#define OPTIONS_LLVM_PLUGIN \
+    for ( const std::string& arg : m_llvm_plugin_args ) \
+    { \
+        flags += " --compiler-arg=-mllvm"; \
+        flags += " --compiler-arg=-scorep-plugin-" + arg; \
+    }
+
 #define FILTER_INTEL \
     SCOREP_Filter * filter = SCOREP_Filter_New(); \
     std::string outfname; \
@@ -254,6 +281,7 @@ SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdL
         FILTER_INTEL
 #elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CC_LLVM_PLUGIN )
         FILTER_LLVM_PLUGIN
+        OPTIONS_LLVM_PLUGIN
 #endif  /* SCOREP_BACKEND_COMPILER_CC_INTEL */
     }
     else if ( is_cpp_file( inputFile ) )
@@ -264,6 +292,7 @@ SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdL
         FILTER_INTEL
 #elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CXX_LLVM_PLUGIN )
         FILTER_LLVM_PLUGIN
+        OPTIONS_LLVM_PLUGIN
 #endif  /* SCOREP_BACKEND_COMPILER_CXX_INTEL */
     }
     else if ( is_fortran_file( inputFile ) )
@@ -274,20 +303,40 @@ SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdL
         FILTER_INTEL
 #elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_FC_LLVM_PLUGIN )
         FILTER_LLVM_PLUGIN
+        OPTIONS_LLVM_PLUGIN
 #endif  /* SCOREP_BACKEND_COMPILER_FC_INTEL */
     }
     else if ( is_cuda_file( inputFile ) )
     {
 #if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CXX_LLVM_PLUGIN )
         FILTER_LLVM_PLUGIN
+            OPTIONS_LLVM_PLUGIN
 #endif
     }
 
     return flags;
 
 #undef FILTER_LLVM_PLUGIN
+#undef OPTIONS_LLVM_PLUGIN
 #undef FILTER_GCC_PLUGIN
 #undef FILTER_INTEL
+}
+
+bool
+SCOREP_Instrumenter_CompilerAdapter::checkOption( const std::string& arg )
+{
+    bool flag = SCOREP_Instrumenter_Adapter::checkOption( arg );
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_LLVM_PLUGIN )
+    if ( !flag )
+    {
+        if ( arg.substr( 0, 22 ) == "--compiler-plugin-arg=" )
+        {
+            m_llvm_plugin_args.push_back( arg.substr( 22, std::string::npos ) );
+            return true;
+        }
+    }
+#endif
+    return flag;
 }
 
 void

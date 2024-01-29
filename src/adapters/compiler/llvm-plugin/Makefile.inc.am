@@ -21,7 +21,9 @@ scorep_instrument_function_llvm_la_SOURCES = \
     $(SRC_ROOT)src/adapters/compiler/llvm-plugin/scorep_llvm_plugin.cpp \
     $(SRC_ROOT)src/adapters/compiler/llvm-plugin/scorep_llvm_plugin.hpp \
     $(SRC_ROOT)src/adapters/compiler/llvm-plugin/scorep_llvm_plugin_function_instrumentation.cpp \
-    $(SRC_ROOT)src/adapters/compiler/llvm-plugin/scorep_llvm_plugin_function_instrumentation.hpp
+    $(SRC_ROOT)src/adapters/compiler/llvm-plugin/scorep_llvm_plugin_function_instrumentation.hpp \
+    $(SRC_ROOT)src/adapters/compiler/llvm-plugin/scorep_llvm_plugin_exception_handling.cpp \
+    $(SRC_ROOT)src/adapters/compiler/llvm-plugin/scorep_llvm_plugin_exception_handling.hpp
 
 scorep_instrument_function_llvm_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
