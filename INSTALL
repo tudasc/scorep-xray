@@ -682,8 +682,8 @@ Note that parallel builds (i.e., using 'make -j <n>') are fully supported.
 GNU Compiler Plug-In
 ====================
 
-   On some system the necessary header files, for compiling with support for
-the GNU Compiler plug-in instrumentation, are not installed by default. Therefore
+   On some systems, the necessary header files, for compiling with support for
+the GNU Compiler plug-in instrumentation, are not installed by default. Therefore,
 an extra package needs to be installed.
 
 On Debian and it's derivatives the package is called:
@@ -693,6 +693,21 @@ On Debian and it's derivatives the package is called:
 On Fedora and it's derivatives the package is called:
 
      gcc-plugin-devel
+
+LLVM Compiler Plug-In
+=====================
+
+   On some systems, the necessary header files, for compiling with support for
+the LLVM Compiler plug-in instrumentation, are not installed by default. Therefore,
+an extra package needs to be installed.
+
+On Debian and it's derivatives the package is called:
+
+     llvm-<version>-dev
+
+On Fedora and it's derivatives the package is called:
+
+     llvm-devel
 
 Intel Xeon Phi (aka. MIC) co-processors
 =======================================

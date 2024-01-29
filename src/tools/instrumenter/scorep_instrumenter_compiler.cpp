@@ -100,6 +100,7 @@ SCOREP_Instrumenter_CompilerAdapter::supportInstrumentFilters( void ) const
     // and return true if any of the configured instrumentation methods supports
     // filtering.
 #if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN ) || \
+    HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_LLVM_PLUGIN ) || \
     HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_VT_INTEL )
     return true;
 #else
@@ -171,6 +172,23 @@ SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdL
         flags += " --compiler-arg=-fplugin-arg-scorep_instrument_function_gcc-filter="  + *file_it; \
     }
 
+#define FILTER_LLVM_PLUGIN \
+    if ( cmdLine.getVerbosity() >= 1 ) \
+    { \
+        std::ostringstream verbosity_arg; \
+        verbosity_arg << " --compiler-arg=-mllvm"; \
+        verbosity_arg << " --compiler-arg=-scorep-plugin-config-verbosity="; \
+        verbosity_arg << cmdLine.getVerbosity(); \
+        flags += verbosity_arg.str(); \
+    } \
+    const std::vector<std::string>& filter_files = cmdLine.getInstrumentFilterFiles(); \
+    for ( std::vector<std::string>::const_iterator file_it = filter_files.begin(); \
+          file_it != filter_files.end(); \
+          ++file_it ) \
+    { \
+        flags += " --compiler-arg=-mllvm"; \
+        flags += " --compiler-arg=-scorep-plugin-config-filter-file="  + *file_it; \
+    }
 #define FILTER_INTEL \
     SCOREP_Filter * filter = SCOREP_Filter_New(); \
     std::string outfname; \
@@ -234,6 +252,8 @@ SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdL
         FILTER_GCC_PLUGIN
 #elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CC_VT_INTEL )
         FILTER_INTEL
+#elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CC_LLVM_PLUGIN )
+        FILTER_LLVM_PLUGIN
 #endif  /* SCOREP_BACKEND_COMPILER_CC_INTEL */
     }
     else if ( is_cpp_file( inputFile ) )
@@ -242,6 +262,8 @@ SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdL
         FILTER_GCC_PLUGIN
 #elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CXX_VT_INTEL )
         FILTER_INTEL
+#elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CXX_LLVM_PLUGIN )
+        FILTER_LLVM_PLUGIN
 #endif  /* SCOREP_BACKEND_COMPILER_CXX_INTEL */
     }
     else if ( is_fortran_file( inputFile ) )
@@ -250,11 +272,20 @@ SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdL
         FILTER_GCC_PLUGIN
 #elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_FC_VT_INTEL )
         FILTER_INTEL
+#elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_FC_LLVM_PLUGIN )
+        FILTER_LLVM_PLUGIN
 #endif  /* SCOREP_BACKEND_COMPILER_FC_INTEL */
+    }
+    else if ( is_cuda_file( inputFile ) )
+    {
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CXX_LLVM_PLUGIN )
+        FILTER_LLVM_PLUGIN
+#endif
     }
 
     return flags;
 
+#undef FILTER_LLVM_PLUGIN
 #undef FILTER_GCC_PLUGIN
 #undef FILTER_INTEL
 }

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014, 2019-2020,
+ * Copyright (c) 2013-2014, 2019-2020, 2023-2024,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014-2017, 2020, 2022,
@@ -298,11 +298,12 @@ public:
                 bool         nvcc ) override;
 
 #if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN ) || \
-    HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_VT_INTEL )
+    HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_VT_INTEL ) || \
+    HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_LLVM_PLUGIN )
 private:
     /** Any additional cflags */
     std::string m_cflags;
-#endif /* HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_{GCC_PLUGIN,VT_INTEL} ) */
+#endif /* HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_{GCC_PLUGIN,VT_INTEL,LLVM_PLUGIN} ) */
 };
 
 /* **************************************************************************************

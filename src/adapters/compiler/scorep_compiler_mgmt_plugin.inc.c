@@ -30,6 +30,8 @@
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Filtering.h>
 
+#include "scorep_compiler_demangle.h"
+
 
 /**
  * section markers for runtime instrumentation
@@ -57,6 +59,7 @@ scorep_compiler_plugin_register_region( const scorep_compiler_region_description
         return;
     }
 
+#if HAVE( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN )
     *regionDescr->handle =
         SCOREP_Definitions_NewRegion( regionDescr->name,
                                       regionDescr->canonical_name,
@@ -66,6 +69,48 @@ scorep_compiler_plugin_register_region( const scorep_compiler_region_description
                                       regionDescr->end_lno,
                                       SCOREP_PARADIGM_COMPILER,
                                       SCOREP_REGION_FUNCTION );
+#elif HAVE( SCOREP_COMPILER_INSTRUMENTATION_LLVM_PLUGIN )
+    /* Try to demangle during registration, as LLVM installations might not
+     * provide a way to demangle region descriptions */
+    char* mangled_name = calloc( strlen( regionDescr->name ) + 1, sizeof( char ) );
+    strncpy( mangled_name, regionDescr->name, strlen( regionDescr->name ) );
+    char* demangled_name = NULL;
+    if ( regionDescr->name == regionDescr->canonical_name )
+    {
+        scorep_compiler_demangle( mangled_name, demangled_name );
+    }
+    else
+    {
+        demangled_name = mangled_name;
+        mangled_name   = NULL;
+    }
+
+    *regionDescr->handle =
+        SCOREP_Definitions_NewRegion( demangled_name,
+                                      regionDescr->canonical_name,
+                                      SCOREP_Definitions_NewSourceFile(
+                                          regionDescr->file ),
+                                      regionDescr->begin_lno,
+                                      regionDescr->end_lno,
+                                      SCOREP_PARADIGM_COMPILER,
+                                      SCOREP_REGION_FUNCTION );
+
+    scorep_compiler_demangle_free( mangled_name, demangled_name );
+    /* scorep_compiler_demangle_free only frees the pointer allocated
+     * if SCOREP_Demangle succeeded. We also need to free the original
+     * pointer, which is either mangled_name or demangled_name if demangling
+     * was unsuccessful */
+    if ( mangled_name )
+    {
+        free( mangled_name );
+    }
+    else if ( demangled_name )
+    {
+        free( demangled_name );
+    }
+#else
+#error "No compiler instrumentation plugin available for this compiler. Please check your configuration."
+#endif
 
     UTILS_DEBUG( "Registered %s:%d-%d:%s: \"%s\"",
                  regionDescr->file,

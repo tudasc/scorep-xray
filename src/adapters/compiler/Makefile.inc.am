@@ -63,6 +63,17 @@ libscorep_adapter_compiler_mgmt_la_LIBADD += \
     libscorep_addr2line.la
 endif HAVE_SCOREP_COMPILER_INSTRUMENTATION_NEEDS_ADDR2LINE
 
+if HAVE_SCOREP_DEMANGLE
+libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
+    -I$(INC_DIR_SERVICES)
+
+libscorep_adapter_compiler_mgmt_la_LDFLAGS += \
+    @SCOREP_LIBBFD_LDFLAGS@
+
+libscorep_adapter_compiler_mgmt_la_LIBADD += \
+    @SCOREP_LIBBFD_LIBS@
+endif HAVE_SCOREP_DEMANGLE
+
 
 #--- Compiler-Plugin ( GCC / LLVM ) specific settings
 if HAVE_SCOREP_COMPILER_INSTRUMENTATION_PLUGIN

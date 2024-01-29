@@ -169,6 +169,16 @@ various Score-P components.
     instrumentation. We suggest to use PDT instrumentation for codes
     that rely on inlining.
 
+  - The LLVM plug-in is supported from LLVM 13.0 and onwards. Due to
+    regular changes in the plug-in API, bleeding edge releases of
+    LLVM might not be able to compile the plug-in. In our testing,
+    the plug-in did compile with LLVM 13.0 to LLVM 18.1.
+
+  - Compiling HIP code with the LLVM plug-in might cause error messages
+    of the linker `lld` because plug-in parameters are passed to the
+    linker. This issue is fixed in LLVM 17.0 and newer, as well as in
+    ROCm 6.1 and newer.
+
 --------------------------------------------------------------------------------
 
 * MPI support
