@@ -302,9 +302,11 @@ existing handles rather than repeatedly creating and deleting them.
 <dl>
 <dt><b>Description:</b></dt>
 <dd>
-Time spent in MPI initialization and finalization calls, i.e.,
-<tt>MPI_Init</tt> or <tt>MPI_Init_thread</tt> and
-<tt>MPI_Finalize</tt>.
+Time spent in MPI calls regarding initialization and finalization, i.e.,
+<tt>MPI_Init</tt> or <tt>MPI_Init_thread</tt> and <tt>MPI_Finalize</tt>
+(world model), as well as <tt>MPI_Session_init</tt> and
+<tt>MPI_Session_finalize</tt> (sessions model).  Also covered are
+related query functions.
 </dd>
 <dt><b>Unit:</b></dt>
 <dd>Seconds</dd>

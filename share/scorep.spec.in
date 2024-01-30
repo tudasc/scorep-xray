@@ -181,7 +181,7 @@
                         ${includesMPI} = 1;
                         ${mpi}[${i}]   = 1;
 
-                        if ( ${name} =~ /^MPI_(Init(_thread|ialized){0,1}|Finalize(d){0,1})$/ )
+                        if ( ${name} =~ /^MPI_(Init(_thread|ialized){0,1}|Finalize(d){0,1}|Session_(init|finalize|get_(info|nth_pset|num_psets|pset_info)))$/ )
                         {
                             ${mpi_mgmt_startup}[${i}] = 1;
                         };
