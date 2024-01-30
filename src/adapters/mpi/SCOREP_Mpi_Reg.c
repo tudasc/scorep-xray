@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2019, 2023,
+ * Copyright (c) 2009-2019, 2023-2024,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -3276,7 +3276,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_PARADIGM_MPI,
-                                          SCOREP_REGION_NONE );
+                                          SCOREP_REGION_POINT2POINT );
     }
 #endif
 #if HAVE( MPI_4_0_SYMBOL_PMPI_ISENDRECV_REPLACE ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Isendrecv_replace )
@@ -3289,7 +3289,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_PARADIGM_MPI,
-                                          SCOREP_REGION_NONE );
+                                          SCOREP_REGION_POINT2POINT );
     }
 #endif
 #if HAVE( MPI_1_0_SYMBOL_PMPI_ISSEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Issend )
@@ -3666,7 +3666,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_PARADIGM_MPI,
-                                          SCOREP_REGION_NONE );
+                                          SCOREP_REGION_POINT2POINT );
     }
 #endif
 #if HAVE( MPI_1_0_SYMBOL_PMPI_PCONTROL ) && !defined( SCOREP_MPI_NO_PERF ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Pcontrol )
@@ -3692,7 +3692,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_PARADIGM_MPI,
-                                          SCOREP_REGION_NONE );
+                                          SCOREP_REGION_POINT2POINT );
     }
 #endif
 #if HAVE( MPI_4_0_SYMBOL_PMPI_PREADY_LIST ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Pready_list )
@@ -3705,7 +3705,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_PARADIGM_MPI,
-                                          SCOREP_REGION_NONE );
+                                          SCOREP_REGION_POINT2POINT );
     }
 #endif
 #if HAVE( MPI_4_0_SYMBOL_PMPI_PREADY_RANGE ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Pready_range )
@@ -3718,7 +3718,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_PARADIGM_MPI,
-                                          SCOREP_REGION_NONE );
+                                          SCOREP_REGION_POINT2POINT );
     }
 #endif
 #if HAVE( MPI_4_0_SYMBOL_PMPI_PRECV_INIT ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Precv_init )
@@ -3731,7 +3731,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_PARADIGM_MPI,
-                                          SCOREP_REGION_NONE );
+                                          SCOREP_REGION_POINT2POINT );
     }
 #endif
 #if HAVE( MPI_1_0_SYMBOL_PMPI_PROBE ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Probe )
@@ -3757,7 +3757,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_PARADIGM_MPI,
-                                          SCOREP_REGION_NONE );
+                                          SCOREP_REGION_POINT2POINT );
     }
 #endif
 #if HAVE( MPI_2_0_SYMBOL_PMPI_PUBLISH_NAME ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Publish_name )
