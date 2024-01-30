@@ -191,7 +191,7 @@
                             ${mpi_mgmt_comm}[${i}] = 1;
                         };
 
-                        if ( ${name} =~ /^MPI_File_(close|delete|get_(amode|atomicity|byte_offset|group|info|position(_shared){0,1}|size|type_extent|view)|open|preallocate|seek(_shared){0,1}|set_(atomicity|info|size|view)|sync)$/ )
+                        if ( ${name} =~ /^MPI_(File_(close|delete|get_(amode|atomicity|byte_offset|group|info|position(_shared){0,1}|size|type_extent|view)|open|preallocate|seek(_shared){0,1}|set_(atomicity|info|size|view)|sync)|Register_datarep)$/ )
                         {
                             ${mpi_mgmt_file}[${i}] = 1;
 
