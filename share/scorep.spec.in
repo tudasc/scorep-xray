@@ -1883,7 +1883,7 @@
             <uniq_name>bytes_coll</uniq_name>
             <dtype>INTEGER</dtype>
             <uom>bytes</uom>
-            <url>@mirror@scorep_metrics.html#bytes_p2p</url>
+            <url>@mirror@scorep_metrics.html#bytes_coll</url>
             <descr>Number of bytes transferred in collective communication operations</descr>
             <cubepl>
                 metric::bytes_sent_coll() + metric::bytes_received_coll()
