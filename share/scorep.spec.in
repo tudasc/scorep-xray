@@ -181,17 +181,17 @@
                         ${includesMPI} = 1;
                         ${mpi}[${i}]   = 1;
 
-                        if ( ${name} =~ /^MPI_(Init(_thread|ialized){0,1}|Finalize(d){0,1})$/ )
+                        if ( ${name} =~ /^MPI_(Init(_thread|ialized){0,1}|Finalize(d){0,1}|Session_(init|finalize|get_(info|nth_pset|num_psets|pset_info)))$/ )
                         {
                             ${mpi_mgmt_startup}[${i}] = 1;
                         };
 
-                        if ( ${name} =~ /^MPI_(Cart_(coords|create|get|map|rank|shift|sub)|Cartdim_get|Comm_(accept|compare|connect|create(_group|_keyval){0,1}|delete_attr|disconnect|dup(_with_info){0,1}|free(_keyval){0,1}|get_(attr|info|name|parent)|group|idup|join|rank|remote_(group|size)|set_(attr|info|name)|size|spawn(_multiple){0,1}|split(_type){0,1}|test_inter)|Dims_create|Dist_graph_(create(_adjacent){0,1}|neighbors(_count){0,1})|Graph_(create|get|map|neighbors(_count){0,1})|Graphdims_get|Intercomm_(create|merge)|Topo_test|(Close|Open)_port|(Lookup|Publish|Unpublish)_name)$/ )
+                        if ( ${name} =~ /^MPI_(Cart_(coords|create|get|map|rank|shift|sub)|Cartdim_get|Comm_(accept|compare|connect|create((_from){0,1}_group|_keyval){0,1}|delete_attr|disconnect|dup(_with_info){0,1}|free(_keyval){0,1}|get_(attr|info|name|parent)|group|idup(_with_info){0,1}|join|rank|remote_(group|size)|set_(attr|info|name)|size|spawn(_multiple){0,1}|split(_type){0,1}|test_inter)|Dims_create|Dist_graph_(create(_adjacent){0,1}|neighbors(_count){0,1})|Graph_(create|get|map|neighbors(_count){0,1})|Graphdims_get|Intercomm_(create(_from_groups){0,1}|merge)|Topo_test|(Close|Open)_port|(Lookup|Publish|Unpublish)_name)$/ )
                         {
                             ${mpi_mgmt_comm}[${i}] = 1;
                         };
 
-                        if ( ${name} =~ /^MPI_File_(close|delete|get_(amode|atomicity|byte_offset|group|info|position(_shared){0,1}|size|type_extent|view)|open|preallocate|seek(_shared){0,1}|set_(atomicity|info|size|view)|sync)$/ )
+                        if ( ${name} =~ /^MPI_(File_(close|delete|get_(amode|atomicity|byte_offset|group|info|position(_shared){0,1}|size|type_extent|view)|open|preallocate|seek(_shared){0,1}|set_(atomicity|info|size|view)|sync)|Register_datarep)$/ )
                         {
                             ${mpi_mgmt_file}[${i}] = 1;
 
@@ -1883,7 +1883,7 @@
             <uniq_name>bytes_coll</uniq_name>
             <dtype>INTEGER</dtype>
             <uom>bytes</uom>
-            <url>@mirror@scorep_metrics.html#bytes_p2p</url>
+            <url>@mirror@scorep_metrics.html#bytes_coll</url>
             <descr>Number of bytes transferred in collective communication operations</descr>
             <cubepl>
                 metric::bytes_sent_coll() + metric::bytes_received_coll()

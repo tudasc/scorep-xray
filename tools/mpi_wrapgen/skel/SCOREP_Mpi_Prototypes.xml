@@ -104,6 +104,7 @@
 </prototype>
 
 <prototype name="MPI_Allgather_init" rtype="int" group="coll" guard="coll">
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <version id="4.0" />
     <param access="i" type_modifier="const" type="void*" name="sendbuf" />
     <param access="i" type_modifier="" type="int" name="sendcount" />
@@ -160,6 +161,7 @@
 </prototype>
 
 <prototype name="MPI_Allgatherv_init" rtype="int" group="coll" guard="coll">
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <version id="4.0" />
     <param access="i" type_modifier="const" type="void*" name="sendbuf" />
     <param access="i" type_modifier="" type="int" name="sendcount" />
@@ -223,6 +225,7 @@
 </prototype>
 
 <prototype name="MPI_Allreduce_init" rtype="int" group="coll" guard="coll">
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <version id="4.0" />
     <param access="i" type_modifier="const" type="void*" name="sendbuf" />
     <param access="o" type_modifier="" type="void*" name="recvbuf" />
@@ -277,6 +280,7 @@
 </prototype>
 
 <prototype name="MPI_Alltoall_init" rtype="int" group="coll" guard="coll">
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <version id="4.0" />
     <param access="i" type_modifier="const" type="void*" name="sendbuf" />
     <param access="i" type_modifier="" type="int" name="sendcount" />
@@ -334,6 +338,7 @@
 </prototype>
 
 <prototype name="MPI_Alltoallv_init" rtype="int" group="coll" guard="coll">
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <version id="4.0" />
     <param access="i" type_modifier="const" type="void*" name="sendbuf" />
     <param access="i" type_modifier="const" type="int" name="sendcounts" suffix="[]" />
@@ -393,6 +398,7 @@
 </prototype>
 
 <prototype name="MPI_Alltoallw_init" rtype="int" group="coll" guard="coll">
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <version id="4.0" />
     <param access="i" type_modifier="const" type="void*" name="sendbuf" />
     <param access="i" type_modifier="const" type="int" name="sendcounts" suffix="[]" />
@@ -437,6 +443,7 @@
 </prototype>
 
 <prototype name="MPI_Barrier_init" rtype="int" group="coll" guard="coll">
+    <attribute id="kind">BARRIER</attribute>
     <version id="4.0" />
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <param access="i" type_modifier="" type="MPI_Info" name="info" />
@@ -468,6 +475,7 @@
 </prototype>
 
 <prototype name="MPI_Bcast_init" rtype="int" group="coll" guard="coll">
+    <attribute id="kind">COLL_ONE2ALL</attribute>
     <version id="4.0" />
     <param access="b" type_modifier="" type="void*" name="buffer" />
     <param access="i" type_modifier="" type="int" name="count" />
@@ -1127,6 +1135,7 @@
 </prototype>
 
 <prototype name="MPI_Exscan_init" rtype="int" group="coll" guard="coll">
+    <attribute id="kind">COLL_OTHER</attribute>
     <version id="4.0" />
     <param access="i" type_modifier="const" type="void*" name="sendbuf" />
     <param access="o" type_modifier="" type="void*" name="recvbuf" />
@@ -2410,6 +2419,7 @@
 </prototype>
 
 <prototype name="MPI_Gather_init" rtype="int" group="coll" guard="coll">
+    <attribute id="kind">COLL_ALL2ONE</attribute>
     <version id="4.0" />
     <param access="i" type_modifier="const" type="void*" name="sendbuf" />
     <param access="i" type_modifier="" type="int" name="sendcount" />
@@ -2468,6 +2478,7 @@
 </prototype>
 
 <prototype name="MPI_Gatherv_init" rtype="int" group="coll" guard="coll">
+    <attribute id="kind">COLL_ALL2ONE</attribute>
     <version id="4.0" />
     <param access="i" type_modifier="const" type="void*" name="sendbuf" />
     <param access="i" type_modifier="" type="int" name="sendcount" />
@@ -3840,6 +3851,7 @@
 </prototype>
 
 <prototype name="MPI_Isendrecv" rtype="int" group="p2p" guard="p2p">
+    <attribute id="kind">POINT2POINT</attribute>
     <version id="4.0" />
     <param access="i" type_modifier="const" type="void*" name="sendbuf" />
     <param access="i" type_modifier="" type="int" name="sendcount" />
@@ -3856,6 +3868,7 @@
 </prototype>
 
 <prototype name="MPI_Isendrecv_replace" rtype="int" group="p2p" guard="p2p">
+    <attribute id="kind">POINT2POINT</attribute>
     <version id="4.0" />
     <param access="b" type_modifier="" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
@@ -4130,6 +4143,7 @@
 </prototype>
 
 <prototype name="MPI_Neighbor_allgather_init" rtype="int" group="topo" guard="topo">
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <version id="4.0" />
     <param access="i" type_modifier="const" type="void*" name="sendbuf" />
     <param access="i" type_modifier="" type="int" name="sendcount" />
@@ -4184,6 +4198,7 @@
 </prototype>
 
 <prototype name="MPI_Neighbor_allgatherv_init" rtype="int" group="topo" guard="topo">
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <version id="4.0" />
     <param access="i" type_modifier="const" type="void*" name="sendbuf" />
     <param access="i" type_modifier="" type="int" name="sendcount" />
@@ -4238,6 +4253,7 @@
 </prototype>
 
 <prototype name="MPI_Neighbor_alltoall_init" rtype="int" group="topo" guard="topo">
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <version id="4.0" />
     <param access="i" type_modifier="const" type="void*" name="sendbuf" />
     <param access="i" type_modifier="" type="int" name="sendcount" />
@@ -4293,6 +4309,7 @@
 </prototype>
 
 <prototype name="MPI_Neighbor_alltoallv_init" rtype="int" group="topo" guard="topo">
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <version id="4.0" />
     <param access="i" type_modifier="const" type="void*" name="sendbuf" />
     <param access="i" type_modifier="const" type="int" name="sendcounts" suffix="[]" />
@@ -4350,6 +4367,7 @@
 </prototype>
 
 <prototype name="MPI_Neighbor_alltoallw_init" rtype="int" group="topo" guard="topo">
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <version id="4.0" />
     <param access="i" type_modifier="const" type="void*" name="sendbuf" />
     <param access="i" type_modifier="const" type="int" name="sendcounts" suffix="[]" />
@@ -4461,6 +4479,7 @@
 </prototype>
 
 <prototype name="MPI_Parrived" rtype="int" group="request" guard="request">
+    <attribute id="kind">POINT2POINT</attribute>
     <version id="4.0" />
     <param access="i" type_modifier="" type="MPI_Request" name="request" />
     <param access="i" type_modifier="" type="int" name="partition" />
@@ -4474,12 +4493,14 @@
 </prototype>
 
 <prototype name="MPI_Pready" rtype="int" group="request" guard="request">
+    <attribute id="kind">POINT2POINT</attribute>
     <version id="4.0" />
     <param access="i" type_modifier="" type="int" name="partition" />
     <param access="i" type_modifier="" type="MPI_Request" name="request" />
 </prototype>
 
 <prototype name="MPI_Pready_list" rtype="int" group="request" guard="request">
+    <attribute id="kind">POINT2POINT</attribute>
     <version id="4.0" />
     <param access="i" type_modifier="" type="int" name="length" />
     <param access="i" type_modifier="const" type="int" name="array_of_partitions" />
@@ -4487,6 +4508,7 @@
 </prototype>
 
 <prototype name="MPI_Pready_range" rtype="int" group="request" guard="request">
+    <attribute id="kind">POINT2POINT</attribute>
     <version id="4.0" />
     <param access="i" type_modifier="" type="int" name="partition_low" />
     <param access="i" type_modifier="" type="int" name="partition_high" />
@@ -4494,6 +4516,7 @@
 </prototype>
 
 <prototype name="MPI_Precv_init" rtype="int" group="p2p" guard="p2p">
+    <attribute id="kind">POINT2POINT</attribute>
     <version id="4.0" />
     <param access="i" type_modifier="" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="partitions" />
@@ -4529,6 +4552,7 @@
 </prototype>
 
 <prototype name="MPI_Psend_init" rtype="int" group="p2p" guard="p2p">
+    <attribute id="kind">POINT2POINT</attribute>
     <version id="4.0" />
     <param access="i" type_modifier="const" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="partitions" />
@@ -4712,6 +4736,7 @@
 </prototype>
 
 <prototype name="MPI_Reduce_init" rtype="int" group="coll" guard="coll">
+    <attribute id="kind">COLL_ALL2ONE</attribute>
     <version id="4.0" />
     <param access="i" type_modifier="const" type="void*" name="sendbuf" />
     <param access="o" type_modifier="" type="void*" name="recvbuf" />
@@ -4816,6 +4841,7 @@
 </prototype>
 
 <prototype name="MPI_Reduce_scatter_block_init" rtype="int" group="coll" guard="coll">
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <version id="4.0" />
     <param access="i" type_modifier="const" type="void*" name="sendbuf" />
     <param access="o" type_modifier="" type="void*" name="recvbuf" />
@@ -4828,6 +4854,7 @@
 </prototype>
 
 <prototype name="MPI_Reduce_scatter_init" rtype="int" group="coll" guard="coll">
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <version id="4.0" />
     <param access="i" type_modifier="const" type="void*" name="sendbuf" />
     <param access="o" type_modifier="" type="void*" name="recvbuf" />
@@ -5051,6 +5078,7 @@
 </prototype>
 
 <prototype name="MPI_Scan_init" rtype="int" group="coll" guard="coll">
+    <attribute id="kind">COLL_OTHER</attribute>
     <version id="4.0" />
     <param access="i" type_modifier="const" type="void*" name="sendbuf" />
     <param access="o" type_modifier="" type="void*" name="recvbuf" />
@@ -5106,6 +5134,7 @@
 </prototype>
 
 <prototype name="MPI_Scatter_init" rtype="int" group="coll" guard="coll">
+    <attribute id="kind">COLL_ONE2ALL</attribute>
     <version id="4.0" />
     <param access="i" type_modifier="const" type="void*" name="sendbuf" />
     <param access="i" type_modifier="" type="int" name="sendcount" />
@@ -5164,6 +5193,7 @@
 </prototype>
 
 <prototype name="MPI_Scatterv_init" rtype="int" group="coll" guard="coll">
+    <attribute id="kind">COLL_ONE2ALL</attribute>
     <version id="4.0" />
     <param access="i" type_modifier="const" type="void*" name="sendbuf" />
     <param access="i" type_modifier="const" type="int" name="sendcounts" suffix="[]" />
