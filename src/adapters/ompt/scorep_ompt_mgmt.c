@@ -197,6 +197,7 @@ register_event_callbacks_host( ompt_set_callback_t setCallback )
     #endif /* !HAVE( SCOREP_OMPT_WRONG_TEST_LOCK_MUTEX ) */
     REGISTER_CALLBACK( host_, dispatch );
     REGISTER_CALLBACK( host_, flush );
+    REGISTER_CALLBACK( host_, reduction );
 }
 
 

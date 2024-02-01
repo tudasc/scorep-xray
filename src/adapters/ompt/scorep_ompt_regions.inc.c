@@ -49,6 +49,8 @@ typedef enum tool_event_t
     TOOL_EVENT_ORDERED_SBLOCK,
     TOOL_EVENT_SECTION,
     TOOL_EVENT_FLUSH,
+    TOOL_EVENT_REDUCTION,
+
     TOOL_EVENTS,
 
     TOOL_EVENT_INVALID
@@ -88,6 +90,7 @@ typedef struct region_fallback_t
 #define REGION_OMP_ORDERED_SBLOCK "!$omp ordered sblock"
 #define REGION_OMP_SECTION "!$omp section"
 #define REGION_OMP_FLUSH "!$omp flush"
+#define REGION_OMP_REDUCTION "!$omp reduction"
 
 static region_fallback_t region_fallback[ TOOL_EVENTS ] =
 {
@@ -116,6 +119,7 @@ static region_fallback_t region_fallback[ TOOL_EVENTS ] =
     { REGION_OMP_ORDERED_SBLOCK,  sizeof( REGION_OMP_ORDERED_SBLOCK ) - 1,  SCOREP_REGION_ORDERED_SBLOCK,   SCOREP_INVALID_REGION },
     { REGION_OMP_SECTION,         sizeof( REGION_OMP_SECTION ) - 1,         SCOREP_REGION_SECTION,          SCOREP_INVALID_REGION },
     { REGION_OMP_FLUSH,           sizeof( REGION_OMP_FLUSH ) - 1,           SCOREP_REGION_FLUSH,            SCOREP_INVALID_REGION },
+    { REGION_OMP_REDUCTION,       sizeof( REGION_OMP_REDUCTION ) - 1,       SCOREP_REGION_COLL_ALL2ONE,     SCOREP_INVALID_REGION },
     /* *INDENT-ON* */
 };
 
@@ -142,6 +146,7 @@ static region_fallback_t region_fallback[ TOOL_EVENTS ] =
 #undef REGION_OMP_ORDERED_SBLOCK
 #undef REGION_OMP_SECTION
 #undef REGION_OMP_FLUSH
+#undef REGION_OMP_REDUCTION
 
 /* To match opari2's behavior, define lock regions once but use for all lock
    events. With codeptr_ra available, we could provide a link to the source,

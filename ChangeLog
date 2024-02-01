@@ -8,7 +8,7 @@ Features and improvements:
   timestamp issues seen with previous Score-P versions.
 - The OMPT adapter has these new features: improved support for OpenMP
   tasks, including detach, yield, taskwait depend, taskloops and
-  cancelled tasks.
+  cancelled tasks. Support for OpenMP reduction clauses.
 
 User tools and API improvements and changes:
 
