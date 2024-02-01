@@ -58,7 +58,8 @@ the backend parts can be specified explicitly if desired. On Linux
 clusters it is currently recommended to use this option to select a
 compiler suite other than GCC.
 
-  --with-nocross-compiler-suite=(gcc|ibm|intel|oneapi|nvhpc|pgi|clang|aocc|amdclang)
+  --with-nocross-compiler-suite=(gcc|ibm|intel|oneapi|nvhpc|pgi|clang| \
+                                 aocc|amdclang|cray)
                The compiler suite used to build this package in
                non-cross-compiling environments. Needs to be in $PATH.
                [Default: gcc]
@@ -69,14 +70,21 @@ compiler suite other than GCC.
   SHMEM compiler wrappers use this one. To select pgCC, please add
   'CXX=pgCC' to your configure line.
 
+  Note that selecting 'cray' results in using the Cray compiler wrappers
+  cc, CC, ftn for compiling code, independently of the selected PrgEnv.
+
 In cross-compiling environments, the compiler suite used to build the
 frontend parts can be specified explicitly if desired.
 
-  --with-frontend-compiler-suite=(gcc|ibm|intel|oneapi|nvhpc|pgi|clang|aocc|amdclang)
+  --with-frontend-compiler-suite=(gcc|ibm|intel|oneapi|nvhpc|pgi|clang| \
+                                  aocc|amdclang|cray)
                The compiler suite used to build the frontend parts of
                this package in cross-compiling environments.  Needs to
                be in $PATH.
                [Default: gcc]
+
+  Note that selecting 'cray' results in using the Cray compiler wrappers
+  cc, CC, ftn for compiling code, independently of the selected PrgEnv.
 
 The MPI compiler, if in $PATH, is usually autodetected. Users should
 normally not need to specify which compiler will be invoked by the MPI
