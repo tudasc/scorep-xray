@@ -188,7 +188,7 @@ AC_ARG_WITH([mpi],
     [AS_IF([test "x${afs_custom_compilers_given}" != xyes],
          [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" && test "x${ac_scorep_platform}" != "xaix"],
               [AFS_COMPILER_MPI
-               ac_scorep_compilers_mpi="compiler-mpi-${afs_compiler_mpi}"])
+               ac_scorep_compilers_mpi="${afs_compiler_mpi}"])
          ])
     ])
 
@@ -271,7 +271,7 @@ AC_ARG_WITH([shmem],
     [AS_IF([test "x${afs_custom_compilers_given}" != xyes],
          [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" && test "x${ac_scorep_platform}" != "xaix"],
               [AFS_COMPILER_SHMEM
-               ac_scorep_compilers_shmem="compiler-shmem-${afs_compiler_shmem}"])
+               ac_scorep_compilers_shmem="${afs_compiler_shmem}"])
          ])
     ])
 
