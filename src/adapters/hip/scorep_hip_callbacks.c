@@ -617,7 +617,7 @@ stream_table_value_ctor( stream_table_key_t* key,
     UTILS_DEBUG( "Creating stream %p/%d -> [%d:%u]", key->stream, key->device_id, data->device_id, stream_seq );
 
     scorep_hip_stream* stream = SCOREP_Memory_AllocForMisc( sizeof( *stream ) );
-    stream->device_id        = key->device_id;
+    stream->device_id        = data->device_id;
     stream->stream           = key->stream;
     stream->stream_seq       = stream_seq;
     stream->last_scorep_time = 0;
@@ -683,12 +683,12 @@ create_stream( hipStream_t  stream,
         .flags     = flags,
         .priority  = priority
     };
-#if HAVE( DECL_HIPGETDEVICEFORSTREAM )
+#if HAVE( DECL_HIPGETSTREAMDEVICEID )
     /* hipGetStreamDeviceId not traceable via roctracer */
     data.device_id = hipGetStreamDeviceId( stream );
 #else
     hipGetDevice( &data.device_id );
-#endif /* HAVE( DECL_HIPGETDEVICEFORSTREAM ) */
+#endif /* HAVE( DECL_HIPGETSTREAMDEVICEID ) */
 
     if ( stream == NULL )
     {
@@ -709,12 +709,12 @@ get_stream( hipStream_t stream )
     stream_table_key_t key = { .stream = stream, .device_id = 0 };
     if ( stream == NULL )
     {
-#if HAVE( DECL_HIPGETDEVICEFORSTREAM )
+#if HAVE( DECL_HIPGETSTREAMDEVICEID )
         /* hipGetStreamDeviceId not traceable via roctracer */
         key.device_id = hipGetStreamDeviceId( stream );
 #else
         hipGetDevice( &key.device_id );
-#endif  /* HAVE( DECL_HIPGETDEVICEFORSTREAM ) */
+#endif  /* HAVE( DECL_HIPGETSTREAMDEVICEID ) */
     }
 
     scorep_hip_stream* result = NULL;
@@ -1128,8 +1128,8 @@ api_cb( uint32_t    domain,
         const void* callbackData,
         void*       arg )
 {
-    SCOREP_IN_MEASUREMENT_INCREMENT();
-    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
+    if ( !trigger || !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
@@ -1158,8 +1158,8 @@ stream_cb( uint32_t    domain,
            const void* callbackData,
            void*       arg )
 {
-    SCOREP_IN_MEASUREMENT_INCREMENT();
-    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
+    if ( !trigger || !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
@@ -1229,9 +1229,8 @@ kernel_cb( uint32_t    domain,
            const void* callbackData,
            void*       arg )
 {
-    SCOREP_IN_MEASUREMENT_INCREMENT();
-    // Early exit if we're already in measurement
-    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
+    if ( !trigger || !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
@@ -1295,6 +1294,17 @@ kernel_cb( uint32_t    domain,
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
+static inline enum hipMemoryType
+get_hip_memory_type( const hipPointerAttribute_t* attributes )
+{
+#if HAVE( HIPPOINTERATTRIBUTE_T_MEMORYTYPE )
+    /* pre ROCm 5.4 */
+    return attributes->memoryType;
+#else
+    return attributes->type;
+#endif
+}
+
 static void
 handle_alloc( const void* ptr,
               size_t      size )
@@ -1308,7 +1318,7 @@ handle_alloc( const void* ptr,
     }
 
     SCOREP_AllocMetric* metric = host_alloc_metric;
-    switch ( attributes.memoryType )
+    switch ( get_hip_memory_type( &attributes ) )
     {
         case hipMemoryTypeDevice:
         case hipMemoryTypeArray:
@@ -1330,8 +1340,8 @@ malloc_cb( uint32_t    domain,
            const void* callbackData,
            void*       arg )
 {
-    SCOREP_IN_MEASUREMENT_INCREMENT();
-    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
+    if ( !trigger || !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
@@ -1444,7 +1454,7 @@ handle_free( uint64_t    correlationId,
     }
 
     SCOREP_AllocMetric* metric = host_alloc_metric;
-    switch ( attributes.memoryType )
+    switch ( get_hip_memory_type( &attributes ) )
     {
         case hipMemoryTypeDevice:
         case hipMemoryTypeArray:
@@ -1473,8 +1483,8 @@ free_cb( uint32_t    domain,
          const void* callbackData,
          void*       arg )
 {
-    SCOREP_IN_MEASUREMENT_INCREMENT();
-    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
+    if ( !trigger || !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
@@ -1536,8 +1546,8 @@ memcpy_cb( uint32_t    domain,
            const void* callbackData,
            void*       arg )
 {
-    SCOREP_IN_MEASUREMENT_INCREMENT();
-    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
+    if ( !trigger || !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
@@ -1651,8 +1661,8 @@ sync_cb( uint32_t    domain,
          const void* callbackData,
          void*       arg )
 {
-    SCOREP_IN_MEASUREMENT_INCREMENT();
-    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
+    if ( !trigger || !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
@@ -1847,8 +1857,8 @@ user_cb( uint32_t    domain,
 {
     ( void )arg;
 
-    SCOREP_IN_MEASUREMENT_INCREMENT();
-    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
+    if ( !trigger || !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
@@ -2028,11 +2038,11 @@ scorep_hip_callbacks_enable( void )
     {
         /* These are all allowed to be filtered, thus setting callback arg to !NULL */
         SCOREP_ROCTRACER_CALL( roctracer_enable_domain_callback( ACTIVITY_DOMAIN_HIP_API, api_cb, ( void* )1 ) );
-#if !HAVE( DECL_HIPGETDEVICEFORSTREAM )
+#if !HAVE( DECL_HIPGETSTREAMDEVICEID )
         /* We need to call this in our own callback, but it destroys correlation IDs
          * thus disable it in pre-5.6 ROCm */
         SCOREP_ROCTRACER_CALL( roctracer_disable_op_callback( ACTIVITY_DOMAIN_HIP_API, HIP_API_ID_hipGetDevice ) );
-#endif      /* !HAVE( DECL_HIPGETDEVICEFORSTREAM ) */
+#endif /* !HAVE( DECL_HIPGETSTREAMDEVICEID ) */
     }
 
     bool need_stream_api_tracing = false;

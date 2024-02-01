@@ -945,9 +945,9 @@ If <b><tt>kernels</tt></b> is set additionally, then it is not allowed to filter
 ROCm uses an extra buffer to store its activity records.
 The size of this buffer can be controlled via the environment variable \confvar{SCOREP_HIP_ACTIVITY_BUFFER_SIZE} (default: 1M).
 
-For each HIP stream a location is created with the name <b>HIP[D:S]</tt></b>.
+For each HIP stream a location is created with the name <b><tt>HIP[D:S]</tt></b>.
 Where <tt>D</tt> denotes the HIP device and <tt>S</tt> a stream identifier.
-The former number is corresponds to the visible devices for the process.
+The former number corresponds to the visible devices for the process.
 The HIP <tt>NULL</tt>-stream always gets the identifier <tt>0</tt>.
 Additionally created streams get a number starting with <tt>1</tt> in creation order.
 The location for the HIP <tt>NULL</tt>-stream also gets a property named <tt>hipNullStream</tt> with a value of <tt>1</tt>.
