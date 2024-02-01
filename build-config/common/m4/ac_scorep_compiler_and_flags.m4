@@ -145,7 +145,7 @@ AC_REQUIRE([AC_SCOREP_DETECT_PLATFORMS])
 
 scorep_mpi_user_disabled="no"
 AC_ARG_WITH([mpi],
-    [AS_HELP_STRING([--with-mpi=(bullxmpi|hp|ibmpoe|intel|intel2|intel3|intelpoe|lam|mpibull2|mpich|mpich2|mpich3|mpich4|openmpi|openmpi3|platform|scali|sgimpt|sgimptwrapper|spectrum|sun)],
+    [AS_HELP_STRING([--with-mpi=(bullxmpi|cray|hp|ibmpoe|intel|intel2|intel3|intelpoe|lam|mpibull2|mpich|mpich2|mpich3|mpich4|openmpi|openmpi3|platform|scali|sgimpt|sgimptwrapper|spectrum|sun)],
          [The MPI compiler suite to build this package in non cross-compiling mode. Usually autodetected. Needs to be in $PATH.])],
     [AS_IF([test "x${withval}" = xno],
          [scorep_mpi_user_disabled=yes
@@ -155,6 +155,7 @@ AC_ARG_WITH([mpi],
               [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" && test "x${ac_scorep_platform}" != "xaix"],
                    [AS_CASE([$withval],
                         ["bullxmpi"], [ac_scorep_compilers_mpi="compiler-mpi-bullxmpi"],
+                        ["cray"], [ac_scorep_compilers_mpi="compiler-mpi-cray"],
                         ["hp"], [ac_scorep_compilers_mpi="compiler-mpi-hp"],
                         ["ibmpoe"], [ac_scorep_compilers_mpi="compiler-mpi-ibmpoe"],
                         ["intel"], [ac_scorep_compilers_mpi="compiler-mpi-intel"],
@@ -245,7 +246,7 @@ AC_REQUIRE([AC_SCOREP_DETECT_PLATFORMS])
 
 scorep_shmem_user_disabled="no"
 AC_ARG_WITH([shmem],
-    [AS_HELP_STRING([--with-shmem=(openshmem|openmpi|openmpi3|sgimpt|sgimptwrapper|spectrum)],
+    [AS_HELP_STRING([--with-shmem=(cray|openshmem|openmpi|openmpi3|sgimpt|sgimptwrapper|spectrum)],
          [The SHMEM compiler suite to build this package in non cross-compiling mode. Usually autodetected. Needs to be in $PATH.])],
     [AS_IF([test "x${withval}" = xno],
          [scorep_shmem_user_disabled=yes
@@ -254,6 +255,7 @@ AC_ARG_WITH([shmem],
          [AS_IF([test "x${afs_custom_compilers_given}" != xyes],
               [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" && test "x${ac_scorep_platform}" != "xaix"],
                    [AS_CASE([$withval],
+                        ["cray"], [ac_scorep_compilers_shmem="compiler-shmem-cray"],
                         ["openshmem"], [ac_scorep_compilers_shmem="compiler-shmem-openshmem"],
                         ["openmpi"], [ac_scorep_compilers_shmem="compiler-shmem-openmpi"],
                         ["openmpi3"], [ac_scorep_compilers_shmem="compiler-shmem-openmpi3"],

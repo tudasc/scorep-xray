@@ -101,25 +101,31 @@ for the MPI compiler wrappers: scorep-mpicc -cc=/path/to/specific/compiler ...
 If there are several MPI compilers in $PATH the user should
 select one using the configure option:
 
-  --with-mpi=(bullxmpi|hp|ibmpoe|intel|intel2|intel3|intelpoe|lam| \
+  --with-mpi=(bullxmpi|cray|hp|ibmpoe|intel|intel2|intel3|intelpoe|lam| \
               mpibull2|mpich|mpich2|mpich3|mpich4|openmpi|openmpi3| \
               platform|scali|sgimpt|sgimptwrapper|spectrum|sun)
                The MPI compiler suite to build this package in non
                cross-compiling mode. Usually autodetected. Needs to be
                in $PATH.
 
-Note that there is currently no consistency check if backend and MPI
-compiler are from the same vendor. If they are not, linking problems
-(undefined references) might occur.
+  Note that there is currently no consistency check if backend and MPI
+  compiler are from the same vendor. If they are not, linking problems
+  (undefined references) might occur.
+
+  Note that selecting 'cray' results in using the Cray compiler wrappers
+  cc, CC, ftn for compiling MPI code, independently of the selected PrgEnv.
 
 The SHMEM compiler, if in $PATH, is usually autodetected. If there are
 several SHMEM compilers in $PATH the user is requested to select one
 using the configure option:
 
-  --with-shmem=(openshmem|openmpi|openmpi3|sgimpt|sgimptwrapper|spectrum)
+  --with-shmem=(cray|openshmem|openmpi|openmpi3|sgimpt|sgimptwrapper|spectrum)
                The SHMEM compiler suite to build this package in
                non cross-compiling mode. Usually autodetected.
                Needs to be in $PATH.
+
+  Note that selecting 'cray' results in using the Cray compiler wrappers
+  cc, CC, ftn for compiling SHMEM code, independently of the selected PrgEnv.
 
 If a particular system requires to use compilers different to those
 Score-P currently supports, please edit the three files

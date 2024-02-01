@@ -66,6 +66,7 @@ EXTRA_DIST += $(srcdir)/build-config/common/process_arguments.awk \
               $(srcdir)/build-config/common/platforms/compiler-mpi-sgimptwrapper \
               $(srcdir)/build-config/common/platforms/compiler-mpi-spectrum \
               $(srcdir)/build-config/common/platforms/compiler-mpi-sun \
+              $(srcdir)/build-config/common/platforms/compiler-mpi-cray \
               $(srcdir)/build-config/common/platforms/compiler-mpi-without \
               $(srcdir)/build-config/common/platforms/compiler-shmem-openmpi \
               $(srcdir)/build-config/common/platforms/compiler-shmem-openmpi3 \
@@ -73,6 +74,7 @@ EXTRA_DIST += $(srcdir)/build-config/common/process_arguments.awk \
               $(srcdir)/build-config/common/platforms/compiler-shmem-sgimpt \
               $(srcdir)/build-config/common/platforms/compiler-shmem-sgimptwrapper \
               $(srcdir)/build-config/common/platforms/compiler-shmem-spectrum \
+              $(srcdir)/build-config/common/platforms/compiler-shmem-cray \
               $(srcdir)/build-config/common/platforms/compiler-shmem-without \
               $(srcdir)/build-config/common/platforms/compiler-nocross-gcc  \
               $(srcdir)/build-config/common/platforms/compiler-nocross-ibm  \
