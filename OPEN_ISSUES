@@ -418,25 +418,32 @@ various Score-P components.
     helper thread.
     In these cases, Score-P can't ignore the device events, but aborts.
 
-  - When instrumenting an application using `#pragma omp sections` with
+  - When measuring an application using `#pragma omp sections` with
     Intel oneAPI compilers, enabling OpenMP via `-fiopenmp` or `-qopenmp`
     may result in an error reporting an `inconsistent profile`. This happens
     because the runtime reports the end of the sections construct incorrectly.
-    For C / C++ only, you may switch to `-fopenmp` for instrumentation. For
+    For C / C++ only, you may switch to `-fopenmp` for the measurement. For
     Fortran applications, please use OPARI2 via `--thread=omp:opari2`.
 
-  - When instrumenting an application using `#pragma omp sections` with
-    NVHPC 23.7, running the instrumented application will abort reporting an
+  - When measuring an application using `#pragma omp sections` with
+    NVHPC 23.7, running the application will abort reporting an
     `inconsistent profile`. This happens because the runtime does not report
-    the end of the sections construct. If you want to instrument applications
+    the end of the sections construct. If you want to measure applications
     using OpenMP sections with NVHPC, please use OPARI2 via `--thread=omp:opari2`
     instead.
 
-  - When instrumenting an application compiled with OpenMP target offloading,
+  - When measuring an application compiled with OpenMP target offloading,
     certain adapters like HIP & CUDA may cause the application to segmentation
     fault with LLVM based compilers using version 16.0 or newer. As a work
     around, please try to use an LLVM 15 based compiler or do not enable
     affected adapters simultaneously.
+
+  - When measuring an application using `#pragma omp ordered` with NVHPC,
+    running the application may result in an error message like
+    "Bug: 'task->workshare_regions_current == 0'" or crash with a segmentation
+    fault. As this is a runtime issue and cannot be worked around, please use
+    OPARI2 via `--thread=omp:opari2` to instrument applications using
+    `#pragma omp ordered`.
 
 --------------------------------------------------------------------------------
 
