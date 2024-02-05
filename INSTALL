@@ -352,6 +352,11 @@ be used to build Score-P are as follows:
                Valid value: ompt
                List of valid values may change without deprecation
                notice.
+  --disable-libwrap-generator
+               Disable support for the libwrap generator. By default,
+               try to build the libwrap generator. It needs llvm-config,
+               which could be provided via --with-llvm=<path>, otherwise
+               PATH is searched.
   --disable-gcc-plugin
                Disable support for the GCC plug-in
                instrumentation. Default is to determine support
@@ -459,8 +464,7 @@ be used to build Score-P are as follows:
   Please note that if a Score-P installation uses libbfd, the Score-P
   instrumented binaries may only be distributed under GPLv3 licensing.
   --with-llvm[=<llvm-bindir>]
-               Use an already installed LLVM, including libclang as we
-               need libclang for library-wrapping. Provide path to
+               Use an already installed LLVM, in particular
                llvm-config. Auto-detected if already in $PATH.
 
 Instead of passing command-line options to the 'configure' script, the package

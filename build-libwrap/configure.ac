@@ -4,7 +4,7 @@ dnl
 dnl Copyright (c) 2017, 2019, 2022,
 dnl Technische Universitaet Dresden, Germany
 dnl
-dnl Copyright (c) 2018, 2021-2022,
+dnl Copyright (c) 2018, 2021-2022, 2024,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl This software may be modified and distributed under the terms of
@@ -101,56 +101,34 @@ AS_IF([test "x${ac_cv_env_LIBS_FOR_BUILD_LIBWRAP_set}" != xset],
     [AS_UNSET([LIBS])],
     [LIBS="${ac_cv_env_LIBS_FOR_BUILD_LIBWRAP_value}"])
 
-AC_ARG_WITH([llvm],
-            [AS_HELP_STRING([--with-llvm[[=<llvm-bindir>]]],
-                            [Use an already installed LLVM, including libclang as we need libclang for library-wrapping. Provide path to llvm-config. Auto-detected if already in $PATH.])],
-            [with_llvm="${with_llvm%/}"], dnl yes, no, or <path>
-            [with_llvm="not_given"])
-
 rm -f library_wrapping_supported
 reason=""
 
-# AC_CHECK_PROGS does has no effect, if the $1 argument is already set
-AS_UNSET([scorep_have_llvm_config])
-AS_IF([test "x${with_llvm}" != "xno"],
-      [AS_IF([test "x${with_llvm}" = "xyes" || test "x${with_llvm}" = "xnot_given"],
-             [AC_CHECK_PROGS([scorep_have_llvm_config], [llvm-config], ["no"])
-              AS_IF([test "x${scorep_have_llvm_config}" != "xno"],
-                    [scorep_llvm_config_bin="`which ${scorep_have_llvm_config}`"])],
-             [# --with-llvm=<path>
-              AC_CHECK_PROGS([scorep_have_llvm_config], [llvm-config], [no], [${with_llvm}])
-              AS_IF([test "x${scorep_have_llvm_config}" != "xno"],
-                    [scorep_llvm_config_bin="${with_llvm}/${scorep_have_llvm_config}"],
-                    [AS_UNSET([ac_cv_prog_scorep_have_llvm_config])
-                     AS_UNSET([scorep_have_llvm_config])
-                     AC_CHECK_PROGS([scorep_have_llvm_config], [llvm-config], [no], ["${with_llvm}/bin"])
-                     AS_IF([test "x${scorep_have_llvm_config}" != "xno"],
-                           [scorep_llvm_config_bin="${with_llvm}/bin/${scorep_have_llvm_config}"])])
-             ])],
-      [scorep_have_llvm_config="no"
-       reason="explicitly disabled via --without-llvm"])
+AC_ARG_ENABLE([libwrap-generator],
+    [AS_HELP_STRING([--disable-libwrap-generator],
+        [Disable support for the libwrap generator. By default, try to build the libwrap generator. It needs llvm-config, which could be provided via --with-llvm=<path>, otherwise PATH is searched.])],
+    [enable_libwrap="${enableval}"],
+    [enable_libwrap="not_given"])
 
-AS_IF([test "x${scorep_have_llvm_config}" != "xno"],
-      [# try executing llvm-config to rule out that it doesn't work due to not finding linked libs e.g.
-       llvm_config_version='${scorep_llvm_config_bin} --version >&AS_MESSAGE_LOG_FD'
-       AS_IF([_AC_DO_VAR([llvm_config_version])],
-             [AS_IF([test "x${CC:+set}${CXX:+set}" != "xsetset"],
-                    [llvm_bindir=`${scorep_llvm_config_bin} --bindir`
-                     AS_IF([AS_EXECUTABLE_P([${llvm_bindir}/clang]) && AS_EXECUTABLE_P([${llvm_bindir}/clang++])],
-                           [CC=${llvm_bindir}/clang
-                            CXX=${llvm_bindir}/clang++],
-                           [test "x${afs_cross_compiling}" = "xyes" && AS_EXECUTABLE_P([/usr/bin/gcc]) && AS_EXECUTABLE_P([/usr/bin/g++])],
-                           [CC=/usr/bin/gcc
-                            CXX=/usr/bin/g++],
-                           [AS_EXECUTABLE_P([`which gcc`]) && AS_EXECUTABLE_P([`which g++`])],
-                           [CC=`which gcc`
-                            CXX=`which g++`],
-                           [scorep_have_llvm_config=no
-                            reason="no suitable compiler found, only Clang and GCC compiler supported"])])],
-             [scorep_have_llvm_config=no
-              reason="${scorep_llvm_config_bin} crashes when executed"])],
-      [AS_IF([test "x${with_llvm}" != "xno"],
-             [reason="llvm-config not found"])])
+AS_IF([test "x${enable_libwrap}" != "xno"],
+    [SCOREP_LLVM_CONFIG
+     AS_IF([test "x${scorep_have_llvm_config}" != "xno"],
+           [AS_IF([test "x${CC:+set}${CXX:+set}" != "xsetset"],
+               [llvm_bindir=`${scorep_llvm_config_bin} --bindir`
+                AS_IF([AS_EXECUTABLE_P([${llvm_bindir}/clang]) && AS_EXECUTABLE_P([${llvm_bindir}/clang++])],
+                      [CC=${llvm_bindir}/clang
+                       CXX=${llvm_bindir}/clang++],
+                      [test "x${afs_cross_compiling}" = "xyes" && AS_EXECUTABLE_P([/usr/bin/gcc]) && AS_EXECUTABLE_P([/usr/bin/g++])],
+                      [CC=/usr/bin/gcc
+                       CXX=/usr/bin/g++],
+                      [AS_EXECUTABLE_P([`which gcc`]) && AS_EXECUTABLE_P([`which g++`])],
+                      [CC=`which gcc`
+                       CXX=`which g++`],
+                      [scorep_have_llvm_config="no"
+                       reason="no suitable compiler found, only Clang and GCC compiler supported"])])],
+           [reason=${scorep_llvm_config_reason}])],
+    [scorep_have_llvm_config="no"
+     reason=${reason:-"explicitly disabled via --disable-libwrap-generator"}])
 
 AS_IF([test "x${scorep_have_llvm_config}" = "xno"],
       [# reset compilers to their original value, this way we avoid failures for the non-llvm related configure checks
@@ -225,12 +203,12 @@ AS_IF([test "x${scorep_have_llvm_config}" != "xno"],
                      [AC_MSG_RESULT([yes])
                       reason="using ${scorep_llvm_config_bin}"],
                      [AC_MSG_RESULT([no])
-                      scorep_have_llvm_config=no
+                      scorep_have_llvm_config="no"
                       reason="libclang version not sufficient (minimum v3.6)"])],
               [AC_MSG_RESULT([no])
-               scorep_have_llvm_config=no
+               scorep_have_llvm_config="no"
                reason="could not compile and link minimal program"])],
-           [scorep_have_llvm_config=no
+           [scorep_have_llvm_config="no"
             reason="missing <clang-c/Index.h>, please install developer packages for libclang"])
 
        CPPFLAGS=$save_CPPFLAGS
@@ -244,28 +222,26 @@ AS_IF([test "x${scorep_have_llvm_config}" != "xno"],
 
 AS_IF([test "x${scorep_have_llvm_config}" != "xno"],
       [touch library_wrapping_supported],
-      [AS_IF([test "x${with_llvm}" = "xnot_given"],
-             [:],
-             [test "x${with_llvm}" != "xno"],
-             [AC_MSG_ERROR([Library wrapper generator requested with --with-llvm but could not be fulfilled: ${reason}])])])
+      [AS_IF([test "x${enable_libwrap}" = "xyes"],
+             [AC_MSG_ERROR([Library wrapper generator requested with --enable-libwrap-generator, but could not be fulfilled: ${reason}])])])
 
 AFS_AM_CONDITIONAL([HAVE_LIBRARY_WRAPPING_GENERATOR],
                    [test -e library_wrapping_supported],
                    [false])
 
 AM_COND_IF([HAVE_LIBRARY_WRAPPING_GENERATOR],
-           [scorep_have_libwrap_generator=yes
+           [scorep_have_libwrap_generator="yes"
             AC_SUBST([SCOREP_LIBRARY_WRAPPING_GENERATOR_CPPFLAGS], ["${llvm_cppflags}"])
             AC_SUBST([SCOREP_LIBRARY_WRAPPING_GENERATOR_LDFLAGS],  ["${llvm_ldflags} -R${llvm_libdir}"])
             AC_SUBST([SCOREP_LIBRARY_WRAPPING_GENERATOR_LIBS],     ["${llvm_libs}"])],
-           [scorep_have_libwrap_generator=no])
+           [scorep_have_libwrap_generator="no"])
 
 AS_UNSET([llvm_cppflags])
 AS_UNSET([llvm_ldflags])
 AS_UNSET([llvm_libdir])
 AS_UNSET([llvm_libs])
 
-AFS_SUMMARY([Library wrapper support], [${scorep_have_libwrap_generator}${reason:+, }${reason}])
+AFS_SUMMARY([Library wrapper generator support], [${scorep_have_libwrap_generator}${reason:+, }${reason}])
 AS_UNSET([reason])
 
 AM_COND_IF([HAVE_LIBRARY_WRAPPING_GENERATOR],

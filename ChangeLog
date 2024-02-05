@@ -39,6 +39,11 @@ Compatibility:
 - Remove OpenACC configure options and environment variables to
   specify include paths to `openacc.h` and `acc_prof.h`. Compilers
   implementing OpenACC know where to find the header files.
+- Added flag `--disable-libwrap-generator` to disable the build
+  of the library wrapper generator. While `--without-llvm` still
+  disables this build as well, `--with-llvm=<path>` will not
+  cause configure to fail if the requirements for the generator
+  build cannot be satisfied anymore.
 
 Bugfixes:
 
