@@ -6,6 +6,9 @@
 ## Copyright (c) 2022,
 ## Technische Universitaet Dresden, Germany
 ##
+## Copyright (c) 2024,
+## Forschungszentrum Juelich GmbH, Germany
+##
 ## This software may be modified and distributed under the terms of
 ## a BSD-style license. See the COPYING file in the package base
 ## directory for details.
@@ -36,7 +39,7 @@ AC_ARG_WITH([rocm],
                              with_rocm=yes],
                      [*],   [AC_MSG_ERROR([Invalid value for --with-rocm: $withval])])])
 
-scorep_have_hip="${with_rocm:-no}"
+scorep_have_hip="${with_rocm:-yes}"
 scorep_have_rocm_smi="yes"
 
 # hipcc is Clang-based, in contrast to nvcc which can use a different backend compiler.
@@ -121,10 +124,7 @@ AS_CASE([$with_rocm,$scorep_have_hip],
         [yes,no*],
         [AC_MSG_ERROR([[Could not fulfill requested support for HIP${scorep_have_hip#no}]])],
         [no,yes],
-        [scorep_have_hip="no (disabled by request)"],
-        [no,no*],
-        [: ignore any configure result, the user disabled ROCm anyway
-         scorep_have_hip="no"])
+        [scorep_have_hip="no (disabled by request)"])
 
 AC_SCOREP_COND_HAVE([HIP_SUPPORT],
                     [test "x${scorep_have_hip}" = "xyes"],
