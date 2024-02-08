@@ -26,6 +26,8 @@ User tools and API improvements and changes:
   if available. To use OPARI2 as the default instrumenter, please use
   `--enable-default=opari2` during configure. The option
   `--enable-default=ompt` will be removed in a future Score-P release.
+- Fixed assignment of functions to the `COM` category in Score-P's scoring tool.
+  Score-P internal regions such as `TRACE BUFFER FLUSH` no longer induce `COM`.
 
 Compatibility:
 

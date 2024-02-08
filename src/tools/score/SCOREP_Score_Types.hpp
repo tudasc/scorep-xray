@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012, 2017,
+ * Copyright (c) 2009-2012, 2017, 2024,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -40,11 +40,16 @@
 #include <string>
 #include <stdint.h>
 
-/* All types after COM, have call-paths to them marked as in COM */
+/*
+ * All types after COM, have call-paths to them marked as in COM.
+ *
+ * Keep this in sync with section "Basic usage" in doc/doxygen-user/06_score.dox
+ */
 #define SCOREP_SCORE_TYPES \
     SCOREP_SCORE_TYPE( ALL, POSSIBLE )    \
     SCOREP_SCORE_TYPE( FLT, YES )         \
     SCOREP_SCORE_TYPE( USR, POSSIBLE )    \
+    SCOREP_SCORE_TYPE( SCOREP, NO )       \
     SCOREP_SCORE_TYPE( LIB, POSSIBLE )    \
     SCOREP_SCORE_TYPE( COM, POSSIBLE )    \
     SCOREP_SCORE_TYPE( MPI, NO )          \
@@ -55,7 +60,6 @@
     SCOREP_SCORE_TYPE( OPENCL, NO )       \
     SCOREP_SCORE_TYPE( OPENACC, NO )      \
     SCOREP_SCORE_TYPE( MEMORY, NO )       \
-    SCOREP_SCORE_TYPE( SCOREP, NO )       \
     SCOREP_SCORE_TYPE( IO, NO )           \
     SCOREP_SCORE_TYPE( KOKKOS, POSSIBLE ) \
     SCOREP_SCORE_TYPE( HIP, POSSIBLE )    \
