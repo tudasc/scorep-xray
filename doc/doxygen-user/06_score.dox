@@ -96,13 +96,13 @@ The following groups exist:
   <dd>This group contains all Kokkos regions</dd>
  <dt>HIP:</dt>
   <dd>This group contains all HIP functions</dd>
+ <dt>LIB:</dt>
+  <dd>This group contains all user wrapped library functions (See @secref{scoreplibwrap})</dd>
  <dt>COM:</dt>
   <dd>This group contains all functions, implemented by the user that appear on
       a call-path to any functions from the above groups, except <b>ALL</b></dd>
  <dt>USR:</dt>
   <dd>This group contains all user functions except those in the <b>COM</b> group</dd>
- <dt>LIB:</dt>
-  <dd>This group contains all user wrapped library functions (See @secref{scoreplibwrap})</dd>
  <dt>SCOREP:</dt>
   <dd>This group aggregates activities within the measurment system</dd>
 </ul>
