@@ -30,6 +30,8 @@ User tools and API improvements and changes:
   User wrapped libraries now do induce `COM` along call paths that reach them,
   and Score-P internal regions such as `TRACE BUFFER FLUSH` no longer induce
   `COM`.
+- The HIP adapter is now enabled by default when configure detects
+  the required libraries and a suitable Clang-based compiler.
 
 Compatibility:
 
