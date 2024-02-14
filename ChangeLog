@@ -72,6 +72,8 @@ Bugfixes:
 - Fix classification of various MPI functions (mostly introduced with
   MPI 4.0) by the report post-processing.
 - Fix build with ROCm 6.0 and device ID in stream names `HIP[D:S]`.
+- Provide the missing wrapper for `MPI_Request_get_status` and properly
+  handle the case where the operation hasn't been completed yet.
 
 ------------------- Released version 8.3 -----------------------------
 
