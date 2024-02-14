@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015, 2020, 2022-2023,
+ * Copyright (c) 2009-2015, 2020, 2022-2024,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -69,10 +69,11 @@
  * @{
  */
 
-#pragma wrapgen multiple regex((Interc|C)omm_(create|dup|dup_with_info|merge|split|split_type)$) skel/SCOREP_Mpi_CommMgnt.w
+#pragma wrapgen multiple regex(MPI_Comm_(create|dup|dup_with_info|split|split_type)$) skel/SCOREP_Mpi_CommMgnt.w
 #pragma wrapgen single MPI_Comm_create_group skel/SCOREP_Mpi_CommMgntSubset.w
 #pragma wrapgen single MPI_Comm_create_from_group skel/SCOREP_Mpi_CommMgntSubset.w
-#pragma wrapgen single MPI_Intercomm_create_from_groups skel/SCOREP_Mpi_CommMgntSubset.w
+#pragma wrapgen multiple regex(MPI_Intercomm_create(_from_groups)?$) skel/SCOREP_Mpi_CommMgntSubset.w
+#pragma wrapgen single MPI_Intercomm_merge skel/SCOREP_Mpi_CommMgnt.w
 
 #pragma wrapgen single MPI_Comm_idup skel/SCOREP_Mpi_CommIdup.w
 #pragma wrapgen single MPI_Comm_idup_with_info skel/SCOREP_Mpi_CommIdup.w
