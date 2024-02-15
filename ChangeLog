@@ -78,6 +78,8 @@ Bugfixes:
 - Enabling the CUDA / HIP adapter together with the OMPT adapter will no
   longer cause a segmentation fault with LLVM 16.0 and newer when OpenMP
   offloading flags are used.
+- Fix duplicate MPI inter-communicator definitions for cases with
+  distinct peer communicators.
 
 ------------------- Released version 8.3 -----------------------------
 

@@ -609,6 +609,7 @@ MPI_Comm_create_from_group( MPI_Group group, const char* stringtag, MPI_Info inf
     return return_val;
 }
 #endif
+
 #if HAVE( MPI_1_0_SYMBOL_PMPI_INTERCOMM_CREATE )
 /**
  * Declaration of PMPI-symbol for MPI_Intercomm_create
@@ -658,7 +659,21 @@ MPI_Intercomm_create( MPI_Comm local_comm, int local_leader, MPI_Comm peer_comm,
     SCOREP_EXIT_WRAPPED_REGION();
     if ( *newcomm != MPI_COMM_NULL )
     {
-        new_comm_handle = scorep_mpi_comm_create( *newcomm, peer_comm );
+        /* The semantic of the peer communicator only requires a useful
+         * communicator on the respective local leader rank.
+         * To avoid unnecessary duplicates use MPI_COMM_NULL for all other
+         * ranks in the place of the parent/peer communicator.
+         */
+        int rank;
+        PMPI_Comm_rank( local_comm, &rank );
+        if ( local_leader == rank )
+        {
+            new_comm_handle = scorep_mpi_comm_create( *newcomm, peer_comm );
+        }
+        else
+        {
+            new_comm_handle = scorep_mpi_comm_create( *newcomm, MPI_COMM_NULL );
+        }
     }
 
     if ( event_gen_active )
@@ -692,6 +707,8 @@ MPI_Intercomm_create( MPI_Comm local_comm, int local_leader, MPI_Comm peer_comm,
     return return_val;
 }
 #endif
+
+
 #if HAVE( MPI_4_0_SYMBOL_PMPI_INTERCOMM_CREATE_FROM_GROUPS ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Intercomm_create_from_groups )
 /**
  * Declaration of PMPI-symbol for MPI_Intercomm_create_from_groups
