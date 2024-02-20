@@ -38,7 +38,6 @@
 static int initialize_tool( ompt_function_lookup_t lookup, int initialDeviceNum, ompt_data_t *toolData );
 static void register_event_callbacks_host( ompt_set_callback_t setCallback );
 static void register_event_callbacks_device( ompt_set_callback_t setCallback );
-static void initialize_parameters( void );
 static void finalize_tool( ompt_data_t *toolData );
 static void cb_registration_status( char* name, ompt_set_result_t status );
 /* *INDENT-ON* */
@@ -53,8 +52,6 @@ static bool tool_initialized;
 bool        scorep_ompt_record_events   = false;
 bool        scorep_ompt_finalizing_tool = false;
 
-SCOREP_ParameterHandle scorep_ompt_parameter_loop_type = SCOREP_INVALID_PARAMETER;
-
 
 /* Called by the OpenMP runtime. Everything starts from here. */
 ompt_start_tool_result_t*
@@ -65,10 +62,7 @@ ompt_start_tool( unsigned int omp_version, /* == _OPENMP */
 
     UTILS_DEBUG( "[%s] omp_version=\"%d\"; runtime_version=\"%s\"",
                  UTILS_FUNCTION_NAME, omp_version, runtime_version );
-    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
-    {
-        SCOREP_InitMeasurement();
-    }
+
     /* TODO decide against initialization if env var is set? */
     static ompt_start_tool_result_t tool = { &initialize_tool,
                                              &finalize_tool,
@@ -108,7 +102,6 @@ initialize_tool( ompt_function_lookup_t lookup,
        TODO provide means to selectively register (groups of) callbacks? */
     register_event_callbacks_host( set_callback );
     register_event_callbacks_device( set_callback );
-    initialize_parameters();
 
     tool_initialized = true;
     return 1; /* non-zero indicates success */
@@ -205,14 +198,6 @@ static void
 register_event_callbacks_device( ompt_set_callback_t setCallback )
 {
     REGISTER_CALLBACK(, device_initialize );
-}
-
-static void
-initialize_parameters( void )
-{
-    #if !HAVE( SCOREP_OMPT_MISSING_WORK_LOOP_SCHEDULE )
-    scorep_ompt_parameter_loop_type = SCOREP_Definitions_NewParameter( "schedule", SCOREP_PARAMETER_STRING );
-    #endif /* !HAVE( SCOREP_OMPT_MISSING_WORK_LOOP_SCHEDULE ) */
 }
 
 
@@ -320,8 +305,6 @@ ompt_subsystem_init_location( struct SCOREP_Location* newLocation,
     {
         already_called = true;
         UTILS_DEBUG( "[%s] initial location %p", UTILS_FUNCTION_NAME, newLocation );
-        UTILS_BUG_ON( tool_initialized,
-                      "ompt tool initialization needs valid location" );
     }
     else
     {

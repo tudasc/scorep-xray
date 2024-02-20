@@ -432,12 +432,6 @@ various Score-P components.
     using OpenMP sections with NVHPC, please use OPARI2 via `--thread=omp:opari2`
     instead.
 
-  - When measuring an application compiled with OpenMP target offloading,
-    certain adapters like HIP & CUDA may cause the application to segmentation
-    fault with LLVM based compilers using version 16.0 or newer. As a work
-    around, please try to use an LLVM 15 based compiler or do not enable
-    affected adapters simultaneously.
-
   - When measuring an application using `#pragma omp ordered` with NVHPC,
     running the application may result in an error message like
     "Bug: 'task->workshare_regions_current == 0'" or crash with a segmentation

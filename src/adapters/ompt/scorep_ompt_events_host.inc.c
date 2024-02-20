@@ -33,6 +33,7 @@
 #include <SCOREP_Events.h>
 #include <SCOREP_Memory.h>
 #include <SCOREP_Timer_Ticks.h>
+#include <SCOREP_RuntimeManagement.h>
 
 
 /* Squeeze explicit task creation data into 64 bits, see also parallel_t's
@@ -186,6 +187,7 @@ typedef struct parallel_t
 
 
 /* *INDENT-OFF* */
+static void complete_adapter_init( void );
 static void on_first_parallel_begin( ompt_data_t* encounteringTaskData );
 static void init_parallel_obj( parallel_t* parallel, struct scorep_thread_private_data* parent, uint32_t requestedParallelism, const void* codeptrRa, uint32_t refCount );
 static void on_initial_task( int flags );
@@ -245,15 +247,27 @@ static THREAD_LOCAL_STORAGE_SPECIFIER task_t* tasks_free_list;
 
 
 /* convenience */
+static bool        adapter_ready;
+static UTILS_Mutex adapter_ready_mutex = UTILS_MUTEX_INIT;
+
+#define SCOREP_OMPT_ENSURE_INITIALIZED() \
+    bool ready = UTILS_Atomic_LoadN_bool( &adapter_ready, UTILS_ATOMIC_SEQUENTIAL_CONSISTENT ); \
+    if ( !ready ) \
+    { \
+        complete_adapter_init(); \
+    }
+
+
+/* convenience */
 #define GET_SUBSYSTEM_DATA( LOCATION, STORED_DATA, STORED_TASK ) \
-    task_t* STORED_TASK                        = NULL; \
+    task_t * STORED_TASK = NULL; \
     scorep_ompt_cpu_location_data* STORED_DATA = \
         SCOREP_Location_GetSubsystemData( LOCATION, scorep_ompt_get_subsystem_id() );
 
 
 /* convenience */
 #define RELEASE_AT_TEAM_END( TASK, OMPT_TASK_DATA ) \
-    UTILS_MutexWait(& ( TASK )->in_overdue_use, UTILS_ATOMIC_RELAXED ); \
+    UTILS_MutexWait( &( TASK )->in_overdue_use, UTILS_ATOMIC_RELAXED ); \
     ( OMPT_TASK_DATA )->ptr = ( TASK )->next; \
     release_parallel_region( ( TASK )->parallel_region ); \
     release_task_to_pool( TASK ); \
@@ -263,6 +277,50 @@ static THREAD_LOCAL_STORAGE_SPECIFIER task_t* tasks_free_list;
 #define UNDEFERRED_TASK_INIT ( 0 )
 #define UNDEFERRED_TASK_TO_BE_FREED ( -1 )
 
+
+/* Score-P parameters */
+SCOREP_ParameterHandle parameter_loop_type;
+
+
+static void
+init_parameters( void )
+{
+#if !HAVE( SCOREP_OMPT_MISSING_WORK_LOOP_SCHEDULE )
+    parameter_loop_type = SCOREP_Definitions_NewParameter( "schedule", SCOREP_PARAMETER_STRING );
+#endif /* !HAVE( SCOREP_OMPT_MISSING_WORK_LOOP_SCHEDULE ) */
+}
+
+
+static inline void
+complete_adapter_init( void )
+{
+    UTILS_MutexLock( &adapter_ready_mutex );
+    bool ready = UTILS_Atomic_LoadN_bool( &adapter_ready, UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
+    if ( !ready )
+    {
+        if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+        {
+            SCOREP_InitMeasurement();
+        }
+        /* Init Score-P parameters and region names */
+        init_parameters();
+        init_region_fallbacks();
+        /* Init the per process shift/mask for explicit task creation. */
+        nbits_region = SCOREP_Memory_GetDefinitionHandlesBitWidth();
+        shift_region = 64 - nbits_region;
+        mask_region  = get_mask( nbits_region, shift_region );
+        /* new task bit, makes task_data->value odd. Used in first task-schedule
+           to identify 'new task'. From there on, task is even. */
+        shift_new_task = 0;
+        mask_new_task  = get_mask( 1, shift_new_task );
+        /* Complete init of the initial task */
+        tpd                          = SCOREP_Thread_GetInitialTpd();
+        initial_task.scorep_location = SCOREP_Location_GetCurrentCPULocation();
+        initial_task.tpd             = tpd;
+        UTILS_Atomic_StoreN_bool( &adapter_ready, true, UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
+    }
+    UTILS_MutexUnlock( &adapter_ready_mutex );
+}
 
 static inline parallel_t*
 get_parallel_region_from_pool( void )
@@ -366,21 +424,6 @@ scorep_ompt_cb_host_thread_begin( ompt_thread_t thread_type,
         &thread_counter, 1, UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
     thread_data->value = adapter_tid;
 
-    if ( thread_type & ompt_thread_initial )
-    {
-        tpd = SCOREP_Thread_GetInitialTpd();
-        init_region_fallbacks();
-
-        /* Init the per process shift/mask for explicit task creation. */
-        nbits_region = SCOREP_Memory_GetDefinitionHandlesBitWidth();
-        shift_region = 64 - nbits_region;
-        mask_region  = get_mask( nbits_region, shift_region );
-        /* new task bit, makes task_data->value odd. Used in first task-schedule
-            to identify 'new task'. From there on, task is even. */
-        shift_new_task = 0;
-        mask_new_task  = get_mask( 1, shift_new_task );
-    }
-
     UTILS_DEBUG( "[%s] atid %" PRIu32 " | thread_type %s",
                  UTILS_FUNCTION_NAME, adapter_tid, thread2string( thread_type ) );
 
@@ -440,6 +483,7 @@ scorep_ompt_cb_host_parallel_begin( ompt_data_t*        encountering_task_data,
                        adapter_tid, encountering_task_data->ptr, parallel_data->ptr,
                        requested_parallelism, parallel_flag2string( flags ),
                        codeptr_ra );
+    SCOREP_OMPT_ENSURE_INITIALIZED();
     SCOREP_OMPT_RETURN_ON_INVALID_EVENT();
 
     UTILS_BUG_ON( requested_parallelism == 0 );
@@ -524,7 +568,7 @@ scorep_ompt_cb_host_parallel_begin( ompt_data_t*        encountering_task_data,
 static void
 on_first_parallel_begin( ompt_data_t* encounteringTaskData )
 {
-    UTILS_BUG_ON( encounteringTaskData->ptr == NULL );
+    UTILS_BUG_ON( encounteringTaskData->ptr != &initial_task );
     UTILS_BUG_ON( tpd == NULL );
 
     GET_SUBSYSTEM_DATA( initial_task.scorep_location, stored_data, stored_task );
@@ -556,8 +600,14 @@ init_parallel_obj( parallel_t*                        parallel,
     parallel->region     = get_region( codeptrRa, TOOL_EVENT_PARALLEL );
     parallel->ref_count  = refCount;
 
-    /* The remainder is for explicit tasking only */
+    /* For parallel_t corresponding to implicit parallel region (no parent), we
+     * can stop here. Remaining members are 0/NULL. */
+    if ( parent == NULL )
+    {
+        return;
+    }
 
+    /* The remainder is for explicit tasking only. */
     /* shift/mask for requested_parallelism and task_creation_number are per
        parallel-region. requested_parallelism is out of [1,N], thus encode
        thread_num values [0,N-1]. Use remaining bits for task_creation_number,
@@ -964,10 +1014,11 @@ on_initial_task( int flags )
 {
     init_parallel_obj( &implicit_parallel, NULL, 1, NULL, 0 );
 
-    initial_task.type            = flags;
-    initial_task.scorep_location = SCOREP_Location_GetCurrentCPULocation();
-    initial_task.tpd             = tpd;
-    UTILS_BUG_ON( initial_task.tpd == NULL );
+    initial_task.type = flags;
+    /* Set location and tpd to invalid values, as they may not be available at
+       this point. They will be set on first user event. */
+    initial_task.scorep_location  = SCOREP_INVALID_LOCATION;
+    initial_task.tpd              = NULL;
     initial_task.undeferred_level = UNDEFERRED_TASK_INIT;
     initial_task.parallel_region  = &implicit_parallel;
 }
@@ -1158,6 +1209,7 @@ scorep_ompt_cb_host_sync_region( ompt_sync_region_t    kind,
                        scope_endpoint2string( endpoint ),
                        parallel_data == NULL ? NULL : parallel_data->ptr,
                        task_data->ptr, codeptr_ra );
+    SCOREP_OMPT_ENSURE_INITIALIZED();
     SCOREP_OMPT_RETURN_ON_INVALID_EVENT();
 
     task_t* task = task_data->ptr;
@@ -1668,7 +1720,7 @@ scorep_ompt_cb_host_work( ompt_work_t           work_type,
                     task->reduction_codeptr_ra = ( uintptr_t )codeptr_ra;
                     SCOREP_EnterRegion( work_begin( task, codeptr_ra, TOOL_EVENT_LOOP ) );
                     #if !HAVE( SCOREP_OMPT_MISSING_WORK_LOOP_SCHEDULE )
-                    SCOREP_TriggerParameterString( scorep_ompt_parameter_loop_type, looptype2string( work_type ) );
+                    SCOREP_TriggerParameterString( parameter_loop_type, looptype2string( work_type ) );
                     #endif /* !HAVE( SCOREP_OMPT_MISSING_WORK_LOOP_SCHEDULE ) */
                     break;
                 case ompt_work_sections:
@@ -1855,6 +1907,7 @@ scorep_ompt_cb_host_task_create( ompt_data_t*        encountering_task_data,
                        encountering_task_data == NULL ? NULL : encountering_task_data->ptr,
                        new_task_data == NULL ? NULL : new_task_data->ptr,
                        task_flag2string( flags ) );
+    SCOREP_OMPT_ENSURE_INITIALIZED();
     SCOREP_OMPT_RETURN_ON_INVALID_EVENT();
 
     /* For now, prevent league events */
@@ -2610,6 +2663,7 @@ scorep_ompt_cb_host_lock_init( ompt_mutex_t   kind,
     SCOREP_IN_MEASUREMENT_INCREMENT();
     UTILS_DEBUG_ENTRY( "atid %" PRIu32 " | kind %s | wait_id %ld | codeptr_ra %p",
                        adapter_tid, mutex2string( kind ), wait_id, codeptr_ra );
+    SCOREP_OMPT_ENSURE_INITIALIZED();
     SCOREP_OMPT_RETURN_ON_INVALID_EVENT();
 
     task_t* task = get_current_task();
@@ -2852,6 +2906,7 @@ void
 scorep_ompt_cb_host_flush( ompt_data_t* thread_data,
                            const void*  codeptr_ra )
 {
+    SCOREP_OMPT_ENSURE_INITIALIZED();
     SCOREP_RegionHandle region    = get_region( codeptr_ra, TOOL_EVENT_FLUSH );
     SCOREP_Location*    location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t            timestamp = SCOREP_Timer_GetClockTicks();
