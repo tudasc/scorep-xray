@@ -42,6 +42,9 @@ Compatibility:
   command used for checking the NVIDIA CUDA compiler during configure.
 - The classic Intel compilers will now use the flag `-diag-disable=10441`
   to suppress the deprecation warning for each compilation unit.
+- Remove OpenACC configure options and environment variables to
+  specify include paths to `openacc.h` and `acc_prof.h`. Compilers
+  implementing OpenACC know where to find the header files.
 
 Bugfixes:
 

@@ -44,37 +44,7 @@ AC_ARG_ENABLE([openacc],
                               [Enable or disable support for OpenACC. (defaults to yes)])],
               [AS_IF([test "x$enableval" = "xyes"], [scorep_enable_openacc="yes"], [scorep_enable_openacc="no"])])
 
-# advertise the $OPENACC_INCLUDE and $OPENACC_PROFILING_INCLUDE variables in the --help output
-AC_ARG_VAR([OPENACC_INCLUDE],           [Include path to openacc.h header.])
-AC_ARG_VAR([OPENACC_PROFILING_INCLUDE], [Include path to acc_prof.h header.])
-
-dnl get path to OpenACC header
-AC_ARG_WITH([openacc-include],
-            [AS_HELP_STRING([--with-openacc-include=<path-to-openacc.h>],
-                            [If openacc.h is not installed in the default location, specify the directory where it can be found.])],
-            [scorep_openacc_inc_dir="${withval}"],  # action-if-given.
-            [scorep_openacc_inc_dir="${OPENACC_INCLUDE}"] # action-if-not-given
-)
-
-dnl get path to OpenACC Profiling header
-AC_ARG_WITH([openacc-prof-include],
-            [AS_HELP_STRING([--with-openacc-prof-include=<path-to-acc_prof.h>],
-                            [If acc_prof.h is not installed in the default location, specify the directory where it can be found.])],
-            [scorep_openacc_prof_inc_dir="${withval}"],  # action-if-given.
-            [scorep_openacc_prof_inc_dir="${OPENACC_PROFILING_INCLUDE}"] # action-if-not-given
-)
-
 AS_IF([test "x$scorep_enable_openacc" = "xyes"],[
-
-  dnl add include paths to CPPFLAGS
-  AS_IF([test "x$scorep_openacc_inc_dir" != "x"],
-        [with_openacc_cppflags="-I$scorep_openacc_inc_dir"])
-
-  AS_IF([test "x$scorep_openacc_prof_inc_dir" != "x"],
-        [with_openacc_cppflags="$with_openacc_cppflags -I$scorep_openacc_prof_inc_dir"])
-
-  scorep_openacc_safe_CPPFLAGS="${CPPFLAGS}"
-  CPPFLAGS="$CPPFLAGS ${with_openacc_cppflags}"
 
   AC_LANG_PUSH([C])
 
@@ -149,8 +119,6 @@ acc_register_library( acc_prof_reg accRegister,
   ])
 
   AC_LANG_POP([C])
-
-  CPPFLAGS="${scorep_openacc_safe_CPPFLAGS}"
 ])
 
 AS_IF([test "x${scorep_have_openacc_prof}" = xyes],
@@ -174,10 +142,8 @@ AC_SCOREP_COND_HAVE([OPENACC_SUPPORT],
                     [test "x${scorep_have_openacc_prof}" = "xyes"],
                     [Defined if openacc.h and acc_prof.h have been found and OpenACC enabled],
                     [openacc_support_summary="yes, with compiler flag ${scorep_compiler_acc_flags}"
-                     AC_SUBST([SCOREP_OPENACC_CPPFLAGS], [$with_openacc_cppflags])
                      AC_SUBST([SCOREP_COMPILER_ACC_FLAGS], [${scorep_compiler_acc_flags}])],
-                    [openacc_support_summary="no"
-                     AC_SUBST([SCOREP_OPENACC_CPPFLAGS], [""])])
+                    [openacc_support_summary="no"])
 
 AFS_SUMMARY([OpenACC support], [${openacc_support_summary}])
 ])
