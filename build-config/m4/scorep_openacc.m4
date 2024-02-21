@@ -6,7 +6,7 @@
 ## Copyright (c) 2015-2016, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
-## Copyright (c) 2021-2022,
+## Copyright (c) 2021-2022, 2024,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -133,11 +133,13 @@ AS_IF([test "x$scorep_enable_openacc" = "xyes"],[
       eventInfo->other_event.implicit;
     }
 
-    void
-    acc_register_library( acc_prof_reg reg, acc_prof_reg unreg, acc_prof_lookup lookup )
-    {
-        acc_register( acc_ev_device_init_start, handle_event, 0 );
-    }
+void
+acc_register_library( acc_prof_reg accRegister,
+                      acc_prof_reg accUnregister,
+                      acc_prof_lookup_func lookup )
+{
+    accRegister( acc_ev_device_init_start, handle_event, 0 );
+}
     ]])],
     [],
     [

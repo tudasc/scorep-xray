@@ -86,6 +86,7 @@ Bugfixes:
   not abort anymore if no data transfers were performed.
 - By default, use Cray compiler wrappers cc, CC, ftn instead of MPI
   and SHMEM compiler wrappers on Cray EX platforms.
+- Make OpenACC profiling tool registration compliant to specification.
 
 ------------------- Released version 8.3 -----------------------------
 

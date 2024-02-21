@@ -4,7 +4,7 @@
  * Copyright (c) 2014-2016, 2018, 2020,
  * Technische Universitaet Dresden, Germany
  *
- * Copyright (c) 2016,
+ * Copyright (c) 2016, 2024,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -38,7 +38,7 @@
 /**
  * Handle OpenACC start events.
  *
- * On call-path to SCOREP_EnterRegion(), thus needs a `scorep_` prefix.
+ * On call-path to SCOREP_EnterRegion(), thus needs a `scorep_` prefix for unwinding.
  *
  * @param profInfo
  * @param eventInfo     Information about the specific OpenACC event
@@ -276,9 +276,9 @@ handle_alloc( acc_prof_info*  profInfo,
  * @param lookup            Function to lookup OpenACC profiling routines
  */
 void
-acc_register_library( acc_prof_reg    accRegister,
-                      acc_prof_reg    accUnregister,
-                      acc_prof_lookup lookup )
+acc_register_library( acc_prof_reg         accRegister,
+                      acc_prof_reg         accUnregister,
+                      acc_prof_lookup_func lookup )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
