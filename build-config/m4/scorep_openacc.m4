@@ -16,130 +16,201 @@
 
 ## file build-config/m4/scorep_openacc.m4
 
-AC_DEFUN([SCOREP_OPENACC_FLAG_TEST],[
-    AC_LANG_PUSH([C])
-    save_CFLAGS=$CFLAGS
-    CFLAGS="$CFLAGS $1"
 
-    AC_MSG_CHECKING([whether compiler understands $1])
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM()],
-        [AC_MSG_RESULT([yes])
-         scorep_compiler_acc_flags="$1"],
-        [AC_MSG_RESULT([no])])
-
-   CFLAGS="$save_CFLAGS"
-   AC_LANG_POP([C])
-])
-
+# SCOREP_OPENACC()
+# ----------------
+# - Check if the C/CXX/FC compilers support OpenACC.
+#   Substitutes OPENACC_C|CXX|FCFLAGS.
+# - Check if the OpenACC profiling interface can be used and
+#   communicate status via HAVE_[BACKEND_]OPENACC_PROFILING_SUPPORT.
+#
 AC_DEFUN([SCOREP_OPENACC], [
 AC_REQUIRE([SCOREP_COMPUTENODE_CC])dnl
+have_openacc_support=no
+AC_LANG_PUSH([C])
+_CHECK_OPENACC_COMPILER_SUPPORT
+AC_LANG_POP([C])
+AS_IF([test "x${afs_cv_prog_cxx_works}" = xyes],
+    [AC_LANG_PUSH([C++])
+     _CHECK_OPENACC_COMPILER_SUPPORT
+     AC_LANG_POP([C++])])
+AS_IF([test "x${afs_cv_prog_fc_works}" = xyes],
+    [AC_LANG_PUSH([Fortran])
+     _CHECK_OPENACC_COMPILER_SUPPORT
+     AC_LANG_POP([Fortran])])
 
-scorep_enable_openacc="yes"
-scorep_have_openacc="no"
-scorep_have_openacc_prof="no"
-scorep_compiler_acc_flags=""
+AS_IF([test "x${have_openacc_support}" = xyes],
+    [AC_LANG_PUSH([C])
+     _CHECK_OPENACC_PROFILING_INTERFACE
+     AC_LANG_POP([C])])
 
-AC_ARG_ENABLE([openacc],
-              [AS_HELP_STRING([--enable-openacc],
-                              [Enable or disable support for OpenACC. (defaults to yes)])],
-              [AS_IF([test "x$enableval" = "xyes"], [scorep_enable_openacc="yes"], [scorep_enable_openacc="no"])])
+AC_SCOREP_COND_HAVE([OPENACC_PROFILING_SUPPORT],
+    [test "x${have_openacc_profiling_support}" = xyes],
+    [Defined if an OpenACC profiling tool can be compiled])
 
-AS_IF([test "x$scorep_enable_openacc" = "xyes"],[
+AFS_SUMMARY_PUSH
+AFS_SUMMARY([C support], [$have_openacc_c_support])
+AS_IF([test "x${afs_cv_prog_cxx_works}" = xyes],
+    [AFS_SUMMARY([C++ support], [$have_openacc_cxx_support])])
+AS_IF([test "x${afs_cv_prog_fc_works}" = xyes],
+    [AFS_SUMMARY([Fortran support], [$have_openacc_fc_support])])
+AS_IF([test "x${have_openacc_support}" = xyes],
+    [AFS_SUMMARY([Profiling support], [$have_openacc_profiling_support${openacc_profiling_reason:+, $openacc_profiling_reason}])])
+AFS_SUMMARY_POP([OpenACC support], [$have_openacc_support])
+])dnl SCOREP_OPENACC
 
-  AC_LANG_PUSH([C])
 
-  dnl check for openacc.h
-  AC_CHECK_HEADER([openacc.h],[scorep_have_openacc="yes"])
-
-  dnl check acc_prof.h for functions, types and fields the OpenACC adapter uses
-  AS_IF([test "x${scorep_have_openacc}" = "xyes"],[
-    AC_CHECK_HEADER([acc_prof.h],[scorep_have_openacc_prof="yes"],[],[
-    dnl stdlib is needed for size_t, as a respective header is not included in acc_prof.h
-    dnl acc_prof.h is included by openacc.h
-# include <stdlib.h>
-# include <openacc.h>
+# _CHECK_OPENACC_COMPILER_SUPPORT()
+# ---------------------------------
+# Determine compiler flag (if any) to activate OpenACC.
+#
+m4_define([_CHECK_OPENACC_COMPILER_SUPPORT], [
+AC_MSG_CHECKING([whether OpenACC is supported by the ]_AC_LANG_PREFIX[ compiler])
+have_openacc_[]_AC_LANG_ABBREV[]_support=no
+AC_LINK_IFELSE([AC_LANG_SOURCE(_INPUT_OPENACC_[]_AC_LANG_PREFIX)],
+    [openacc_[]_AC_LANG_ABBREV[]_option="none needed"
+     have_openacc_support=yes
+     have_openacc_[]_AC_LANG_ABBREV[]_support="yes, no flag needed"],
+    [openacc_[]_AC_LANG_ABBREV[]_option='unsupported'
+     dnl Try these flags:
+     dnl GCC      -fopenacc
+     dnl NVIDIA   -acc
+     dnl Cray CCE -hacc (Fortran only)
+     for acc_option in -fopenacc -acc -hacc; do
+         save_[]_AC_LANG_PREFIX[]FLAGS=$[]_AC_LANG_PREFIX[]FLAGS
+         _AC_LANG_PREFIX[]FLAGS="$[]_AC_LANG_PREFIX[]FLAGS $acc_option"
+         AC_LINK_IFELSE([AC_LANG_SOURCE(_INPUT_OPENACC_[]_AC_LANG_PREFIX)],
+             [openacc_[]_AC_LANG_ABBREV[]_option=$acc_option
+              have_openacc_support=yes
+              have_openacc_[]_AC_LANG_ABBREV[]_support="yes, recognizing $acc_option"])
+         _AC_LANG_PREFIX[]FLAGS=$save_[]_AC_LANG_PREFIX[]FLAGS
+         AS_IF([test "x${openacc_[]_AC_LANG_ABBREV[]_option}" != xunsupported],
+             [break])
+     done
     ])
-    AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
-    #include <stdlib.h>
-    #include <acc_prof.h>
+AC_MSG_RESULT([${have_openacc_[]_AC_LANG_ABBREV[]_support}])
 
-    static void
-    handle_event( acc_prof_info*  profInfo,
-                  acc_event_info* eventInfo,
-                  acc_api_info*   apiInfo )
+AS_CASE([${openacc_[]_AC_LANG_ABBREV[]_option}],
+    ["none needed" | unsupported], [OPENACC_[]_AC_LANG_PREFIX[]FLAGS=],
+    [OPENACC_[]_AC_LANG_PREFIX[]FLAGS=${openacc_[]_AC_LANG_ABBREV[]_option}])
+AC_SUBST([OPENACC_]_AC_LANG_PREFIX[FLAGS])
+])dnl _CHECK_OPENACC_COMPILER_SUPPORT
+
+
+# _INPUT_OPENACC_C()
+# ------------------
+#
+m4_define([_INPUT_OPENACC_C], [[
+#ifndef _OPENACC
+choke me
+#endif
+#include <openacc.h>
+int main() { return acc_get_num_devices( acc_device_default ); }
+]])dnl _INPUT_OPENACC_C
+
+
+# _INPUT_OPENACC_CXX()
+# --------------------
+#
+m4_copy([_INPUT_OPENACC_C], [_INPUT_OPENACC_CXX])
+
+
+# _INPUT_OPENACC_FC()
+# -------------------
+#
+m4_define([_INPUT_OPENACC_FC], [[
+      PROGRAM main
+      USE OPENACC
+      INTEGER NDEV
+      NDEV = ACC_GET_NUM_DEVICES( ACC_DEVICE_DEFAULT )
+      END
+]])dnl _INPUT_OPENACC_FC
+
+
+# _CHECK_OPENACC_PROFILING_INTERFACE()
+# ------------------------------------
+# As of 2024-02,
+# - there is no runtime that needs stdlib.h to include acc_prof.h,
+# - there is no runtime that needs OPENACC_CFLAGS to include acc_prof.h.
+# - An nvc-compiled OpenACC program calls acc_register_library (JURECA Stages/2024).
+# - No success with GCC 11.4.0 though.
+# Be pragmatic and check for the profiling header acc_prof.h and try
+# to compile a tool. This is good enough to build the OpenACC
+# adapter. If a tool gets activated, i.e., if acc_register_library is
+# called, will not be tested here. Such a test would require to run a
+# program, preferably with OpenACC being executed on a device.
+#
+m4_define([_CHECK_OPENACC_PROFILING_INTERFACE], [
+AS_UNSET([openacc_profiling_reason])
+AC_CHECK_HEADER([acc_prof.h],
+    [AC_MSG_CHECKING([whether an OpenACC profiling tool can be compiled])
+     AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#include <acc_prof.h>
+
+static void
+handle_event_cb( acc_prof_info*  profInfo,
+                 acc_event_info* eventInfo,
+                 acc_api_info*   apiInfo )
+{
+    /* Check for decls used in the OpenACC adapter */
+    switch ( profInfo->event_type )
     {
-      // check used profiling information fields
-      acc_event_t event_type  = profInfo->event_type;
-      acc_device_t deviceType = profInfo->device_type;
-      profInfo->device_number;
-      profInfo->line_no;
-      profInfo->src_file;
-
-      // check for availability of processed events
-      switch ( event_type )
-      {
-          case acc_ev_device_init_start:
-          case acc_ev_device_shutdown_start:
-          case acc_ev_compute_construct_start:
-          case acc_ev_update_start:
-          case acc_ev_enter_data_start:
-          case acc_ev_exit_data_start:
-          case acc_ev_enqueue_launch_start:
-            eventInfo->launch_event.kernel_name;
-            eventInfo->launch_event.num_gangs;
-            eventInfo->launch_event.num_workers;
-            eventInfo->launch_event.vector_length;
-          case acc_ev_enqueue_upload_start:
-          case acc_ev_enqueue_download_start:
-            eventInfo->data_event.var_name;
-            eventInfo->data_event.bytes;
-            eventInfo->data_event.device_ptr;
-          case acc_ev_wait_start:
-            return;
-      }
-
-      // check for used other event fields
-      eventInfo->other_event.tool_info;
-      eventInfo->other_event.implicit;
+        case acc_ev_alloc:
+        case acc_ev_compute_construct_end:
+        case acc_ev_compute_construct_start:
+        case acc_ev_device_init_end:
+        case acc_ev_device_init_start:
+        case acc_ev_device_shutdown_end:
+        case acc_ev_device_shutdown_start:
+        case acc_ev_enqueue_download_end:
+        case acc_ev_enqueue_download_start:
+        case acc_ev_enqueue_launch_end:
+        case acc_ev_enqueue_launch_start:
+        case acc_ev_enqueue_upload_end:
+        case acc_ev_enqueue_upload_start:
+        case acc_ev_enter_data_end:
+        case acc_ev_enter_data_start:
+        case acc_ev_exit_data_end:
+        case acc_ev_exit_data_start:
+        case acc_ev_free:
+        case acc_ev_update_end:
+        case acc_ev_update_start:
+        case acc_ev_wait_end:
+        case acc_ev_wait_start:
+            break;
     }
+
+    eventInfo->data_event.bytes;
+    eventInfo->data_event.device_ptr;
+    eventInfo->data_event.var_name;
+    eventInfo->launch_event.kernel_name;
+    eventInfo->launch_event.num_gangs;
+    eventInfo->launch_event.num_workers;
+    eventInfo->launch_event.vector_length;
+    eventInfo->other_event.implicit;
+    eventInfo->other_event.tool_info;
+    profInfo->device_number;
+    profInfo->device_type;
+    profInfo->line_no;
+    profInfo->src_file;
+
+    acc_data_event_info data_info = eventInfo->data_event;
+}
 
 void
 acc_register_library( acc_prof_reg accRegister,
                       acc_prof_reg accUnregister,
                       acc_prof_lookup_func lookup )
 {
-    accRegister( acc_ev_device_init_start, handle_event, 0 );
+    accRegister( acc_ev_device_init_start, handle_event_cb, (acc_register_t)0 );
 }
     ]])],
-    [],
-    [
-      AC_MSG_NOTICE([Required OpenACC profiling features are missing in acc_prof.h.])
-      scorep_have_openacc_prof="no"
-    ])
-  ])
-
-  AC_LANG_POP([C])
-])
-
-AS_IF([test "x${scorep_have_openacc_prof}" = xyes],
-      [dnl check for OpenACC compiler flags
-       AS_CASE([${ax_cv_c_compiler_vendor%/*}],
-           [nvhpc],    [SCOREP_OPENACC_FLAG_TEST([-acc])],
-           [portland], [SCOREP_OPENACC_FLAG_TEST([-acc])],
-           [gnu],      [],
-           [cray],     [SCOREP_OPENACC_FLAG_TEST([-h pragma=acc])],
-           [])dnl
-
-       dnl print a notice on the used OpenACC compiler flags
-       AS_IF([test "x${scorep_compiler_acc_flags}" != "x"],
-             [AC_MSG_NOTICE([using compiler OpenACC flags: ${scorep_compiler_acc_flags}])])])
-
-AC_SCOREP_COND_HAVE([OPENACC_PROFILING_SUPPORT],
-                    [test "x${scorep_have_openacc_prof}" = "xyes"],
-                    [Defined if an OpenACC profiling tool can be compiled],
-                    [openacc_support_summary="yes, with compiler flag ${scorep_compiler_acc_flags}"
-                     AC_SUBST([OPENACC_CFLAGS], [${scorep_compiler_acc_flags}])],
-                    [openacc_support_summary="no"])
-
-AFS_SUMMARY([OpenACC support], [${openacc_support_summary}])
-])
+         [have_openacc_profiling_support=yes],
+         [have_openacc_profiling_support=no
+          openacc_profiling_reason="tool cannot be compiled"
+          have_openacc_support=no])
+          AC_MSG_RESULT([$have_openacc_profiling_support])],
+    [have_openacc_profiling_support=no
+     openacc_profiling_reason="acc_prof.h not available"
+     have_openacc_support=no]) dnl AC_CHECK_HEADER
+])dnl _CHECK_OPENACC_PROFILING_INTERFACE
