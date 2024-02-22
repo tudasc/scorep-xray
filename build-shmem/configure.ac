@@ -4,7 +4,7 @@ dnl
 dnl Copyright (c) 2013-2018, 2020, 2022,
 dnl Technische Universitaet Dresden, Germany
 dnl
-dnl Copyright (c) 2015-2016, 2018-2022,
+dnl Copyright (c) 2015-2016, 2018-2022, 2024,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl This software may be modified and distributed under the terms of
@@ -179,7 +179,7 @@ AS_IF([test -n "${scorep_opari2_bindir}"],
 AC_SCOREP_BUILD_MODE
 SCOREP_CUDA
 SCOREP_HIP
-SCOREP_OPENACC
+SCOREP_OPENACC_SUMMARY
 SCOREP_KOKKOS
 SCOREP_CRAY_PMI
 SCOREP_MNTENT_CHECK

@@ -17,6 +17,23 @@
 ## file build-config/m4/scorep_openacc.m4
 
 
+# SCOREP_OPENACC_SUMMARY()
+# ------------------------
+#
+AC_DEFUN_ONCE([SCOREP_OPENACC_SUMMARY], [
+AC_REQUIRE([SCOREP_OPENACC])
+AFS_SUMMARY_PUSH
+AFS_SUMMARY([C support], [$have_openacc_c_support])
+AS_IF([test "x${afs_cv_prog_cxx_works}" = xyes],
+    [AFS_SUMMARY([C++ support], [$have_openacc_cxx_support])])
+AS_IF([test "x${afs_cv_prog_fc_works}" = xyes],
+    [AFS_SUMMARY([Fortran support], [$have_openacc_fc_support])])
+AS_IF([test "x${have_openacc_support}" = xyes],
+    [AFS_SUMMARY([Profiling support], [$have_openacc_profiling_support${openacc_profiling_reason:+, $openacc_profiling_reason}])])
+AFS_SUMMARY_POP([OpenACC support], [$have_openacc_support])
+])dnl SCOREP_OPENACC_SUMMARY
+
+
 # SCOREP_OPENACC()
 # ----------------
 # - Check if the C/CXX/FC compilers support OpenACC.
@@ -24,7 +41,7 @@
 # - Check if the OpenACC profiling interface can be used and
 #   communicate status via HAVE_[BACKEND_]OPENACC_PROFILING_SUPPORT.
 #
-AC_DEFUN([SCOREP_OPENACC], [
+AC_DEFUN_ONCE([SCOREP_OPENACC], [
 AC_REQUIRE([SCOREP_COMPUTENODE_CC])dnl
 have_openacc_support=no
 AC_LANG_PUSH([C])
@@ -47,16 +64,6 @@ AS_IF([test "x${have_openacc_support}" = xyes],
 AC_SCOREP_COND_HAVE([OPENACC_PROFILING_SUPPORT],
     [test "x${have_openacc_profiling_support}" = xyes],
     [Defined if an OpenACC profiling tool can be compiled])
-
-AFS_SUMMARY_PUSH
-AFS_SUMMARY([C support], [$have_openacc_c_support])
-AS_IF([test "x${afs_cv_prog_cxx_works}" = xyes],
-    [AFS_SUMMARY([C++ support], [$have_openacc_cxx_support])])
-AS_IF([test "x${afs_cv_prog_fc_works}" = xyes],
-    [AFS_SUMMARY([Fortran support], [$have_openacc_fc_support])])
-AS_IF([test "x${have_openacc_support}" = xyes],
-    [AFS_SUMMARY([Profiling support], [$have_openacc_profiling_support${openacc_profiling_reason:+, $openacc_profiling_reason}])])
-AFS_SUMMARY_POP([OpenACC support], [$have_openacc_support])
 ])dnl SCOREP_OPENACC
 
 
