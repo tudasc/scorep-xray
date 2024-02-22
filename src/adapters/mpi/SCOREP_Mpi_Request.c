@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2019, 2022,
+ * Copyright (c) 2009-2019, 2022, 2024,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -1371,7 +1371,7 @@ MPI_Cancel( MPI_Request* request )
 }
 #endif
 
-#if HAVE( MPI_1_0_SYMBOL_PMPI_REQUEST_GET_STATUS ) && !defined( SCOREP_MPI_NO_REQUEST )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_REQUEST_GET_STATUS ) && !defined( SCOREP_MPI_NO_REQUEST )
 /**
  * Declaration of PMPI-symbol for MPI_Recv
  */
@@ -1426,12 +1426,12 @@ MPI_Request_get_status( MPI_Request request,
         {
             scorep_req->flags |= SCOREP_MPI_REQUEST_FLAG_IS_COMPLETED;
         }
-        scorep_mpi_unmark_request( scorep_req );
     }
     else if ( event_gen_active_for_group && xtest_active )
     {
         scorep_mpi_request_tested( scorep_req );
     }
+    scorep_mpi_unmark_request( scorep_req );
 
     if ( event_gen_active )
     {
