@@ -4,7 +4,7 @@
  * Copyright (c) 2014,
  * Technische Universitaet Dresden, Germany
  *
- * Copyright (c) 2016,
+ * Copyright (c) 2016, 2024,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -40,7 +40,7 @@ scorep_openacc_register( size_t subsystemId )
 
     return SCOREP_ConfigRegisterCond( "openacc",
                                       scorep_openacc_confvars,
-                                      HAVE_BACKEND_OPENACC_SUPPORT );
+                                      HAVE_BACKEND_OPENACC_PROFILING_SUPPORT );
 }
 
 const SCOREP_Subsystem SCOREP_Subsystem_OpenaccAdapter =

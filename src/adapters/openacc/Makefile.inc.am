@@ -16,7 +16,7 @@
 
 ## file       /scorep/src/adapters/openacc/Makefile.inc.am
 
-if HAVE_OPENACC_SUPPORT
+if HAVE_OPENACC_PROFILING_SUPPORT
 
 # runtime management library for the OpenACC adapter
 
@@ -60,4 +60,4 @@ libscorep_adapter_openacc_event_la_LDFLAGS = \
 libscorep_adapter_openacc_event_la_LIBADD = \
     $(LIB_DIR_SCOREP)libscorep_measurement.la
 
-endif
+endif HAVE_OPENACC_PROFILING_SUPPORT

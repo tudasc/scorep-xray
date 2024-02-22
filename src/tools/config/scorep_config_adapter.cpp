@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014, 2017, 2019-2022,
+ * Copyright (c) 2013-2014, 2017, 2019-2022, 2024,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014-2020, 2022,
@@ -59,7 +59,7 @@ SCOREP_Config_Adapter::init( void )
 #else
     all.push_back( new SCOREP_Config_MockupAdapter( "hip" ) );
 #endif
-#if HAVE_BACKEND( OPENACC_SUPPORT )
+#if HAVE_BACKEND( OPENACC_PROFILING_SUPPORT )
     all.push_back( new SCOREP_Config_OpenaccAdapter() );
 #else
     all.push_back( new SCOREP_Config_MockupAdapter( "openacc" ) );

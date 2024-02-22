@@ -134,15 +134,11 @@ AS_IF([test "x${scorep_have_openacc_prof}" = xyes],
        AS_IF([test "x${scorep_compiler_acc_flags}" != "x"],
              [AC_MSG_NOTICE([using compiler OpenACC flags: ${scorep_compiler_acc_flags}])])])
 
-AC_SCOREP_COND_HAVE([OPENACC],
-                    [test "x${scorep_have_openacc}" = "xyes"],
-                    [Defined if openacc.h has been found and OpenACC enabled.])
-
-AC_SCOREP_COND_HAVE([OPENACC_SUPPORT],
+AC_SCOREP_COND_HAVE([OPENACC_PROFILING_SUPPORT],
                     [test "x${scorep_have_openacc_prof}" = "xyes"],
-                    [Defined if openacc.h and acc_prof.h have been found and OpenACC enabled],
+                    [Defined if an OpenACC profiling tool can be compiled],
                     [openacc_support_summary="yes, with compiler flag ${scorep_compiler_acc_flags}"
-                     AC_SUBST([SCOREP_COMPILER_ACC_FLAGS], [${scorep_compiler_acc_flags}])],
+                     AC_SUBST([OPENACC_CFLAGS], [${scorep_compiler_acc_flags}])],
                     [openacc_support_summary="no"])
 
 AFS_SUMMARY([OpenACC support], [${openacc_support_summary}])
