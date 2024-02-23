@@ -20,6 +20,7 @@
 #include <string.h>
 #include <SCOREP_Addr2line.h>
 #include <SCOREP_FastHashtab.h>
+#include <SCOREP_InMeasurement.h>
 #include <SCOREP_ThreadForkJoin_Event.h>
 #include <jenkins_hash.h>
 
@@ -251,9 +252,15 @@ get_region( const void*  codeptrRa,
     if ( !codeptrRa )
     {
         SCOREP_RegionHandle region = region_fallback[ regionType ].handle;
-        UTILS_DEBUG( "[%s] (fallback) codeptrRa == NULL | region_id %u | region_name %s | type %d",
-                     UTILS_FUNCTION_NAME, SCOREP_RegionHandle_GetId( region ),
-                     SCOREP_RegionHandle_GetName( region ), SCOREP_RegionHandle_GetType( region ) );
+        #if HAVE( UTILS_DEBUG )
+        /* Work around segfault when measurement system is not initialized yet */
+        if ( !SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+        {
+            UTILS_DEBUG( "[%s] (fallback) codeptrRa == NULL | region_id %u | region_name %s | type %d",
+                         UTILS_FUNCTION_NAME, SCOREP_RegionHandle_GetId( region ), SCOREP_RegionHandle_GetName( region ),
+                         SCOREP_RegionHandle_GetType( region ) );
+        }
+        #endif
         return region;
     }
 
