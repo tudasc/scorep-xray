@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2017, 2019, 2020, 2022-2023,
+ * Copyright (c) 2009-2017, 2019, 2020, 2022-2024,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -612,6 +612,7 @@ write_metric_definitions( cube_t*                       myCube,
        search for duplicate names (but distinct descriptions) in the
        set of metric definitions, see FOREACH below.*/
     SCOREP_StringHandle metric_name_handles[ manager->metric.counter ];
+    SCOREP_MetricHandle parent_handles[ manager->metric.counter ];
     int                 n_metric_name_handles = 0;
     char*               metric_name;
     char*               metric_unit;
@@ -628,20 +629,35 @@ write_metric_definitions( cube_t*                       myCube,
                                                    String )->string_data;
         metric_description = SCOREP_UNIFIED_HANDLE_DEREF( definition->description_handle,
                                                           String )->string_data;
+
+        cube_metric*        parent_handle = NULL;
+        SCOREP_MetricHandle parent        = definition->parent_handle;
+        parent_handles[ n_metric_name_handles ] = parent;
+        if ( definition->parent_handle != SCOREP_INVALID_METRIC )
+        {
+            parent_handle = scorep_get_cube4_metric( map, parent );
+        }
+
         /* Append metric name handle and search for duplicates in the
            previously collected range [0, n_metric_name_handles[. If
            <n> duplicates are found, create a new unique metric name
            by appending _<n> to the original name. If no duplicate is
-           found, use the original name. */
-        metric_name_handles[ n_metric_name_handles++ ] = definition->name_handle;
+           found, use the original name.
+           Duplicates are only considered if they are siblings
+           in the metric hierarchy; therefore the parents have to be
+           included in the comparison. */
+        metric_name_handles[ n_metric_name_handles ] = definition->name_handle;
         int n_duplicates = 0;
         for ( int i = 0; i < n_metric_name_handles; i++ )
         {
-            if ( definition->name_handle == metric_name_handles[ i ] )
+            if ( definition->name_handle == metric_name_handles[ i ] &&
+                 definition->parent_handle == parent_handles[ i ] )
             {
                 n_duplicates++;
             }
         }
+        ++n_metric_name_handles;
+
         size_t len = strlen( metric_name );
         /* Unique name including enough extra space for n_duplicates number. */
         UTILS_BUG_ON( n_duplicates > UINT16_MAX, "Too many duplicate metric names: %d", n_duplicates );
@@ -651,13 +667,6 @@ write_metric_definitions( cube_t*                       myCube,
             /* Append separator and duplicates. */
             snprintf( unique_metric_name, sizeof( unique_metric_name ), "%s_%d", metric_name, n_duplicates );
             metric_name = unique_metric_name;
-        }
-
-        cube_metric*        parent_handle = NULL;
-        SCOREP_MetricHandle parent        = definition->parent_handle;
-        if ( definition->parent_handle != SCOREP_INVALID_METRIC )
-        {
-            parent_handle = scorep_get_cube4_metric( map, parent );
         }
 
         free_unit = false;
