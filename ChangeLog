@@ -82,6 +82,8 @@ Bugfixes:
   distinct peer communicators.
 - Fix inconsistent measurement with memory copies being done with changed
   contexts. The exit event is now properly ignored as well.
+- Measurements with HIP and `memcpy` enabled in `SCOREP_HIP_ENABLE` do
+  not abort anymore if no data transfers were performed.
 
 ------------------- Released version 8.3 -----------------------------
 
