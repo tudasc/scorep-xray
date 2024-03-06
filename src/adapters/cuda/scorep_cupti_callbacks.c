@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015, 2021-2023,
+ * Copyright (c) 2009-2013, 2015, 2021-2024,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -1842,16 +1842,21 @@ handle_cuda_memcpy( const CUpti_CallbackData* cbInfo,
     SCOREP_Location* stream_location;
     SCOREP_Location* host_location = SCOREP_Location_GetCurrentCPULocation();
 
+    scorep_cupti_context* context = scorep_cupti_context_get_create( cbInfo->context );
+    /* check if current host thread is the same as the context host thread */
+    if ( context->host_location != host_location )
+    {
+        UTILS_WARN_ONCE( "[CUPTI Callbacks] Detected change of host thread for context! "
+                         "Affected memory copies will be skipped!" );
+        return;
+    }
+
+    SCOREP_CUPTI_CALL( cuptiActivityDisable( CUPTI_ACTIVITY_KIND_MEMCPY ) );
+
     if ( cbInfo->callbackSite == CUPTI_API_ENTER )
     {
-        scorep_cupti_context* context = NULL;
-        scorep_cupti_stream*  stream  = NULL;
-
-        SCOREP_CUPTI_CALL( cuptiActivityDisable( CUPTI_ACTIVITY_KIND_MEMCPY ) );
-
+        scorep_cupti_stream* stream = NULL;
         {
-            context = scorep_cupti_context_get_create( cbInfo->context );
-
             if ( context->streams == NULL )
             {
                 scorep_cupticb_create_default_stream( context );
@@ -1862,14 +1867,6 @@ handle_cuda_memcpy( const CUpti_CallbackData* cbInfo,
 
             /* save address into 64 Bit correlation value for exit callback */
             *cbInfo->correlationData = ( uint64_t )stream;
-
-            /* check if current host thread is the same as the context host thread */
-            if ( context->host_location != host_location )
-            {
-                UTILS_WARNING( "[CUPTI Callbacks] Host thread of context changed! "
-                               "Skipping memory copy!" );
-                return;
-            }
 
             /* synchronize to get host waiting time */
             if ( scorep_cuda_sync_level )
@@ -1999,8 +1996,6 @@ handle_cuda_memcpy( const CUpti_CallbackData* cbInfo,
         /* pure idle time */
         if ( scorep_cuda_record_idle == SCOREP_CUDA_PURE_IDLE )
         {
-            scorep_cupti_context* context = scorep_cupti_context_get_create( cbInfo->context );
-
             if ( context->streams != NULL )
             {
                 if ( NULL != context->activity )
