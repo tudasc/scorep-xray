@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2017-2018, 2022,
+ * Copyright (c) 2009-2014, 2017-2018, 2022, 2024,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -443,11 +443,8 @@ define_communicator( SCOREP_DefinitionManager* definition_manager,
     /* No hashing, wont be used to find duplicates */
     new_definition->name_handle = name;
 
+    /* Parents can be different in the MPI intercomm case, hence, do not add it to the hash */
     new_definition->parent_handle = parent;
-    if ( new_definition->parent_handle != SCOREP_INVALID_COMMUNICATOR )
-    {
-        HASH_ADD_HANDLE( new_definition, parent_handle, Communicator );
-    }
 
     new_definition->unify_key = unifyKey;
     HASH_ADD_POD( new_definition, unify_key );
@@ -473,18 +470,39 @@ define_communicator( SCOREP_DefinitionManager* definition_manager,
             if ( existing_definition->hash_value == new_definition->hash_value
                  && existing_definition->group_a_handle == new_definition->group_a_handle
                  && existing_definition->group_b_handle == new_definition->group_b_handle
-                 && existing_definition->parent_handle == new_definition->parent_handle
                  && existing_definition->unify_key == new_definition->unify_key )
             {
-                /* This is a duplicate, take the name of the new definition, if any */
-                if ( new_definition->name_handle != SCOREP_INVALID_STRING )
+                bool is_equal = ( existing_definition->parent_handle == new_definition->parent_handle );
+
+                /* Check if intercomm */
+                if ( new_definition->group_a_handle != new_definition->group_b_handle )
                 {
-                    existing_definition->name_handle = new_definition->name_handle;
+                    /* For intercomms, which is currently MPI specific, you can have
+                     * differing parents for the same definition. With MPI 4.1, two cases
+                     * have to be distinguished:
+                     *  I)  a valid peer comm for a subset and a invalid for the rest
+                     *  II) all invalid if created from groups without a peer comm.
+                     * To avoid duplicates, copy the peer comm if available.
+                     */
+                    is_equal = true;
+                    if ( existing_definition->parent_handle == SCOREP_INVALID_COMMUNICATOR
+                         && new_definition->parent_handle != SCOREP_INVALID_COMMUNICATOR )
+                    {
+                        existing_definition->parent_handle = new_definition->parent_handle;
+                    }
                 }
-                SCOREP_Allocator_RollbackAllocMovable(
-                    definition_manager->page_manager,
-                    new_handle );
-                return hash_list_iterator;
+                if ( is_equal )
+                {
+                    /* This is a duplicate, take the name of the new definition, if any */
+                    if ( new_definition->name_handle != SCOREP_INVALID_STRING )
+                    {
+                        existing_definition->name_handle = new_definition->name_handle;
+                    }
+                    SCOREP_Allocator_RollbackAllocMovable(
+                        definition_manager->page_manager,
+                        new_handle );
+                    return hash_list_iterator;
+                }
             }
             hash_list_iterator = existing_definition->hash_next;
         }

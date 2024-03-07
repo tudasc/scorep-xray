@@ -55,7 +55,7 @@ Bugfixes:
   to the events already seen.
 - Fix incorrect communicator attribute in MPI_COLLECTIVE_END events for
   `MPI_Comm_create_group`, `MPI_Comm_create_from_group`, `MPI_Comm_join`,
-  and `MPI_Intercomm_create_from_groups`.
+  `MPI_Intercomm_create`, and `MPI_Intercomm_create_from_groups`.
 - Fix generation of 'MpiRequestTested' events from `MPI_Test[all|any|some]`
   wrappers for unsuccessful tests when enabled via
   `SCOREP_MPI_ENABLE_GROUPS=xreqtest`.
@@ -78,6 +78,8 @@ Bugfixes:
 - Enabling the CUDA / HIP adapter together with the OMPT adapter will no
   longer cause a segmentation fault with LLVM 16.0 and newer when OpenMP
   offloading flags are used.
+- Fix duplicate MPI inter-communicator definitions for cases with
+  distinct peer communicators.
 
 ------------------- Released version 8.3 -----------------------------
 
