@@ -80,6 +80,8 @@ Bugfixes:
   offloading flags are used.
 - Fix duplicate MPI inter-communicator definitions for cases with
   distinct peer communicators.
+- Fix inconsistent measurement with memory copies being done with changed
+  contexts. The exit event is now properly ignored as well.
 
 ------------------- Released version 8.3 -----------------------------
 
