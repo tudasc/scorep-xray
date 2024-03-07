@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2022-2023,
+ * Copyright (c) 2022-2024,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -76,6 +76,7 @@ static uint32_t local_rank_counter;
 
 SCOREP_RmaWindowHandle           scorep_hip_window_handle               = SCOREP_INVALID_RMA_WINDOW;
 SCOREP_InterimCommunicatorHandle scorep_hip_interim_communicator_handle = SCOREP_INVALID_INTERIM_COMMUNICATOR;
+static UTILS_Mutex               window_handle_once;
 
 uint64_t  scorep_hip_global_location_count = 0;
 uint64_t* scorep_hip_global_location_ids   = NULL;
@@ -1971,20 +1972,6 @@ scorep_hip_callbacks_init( void )
         attribute_deallocation_size = SCOREP_AllocMetric_GetDeallocationSizeAttribute();
     }
 
-    if ( scorep_hip_features & SCOREP_HIP_FEATURE_MEMCPY )
-    {
-        /* create interim communicator once for a process */
-        scorep_hip_interim_communicator_handle = SCOREP_Definitions_NewInterimCommunicator(
-            SCOREP_INVALID_INTERIM_COMMUNICATOR,
-            SCOREP_PARADIGM_HIP,
-            0,
-            NULL );
-        scorep_hip_window_handle = SCOREP_Definitions_NewRmaWindow(
-            "HIP_WINDOW",
-            scorep_hip_interim_communicator_handle,
-            SCOREP_RMA_WINDOW_FLAG_NONE );
-    }
-
     // Must be called at least once on one of HIP_API, HCC_OPS, or its alias
     // HIP_OPS in order to initialize any HIP domain recording properly
     SCOREP_ROCTRACER_CALL( roctracer_set_properties( ACTIVITY_DOMAIN_HIP_API, NULL ) );
@@ -2311,12 +2298,39 @@ activate_host_location( void )
 {
     scorep_hip_cpu_location_data* location_data = SCOREP_Location_GetSubsystemData(
         SCOREP_Location_GetCurrentCPULocation(), scorep_hip_subsystem_id );
-    if ( location_data->local_rank == SCOREP_HIP_NO_RANK )
+
+    if ( location_data->local_rank != SCOREP_HIP_NO_RANK )
     {
-        location_data->local_rank = UTILS_Atomic_FetchAdd_uint32(
-            &local_rank_counter, 1,
-            UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
+        return;
     }
+    location_data->local_rank = UTILS_Atomic_FetchAdd_uint32(
+        &local_rank_counter, 1,
+        UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
+
+    if ( scorep_hip_interim_communicator_handle != SCOREP_INVALID_INTERIM_COMMUNICATOR )
+    {
+        return;
+    }
+
+    UTILS_MutexLock( &window_handle_once );
+    if ( scorep_hip_interim_communicator_handle != SCOREP_INVALID_INTERIM_COMMUNICATOR )
+    {
+        UTILS_MutexUnlock( &window_handle_once );
+        return;
+    }
+
+    /* create interim communicator once for a process */
+    scorep_hip_interim_communicator_handle = SCOREP_Definitions_NewInterimCommunicator(
+        SCOREP_INVALID_INTERIM_COMMUNICATOR,
+        SCOREP_PARADIGM_HIP,
+        0,
+        NULL );
+    scorep_hip_window_handle = SCOREP_Definitions_NewRmaWindow(
+        "HIP_WINDOW",
+        scorep_hip_interim_communicator_handle,
+        SCOREP_RMA_WINDOW_FLAG_NONE );
+
+    UTILS_MutexUnlock( &window_handle_once );
 }
 
 uint32_t
