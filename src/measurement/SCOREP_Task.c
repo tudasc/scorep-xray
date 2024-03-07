@@ -10,7 +10,7 @@
  * Copyright (c) 2015,
  * Technische Universitaet Muenchen, Germany
  *
- * Copyright (c) 2016,
+ * Copyright (c) 2016, 2024,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -123,9 +123,9 @@ task_subsystem_init_location( SCOREP_Location* location, SCOREP_Location* parent
 {
     scorep_location_task_data* subsystem_data
         = SCOREP_Location_AllocForMisc( location,
-                                        sizeof( scorep_location_task_data ) );
-    subsystem_data->recycled_tasks  = NULL;
-    subsystem_data->recycled_frames = NULL;
+                                        sizeof( *subsystem_data ) );
+
+    memset( subsystem_data, 0, sizeof( *subsystem_data ) );
 
     SCOREP_Location_SetSubsystemData( location,
                                       task_subsystem_id,
