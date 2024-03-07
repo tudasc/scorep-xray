@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2022-2023,
+ * Copyright (c) 2022-2024,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -2311,12 +2311,14 @@ activate_host_location( void )
 {
     scorep_hip_cpu_location_data* location_data = SCOREP_Location_GetSubsystemData(
         SCOREP_Location_GetCurrentCPULocation(), scorep_hip_subsystem_id );
-    if ( location_data->local_rank == SCOREP_HIP_NO_RANK )
+
+    if ( location_data->local_rank != SCOREP_HIP_NO_RANK )
     {
-        location_data->local_rank = UTILS_Atomic_FetchAdd_uint32(
-            &local_rank_counter, 1,
-            UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
+        return;
     }
+    location_data->local_rank = UTILS_Atomic_FetchAdd_uint32(
+        &local_rank_counter, 1,
+        UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
 }
 
 uint32_t
