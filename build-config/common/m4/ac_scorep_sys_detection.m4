@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2017, 2019-2021,
+## Copyright (c) 2009-2017, 2019-2021, 2024,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -125,8 +125,8 @@ AS_IF([test "x${ac_scorep_platform}" = "x"],
                                   [# System seems to be a Cray, but doensn't provide
                                    # compiler wrappers cc, CC, ftn. Try 'linux' as fallback.
                                    ac_scorep_platform=linux
-                                   AC_MSG_WARN([Unknown Cray platform, no compiler wrappers provided, assume linux. Please contact <AC_PACKAGE_BUGREPORT>.])],
-                                  [AC_MSG_WARN([Unknown Cray platform, please contact <AC_PACKAGE_BUGREPORT>.])])])],
+                                   AC_MSG_WARN([Generic Cray platform, no compiler wrappers provided, assume linux. Please contact <AC_PACKAGE_BUGREPORT>.])],
+                                  [AC_MSG_NOTICE([Generic Cray platform, providing compiler wrappers, not cross-compiling.])])])],
                    [test "x${build_cpu}" = "xx86_64" && test -d /opt/FJSVtclang],
                         [ac_scorep_platform="k"],
                    [test "x${build_cpu}" = "xx86_64" && test -d /opt/FJSVfxlang],

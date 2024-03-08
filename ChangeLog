@@ -84,6 +84,8 @@ Bugfixes:
   contexts. The exit event is now properly ignored as well.
 - Measurements with HIP and `memcpy` enabled in `SCOREP_HIP_ENABLE` do
   not abort anymore if no data transfers were performed.
+- By default, use Cray compiler wrappers cc, CC, ftn instead of MPI
+  and SHMEM compiler wrappers on Cray EX platforms.
 
 ------------------- Released version 8.3 -----------------------------
 

@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2014, 2017, 2020, 2022-2023,
+## Copyright (c) 2009-2014, 2017, 2020, 2022-2024,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -113,6 +113,7 @@ AC_ARG_WITH([nocross-compiler-suite],
 AS_IF([test -f "AFS_COMPILER_FILES_PACKAGE/${ac_scorep_compilers_backend}"],
       [ac_scorep_compilers_backend="AFS_COMPILER_FILES_PACKAGE/${ac_scorep_compilers_backend}"],
       [ac_scorep_compilers_backend="AFS_COMPILER_FILES_COMMON/${ac_scorep_compilers_backend}"])
+AC_MSG_NOTICE([using '${ac_scorep_compilers_backend}' backend settings.])
 
 
 AC_ARG_WITH([frontend-compiler-suite],
@@ -133,6 +134,8 @@ m4_undefine([_accepted_compiler_suites])
 AS_IF([test -f "AFS_COMPILER_FILES_PACKAGE/${ac_scorep_compilers_frontend}"],
       [ac_scorep_compilers_frontend="AFS_COMPILER_FILES_PACKAGE/${ac_scorep_compilers_frontend}"],
       [ac_scorep_compilers_frontend="AFS_COMPILER_FILES_COMMON/${ac_scorep_compilers_frontend}"])
+AS_IF([test "x${ac_scorep_cross_compiling}" = xyes],
+    [AC_MSG_NOTICE([using '${ac_scorep_compilers_frontend}' frontend settings.])])
 ])# AC_SCOREP_WITH_COMPILER_SUITE
 
 
@@ -142,7 +145,7 @@ AC_REQUIRE([AC_SCOREP_DETECT_PLATFORMS])
 
 scorep_mpi_user_disabled="no"
 AC_ARG_WITH([mpi],
-    [AS_HELP_STRING([--with-mpi=(bullxmpi|hp|ibmpoe|intel|intel2|intel3|intelpoe|lam|mpibull2|mpich|mpich2|mpich3|mpich4|openmpi|openmpi3|platform|scali|sgimpt|sgimptwrapper|spectrum|sun)],
+    [AS_HELP_STRING([--with-mpi=(bullxmpi|cray|hp|ibmpoe|intel|intel2|intel3|intelpoe|lam|mpibull2|mpich|mpich2|mpich3|mpich4|openmpi|openmpi3|platform|scali|sgimpt|sgimptwrapper|spectrum|sun)],
          [The MPI compiler suite to build this package in non cross-compiling mode. Usually autodetected. Needs to be in $PATH.])],
     [AS_IF([test "x${withval}" = xno],
          [scorep_mpi_user_disabled=yes
@@ -152,6 +155,7 @@ AC_ARG_WITH([mpi],
               [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" && test "x${ac_scorep_platform}" != "xaix"],
                    [AS_CASE([$withval],
                         ["bullxmpi"], [ac_scorep_compilers_mpi="compiler-mpi-bullxmpi"],
+                        ["cray"], [ac_scorep_compilers_mpi="compiler-mpi-cray"],
                         ["hp"], [ac_scorep_compilers_mpi="compiler-mpi-hp"],
                         ["ibmpoe"], [ac_scorep_compilers_mpi="compiler-mpi-ibmpoe"],
                         ["intel"], [ac_scorep_compilers_mpi="compiler-mpi-intel"],
@@ -185,7 +189,7 @@ AC_ARG_WITH([mpi],
     [AS_IF([test "x${afs_custom_compilers_given}" != xyes],
          [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" && test "x${ac_scorep_platform}" != "xaix"],
               [AFS_COMPILER_MPI
-               ac_scorep_compilers_mpi="compiler-mpi-${afs_compiler_mpi}"])
+               ac_scorep_compilers_mpi="${afs_compiler_mpi}"])
          ])
     ])
 
@@ -196,6 +200,8 @@ AS_IF([test "x${scorep_mpi_user_disabled}" = xno],
 AS_IF([test -f "AFS_COMPILER_FILES_PACKAGE/${ac_scorep_compilers_mpi}"],
       [ac_scorep_compilers_mpi="AFS_COMPILER_FILES_PACKAGE/${ac_scorep_compilers_mpi}"],
       [ac_scorep_compilers_mpi="AFS_COMPILER_FILES_COMMON/${ac_scorep_compilers_mpi}"])
+AS_IF([test "x${scorep_mpi_user_disabled}" = xno],
+    [AC_MSG_NOTICE([using '${ac_scorep_compilers_mpi}' MPI settings.])])
 # sanity checks missing
 ])# AC_SCOREP_WITH_MPI_COMPILER_SUITE
 
@@ -240,7 +246,7 @@ AC_REQUIRE([AC_SCOREP_DETECT_PLATFORMS])
 
 scorep_shmem_user_disabled="no"
 AC_ARG_WITH([shmem],
-    [AS_HELP_STRING([--with-shmem=(openshmem|openmpi|openmpi3|sgimpt|sgimptwrapper|spectrum)],
+    [AS_HELP_STRING([--with-shmem=(cray|openshmem|openmpi|openmpi3|sgimpt|sgimptwrapper|spectrum)],
          [The SHMEM compiler suite to build this package in non cross-compiling mode. Usually autodetected. Needs to be in $PATH.])],
     [AS_IF([test "x${withval}" = xno],
          [scorep_shmem_user_disabled=yes
@@ -249,6 +255,7 @@ AC_ARG_WITH([shmem],
          [AS_IF([test "x${afs_custom_compilers_given}" != xyes],
               [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" && test "x${ac_scorep_platform}" != "xaix"],
                    [AS_CASE([$withval],
+                        ["cray"], [ac_scorep_compilers_shmem="compiler-shmem-cray"],
                         ["openshmem"], [ac_scorep_compilers_shmem="compiler-shmem-openshmem"],
                         ["openmpi"], [ac_scorep_compilers_shmem="compiler-shmem-openmpi"],
                         ["openmpi3"], [ac_scorep_compilers_shmem="compiler-shmem-openmpi3"],
@@ -266,7 +273,7 @@ AC_ARG_WITH([shmem],
     [AS_IF([test "x${afs_custom_compilers_given}" != xyes],
          [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" && test "x${ac_scorep_platform}" != "xaix"],
               [AFS_COMPILER_SHMEM
-               ac_scorep_compilers_shmem="compiler-shmem-${afs_compiler_shmem}"])
+               ac_scorep_compilers_shmem="${afs_compiler_shmem}"])
          ])
     ])
 
@@ -280,6 +287,8 @@ AS_IF([test "x${scorep_shmem_user_disabled}" = xno],
 AS_IF([test "x${ac_scorep_compilers_shmem}" != "x" && test -f "AFS_COMPILER_FILES_PACKAGE/${ac_scorep_compilers_shmem}"],
       [ac_scorep_compilers_shmem="AFS_COMPILER_FILES_PACKAGE/${ac_scorep_compilers_shmem}"],
       [ac_scorep_compilers_shmem="AFS_COMPILER_FILES_COMMON/${ac_scorep_compilers_shmem}"])
+AS_IF([test "x${scorep_shmem_user_disabled}" = xno],
+    [AC_MSG_NOTICE([using '${ac_scorep_compilers_shmem}' SHMEM settings.])])
 # sanity checks missing
 ])# AFS_WITH_SHMEM_COMPILER_SUITE
 
