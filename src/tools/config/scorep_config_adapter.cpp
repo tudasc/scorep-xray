@@ -349,16 +349,51 @@ SCOREP_Config_CompilerAdapter::addCFlags( std::string&           cflags,
                                           SCOREP_Config_Language language,
                                           bool /* nvcc */ )
 {
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN )
+    bool gcc_plugin_instrumentation_available = false;
+#endif
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_VT_INTEL )
+    bool vt_intel_instrumentation_available = false;
+#endif
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_LLVM_PLUGIN )
+    bool        llvm_plugin_instrumentation_available = false;
+    std::string llvm_compiler_backend_flag_arg;
+#endif
+
     switch ( language )
     {
         case SCOREP_CONFIG_LANGUAGE_C:
             cflags += SCOREP_COMPILER_INSTRUMENTATION_CFLAGS;
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CC_GCC_PLUGIN )
+            gcc_plugin_instrumentation_available = true;
+#elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CC_VT_INTEL )
+            vt_intel_instrumentation_available = true;
+#elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CC_LLVM_PLUGIN )
+            llvm_plugin_instrumentation_available = true;
+            llvm_compiler_backend_flag_arg        = SCOREP_LLVM_PLUGIN_COMPILER_BACKEND_FLAG_CC;
+#endif /* HAVE_BACKEND(SCOREP_COMPILER_INSTRUMENTATION_CC_[...]) */
             break;
         case SCOREP_CONFIG_LANGUAGE_CXX:
             cflags += SCOREP_COMPILER_INSTRUMENTATION_CXXFLAGS;
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CXX_GCC_PLUGIN )
+            gcc_plugin_instrumentation_available = true;
+#elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CXX_VT_INTEL )
+            vt_intel_instrumentation_available = true;
+#elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CXX_LLVM_PLUGIN )
+            llvm_plugin_instrumentation_available = true;
+            llvm_compiler_backend_flag_arg        = SCOREP_LLVM_PLUGIN_COMPILER_BACKEND_FLAG_CXX;
+#endif /* HAVE_BACKEND(SCOREP_COMPILER_INSTRUMENTATION_CXX_[...]) */
             break;
         case SCOREP_CONFIG_LANGUAGE_FORTRAN:
             cflags += SCOREP_COMPILER_INSTRUMENTATION_FCFLAGS;
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_FC_GCC_PLUGIN )
+            gcc_plugin_instrumentation_available = true;
+#elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_FC_VT_INTEL )
+            vt_intel_instrumentation_available = true;
+#elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_FC_LLVM_PLUGIN )
+            llvm_plugin_instrumentation_available = true;
+            llvm_compiler_backend_flag_arg        = SCOREP_LLVM_PLUGIN_COMPILER_BACKEND_FLAG_FC;
+#endif /* HAVE_BACKEND(SCOREP_COMPILER_INSTRUMENTATION_FC_[...]) */
             break;
         default:
             break;
@@ -366,67 +401,43 @@ SCOREP_Config_CompilerAdapter::addCFlags( std::string&           cflags,
     cflags += " ";
 
 #if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN )
-    if ( build_check )
+    if ( gcc_plugin_instrumentation_available )
     {
-        extern std::string path_to_binary;
-        cflags += "-fplugin=" + path_to_binary + "../build-gcc-plugin/" LT_OBJDIR "scorep_instrument_function_gcc.so ";
+        if ( build_check )
+        {
+            extern std::string path_to_binary;
+            cflags += "-fplugin=" + path_to_binary + "../build-gcc-plugin/" LT_OBJDIR "scorep_instrument_function_gcc.so ";
+        }
+        else
+        {
+            cflags += "-fplugin=" SCOREP_PKGLIBDIR "/scorep_instrument_function_gcc.so ";
+        }
+        cflags += m_cflags;
     }
-    else
+#endif /* HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN ) */
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_VT_INTEL )
+    if ( vt_intel_plugin_instrumentation_available )
     {
-        cflags += "-fplugin=" SCOREP_PKGLIBDIR "/scorep_instrument_function_gcc.so ";
+        cflags += m_cflags;
     }
-    cflags += m_cflags;
-#elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_VT_INTEL )
-    cflags += m_cflags;
-#elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_LLVM_PLUGIN )
-    bool        plugin_instrumentation_available;
-    std::string compiler_backend_flag_arg;
-    switch ( language )
+#endif /* HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_VT_INTEL ) */
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_LLVM_PLUGIN )
+    if ( llvm_plugin_instrumentation_available )
     {
-        case SCOREP_CONFIG_LANGUAGE_C:
-#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CC_LLVM_PLUGIN )
-            plugin_instrumentation_available = true;
-            compiler_backend_flag_arg        = SCOREP_LLVM_PLUGIN_COMPILER_BACKEND_FLAG_CC;
-#else
-            plugin_instrumentation_available = false;
-#endif
-            break;
-        case SCOREP_CONFIG_LANGUAGE_CXX:
-#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CXX_LLVM_PLUGIN )
-            plugin_instrumentation_available = true;
-            compiler_backend_flag_arg        = SCOREP_LLVM_PLUGIN_COMPILER_BACKEND_FLAG_CXX;
-#else
-            plugin_instrumentation_available = false;
-#endif
-            break;
-        case SCOREP_CONFIG_LANGUAGE_FORTRAN:
-#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_FC_LLVM_PLUGIN )
-            plugin_instrumentation_available = true;
-            compiler_backend_flag_arg        = SCOREP_LLVM_PLUGIN_COMPILER_BACKEND_FLAG_FC;
-#else
-            plugin_instrumentation_available = false;
-#endif
-            break;
+        if ( build_check )
+        {
+            extern std::string path_to_binary;
+            cflags += "-fpass-plugin=" + path_to_binary + "../build-llvm-plugin/" LT_OBJDIR "scorep_instrument_function_llvm.so -g ";
+            cflags += llvm_compiler_backend_flag_arg + " -load " + llvm_compiler_backend_flag_arg + " " + path_to_binary + "../build-llvm-plugin/" LT_OBJDIR "scorep_instrument_function_llvm.so ";
+        }
+        else
+        {
+            cflags += "-fpass-plugin=" SCOREP_PKGLIBDIR "/scorep_instrument_function_llvm.so -g ";
+            cflags += llvm_compiler_backend_flag_arg + " -load " + llvm_compiler_backend_flag_arg + " " + SCOREP_PKGLIBDIR "/scorep_instrument_function_llvm.so ";
+        }
+        cflags += m_cflags;
     }
-
-    if ( !plugin_instrumentation_available )
-    {
-        return;
-    }
-
-    if ( build_check )
-    {
-        extern std::string path_to_binary;
-        cflags += "-fpass-plugin=" + path_to_binary + "../build-llvm-plugin/" LT_OBJDIR "scorep_instrument_function_llvm.so -g ";
-        cflags += compiler_backend_flag_arg + " -load " + compiler_backend_flag_arg + " " + path_to_binary + "../build-llvm-plugin/" LT_OBJDIR "scorep_instrument_function_llvm.so ";
-    }
-    else
-    {
-        cflags += "-fpass-plugin=" SCOREP_PKGLIBDIR "/scorep_instrument_function_llvm.so -g ";
-        cflags += compiler_backend_flag_arg + " -load " + compiler_backend_flag_arg +  " " + SCOREP_PKGLIBDIR "/scorep_instrument_function_llvm.so ";
-    }
-    cflags += m_cflags;
-#endif /* HAVE_BACKEND */
+#endif /* HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_LLVM_PLUGIN ) */
 }
 
 void
