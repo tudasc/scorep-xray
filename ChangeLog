@@ -90,6 +90,8 @@ Bugfixes:
 - By default, use Cray compiler wrappers cc, CC, ftn instead of MPI
   and SHMEM compiler wrappers on Cray EX platforms.
 - Make OpenACC profiling tool registration compliant to specification.
+- Fix profile metric names in the case of hierarchies. Only names of siblings
+  have to be unique.
 
 ------------------- Released version 8.3 -----------------------------
 
