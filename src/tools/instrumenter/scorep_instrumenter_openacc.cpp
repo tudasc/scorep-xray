@@ -4,7 +4,7 @@
  * Copyright (c) 2016,
  * Technische Universitaet Dresden, Germany
  *
- * Copyright (c) 2023,
+ * Copyright (c) 2023-2024,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -42,7 +42,7 @@
 SCOREP_Instrumenter_OpenACCAdapter::SCOREP_Instrumenter_OpenACCAdapter( void )
     : SCOREP_Instrumenter_Adapter( SCOREP_INSTRUMENTER_ADAPTER_OPENACC, "openacc" )
 {
-#if !HAVE_BACKEND( OPENACC_SUPPORT )
+#if !HAVE_BACKEND( OPENACC_PROFILING_SUPPORT )
     unsupported();
 #endif
 }

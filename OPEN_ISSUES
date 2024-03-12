@@ -693,6 +693,20 @@ various Score-P components.
 
 --------------------------------------------------------------------------------
 
+* OpenACC support
+
+  - Score-P may generate OpenACC related events if the compiler supports
+    the OpenACC Profiling (and Error) Callback Interface. It is a Score-P
+    requirement that the OpenACC runtime registers a tool by linking a
+    library that contains the function `acc_register_library`. Tool
+    registration via `ACC_PROFLIB` or `LD_PRELOAD` is not supported.
+    Currently, only NVIDIA compilers are known to support the interface
+    and to provide events to Score-P. With GNU compilers, a tool can be
+    compiled, but it won't be registered by linking `acc_register_library`
+    to the program.
+
+--------------------------------------------------------------------------------
+
 * Score-P misc.
 
   - Score-P does not support MPMD style programs where the executables
