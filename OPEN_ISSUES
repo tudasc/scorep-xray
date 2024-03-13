@@ -409,15 +409,15 @@ various Score-P components.
 
   - Until device directives are supported by Score-P, device events
     are ignored, if possible.
-    Runtimes that don't support OMPT target callbacks have been
-    reported creating helper threads on target directives. These
-    helper threads lack thread-begin and implicit-task-begin but
-    dispatch parallel-begin. This is non-conforming. In addition,
-    non-conforming tasking behavior has been observed: explicit
-    non-undeferred tasks are created in the implicit parallel region
-    but scheduled inside a different parallel region, created by a
-    helper thread.
+
+  - Runtimes have been reported creating helper threads for certain target
+    directives. These helper threads may dispatch events in a non-conforming
+    way. In addition, non-conforming tasking behavior has been observed.
     In these cases, Score-P can't ignore the device events, but aborts.
+    As a workaround, please turn off these helper threads by setting the
+    environment variable `LIBOMP_USE_HIDDEN_HELPER_TASK` to `0`. Known
+    nonconforming runtimes include LLVM/Clang (12.0.0 to 18.1.1) and
+    oneAPI (2024.0 and lower).
 
   - When measuring an application using `#pragma omp sections` with
     Intel oneAPI compilers, enabling OpenMP via `-fiopenmp` or `-qopenmp`
