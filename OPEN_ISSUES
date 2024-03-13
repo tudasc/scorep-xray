@@ -14,10 +14,11 @@ various Score-P components.
     architectures.
 
   - Score-P has been tested on the following platforms:
-    + HPE/Cray XC and EX systems with PrgEnvs cray, intel, nvidia, gnu
-      (see 'Shared libraries on Cray systems' below). With some
-      versions of PrgEnv-cray scorep fails to instrument. This got
-      fixed with Cray PE-21.05.
+
+    + HPE/Cray XC and EX systems with PrgEnvs cray, intel, nvidia,
+      gnu, amd, aocc, cray-amd (see 'Shared libraries on Cray systems'
+      below). PrgEnv-cray with Cray PE prior 21.05 fails to
+      compiler-instrument functions.
 
     + various Linux (Intel, AMD, IBM, ARM) clusters with GNU, Intel,
       NVIDIA, IBM, and AMD compilers. Note that some compilers are
