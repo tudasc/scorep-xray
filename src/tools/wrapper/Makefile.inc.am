@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2015, 2017, 2020,
+## Copyright (c) 2015, 2017, 2020, 2024,
 ## Technische Universitaet Dresden, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -32,7 +32,7 @@ install-scorep-wrappers:
 	    (cd $(DESTDIR)$(frontend_bindir); rm -f "$$p"; $(LN_S) "scorep-wrapper" "$$p") || exit $$?; \
 	done
 
-UNINSTALL_LOCAL_TARGETS += uninstall-scorep-wrappers
+UNINSTALL_HOOK += uninstall-scorep-wrappers
 uninstall-scorep-wrappers:
 	@$(NORMAL_UNINSTALL)
 	@list='$(SCOREP_WRAPPER_NAMES)'; test -n "$(frontend_bindir)" || list=; \
