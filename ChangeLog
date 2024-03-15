@@ -26,10 +26,6 @@ User tools and API improvements and changes:
   if available. To use OPARI2 as the default instrumenter, please use
   `--enable-default=opari2` during configure. The option
   `--enable-default=ompt` will be removed in a future Score-P release.
-- Fixed assignment of functions to the `COM` category in Score-P's scoring tool.
-  User wrapped libraries now do induce `COM` along call paths that reach them,
-  and Score-P internal regions such as `TRACE BUFFER FLUSH` no longer induce
-  `COM`.
 - The HIP adapter is now enabled by default when configure detects
   the required libraries and a suitable Clang-based compiler.
 
@@ -40,11 +36,31 @@ Compatibility:
 - Non-LLVM based CCE compilers are no longer supported. Please upgrade.
 - Added the environment variable `NVCC` to change the compiler
   command used for checking the NVIDIA CUDA compiler during configure.
-- The classic Intel compilers will now use the flag `-diag-disable=10441`
-  to suppress the deprecation warning for each compilation unit.
 - Remove OpenACC configure options and environment variables to
   specify include paths to `openacc.h` and `acc_prof.h`. Compilers
   implementing OpenACC know where to find the header files.
+
+Bugfixes:
+
+- Prevent the OMPT adapter from aborting when nested undeferred
+  OpenMP tasks report task underflows.
+- Enabling the CUDA / HIP adapter together with the OMPT adapter will no
+  longer cause a segmentation fault with LLVM 16.0 and newer when OpenMP
+  offloading flags are used.
+
+------------------- Released version 8.4 -----------------------------
+
+User tools and API improvements and changes:
+
+- Fixed assignment of functions to the `COM` category in Score-P's scoring tool.
+  User wrapped libraries now do induce `COM` along call paths that reach them,
+  and Score-P internal regions such as `TRACE BUFFER FLUSH` no longer induce
+  `COM`.
+
+Compatibility:
+
+- The classic Intel compilers will now use the flag `-diag-disable=10441`
+  to suppress the deprecation warning for each compilation unit.
 
 Bugfixes:
 
@@ -70,17 +86,12 @@ Bugfixes:
   fails.
 - Fix handling of multiple or unknown values for `--enable-default` during
   configure.
-- Prevent the OMPT adapter from aborting when nested undeferred
-  OpenMP tasks report task underflows.
 - Fix classification of various MPI functions (mostly introduced with
   MPI 4.0) by the report post-processing.
 - Fix build with ROCm 6.0 and device ID in stream names `HIP[D:S]`.
 - Provide the missing wrapper for `MPI_Request_get_status` and properly
   handle the case where the operation hasn't been completed yet.
 - Fix abort of OMPT adapter with nested parallel regions inside of tasks.
-- Enabling the CUDA / HIP adapter together with the OMPT adapter will no
-  longer cause a segmentation fault with LLVM 16.0 and newer when OpenMP
-  offloading flags are used.
 - Fix duplicate MPI inter-communicator definitions for cases with
   distinct peer communicators.
 - Fix inconsistent measurement with memory copies being done with changed
