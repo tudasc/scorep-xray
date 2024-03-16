@@ -345,6 +345,7 @@ AS_IF([test "x${AFS_LIB_DOWNLOAD_CMD}" = xno],
      AS_IF([test "x${AFS_LIB_DOWNLOAD_CMD}" = xno],
          [AC_MSG_WARN([Neither wget nor curl found.])
           AFS_LIB_DOWNLOAD_CMD="echo \"Neither wget nor curl found. Cannot download package. See \$(THIS_FILE).\" && exit 1 && "])])
+AC_SUBST([AFS_LIB_DOWNLOAD_CMD])
 # source meta-data for downloadable packages
 downloads=$afs_srcdir/build-config/downloads
 AS_IF([test -r $downloads],

@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2015, 2017, 2022,
+## Copyright (c) 2009-2015, 2017, 2022, 2024,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -135,7 +135,7 @@ FILES_THAT_INCLUDE_LIBUNWIND_H =
 if HAVE_SCOREP_LIBBFD_MAKEFILE
 BUILT_SOURCES += @SCOREP_LIBBFD_PREFIX@/include/bfd.h
 $(FILES_THAT_INCLUDE_BFD_H): @SCOREP_LIBBFD_PREFIX@/include/bfd.h
-@SCOREP_LIBBFD_PREFIX@/include/bfd.h:
+@SCOREP_LIBBFD_PREFIX@/include/bfd.h: @MAINTAINER_MODE_TRUE@ @SCOREP_LIBBFD_MAKEFILE@
 	@$(am__tty_colors); \
 	if $(AM_V_P); then echo "$(MAKE) all -f @SCOREP_LIBBFD_MAKEFILE@"; \
 	              else echo "  DEPLOY   $${blu}libbfd into @SCOREP_LIBBFD_PREFIX@$$std"; \
@@ -145,11 +145,11 @@ $(FILES_THAT_INCLUDE_BFD_H): @SCOREP_LIBBFD_PREFIX@/include/bfd.h
 	$(MAKE) -s all -f @SCOREP_LIBBFD_MAKEFILE@ $(SCOREP_V_DEVNULL)
 
 CLEAN_LOCAL += @SCOREP_LIBBFD_PREFIX@-clean
-@SCOREP_LIBBFD_PREFIX@-clean:
+@SCOREP_LIBBFD_PREFIX@-clean: @MAINTAINER_MODE_TRUE@ @SCOREP_LIBBFD_MAKEFILE@
 	@$(MAKE) clean -f @SCOREP_LIBBFD_MAKEFILE@ $(SCOREP_V_DEVNULL)
 
 UNINSTALL_HOOK += @SCOREP_LIBBFD_PREFIX@-uninstall
-@SCOREP_LIBBFD_PREFIX@-uninstall:
+@SCOREP_LIBBFD_PREFIX@-uninstall: @MAINTAINER_MODE_TRUE@ @SCOREP_LIBBFD_MAKEFILE@
 	@$(MAKE) uninstall -f @SCOREP_LIBBFD_MAKEFILE@ $(SCOREP_V_DEVNULL)
 endif HAVE_SCOREP_LIBBFD_MAKEFILE
 
