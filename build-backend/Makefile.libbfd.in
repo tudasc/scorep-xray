@@ -24,6 +24,7 @@
 THIS_FILE = build-backend/@SCOREP_LIBBFD_MAKEFILE@
 
 CC = gcc
+MKDIR_P = @MKDIR_P@
 
 URL = @binutils_base_url@
 PACKAGE = @binutils_package@
@@ -46,7 +47,7 @@ build__v_SILENT_0 = --silent
 all:
 	$(AM_V_at)@AFS_LIB_DOWNLOAD_CMD@ $(URL)/$(PACKAGE).tar.gz
 	$(AM_V_at)tar xf $(PACKAGE).tar.gz
-	$(AM_V_at)mkdir $(PACKAGE)/_build
+	$(AM_V_at)$(MKDIR_P) $(PACKAGE)/_build
 	$(AM_V_at)cd $(PACKAGE)/_build && \
 	    ../configure \
 	        --disable-dependency-tracking \
@@ -61,7 +62,7 @@ all:
 	$(AM_V_at)cd $(PACKAGE)/_build && $(MAKE) $(BUILD_V_SILENT) all-bfd
 	$(AM_V_at)cd $(PACKAGE)/_build && $(MAKE) $(BUILD_V_SILENT) install-bfd
 	-$(AM_V_at)rm -f $(PREFIX)/lib/libbfd.la
-clean:
+clean: uninstall
 	$(AM_V_at)rm -rf $(PACKAGE).tar.gz $(PACKAGE)
 uninstall:
 	$(AM_V_at)rm -rf $(PREFIX)
