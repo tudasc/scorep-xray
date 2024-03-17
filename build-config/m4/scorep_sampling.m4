@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2012,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2012, 2014-2017, 2020, 2023,
+## Copyright (c) 2009-2012, 2014-2017, 2020, 2023-2024,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -187,65 +187,9 @@ ac_cv_have_decl_unw_init_local2=yes
 dnl check will fail, used version provides unw_strerror
 ac_cv_have_decl_unw_strerror=yes
 dnl
-m4_changecom([])
-cat <<_SCOREPEOF > $[]_afs_lib_MAKEFILE
-#
-# $(pwd)/$_afs_lib_MAKEFILE
-#
-# Executing 'make -f $_afs_lib_MAKEFILE' downloads a libunwind
-# package and installs a shared _afs_lib_name into
-# ${libdir}${backend_suffix}/${PACKAGE}/[]_afs_lib_name
-# using CC=gcc that was found in PATH.
-#
-# Usually, this process is triggered during Score-P's build-backend
-# make. If _afs_lib_name's configure or make fail, or if there are
-# failures in the subsequent build process of Score-P, consider
-# modifying CC above to point to a compiler (gcc recommended) that is
-# compatible with the compute node compiler that you are using for
-# Score-P (i.e., $CC) and try (manually) again. Note that PGI/NVIDIA
-# and well as non-clang-based Cray compilers fail to build
-# _afs_lib_name.
-#
-# You can also modify the installation prefix if, e.g., you want to
-# share the _afs_lib_name installation between several Score-P
-# installations (which then need to be configured using
-# --with-[]_afs_lib_name=<prefix>).
-#
-# Please report bugs to <support@score-p.org>.
-#
-THIS_FILE = $(pwd)/$_afs_lib_MAKEFILE
-URL = $libunwind_base_url
-PACKAGE = $libunwind_package
-PREFIX = $[]_afs_lib_PREFIX
-CC = gcc
-all:
-	@$AFS_LIB_DOWNLOAD_CMD \$(URL)/\$(PACKAGE).tar.gz
-	@tar xf \$(PACKAGE).tar.gz
-	@mkdir \$(PACKAGE)/_build
-	@cd \$(PACKAGE)/_build && \\
-	    ../configure \\
-	        --silent \\
-	        --enable-silent-rules \\
-	        --prefix=\$(PREFIX) \\
-	        --libdir=\$(PREFIX)/lib \\
-	        CC=\$(CC) \\
-	        --enable-shared \\
-	        --disable-static \\
-	        --disable-ptrace \\
-	        --disable-coredump \\
-	        --disable-setjmp \\
-	        --disable-weak-backtrace \\
-	        --disable-documentation \\
-	        --disable-tests \\
-	        --disable-per-thread-cache && \\
-	    make -s install
-	@rm -f \$(PREFIX)/lib/libunwind.la
-clean:
-	@rm -rf \$(PACKAGE).tar.gz \$(PACKAGE)
-uninstall:
-	@rm -rf \$(PREFIX)
-_SCOREPEOF
-m4_changecom([#])
+AC_SUBST([libunwind_package])
+AC_SUBST([libunwind_base_url])
+AC_CONFIG_FILES([Makefile.libunwind:../build-backend/Makefile.libunwind.in])
 ])# _LIBUNWIND_DOWNLOAD
 
 dnl ----------------------------------------------------------------------------

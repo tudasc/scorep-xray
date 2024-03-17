@@ -1,0 +1,74 @@
+# @configure_input@
+
+# Executing 'make -f @SCOREP_LIBUNWIND_MAKEFILE@' downloads a libunwind
+# package and installs a shared libunwind into @SCOREP_LIBUNWIND_PREFIX@
+# using CC=gcc that was found in PATH.
+#
+# Usually, this process is triggered during Score-P's build-backend
+# make. If libunwind's configure or make fail, or if there are
+# failures in the subsequent build process of Score-P, consider
+# modifying CC below to point to a compiler (gcc recommended) that is
+# compatible with the compute node compiler that you are using for
+# Score-P (i.e., gcc) and try (manually) again. Note that PGI/NVIDIA
+# and well as non-clang-based Cray compilers fail to build
+# libunwind.
+#
+# You can also modify the installation prefix if, e.g., you want to
+# share the libunwind installation between several Score-P
+# installations (which then need to be configured using
+# --with-libunwind=<prefix>).
+#
+# Please report bugs to @PACKAGE_BUGREPORT@.
+#
+
+THIS_FILE = build-backend/@SCOREP_LIBUNWIND_MAKEFILE@
+
+CC = gcc
+MKDIR_P = @MKDIR_P@
+
+URL = @libunwind_base_url@
+PACKAGE = @libunwind_package@
+
+exec_prefix = @exec_prefix@
+prefix = @prefix@
+PREFIX = @SCOREP_LIBUNWIND_PREFIX@
+
+AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
+
+AM_V_at = $(am__v_at_@AM_V@)
+am__v_at_ = $(am__v_at_@AM_DEFAULT_V@)
+am__v_at_0 = @
+am__v_at_1 =
+
+BUILD_V_SILENT = $(build__v_SILENT_@AM_V@)
+build__v_SILENT_ = $(build__v_SILENT_@AM_DEFAULT_V@)
+build__v_SILENT_0 = --silent
+
+all:
+	$(AM_V_at)@AFS_LIB_DOWNLOAD_CMD@ $(URL)/$(PACKAGE).tar.gz
+	$(AM_V_at)tar xf $(PACKAGE).tar.gz
+	$(AM_V_at)$(MKDIR_P) $(PACKAGE)/_build
+	$(AM_V_at)cd $(PACKAGE)/_build && \
+	    ../configure \
+	        --disable-dependency-tracking \
+	        --prefix=$(PREFIX) \
+	        --libdir=$(PREFIX)/lib \
+	        CC=$(CC) \
+	        --enable-shared \
+	        --disable-static \
+	        --enable-silent-rules \
+	        $(BUILD_V_SILENT) \
+	        --disable-ptrace \
+	        --disable-coredump \
+	        --disable-setjmp \
+	        --disable-weak-backtrace \
+	        --disable-documentation \
+	        --disable-tests \
+	        --disable-per-thread-cache
+	$(AM_V_at)cd $(PACKAGE)/_build && $(MAKE) $(BUILD_V_SILENT)
+	$(AM_V_at)cd $(PACKAGE)/_build && $(MAKE) $(BUILD_V_SILENT) install
+	-$(AM_V_at)rm -f $(PREFIX)/lib/libunwind.la
+clean: uninstall
+	$(AM_V_at)rm -rf $(PACKAGE).tar.gz $(PACKAGE)
+uninstall:
+	$(AM_V_at)rm -rf $(PREFIX)
