@@ -2906,13 +2906,16 @@ void
 scorep_ompt_cb_host_flush( ompt_data_t* thread_data,
                            const void*  codeptr_ra )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     SCOREP_OMPT_ENSURE_INITIALIZED();
+    SCOREP_OMPT_RETURN_ON_INVALID_EVENT();
     SCOREP_RegionHandle region    = get_region( codeptr_ra, TOOL_EVENT_FLUSH );
     SCOREP_Location*    location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t            timestamp = SCOREP_Timer_GetClockTicks();
     /* No duration available for flush. Use identical timestamp. */
     SCOREP_Location_EnterRegion( location, timestamp, region );
     SCOREP_Location_ExitRegion( location, timestamp, region );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 void
