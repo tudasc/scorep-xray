@@ -6,7 +6,7 @@
 ## Copyright (c) 2021-2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
-## Copyright (c) 2022,
+## Copyright (c) 2022, 2024,
 ## Technische Universitaet Dresden, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -337,11 +337,11 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = xyes],
 #
 AC_DEFUN_ONCE([_AFS_LIB_DOWNLOAD_PREREQ], [
 # search for either wget or curl
-AC_CHECK_PROG([AFS_LIB_DOWNLOAD_CMD], [wget], [$(which wget) -q --content-disposition], [no])
+AC_CHECK_PROG([AFS_LIB_DOWNLOAD_CMD], [wget], [$(which wget) -q --content-disposition --continue], [no])
 AS_IF([test "x${AFS_LIB_DOWNLOAD_CMD}" = xno],
     [AS_UNSET([AFS_LIB_DOWNLOAD_CMD])
      AS_UNSET([ac_cv_prog_AFS_LIB_DOWNLOAD_CMD])
-     AC_CHECK_PROG([AFS_LIB_DOWNLOAD_CMD], [curl], [$(which curl) -S -s -O -J -L], [no])
+     AC_CHECK_PROG([AFS_LIB_DOWNLOAD_CMD], [curl], [$(which curl) -S -s -O -J -L -C -], [no])
      AS_IF([test "x${AFS_LIB_DOWNLOAD_CMD}" = xno],
          [AC_MSG_WARN([Neither wget nor curl found.])
           AFS_LIB_DOWNLOAD_CMD="echo \"Neither wget nor curl found. Cannot download package. See \$(THIS_FILE).\" && exit 1 && "])])
