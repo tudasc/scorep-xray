@@ -177,6 +177,19 @@ For the components otf2, cubew, cubelib, and opari2, the corresponding
 --without-<component> or --with-<component>=no options will ignore the
 <component>-config in $PATH but use the Score-P internal components.
 
+Some `--with-lib<foo>` options accept a `download` argument to automatically
+obtain and build the external component during the build process. To prevent
+the download during the build process, one can provide the required tarballs
+upfront in the source directory under `build-config/packages`, or,
+alternatively, in a directory specified via `--with-package-cache=<path>`.
+
+  --with-package-cache=<path>
+               Path where to provide packages for '--with-lib<foo>=download'
+               options to prevent downloads during the build process.
+               '<path>' defaults to 'build-config/packages' in the source
+               directory. The URLs to the required packages are stated in
+               the configure summary.
+
 To enable support for CUDA measurement via the CUPTI interface we
 provide three configure options: the path to the CUDA runtime, the
 path to the CUPTI library, and the path to the CUDA library. Usually
@@ -393,7 +406,9 @@ be used to build Score-P are as follows:
                not the case, use the explicit options directly or
                provide paths via LIBUNWIND_LIB and
                LIBUNWIND_INCLUDE. Use [download] to automatically
-               obtain and use libunwind via external tarball.
+               obtain and use libunwind via external tarball. See
+               --with-package-cache=<path> how to provide the
+               tarball for an offline installation.
   --with-libunwind-include=<Path to libunwind headers: libunwind.h>
   --with-libunwind-lib=<Path to libunwind libraries>
   --with-libOpenCL=(yes|no|<Path to libOpenCL installation>)
@@ -464,7 +479,8 @@ be used to build Score-P are as follows:
                not the case, use the explicit options directly or
                provide paths via LIBBFD_LIB and LIBBFD_INCLUDE. Use
                [download] to automatically obtain and use libbfd
-               via external tarball.
+               via external tarball. See --with-package-cache=<path>
+               how to provide the tarball for an offline installation.
   --with-libbfd-include=<Path to libbfd headers: bfd.h>
   --with-libbfd-lib=<Path to libbfd libraries>
   Please note that if a Score-P installation uses libbfd, the Score-P

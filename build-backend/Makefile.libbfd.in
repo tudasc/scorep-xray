@@ -26,6 +26,9 @@ THIS_FILE = build-backend/@SCOREP_LIBBFD_MAKEFILE@
 CC = gcc
 MKDIR_P = @MKDIR_P@
 
+srcdir = @afs_srcdir@
+PACKAGE_CACHE = @AFS_LIB_PACKAGE_CACHE@
+
 URL = @binutils_base_url@
 PACKAGE = @binutils_package@
 
@@ -49,8 +52,13 @@ build__v_QUIET_ = $(build__v_QUIET_@AM_DEFAULT_V@)
 build__v_QUIET_0 = --quiet
 
 all:
-	$(AM_V_at)@AFS_LIB_DOWNLOAD_CMD@ $(URL)/$(PACKAGE).tar.gz
-	$(AM_V_at)tar xf $(PACKAGE).tar.gz
+	$(AM_V_at)if [ -r $(PACKAGE_CACHE)/$(PACKAGE).tar.gz ]; then \
+	    PACKAGE="$(PACKAGE_CACHE)/$(PACKAGE)"; \
+	else \
+	    PACKAGE="$(PACKAGE)"; \
+	    @AFS_LIB_DOWNLOAD_CMD@ $(URL)/$(PACKAGE).tar.gz; \
+	fi && \
+	tar xf "$$PACKAGE.tar.gz"
 	$(AM_V_at)$(MKDIR_P) $(PACKAGE)/_build
 	$(AM_V_at)cd $(PACKAGE)/_build && \
 	    ../configure \

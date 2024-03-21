@@ -116,7 +116,10 @@ AC_ARG_WITH(_afs_lib_name,
                [ directly or provide path]m4_ifnblank([$3], [s])
                [ via ]_afs_lib_NAME[_LIB]
                m4_ifnblank([$3], [ and ]_afs_lib_NAME[_INCLUDE])[.]
-               m4_ifnblank([$4], [Use [[download]] to automatically obtain and use ]_afs_lib_name[ via external tarball.])),
+               m4_ifnblank([$4], [Use [[download]] to automatically obtain
+               and use ]_afs_lib_name[ via external tarball. See
+               --with-package-cache=<path> how to provide the tarball
+               for an offline installation.])),
          [$5])])
 m4_ifnblank([$3], [AC_ARG_WITH(_afs_lib_name[-include],
      AS_HELP_STRING([--with-_afs_lib_name-include=<Path to _afs_lib_name headers: $3>], [], [79]))])
@@ -352,4 +355,15 @@ AS_IF([test -r $downloads],
     [. $downloads],
     [AC_MSG_WARN([File $downloads not readable or does not exist.])])
 AS_UNSET([downloads])
+AC_SUBST([AFS_LIB_PACKAGE_CACHE], ['$(srcdir)/build-config/packages'])
+AC_ARG_WITH([package-cache],
+    [AS_HELP_STRING([--with-package-cache=<path>],
+         [Path where to provide packages for '--with-lib<foo>=download'
+          options to prevent downloads during the build process.
+          '<path>' defaults to 'build-config/packages' in the source
+          directory. The URLs to the required packages are stated in
+          the configure summary.])],
+    [AS_CASE([$withval],
+         [/*], [AFS_LIB_PACKAGE_CACHE=$withval],
+         [AFS_LIB_PACKAGE_CACHE=$(cd "$withval" && pwd)])])
 ])# _AFS_LIB_DOWNLOAD_CMD
