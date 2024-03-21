@@ -44,6 +44,10 @@ BUILD_V_SILENT = $(build__v_SILENT_@AM_V@)
 build__v_SILENT_ = $(build__v_SILENT_@AM_DEFAULT_V@)
 build__v_SILENT_0 = --silent
 
+BUILD_V_QUIET = $(build__v_QUIET_@AM_V@)
+build__v_QUIET_ = $(build__v_QUIET_@AM_DEFAULT_V@)
+build__v_QUIET_0 = --quiet
+
 all:
 	$(AM_V_at)@AFS_LIB_DOWNLOAD_CMD@ $(URL)/$(PACKAGE).tar.gz
 	$(AM_V_at)tar xf $(PACKAGE).tar.gz
