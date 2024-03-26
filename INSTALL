@@ -352,8 +352,18 @@ be used to build Score-P are as follows:
                Valid value: ompt
                List of valid values may change without deprecation
                notice.
+  --disable-libwrap-generator
+               Disable support for the libwrap generator. By default,
+               try to build the libwrap generator. It needs llvm-config,
+               which could be provided via --with-llvm=<path>, otherwise
+               PATH is searched.
   --disable-gcc-plugin
                Disable support for the GCC plug-in
+               instrumentation. Default is to determine support
+               automatically. This disables it by request and fails
+               if support cannot be satisfied but was requested.
+  --disable-llvm-plugin
+               Disable support for the LLVM plug-in
                instrumentation. Default is to determine support
                automatically. This disables it by request and fails
                if support cannot be satisfied but was requested.
@@ -459,8 +469,7 @@ be used to build Score-P are as follows:
   Please note that if a Score-P installation uses libbfd, the Score-P
   instrumented binaries may only be distributed under GPLv3 licensing.
   --with-llvm[=<llvm-bindir>]
-               Use an already installed LLVM, including libclang as we
-               need libclang for library-wrapping. Provide path to
+               Use an already installed LLVM, in particular
                llvm-config. Auto-detected if already in $PATH.
 
 Instead of passing command-line options to the 'configure' script, the package
@@ -531,6 +540,19 @@ variables:
   LIBS_FOR_BUILD_LIBWRAP
               Libraries for building library wrapper generator. Will be
               amended with '-lclang'.
+  CXXFLAGS_FOR_BUILD_LLVM_PLUGIN
+              C++ compiler flags for building LLVM plugin. Will be amended
+              with 'llvm-config --cxxflags', if 'llvm-config' is found.
+  CPPFLAGS_FOR_BUILD_LLVM_PLUGIN
+              C preprocesser flags for building LLVM plugin. Will be amended
+              with 'llvm-config --cppflags', if 'llvm-config' is found.
+  LDFLAGS_FOR_BUILD_LLVM_PLUGIN
+              Linker flags for building LLVM plugin. Will be amended
+              with 'llvm-config --ldflags', if 'llvm-config' is found.
+  LIBS_FOR_BUILD_LLVM_PLUGIN
+              Libraries for building LLVM plugin. Will be amended with
+              'llvm-config --libs demangle support', if 'llvm-config' is
+              found.
   MPICC       MPI C compiler command
   MPICXX      MPI C++ compiler command
   MPIF77      MPI Fortran 77 compiler command
@@ -660,8 +682,8 @@ Note that parallel builds (i.e., using 'make -j <n>') are fully supported.
 GNU Compiler Plug-In
 ====================
 
-   On some system the necessary header files, for compiling with support for
-the GNU Compiler plug-in instrumentation, are not installed by default. Therefore
+   On some systems, the necessary header files, for compiling with support for
+the GNU Compiler plug-in instrumentation, are not installed by default. Therefore,
 an extra package needs to be installed.
 
 On Debian and it's derivatives the package is called:
@@ -671,6 +693,21 @@ On Debian and it's derivatives the package is called:
 On Fedora and it's derivatives the package is called:
 
      gcc-plugin-devel
+
+LLVM Compiler Plug-In
+=====================
+
+   On some systems, the necessary header files, for compiling with support for
+the LLVM Compiler plug-in instrumentation, are not installed by default. Therefore,
+an extra package needs to be installed.
+
+On Debian and it's derivatives the package is called:
+
+     llvm-<version>-dev
+
+On Fedora and it's derivatives the package is called:
+
+     llvm-devel
 
 Intel Xeon Phi (aka. MIC) co-processors
 =======================================

@@ -4,6 +4,9 @@
  * Copyright (c) 2012-2013, 2015-2016,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2024,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -13,12 +16,12 @@
  * @file
  *
  * @brief Contains definition for
- * region descriptor struct for GCC plugin
+ * region descriptor struct for GCC and LLVM plugin
  */
 
 
-#ifndef SCOREP_COMPILER_GCC_PLUGIN_H
-#define SCOREP_COMPILER_GCC_PLUGIN_H
+#ifndef SCOREP_COMPILER_PLUGIN_H
+#define SCOREP_COMPILER_PLUGIN_H
 
 #include <stdint.h>
 
@@ -36,6 +39,6 @@ __attribute__( ( aligned( 64 ) ) )
 scorep_compiler_region_description;
 
 void
-scorep_compiler_gcc_plugin_register_region( const scorep_compiler_region_description* region_descr );
+scorep_compiler_plugin_register_region( const scorep_compiler_region_description* region_descr );
 
-#endif /* SCOREP_COMPILER_GCC_PLUGIN_H */
+#endif /* SCOREP_COMPILER_PLUGIN_H */

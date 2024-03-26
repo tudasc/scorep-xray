@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013, 2019-2020, 2022,
+ * Copyright (c) 2013, 2019-2020, 2022-2024,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2013-2016, 2019, 2021,
@@ -91,6 +91,26 @@ SCOREP_Instrumenter_CompilerAdapter::SCOREP_Instrumenter_CompilerAdapter( void )
 #endif /*!HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION )*/
 }
 
+void
+SCOREP_Instrumenter_CompilerAdapter::printHelp( void )
+{
+    if ( m_unsupported )
+    {
+        return;
+    }
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_LLVM_PLUGIN )
+    std::cout
+        << "\
+  --compiler-plugin-arg=<option>\n\
+                  Add additional arguments for compiler plugin.\n\
+                  Available options:\n\
+              exception-handling=<true|false>\n\
+                  Enables / disables exception handling for instrumentation.\n\
+                  May introduce additional overhead. It is enabled by default."
+        << std::endl;
+#endif
+}
+
 bool
 SCOREP_Instrumenter_CompilerAdapter::supportInstrumentFilters( void ) const
 {
@@ -100,6 +120,7 @@ SCOREP_Instrumenter_CompilerAdapter::supportInstrumentFilters( void ) const
     // and return true if any of the configured instrumentation methods supports
     // filtering.
 #if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN ) || \
+    HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_LLVM_PLUGIN ) || \
     HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_VT_INTEL )
     return true;
 #else
@@ -159,7 +180,7 @@ SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdL
     if ( cmdLine.getVerbosity() >= 1 ) \
     { \
         std::ostringstream verbosity_arg; \
-        verbosity_arg << " --compiler-arg=-fplugin-arg-scorep_instrument_function-verbosity="; \
+        verbosity_arg << " --compiler-arg=-fplugin-arg-scorep_instrument_function_gcc-verbosity="; \
         verbosity_arg << cmdLine.getVerbosity(); \
         flags += verbosity_arg.str(); \
     } \
@@ -168,7 +189,31 @@ SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdL
           file_it != filter_files.end(); \
           ++file_it ) \
     { \
-        flags += " --compiler-arg=-fplugin-arg-scorep_instrument_function-filter="  + *file_it; \
+        flags += " --compiler-arg=-fplugin-arg-scorep_instrument_function_gcc-filter="  + *file_it; \
+    }
+
+#define FILTER_LLVM_PLUGIN \
+    if ( cmdLine.getVerbosity() >= 1 ) \
+    { \
+        std::ostringstream verbosity_arg; \
+        verbosity_arg << " --compiler-arg=-mllvm"; \
+        verbosity_arg << " --compiler-arg=-scorep-plugin-config-verbosity="; \
+        verbosity_arg << cmdLine.getVerbosity(); \
+        flags += verbosity_arg.str(); \
+    } \
+    const std::vector<std::string>& filter_files = cmdLine.getInstrumentFilterFiles(); \
+    for ( std::vector<std::string>::const_iterator file_it = filter_files.begin(); \
+          file_it != filter_files.end(); \
+          ++file_it ) \
+    { \
+        flags += " --compiler-arg=-mllvm"; \
+        flags += " --compiler-arg=-scorep-plugin-config-filter-file="  + *file_it; \
+    }
+#define OPTIONS_LLVM_PLUGIN \
+    for ( const std::string& arg : m_llvm_plugin_args ) \
+    { \
+        flags += " --compiler-arg=-mllvm"; \
+        flags += " --compiler-arg=-scorep-plugin-" + arg; \
     }
 
 #define FILTER_INTEL \
@@ -234,6 +279,9 @@ SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdL
         FILTER_GCC_PLUGIN
 #elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CC_VT_INTEL )
         FILTER_INTEL
+#elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CC_LLVM_PLUGIN )
+        FILTER_LLVM_PLUGIN
+        OPTIONS_LLVM_PLUGIN
 #endif  /* SCOREP_BACKEND_COMPILER_CC_INTEL */
     }
     else if ( is_cpp_file( inputFile ) )
@@ -242,6 +290,9 @@ SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdL
         FILTER_GCC_PLUGIN
 #elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CXX_VT_INTEL )
         FILTER_INTEL
+#elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CXX_LLVM_PLUGIN )
+        FILTER_LLVM_PLUGIN
+        OPTIONS_LLVM_PLUGIN
 #endif  /* SCOREP_BACKEND_COMPILER_CXX_INTEL */
     }
     else if ( is_fortran_file( inputFile ) )
@@ -250,35 +301,64 @@ SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdL
         FILTER_GCC_PLUGIN
 #elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_FC_VT_INTEL )
         FILTER_INTEL
+#elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_FC_LLVM_PLUGIN )
+        FILTER_LLVM_PLUGIN
+        OPTIONS_LLVM_PLUGIN
 #endif  /* SCOREP_BACKEND_COMPILER_FC_INTEL */
+    }
+    else if ( is_cuda_file( inputFile ) )
+    {
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CXX_LLVM_PLUGIN )
+        FILTER_LLVM_PLUGIN
+            OPTIONS_LLVM_PLUGIN
+#endif
     }
 
     return flags;
 
+#undef FILTER_LLVM_PLUGIN
+#undef OPTIONS_LLVM_PLUGIN
 #undef FILTER_GCC_PLUGIN
 #undef FILTER_INTEL
+}
+
+bool
+SCOREP_Instrumenter_CompilerAdapter::checkOption( const std::string& arg )
+{
+    bool flag = SCOREP_Instrumenter_Adapter::checkOption( arg );
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_LLVM_PLUGIN )
+    if ( !flag )
+    {
+        if ( arg.substr( 0, 22 ) == "--compiler-plugin-arg=" )
+        {
+            m_llvm_plugin_args.push_back( arg.substr( 22, std::string::npos ) );
+            return true;
+        }
+    }
+#endif
+    return flag;
 }
 
 void
 SCOREP_Instrumenter_CompilerAdapter::prelink( SCOREP_Instrumenter&         instrumenter,
                                               SCOREP_Instrumenter_CmdLine& cmdLine )
 {
-#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN )
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_PLUGIN )
     if ( !cmdLine.isTargetSharedLib() )
     {
         if ( cmdLine.isBuildCheck() )
         {
             instrumenter.prependInputFile(
-                cmdLine.getPathToBinary() + "../build-backend/scorep_compiler_gcc_plugin_begin." OBJEXT );
+                cmdLine.getPathToBinary() + "../build-backend/scorep_compiler_plugin_begin." OBJEXT );
             instrumenter.appendInputFile(
-                cmdLine.getPathToBinary() + "../build-backend/scorep_compiler_gcc_plugin_end." OBJEXT );
+                cmdLine.getPathToBinary() + "../build-backend/scorep_compiler_plugin_end." OBJEXT );
         }
         else
         {
             instrumenter.prependInputFile(
-                SCOREP_BACKEND_PKGLIBDIR "/scorep_compiler_gcc_plugin_begin." OBJEXT );
+                SCOREP_BACKEND_PKGLIBDIR "/scorep_compiler_plugin_begin." OBJEXT );
             instrumenter.appendInputFile(
-                SCOREP_BACKEND_PKGLIBDIR "/scorep_compiler_gcc_plugin_end." OBJEXT );
+                SCOREP_BACKEND_PKGLIBDIR "/scorep_compiler_plugin_end." OBJEXT );
         }
     }
 #endif

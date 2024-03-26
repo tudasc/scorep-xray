@@ -418,8 +418,8 @@ from the displayed name.
       and <tt>MANGLED</tt> are case-sensitive.
 
 @note
-  Instrumentation via the GCC plug-in or Intel compilers support all above mentioned
-  filtering features when using the @verb{--instrument-filter=<file>} flag to the
+  Instrumentation via the GCC plug-in, LLVM plug-in, or Intel compilers support all above
+  mentioned filtering features when using the @verb{--instrument-filter=<file>} flag to the
   @scorep instrumenter (see Sec. @secref{compiler_instrumentation}).
   The filter file is then used during compilation time but the use of such a filter file
   during runtime is still possible. The usage of the filter during compilation time

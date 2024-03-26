@@ -11,9 +11,9 @@
 
 if HAVE_GCC_PLUGIN_SUPPORT
 
-pkglib_LTLIBRARIES = scorep_instrument_function.la
+pkglib_LTLIBRARIES = scorep_instrument_function_gcc.la
 
-scorep_instrument_function_la_SOURCES = \
+scorep_instrument_function_gcc_la_SOURCES = \
     $(SRC_ROOT)src/measurement/scorep_error_callback.c \
     $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin.cpp \
     $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin.h \
@@ -28,20 +28,20 @@ scorep_instrument_function_la_SOURCES = \
     $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_pass_instrument.cpp \
     $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_tree-flow.h \
     $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_gcc_version_compatibility.h
-scorep_instrument_function_la_CPPFLAGS = \
+scorep_instrument_function_gcc_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     $(UTILS_CPPFLAGS) \
     -I$(INC_ROOT)src/measurement/include \
     -I$(INC_ROOT)src/utils/filter \
     @SCOREP_GCC_PLUGIN_CPPFLAGS@
-scorep_instrument_function_la_CXXFLAGS = \
+scorep_instrument_function_gcc_la_CXXFLAGS = \
     $(AM_CXXFLAGS) \
     @SCOREP_GCC_PLUGIN_CXXFLAGS@
-scorep_instrument_function_la_LDFLAGS = \
+scorep_instrument_function_gcc_la_LDFLAGS = \
     -module \
     -avoid-version \
     -export-symbols-regex='^(plugin_init|plugin_is_GPL_compatible)$$'
-scorep_instrument_function_la_LIBADD = \
+scorep_instrument_function_gcc_la_LIBADD = \
     libscorep_filter.la \
     libutils.la
 

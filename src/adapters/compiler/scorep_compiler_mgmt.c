@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015, 2021-2022,
+ * Copyright (c) 2009-2015, 2021-2024,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -41,9 +41,9 @@
 #include <UTILS_Debug.h>
 
 
-#if HAVE( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN )
-#include "scorep_compiler_mgmt_gcc_plugin.inc.c"
-#endif /* SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN */
+#if HAVE( SCOREP_COMPILER_INSTRUMENTATION_PLUGIN )
+#include "scorep_compiler_mgmt_plugin.inc.c"
+#endif /* SCOREP_COMPILER_INSTRUMENTATION_PLUGIN */
 
 #if HAVE( SCOREP_COMPILER_INSTRUMENTATION_NEEDS_ADDR2LINE )
 #include "scorep_compiler_mgmt_func_addr_hash.inc.c"
@@ -55,9 +55,9 @@ compiler_subsystem_init( void )
 {
     UTILS_DEBUG_ENTRY();
 
-#if HAVE( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN )
-    gcc_plugin_register_regions();
-#endif /* SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN */
+#if HAVE( SCOREP_COMPILER_INSTRUMENTATION_PLUGIN )
+    plugin_register_regions();
+#endif /* SCOREP_COMPILER_INSTRUMENTATION_PLUGIN */
 
 #if HAVE( SCOREP_COMPILER_INSTRUMENTATION_NEEDS_ADDR2LINE )
     func_addr_hash_register_obj_close_cb();

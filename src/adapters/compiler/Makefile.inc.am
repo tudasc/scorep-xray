@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2015, 2018-2019, 2021-2022,
+## Copyright (c) 2009-2015, 2018-2019, 2021-2024,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -63,45 +63,56 @@ libscorep_adapter_compiler_mgmt_la_LIBADD += \
     libscorep_addr2line.la
 endif HAVE_SCOREP_COMPILER_INSTRUMENTATION_NEEDS_ADDR2LINE
 
+if HAVE_SCOREP_DEMANGLE
+libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
+    -I$(INC_DIR_SERVICES)
 
-#--- GCC-Plugin specific settings
-if HAVE_SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN
+libscorep_adapter_compiler_mgmt_la_LDFLAGS += \
+    @SCOREP_LIBBFD_LDFLAGS@
+
+libscorep_adapter_compiler_mgmt_la_LIBADD += \
+    @SCOREP_LIBBFD_LIBS@
+endif HAVE_SCOREP_DEMANGLE
+
+
+#--- Compiler-Plugin ( GCC / LLVM ) specific settings
+if HAVE_SCOREP_COMPILER_INSTRUMENTATION_PLUGIN
 
 libscorep_adapter_compiler_mgmt_la_SOURCES += \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin.h \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin_weak.c
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_plugin.h \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_plugin_weak.c
 
 object_DATA += \
-    scorep_compiler_gcc_plugin_begin.$(OBJEXT) \
-    scorep_compiler_gcc_plugin_end.$(OBJEXT)
+    scorep_compiler_plugin_begin.$(OBJEXT) \
+    scorep_compiler_plugin_end.$(OBJEXT)
 
-gccplugin_objects_cppflags = \
+plugin_objects_cppflags = \
     -I$(PUBLIC_INC_DIR) \
     -I$(INC_ROOT)src/adapters/compiler \
     -I$(INC_DIR_MEASUREMENT)
 
-scorep_compiler_gcc_plugin_begin.$(OBJEXT): $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin_begin.c \
-                                            $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin.h
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo $(gccplugin_objects_cppflags) -c -o $@ $<
+scorep_compiler_plugin_begin.$(OBJEXT): $(SRC_ROOT)src/adapters/compiler/scorep_compiler_plugin_begin.c \
+                                        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_plugin.h
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo $(plugin_objects_cppflags) -c -o $@ $<
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(COMPILE) $(gccplugin_objects_cppflags) -c $<
+@am__fastdepCC_FALSE@	$(COMPILE) $(plugin_objects_cppflags) -c $<
 
-scorep_compiler_gcc_plugin_end.$(OBJEXT): $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin_end.c \
-                                          $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin.h
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo $(gccplugin_objects_cppflags) -c -o $@ $<
+scorep_compiler_plugin_end.$(OBJEXT): $(SRC_ROOT)src/adapters/compiler/scorep_compiler_plugin_end.c \
+                                      $(SRC_ROOT)src/adapters/compiler/scorep_compiler_plugin.h
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo $(plugin_objects_cppflags) -c -o $@ $<
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(COMPILE) $(gccplugin_objects_cppflags) -c $<
+@am__fastdepCC_FALSE@	$(COMPILE) $(plugin_objects_cppflags) -c $<
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scorep_compiler_gcc_plugin_begin.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scorep_compiler_gcc_plugin_end.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scorep_compiler_plugin_begin.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scorep_compiler_plugin_end.Po@am__quote@
 
-endif HAVE_SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN
+endif HAVE_SCOREP_COMPILER_INSTRUMENTATION_PLUGIN
 
 
 # --------------------------------------------------------------------
@@ -152,12 +163,12 @@ EXTRA_DIST += \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_event_cyg_profile_func.inc.c \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_event_func_addr_hash.inc.c \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_event_func_trace.inc.c \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_event_gcc_plugin.inc.c \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_event_plugin.inc.c \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_event_vt_intel.inc.c \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_func_addr_hash.h \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin_begin.c \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin_end.c \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin.h \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin_weak.c \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_plugin_begin.c \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_plugin_end.c \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_plugin.h \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_plugin_weak.c \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_mgmt_func_addr_hash.inc.c \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_mgmt_gcc_plugin.inc.c
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_mgmt_plugin.inc.c

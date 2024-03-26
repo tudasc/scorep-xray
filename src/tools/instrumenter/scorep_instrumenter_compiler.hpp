@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013, 2022,
+ * Copyright (c) 2013, 2022-2024,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2015, 2022,
@@ -24,6 +24,10 @@
 
 #include "scorep_instrumenter_adapter.hpp"
 
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_LLVM_PLUGIN )
+#include <vector>
+#endif
+
 /* **************************************************************************************
  * class SCOREP_Instrumenter_CompilerAdapter
  * *************************************************************************************/
@@ -36,6 +40,9 @@ class SCOREP_Instrumenter_CompilerAdapter : public SCOREP_Instrumenter_Adapter
 public:
     SCOREP_Instrumenter_CompilerAdapter( void );
 
+    void
+    printHelp( void ) override;
+
     bool
     supportInstrumentFilters( void ) const override;
 
@@ -43,9 +50,17 @@ public:
     getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine,
                        const std::string&           inputFile ) override;
 
+    bool
+    checkOption( const std::string& arg ) override;
+
     void
     prelink( SCOREP_Instrumenter&         instrumenter,
              SCOREP_Instrumenter_CmdLine& cmdLine ) override;
+
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_LLVM_PLUGIN )
+private:
+    std::vector<std::string> m_llvm_plugin_args;
+#endif
 };
 
 #endif // SCOREP_INSTRUMENTER_COMPILER_HPP

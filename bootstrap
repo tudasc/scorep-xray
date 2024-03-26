@@ -13,6 +13,7 @@ LOCAL_CONFIGURES = \
 	build-mpi/configure \
 	build-shmem/configure \
 	build-gcc-plugin/configure \
+	build-llvm-plugin/configure \
 	build-score/configure \
 	build-libwrap/configure
 
@@ -56,6 +57,9 @@ build-shmem/configure: build-backend/configure
 build-gcc-plugin/configure: build-backend/configure
 	cd build-gcc-plugin; $(AUTORECONF) $(AUTORECONFFLAGS)
 
+build-llvm-plugin/configure: build-backend/configure
+	cd build-llvm-plugin; $(AUTORECONF) $(AUTORECONFFLAGS)
+
 build-score/configure: build-backend/configure
 	cd build-score; $(AUTORECONF) $(AUTORECONFFLAGS)
 
@@ -92,6 +96,7 @@ sub_builds = \
 	frontend \
 	score \
 	gcc-plugin \
+	llvm-plugin \
 	libwrap
 
 config_headers = \
@@ -102,6 +107,7 @@ config_headers = \
 	backend-for-frontend \
 	score \
 	gcc-plugin \
+	llvm-plugin \
 	libwrap
 
 clean-local:

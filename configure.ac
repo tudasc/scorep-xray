@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2019, 2021-2022,
+dnl Copyright (c) 2009-2019, 2021-2023,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2014,
@@ -249,6 +249,8 @@ AS_IF([test "x${libdir}" != 'x${exec_prefix}/lib'],
 AX_CONFIG_SUBDIR([build-score], [${scorep_score_extra_arg} ac_scorep_platform=${ac_scorep_platform} ${scorep_cubelib_config_arg} ${scorep_otf2_config_arg} afs_cross_compiling=${ac_scorep_cross_compiling}])
 
 AX_CONFIG_SUBDIR([build-gcc-plugin], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling}])
+
+AX_CONFIG_SUBDIR([build-llvm-plugin], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling}])
 
 AX_CONFIG_SUBDIR([build-libwrap], [${args} ac_scorep_platform=${ac_scorep_platform} afs_cross_compiling=${ac_scorep_cross_compiling}])
 
