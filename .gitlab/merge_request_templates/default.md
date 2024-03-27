@@ -9,6 +9,7 @@
 - [ ] ChangeLog
 - [ ] Documentation
 - [ ] Copyright
+- [ ] CITATION.cff
 
 The following commits **must not** appear in history:
 - [ ] _merge_ commits
