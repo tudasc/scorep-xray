@@ -36,6 +36,11 @@ User tools and API improvements and changes:
   `--enable-default=ompt` will be removed in a future Score-P release.
 - The HIP adapter is now enabled by default when configure detects
   the required libraries and a suitable Clang-based compiler.
+- Intel compilers supporting `-tcollect` for instrumentation (i.e., the
+  classic icc, icpc, ifort) will switch back to this option, instead of
+  using `-finstrument-functions`. The former allows for compile-time
+  filtering. The Clang-based icx, icpx, and ifx will continue to use
+  `-finstrument-functions`.
 
 Compatibility:
 

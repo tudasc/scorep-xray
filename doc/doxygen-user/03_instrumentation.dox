@@ -382,7 +382,7 @@ for instrumentation of C/C++ codes.
 @parblock
 @note
   As an exception, instrumentation via the GCC / LLVM plug-in
-  or Intel compilers support all filtering features when using the
+  or classic Intel compilers support all filtering features when using the
   @scorep option @verb{--instrument-filter=<file>}. This option may
   require an absolute file path. Note that the GCC
   plug-in instrumentation by default does not instrument functions

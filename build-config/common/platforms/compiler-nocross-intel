@@ -4,9 +4,9 @@ F77=ifort
 FC=ifort
 
 #CPPFLAGS=
-CFLAGS=-g -O2 -fp-model=precise -diag-disable=10441
-CXXFLAGS=-g -O2 -fp-model=precise -diag-disable=10441
-FFLAGS=-g -O2 -fp-model=precise -diag-disable=10441
-FCFLAGS=-g -O2 -fp-model=precise -diag-disable=10441
+CFLAGS=-g -O2 -fp-model=precise -diag-disable=10441 -diag-disable=10278
+CXXFLAGS=-g -O2 -fp-model=precise -diag-disable=10441 -diag-disable=10278
+FFLAGS=-g -O2 -fp-model=precise -diag-disable=10441 -diag-disable=10278
+FCFLAGS=-g -O2 -fp-model=precise -diag-disable=10441 -diag-disable=10278
 #LDFLAGS=
 #LIBS=
