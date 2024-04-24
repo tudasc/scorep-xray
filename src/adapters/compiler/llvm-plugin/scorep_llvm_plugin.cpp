@@ -47,8 +47,8 @@ using namespace llvm;
 
 // General Score-P arguments
 // Filter file for compile time filtering
-cl::opt<std::string> SCOREP::Compiler::LLVMPlugin::FunctionFilter( "scorep-plugin-config-filter-file", cl::init( "" ),
-                                                                   cl::desc( "Compile time filter file" ) );
+cl::list<std::string> SCOREP::Compiler::LLVMPlugin::FunctionFilter( "scorep-plugin-config-filter-file", cl::desc( "Compile time filter file" ),
+                                                                    cl::OneOrMore );
 // Verbosity
 cl::opt<int> SCOREP::Compiler::LLVMPlugin::Verbosity( "scorep-plugin-config-verbosity", cl::init( 0 ),
                                                       cl::desc( "Compile time verbosity" ) );
@@ -249,14 +249,17 @@ SCOREP::Compiler::LLVMPlugin::GetInstrumentationFilter()
     {
         report_fatal_error( "Could not allocate memory for instrumentation filter.", false );
     }
-    VerboseMessage( "[Score-P] Initialize compile time filter with file",
-                    FunctionFilter.c_str() );
-
-    SCOREP_ErrorCode result = SCOREP_Filter_ParseFile( instrumentation_filter,
-                                                       FunctionFilter.c_str() );
-    if ( result != SCOREP_SUCCESS )
+    for ( auto& filter_file : FunctionFilter )
     {
-        report_fatal_error( "Could not parse instrumentation filter file.", false );
+        VerboseMessage( "[Score-P] Initialize compile time filter with file",
+                        filter_file.c_str() );
+
+        SCOREP_ErrorCode result = SCOREP_Filter_ParseFile( instrumentation_filter,
+                                                           filter_file.c_str() );
+        if ( result != SCOREP_SUCCESS )
+        {
+            report_fatal_error( "Could not parse instrumentation filter file.", false );
+        }
     }
 
     return instrumentation_filter;
