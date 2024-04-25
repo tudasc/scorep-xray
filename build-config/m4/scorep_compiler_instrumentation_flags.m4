@@ -15,7 +15,7 @@ dnl
 dnl Copyright (c) 2009-2012,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2014, 2021-2023,
+dnl Copyright (c) 2009-2014, 2021-2024,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2012,
@@ -145,7 +145,12 @@ AS_IF([test "x${instrumentation_[]_AC_LANG_ABBREV[]_api}" = x && test -f ../buil
      scorep_have_compiler_instrumentation=yes
      scorep_have_llvm_plugin_instrumentation=yes])
 dnl
-
+# Classic Intel compilers icc, icpc, ifort
+# API allows storing a handle, thus, no addr lookup needed
+_CHECK_COMPILER_INSTRUMENTATION_FLAG([-tcollect], ['__VT_IntelEntry$'], ['__VT_IntelExit$'], [VT_INTEL])
+AS_IF([test "x$have_instrumentation_[]_AC_LANG_ABBREV[]_api_vt_intel" = xyes],
+    [AFS_AM_CONDITIONAL([SCOREP_COMPILER_INSTRUMENTATION_NEEDS_LIBVT], [test 1 -eq 1], [false])])
+dnl
 # -g -finstrument-functions: GNU, clang-based
 # -g -finstrument-functions-after-inlining: clang-based
 # -Minstrument=functions: PGI/NVHPC
@@ -159,12 +164,6 @@ AS_IF([test "x${scorep_have_addr2line}" = xyes],
      _CHECK_COMPILER_INSTRUMENTATION_FLAG([-g -Ntl_vtrc],                                         ['__cyg_profile_func_enter$'], ['__cyg_profile_func_exit$'], [CYG_PROFILE_FUNC])
      _CHECK_COMPILER_INSTRUMENTATION_FLAG([-Minstrument=functions],                               ['__cyg_profile_func_enter$'], ['__cyg_profile_func_exit$'], [CYG_PROFILE_FUNC])
      _CHECK_COMPILER_INSTRUMENTATION_FLAG([-g -Mx,129,0x800],                                     ['__cyg_profile_func_enter$'], ['__cyg_profile_func_exit$'], [CYG_PROFILE_FUNC])])
-dnl
-# Intel compilers
-# API allows storing a handle, thus, no addr lookup needed
-_CHECK_COMPILER_INSTRUMENTATION_FLAG([-tcollect], ['__VT_IntelEntry$'], ['__VT_IntelExit$'], [VT_INTEL])
-AS_IF([ test "x$have_instrumentation_[]_AC_LANG_ABBREV[]_api_vt_intel" = xyes],
-    [AFS_AM_CONDITIONAL([SCOREP_COMPILER_INSTRUMENTATION_NEEDS_LIBVT], [test 1 -eq 1], [false])])
 dnl
 # XL compilers
 # -qfunctrace provides filtering capabilities

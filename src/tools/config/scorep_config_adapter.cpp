@@ -416,7 +416,7 @@ SCOREP_Config_CompilerAdapter::addCFlags( std::string&           cflags,
     }
 #endif /* HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN ) */
 #if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_VT_INTEL )
-    if ( vt_intel_plugin_instrumentation_available )
+    if ( vt_intel_instrumentation_available )
     {
         cflags += m_cflags;
     }
