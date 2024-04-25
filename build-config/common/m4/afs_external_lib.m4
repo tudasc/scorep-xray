@@ -362,7 +362,8 @@ AC_ARG_WITH([package-cache],
           options to prevent downloads during the build process.
           '<path>' defaults to 'build-config/packages' in the source
           directory. The URLs to the required packages are stated in
-          the configure summary.])],
+          directory. The URLs to the required packages can be listed
+          via build-config/packages.sh.])],
     [AS_CASE([$withval],
          [/*], [AFS_LIB_PACKAGE_CACHE=$withval],
          [AFS_LIB_PACKAGE_CACHE=$(cd "$withval" && pwd)])])

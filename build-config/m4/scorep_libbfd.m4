@@ -77,11 +77,11 @@ _afs_lib_LDFLAGS="-L$[]_afs_lib_PREFIX[]/lib -R$[]_afs_lib_PREFIX[]/lib"
 _afs_lib_CPPFLAGS="-I$[]_afs_lib_PREFIX/include"
 dnl
 AFS_AM_CONDITIONAL(HAVE_[]_afs_lib_MAKEFILE, [test 0 -eq 0], [false])dnl
-dnl binutils_package and binutils_base_url are sourced from build-config/downloads
-libbfd_summary="yes, from downloaded $binutils_base_url/$binutils_package.tar.gz"
+dnl binutils_* are sourced from build-config/downloads
+libbfd_summary="yes, from downloaded $binutils_url"
 have_cplus_demangle=yes
 dnl
-AC_SUBST([binutils_base_url])
+AC_SUBST([binutils_url])
 AC_SUBST([binutils_package])
 AC_CONFIG_FILES([Makefile.libbfd:../build-backend/Makefile.libbfd.in])
 ])# _LIBBFD_DOWNLOAD

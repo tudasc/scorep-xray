@@ -29,7 +29,7 @@ MKDIR_P = @MKDIR_P@
 srcdir = @afs_srcdir@
 PACKAGE_CACHE = @AFS_LIB_PACKAGE_CACHE@
 
-URL = @libunwind_base_url@
+URL = @libunwind_url@
 PACKAGE = @libunwind_package@
 
 exec_prefix = @exec_prefix@
@@ -56,7 +56,7 @@ all:
 	    PACKAGE="$(PACKAGE_CACHE)/$(PACKAGE)"; \
 	else \
 	    PACKAGE="$(PACKAGE)"; \
-	    @AFS_LIB_DOWNLOAD_CMD@ $(URL)/$(PACKAGE).tar.gz; \
+	    @AFS_LIB_DOWNLOAD_CMD@ $(URL); \
 	fi && \
 	tar xf "$$PACKAGE.tar.gz"
 	$(AM_V_at)$(MKDIR_P) $(PACKAGE)/_build

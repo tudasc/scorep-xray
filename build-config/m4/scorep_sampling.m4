@@ -179,16 +179,16 @@ _afs_lib_LDFLAGS="-L$[]_afs_lib_PREFIX[]/lib -R$[]_afs_lib_PREFIX[]/lib"
 _afs_lib_CPPFLAGS="-I$[]_afs_lib_PREFIX/include -D_GNU_SOURCE"
 dnl
 AFS_AM_CONDITIONAL(HAVE_[]_afs_lib_MAKEFILE, [true], [false])dnl
-dnl libunwind_package and libunwind_base_url are sourced from build-config/downloads
+dnl libunwind_* are sourced from build-config/downloads
 have_libunwind="yes"
-scorep_libunwind_summary_reason=", from downloaded $libunwind_base_url/${libunwind_package}.tar.gz"
+scorep_libunwind_summary_reason=", from downloaded $libunwind_url"
 dnl check will fail, used version provides unw_init_local2
 ac_cv_have_decl_unw_init_local2=yes
 dnl check will fail, used version provides unw_strerror
 ac_cv_have_decl_unw_strerror=yes
 dnl
 AC_SUBST([libunwind_package])
-AC_SUBST([libunwind_base_url])
+AC_SUBST([libunwind_url])
 AC_CONFIG_FILES([Makefile.libunwind:../build-backend/Makefile.libunwind.in])
 ])# _LIBUNWIND_DOWNLOAD
 

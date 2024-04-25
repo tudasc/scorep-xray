@@ -1,18 +1,27 @@
 # build-config/downloads
 
+# List of all packages which can be downloaded via "--with-lib<foo>=download"
+# <foo> might be the package name without the `lib` prefix, or can be provided
+# via <package>_libname.
+packages="
+binutils
+libunwind
+"
+
 # A set of variable definitions sourced during configure for packages
 # that might get downloaded. The variables might end up in
 # configure-time generated Makefiles and configure's summary
 # output. Keep in mind that when modifying the generated Makefiles,
 # the summary output might become outdated.
 
-# Given --with-libbfd=download, we download this binutils tarball:
-# $binutils_base_url/$binutils_package.tar.gz
+# Given --with-libbfd=download, we download this binutils tarball
+binutils_libname=bfd
 binutils_package=binutils-2.36.1
 binutils_base_url=https://ftp.gnu.org/gnu/binutils
+binutils_url=${binutils_base_url}/${binutils_package}.tar.gz
 
-# Given --with-libunwind=download, we download this libunwind tarball:
-# https://github.com/libunwind/libunwind/releases/download/v${libunwind_version}/libunwind-${libunwind_version}.tar.gz
+# Given --with-libunwind=download, we download this libunwind tarball
 libunwind_version=1.6.2
 libunwind_package=libunwind-${libunwind_version}
 libunwind_base_url=https://github.com/libunwind/libunwind/releases/download/v${libunwind_version}
+libunwind_url=${libunwind_base_url}/${libunwind_package}.tar.gz

@@ -187,8 +187,8 @@ alternatively, in a directory specified via `--with-package-cache=<path>`.
                Path where to provide packages for '--with-lib<foo>=download'
                options to prevent downloads during the build process.
                '<path>' defaults to 'build-config/packages' in the source
-               directory. The URLs to the required packages are stated in
-               the configure summary.
+               directory. The URLs to the required packages can be listed
+               via build-config/packages.sh.
 
 To enable support for CUDA measurement via the CUPTI interface we
 provide three configure options: the path to the CUDA runtime, the
