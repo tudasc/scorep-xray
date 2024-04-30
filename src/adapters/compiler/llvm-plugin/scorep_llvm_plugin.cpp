@@ -48,7 +48,7 @@ using namespace llvm;
 // General Score-P arguments
 // Filter file for compile time filtering
 cl::list<std::string> SCOREP::Compiler::LLVMPlugin::FunctionFilter( "scorep-plugin-config-filter-file", cl::desc( "Compile time filter file" ),
-                                                                    cl::OneOrMore );
+                                                                    cl::ZeroOrMore );
 // Verbosity
 cl::opt<int> SCOREP::Compiler::LLVMPlugin::Verbosity( "scorep-plugin-config-verbosity", cl::init( 0 ),
                                                       cl::desc( "Compile time verbosity" ) );
