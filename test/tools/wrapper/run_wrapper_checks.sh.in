@@ -30,7 +30,7 @@ cleanup()
     rm -rf "$rundir"
 }
 cleanup
-trap cleanup EXIT
+${KEEP_TEST_OUTPUT:+: }trap cleanup EXIT
 
 # we change to this directory for the test, to remove everything at once
 mkdir -p "$rundir"

@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011, 2015, 2022,
+## Copyright (c) 2009-2011, 2015, 2022, 2024,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -43,7 +43,7 @@ cleanup()
     rm -rf $RESULT_DIR
     rm -f trace.txt
 }
-trap cleanup EXIT
+${KEEP_TEST_OUTPUT:+: }trap cleanup EXIT
 
 #-------------------------------------------------------------
 #                                                C Filter test

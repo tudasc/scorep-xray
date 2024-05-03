@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011, 2022,
+## Copyright (c) 2009-2011, 2022, 2024,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -40,7 +40,7 @@ cleanup()
     rm -rf $RESULT_DIR
     rm -f trace.txt
 }
-trap cleanup EXIT
+${KEEP_TEST_OUTPUT:+: }trap cleanup EXIT
 
 # Execute selective test
 SCOREP_EXPERIMENT_DIRECTORY=$RESULT_DIR SCOREP_ENABLE_PROFILING=true SCOREP_ENABLE_TRACING=true SCOREP_SELECTIVE_CONFIG_FILE=$SRC_ROOT/test/adapters/user/C/selective.cfg ./selective_test

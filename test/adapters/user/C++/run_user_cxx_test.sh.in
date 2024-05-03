@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011, 2013, 2019, 2021-2022,
+## Copyright (c) 2009-2011, 2013, 2019, 2021-2022, 2024,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -36,7 +36,7 @@ cleanup()
    rm -f user_cxx_test
    rm -rf scorep-measurement-tmp
 }
-trap cleanup EXIT
+${KEEP_TEST_OUTPUT:+: }trap cleanup EXIT
 
 OTF2_PRINT="@OTF2_BINDIR@/otf2-print"
 SRC_ROOT="@abs_top_srcdir@/.."
