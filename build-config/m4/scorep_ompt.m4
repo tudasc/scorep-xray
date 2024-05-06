@@ -465,7 +465,7 @@ CFLAGS="${OPENMP_CFLAGS} ${CFLAGS}"
 LDFLAGS="${ompt_c_ldflags} ${LDFLAGS}"
 AC_RUN_IFELSE([AC_LANG_SOURCE(_TRY_RUN_OMPT_TEST_INPUT)],
     [have_[]_OMPT_TEST[]=yes],
-    [have_[]_OMPT_TEST[]="no (reason $?)"],
+    [have_[]_OMPT_TEST[]="no"],
     [AC_MSG_FAILURE([TODO: handle real cross-compile systems])])
 CFLAGS="${CFLAGS_save}"
 LDFLAGS="${LDFLAGS_save}"
