@@ -65,6 +65,8 @@ Bugfixes:
 - Enabling the CUDA / HIP adapter together with the OMPT adapter will no
   longer cause a segmentation fault with LLVM 16.0 and newer when OpenMP
   offloading flags are used.
+- Ensure that usage of the HIP API from within Score-P does not leave
+  lingering last error values.
 
 ------------------- Released version 8.4 -----------------------------
 
