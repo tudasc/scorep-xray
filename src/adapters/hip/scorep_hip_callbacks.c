@@ -2290,13 +2290,15 @@ assign_gpu_locations( stream_table_key_t   key,
 void
 scorep_hip_collect_comm_locations( void )
 {
-    scorep_hip_global_location_count = UTILS_Atomic_LoadN_uint32(
-        &local_rank_counter, UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
-
-    if ( scorep_hip_global_location_count == 0 )
+    // Precondition from static initialization:
+    // scorep_hip_global_location_count = 0;
+    if ( scorep_hip_interim_communicator_handle == SCOREP_INVALID_INTERIM_COMMUNICATOR )
     {
         return;
     }
+    scorep_hip_global_location_count = UTILS_Atomic_LoadN_uint32(
+        &local_rank_counter, UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
+    UTILS_ASSERT( scorep_hip_global_location_count > 0 );
 
     /* allocate the HIP communication group array */
     scorep_hip_global_location_ids = calloc( scorep_hip_global_location_count,
