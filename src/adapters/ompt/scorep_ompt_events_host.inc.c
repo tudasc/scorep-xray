@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2022-2023,
+ * Copyright (c) 2022-2024,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -871,8 +871,9 @@ scorep_ompt_cb_host_implicit_task( ompt_scope_endpoint_t endpoint,
             {
                 if ( parallel_region->team_size != actual_parallelism )
                 {
-                    UTILS_WARNING( "Requested team size larger than actual size (%d > %d)",
-                                   parallel_region->team_size, actual_parallelism );
+                    UTILS_WARN_ONCE( "Requested team size larger than actual size granted (%d > %d). "
+                                     "Continuing with actual size.",
+                                     parallel_region->team_size, actual_parallelism );
                     parallel_region->team_size = actual_parallelism;
                 }
                 UTILS_Atomic_StoreN_int32( &( parallel_region->ref_count ),
