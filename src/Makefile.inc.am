@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2015, 2017, 2021-2022,
+## Copyright (c) 2009-2015, 2017, 2021-2022, 2024,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2014,
@@ -140,6 +140,8 @@ $(FILES_THAT_INCLUDE_BFD_H): @SCOREP_LIBBFD_PREFIX@/include/bfd.h
 	if $(AM_V_P); then echo "$(MAKE) all -f @SCOREP_LIBBFD_MAKEFILE@"; \
 	              else echo "  DEPLOY   $${blu}libbfd into @SCOREP_LIBBFD_PREFIX@$$std"; \
 	fi; \
+	{ eval CFLAGS=; unset CFLAGS; }; \
+	{ eval LDFLAGS=; unset LDFLAGS; }; \
 	$(MAKE) -s all -f @SCOREP_LIBBFD_MAKEFILE@ $(SCOREP_V_DEVNULL)
 
 CLEAN_LOCAL += @SCOREP_LIBBFD_PREFIX@-clean
@@ -160,6 +162,8 @@ $(FILES_THAT_INCLUDE_LIBUNWIND_H): @SCOREP_LIBUNWIND_PREFIX@/include/libunwind.h
 	if $(AM_V_P); then echo "$(MAKE) all -f @SCOREP_LIBUNWIND_MAKEFILE@"; \
 	              else echo "  DEPLOY   $${blu}libunwind into @SCOREP_LIBUNWIND_PREFIX@$$std"; \
 	fi; \
+	{ eval CFLAGS=; unset CFLAGS; }; \
+	{ eval LDFLAGS=; unset LDFLAGS; }; \
 	$(MAKE) -s all -f @SCOREP_LIBUNWIND_MAKEFILE@ $(SCOREP_V_DEVNULL)
 
 CLEAN_LOCAL += @SCOREP_LIBUNWIND_PREFIX@-clean
