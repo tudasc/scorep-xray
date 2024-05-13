@@ -381,18 +381,19 @@ be used to build Score-P are as follows:
   --with-papi-lib=<path-to-libpapi.*>
                If libpapi.* is not installed in the default location,
                specify the dirname where it can be found.
-  --with-libunwind=(yes|no|<Path to libunwind installation>)
-               If you want to build with libunwind support but do
-               not have a libunwind in a standard location, you
-               need to explicitly specify the directory where it is
-               installed. On non-cross-compile systems we search
-               the system include and lib paths per default [yes];
-               on cross-compile systems, however, you have to
-               specify a path [no]. --with-libunwind is a shorthand
-               for --with-libunwind-include=<Path/include> and
-               --with-libunwind-lib=<Path/lib>. If these shorthand
-               assumptions are not correct, you can use the
-               explicit include and lib options directly.
+  --with-libunwind[=yes|no|download|<path to libunwind installation>]
+               Try to use libunwind. Defaults to [yes] on
+               non-cross-compile systems and expects library and
+               headers to be found in system locations. Defaults to
+               [no] on cross-compile systems. Provide libunwind's
+               installation prefix [path] to override the defaults.
+               --with-libunwind=<path> is a shorthand for
+               --with-libunwind-include=<path/include> and
+               --with-libunwind-lib=<path/(lib64|lib)>. If this is
+               not the case, use the explicit options directly or
+               provide paths via LIBUNWIND_LIB and
+               LIBUNWIND_INCLUDE. Use [download] to automatically
+               obtain and use libunwind via external tarball.
   --with-libunwind-include=<Path to libunwind headers: libunwind.h>
   --with-libunwind-lib=<Path to libunwind libraries>
   --with-libOpenCL=(yes|no|<Path to libOpenCL installation>)
