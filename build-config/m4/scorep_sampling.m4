@@ -173,7 +173,7 @@ dnl ----------------------------------------------------------------------------
 # build-backend/Makefile.
 #
 m4_define([_LIBUNWIND_DOWNLOAD], [
-_afs_lib_PREFIX="$prefix/vendor/[]_afs_lib_name"
+_afs_lib_PREFIX="${libdir}${backend_suffix}/${PACKAGE}/[]_afs_lib_name"
 _afs_lib_MAKEFILE="Makefile.[]_afs_lib_name"
 _afs_lib_LDFLAGS="-L$[]_afs_lib_PREFIX[]/lib -R$[]_afs_lib_PREFIX[]/lib"
 _afs_lib_CPPFLAGS="-I$[]_afs_lib_PREFIX/include -D_GNU_SOURCE"
@@ -194,7 +194,7 @@ cat <<_SCOREPEOF > $[]_afs_lib_MAKEFILE
 #
 # Executing 'make -f $_afs_lib_MAKEFILE' downloads a libunwind
 # package and installs a shared _afs_lib_name into
-# $prefix/vendor/[]_afs_lib_name
+# ${libdir}${backend_suffix}/${PACKAGE}/[]_afs_lib_name
 # using CC=gcc that was found in PATH.
 #
 # Usually, this process is triggered during Score-P's build-backend

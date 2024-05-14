@@ -52,9 +52,9 @@
 # variable _afs_lib_MAKEFILE and to create a AM_CONDITIONAL (or
 # AFS_AM_CONDITIONAL). Trigger the Makefile to download, configure,
 # build, and install LIBRARY-NAME into e.g.,
-# _afs_lib_PREFIX="$prefix/vendor/[]_afs_lib_name". _afs_lib_PREFIX is
-# also AC_SUBSTed for use in BUILT_SOURCES. For an example, see
-# scorep_libbfd.m4.
+# _afs_lib_PREFIX="${libdir}${backend_suffix}/${PACKAGE}/[]_afs_lib_name".
+# _afs_lib_PREFIX is also AC_SUBSTed for use in BUILT_SOURCES. For an example,
+# see scorep_libbfd.m4.
 #
 # Both, CHECK-MACRO and DOWNLOAD-MACRO should honor
 # _afs_lib_prevent_check=(yes|no) and, if 'yes'

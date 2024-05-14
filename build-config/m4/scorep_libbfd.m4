@@ -66,7 +66,7 @@ AS_IF([test ${have_cplus_demangle+set} != set],
 # though.
 #
 m4_define([_LIBBFD_DOWNLOAD], [
-_afs_lib_PREFIX="$prefix/vendor/[]_afs_lib_name"
+_afs_lib_PREFIX="${libdir}${backend_suffix}/${PACKAGE}/[]_afs_lib_name"
 _afs_lib_MAKEFILE="Makefile.[]_afs_lib_name"
 _afs_lib_LDFLAGS="-L$[]_afs_lib_PREFIX[]/lib -R$[]_afs_lib_PREFIX[]/lib"
 _afs_lib_CPPFLAGS="-I$[]_afs_lib_PREFIX/include"
@@ -83,7 +83,7 @@ cat <<_SCOREPEOF > $[]_afs_lib_MAKEFILE
 #
 # Executing 'make -f $_afs_lib_MAKEFILE' downloads a binutils
 # package and installs a shared _afs_lib_name into
-# $prefix/vendor/[]_afs_lib_name
+# ${libdir}${backend_suffix}/${PACKAGE}/[]_afs_lib_name
 # using CC=gcc that was found in PATH.
 #
 # Usually, this process is triggered during Score-P's build-backend
@@ -105,6 +105,8 @@ cat <<_SCOREPEOF > $[]_afs_lib_MAKEFILE
 THIS_FILE = $(pwd)/$_afs_lib_MAKEFILE
 URL = $binutils_base_url
 PACKAGE = $binutils_package
+exec_prefix = $exec_prefix
+prefix = $prefix
 PREFIX = $[]_afs_lib_PREFIX
 CC = gcc
 all:
