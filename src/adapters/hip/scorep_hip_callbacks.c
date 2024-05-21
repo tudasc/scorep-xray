@@ -64,6 +64,17 @@
         } \
     } while ( 0 )
 
+#define SCOREP_HIPAPI_CALL( call, behavior, ... ) \
+    do { \
+        hipError_t err = ( call ); \
+        if ( err != hipSuccess ) \
+        { \
+            ( void )hipGetLastError(); \
+            UTILS_ ## behavior( "Call '%s' failed with: %s", #call, hipGetErrorString( err ) ); \
+            __VA_ARGS__ \
+        } \
+    } while ( 0 )
+
 static SCOREP_SourceFileHandle hip_file_handle;
 
 static SCOREP_AllocMetric*    host_alloc_metric;
@@ -262,7 +273,8 @@ get_smi_device( int       deviceId,
         hipUUID hip_uuid;
         char    terminated_bytes[ sizeof( hipUUID ) + 1 ];
     } uuid_bytes;
-    hipDeviceGetUuid( &uuid_bytes.hip_uuid, deviceId );
+    SCOREP_HIPAPI_CALL( hipDeviceGetUuid( &uuid_bytes.hip_uuid, deviceId ),
+                        WARN_ONCE );
     uuid_bytes.terminated_bytes[ sizeof( hipUUID ) ] = '\0';
     uint64_t uuid = strtoull( uuid_bytes.terminated_bytes, NULL, 16 );
 
@@ -331,7 +343,9 @@ device_table_value_ctor( device_table_key_t* key,
     device->device_id     = *key;
     device->smi_device_id = get_smi_device( device->device_id, &device->uuid );
 
-    hipGetDeviceProperties( &device->properties, device->device_id );
+    SCOREP_HIPAPI_CALL( hipGetDeviceProperties( &device->properties, device->device_id ),
+                        FATAL );
+
 
     return device;
 }
@@ -688,7 +702,8 @@ create_stream( hipStream_t  stream,
     /* hipGetStreamDeviceId not traceable via roctracer */
     data.device_id = hipGetStreamDeviceId( stream );
 #else
-    hipGetDevice( &data.device_id );
+    SCOREP_HIPAPI_CALL( hipGetDevice( &data.device_id ),
+                        FATAL );
 #endif /* HAVE( DECL_HIPGETSTREAMDEVICEID ) */
 
     if ( stream == NULL )
@@ -714,7 +729,8 @@ get_stream( hipStream_t stream )
         /* hipGetStreamDeviceId not traceable via roctracer */
         key.device_id = hipGetStreamDeviceId( stream );
 #else
-        hipGetDevice( &key.device_id );
+        SCOREP_HIPAPI_CALL( hipGetDevice( &key.device_id ),
+                            FATAL );
 #endif  /* HAVE( DECL_HIPGETSTREAMDEVICEID ) */
     }
 
@@ -1311,12 +1327,11 @@ handle_alloc( const void* ptr,
               size_t      size )
 {
     hipPointerAttribute_t attributes = { 0, };
-    hipError_t            err        = hipPointerGetAttributes( &attributes, ptr );
-    if ( err != hipSuccess )
-    {
-        UTILS_WARNING( "Invalid HIP pointer to alloc: %s", hipGetErrorString( err ) );
-        return;
-    }
+    SCOREP_HIPAPI_CALL( hipPointerGetAttributes( &attributes, ptr ),
+                        WARNING,
+                        return;
+                        );
+
 
     SCOREP_AllocMetric* metric = host_alloc_metric;
     switch ( get_hip_memory_type( &attributes ) )
@@ -1447,12 +1462,10 @@ handle_free( uint64_t    correlationId,
              const void* ptr )
 {
     hipPointerAttribute_t attributes = { 0, };
-    hipError_t            err        = hipPointerGetAttributes( &attributes, ptr );
-    if ( err != hipSuccess )
-    {
-        UTILS_WARNING( "Invalid HIP pointer to free: %s", hipGetErrorString( err ) );
-        return;
-    }
+    SCOREP_HIPAPI_CALL( hipPointerGetAttributes( &attributes, ptr ),
+                        WARNING,
+                        return;
+                        );
 
     SCOREP_AllocMetric* metric = host_alloc_metric;
     switch ( get_hip_memory_type( &attributes ) )
@@ -1935,7 +1948,9 @@ scorep_hip_callbacks_init( void )
      * properties inside a roctracer API callback. We create the corresponding
      * Score-P device on demand though. */
     int number_of_hip_devices;
-    hipGetDeviceCount( &number_of_hip_devices );
+    SCOREP_HIPAPI_CALL( hipGetDeviceCount( &number_of_hip_devices ),
+                        FATAL );
+
     for ( int hip_device_id = 0; hip_device_id < number_of_hip_devices; hip_device_id++ )
     {
         /* Creates only the device struct, but not the Score-P definitions. */
@@ -2017,7 +2032,8 @@ scorep_hip_callbacks_enable( void )
     /* need to call any HIP API to init HSA before calling roctracer_get_timestamp
      * see: https://github.com/ROCm-Developer-Tools/roctracer/issues/65 */
     int dummy_device_id;
-    hipGetDevice( &dummy_device_id );
+    SCOREP_HIPAPI_CALL( hipGetDevice( &dummy_device_id ),
+                        FATAL );
 
     get_synced_timestamps( &previous_activity_scorep_time, &previous_activity_hip_time );
 
@@ -2029,7 +2045,7 @@ scorep_hip_callbacks_enable( void )
         /* We need to call this in our own callback, but it destroys correlation IDs
          * thus disable it in pre-5.6 ROCm */
         SCOREP_ROCTRACER_CALL( roctracer_disable_op_callback( ACTIVITY_DOMAIN_HIP_API, HIP_API_ID_hipGetDevice ) );
-#endif /* !HAVE( DECL_HIPGETSTREAMDEVICEID ) */
+#endif  /* !HAVE( DECL_HIPGETSTREAMDEVICEID ) */
     }
 
     bool need_stream_api_tracing = false;
@@ -2274,13 +2290,15 @@ assign_gpu_locations( stream_table_key_t   key,
 void
 scorep_hip_collect_comm_locations( void )
 {
-    scorep_hip_global_location_count = UTILS_Atomic_LoadN_uint32(
-        &local_rank_counter, UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
-
-    if ( scorep_hip_global_location_count == 0 )
+    // Precondition from static initialization:
+    // scorep_hip_global_location_count = 0;
+    if ( scorep_hip_interim_communicator_handle == SCOREP_INVALID_INTERIM_COMMUNICATOR )
     {
         return;
     }
+    scorep_hip_global_location_count = UTILS_Atomic_LoadN_uint32(
+        &local_rank_counter, UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
+    UTILS_ASSERT( scorep_hip_global_location_count > 0 );
 
     /* allocate the HIP communication group array */
     scorep_hip_global_location_ids = calloc( scorep_hip_global_location_count,
