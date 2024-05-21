@@ -185,22 +185,21 @@ CXXFLAGS="$LLVM_PLUGIN_TARGET_CXXFLAGS"
 CPPFLAGS="$LLVM_PLUGIN_TARGET_CPPFLAGS"
 AC_CHECK_HEADER([llvm/Demangle/Demangle.h],
     [],
-    [have_llvm_demangle="no"])
+    [have_llvm_demangle="no, compile-time filtering only works with mangled names"])
 AS_IF([test "x${have_llvm_demangle}" = "xyes"],
     [AC_MSG_CHECKING([whether llvm::demangle can be linked])
-     have_llvm_demangle="no"
      cross_compiling_save="${cross_compiling}"
      AS_IF([test "x${afs_platform_cray}" = "xyes"],
          [cross_compiling="no"])
-         save_LDFLAGS=$LDFLAGS
-         LDFLAGS="$LLVM_PLUGIN_TARGET_LDFLAGS $LLVM_PLUGIN_TARGET_LIBS"
-         AC_RUN_IFELSE([AC_LANG_SOURCE(_INPUT_LLVM_DEMANGLE)],
-           [have_llvm_demangle="yes"],
-           [have_llvm_demangle="no"],
-           [# In cross compiling environments, assume no.
-            # The LLVM plug-in will use Score-P demangling instead.
-            have_llvm_demangle="no"])
-         LDFLAGS=$save_LDFLAGS
+     save_LDFLAGS=$LDFLAGS
+     LDFLAGS="$LLVM_PLUGIN_TARGET_LDFLAGS $LLVM_PLUGIN_TARGET_LIBS"
+     AC_RUN_IFELSE([AC_LANG_SOURCE(_INPUT_LLVM_DEMANGLE)],
+         [have_llvm_demangle="yes"],
+         [have_llvm_demangle="no, compile-time filtering only works with mangled names"],
+         [# In cross compiling environments, assume no.
+          # The LLVM plug-in will use Score-P demangling instead.
+          have_llvm_demangle="no, compile-time filtering only works with mangled names"])
+     LDFLAGS=$save_LDFLAGS
      cross_compiling="${cross_compiling_save}"
      AC_MSG_RESULT([$have_llvm_demangle])])
 CXXFLAGS=$save_CXXFLAGS
