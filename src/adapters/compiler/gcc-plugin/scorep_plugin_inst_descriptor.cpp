@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2012-2014, 2016, 2020,
+ * Copyright (c) 2012-2014, 2016, 2020, 2024,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -53,7 +53,6 @@
 #include "scorep_plugin.h"
 #include "scorep_plugin_inst_descriptor.h"
 
-static const char* region_descr_var_name        = "__scorep_region_descr";
 static const char* region_descrs_section        = ".scorep.region.descrs";
 static const char* struct_region_descr_var_name = "__scorep_region_description";
 
@@ -176,6 +175,9 @@ scorep_plugin_region_description_build( const char* function_name,
         end_lno = LOCATION_LINE( cfun->function_end_locus );
     }
 
+    static int count                 = 0;
+    char*      region_descr_var_name = xasprintf( "__scorep_region_descr.%d", count++ );
+
     /*
      * static const scorep_compiler_region_description __scorep_region_descr =
      * {
@@ -198,6 +200,7 @@ scorep_plugin_region_description_build( const char* function_name,
                                         VAR_DECL,
                                         get_identifier( region_descr_var_name ),
                                         TREE_TYPE( region_descr_value ) );
+    free( region_descr_var_name );
 
     /* Align the struct generously, so that it works for 32 and 64 bit */
     SET_DECL_ALIGN( region_descr_var, 64 * BITS_PER_UNIT );
