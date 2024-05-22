@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2022,
+ * Copyright (c) 2009-2013, 2022, 2024,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -107,6 +107,8 @@ func_trace_register_region( const char* regionName,
                                                       SCOREP_PARADIGM_COMPILER,
                                                       SCOREP_REGION_FUNCTION );
     }
+
+    scorep_compiler_demangle_free( regionName, region_name_demangled );
 
     return region_handle;
 }
