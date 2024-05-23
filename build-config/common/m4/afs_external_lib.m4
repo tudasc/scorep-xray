@@ -6,7 +6,7 @@
 ## Copyright (c) 2021-2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
-## Copyright (c) 2022,
+## Copyright (c) 2022, 2024,
 ## Technische Universitaet Dresden, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -52,9 +52,9 @@
 # variable _afs_lib_MAKEFILE and to create a AM_CONDITIONAL (or
 # AFS_AM_CONDITIONAL). Trigger the Makefile to download, configure,
 # build, and install LIBRARY-NAME into e.g.,
-# _afs_lib_PREFIX="$prefix/vendor/[]_afs_lib_name". _afs_lib_PREFIX is
-# also AC_SUBSTed for use in BUILT_SOURCES. For an example, see
-# scorep_libbfd.m4.
+# _afs_lib_PREFIX="${libdir}${backend_suffix}/${PACKAGE}/[]_afs_lib_name".
+# _afs_lib_PREFIX is also AC_SUBSTed for use in BUILT_SOURCES. For an example,
+# see scorep_libbfd.m4.
 #
 # Both, CHECK-MACRO and DOWNLOAD-MACRO should honor
 # _afs_lib_prevent_check=(yes|no) and, if 'yes'
@@ -116,7 +116,10 @@ AC_ARG_WITH(_afs_lib_name,
                [ directly or provide path]m4_ifnblank([$3], [s])
                [ via ]_afs_lib_NAME[_LIB]
                m4_ifnblank([$3], [ and ]_afs_lib_NAME[_INCLUDE])[.]
-               m4_ifnblank([$4], [Use [[download]] to automatically obtain and use ]_afs_lib_name[ via external tarball.])),
+               m4_ifnblank([$4], [Use [[download]] to automatically obtain
+               and use ]_afs_lib_name[ via external tarball. See
+               --with-package-cache=<path> how to provide the tarball
+               for an offline installation.])),
          [$5])])
 m4_ifnblank([$3], [AC_ARG_WITH(_afs_lib_name[-include],
      AS_HELP_STRING([--with-_afs_lib_name-include=<Path to _afs_lib_name headers: $3>], [], [79]))])
@@ -337,18 +340,31 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = xyes],
 #
 AC_DEFUN_ONCE([_AFS_LIB_DOWNLOAD_PREREQ], [
 # search for either wget or curl
-AC_CHECK_PROG([AFS_LIB_DOWNLOAD_CMD], [wget], [$(which wget) -q --content-disposition], [no])
+AC_CHECK_PROG([AFS_LIB_DOWNLOAD_CMD], [wget], [$(which wget) \$(BUILD_V_QUIET) --content-disposition --continue], [no])
 AS_IF([test "x${AFS_LIB_DOWNLOAD_CMD}" = xno],
     [AS_UNSET([AFS_LIB_DOWNLOAD_CMD])
      AS_UNSET([ac_cv_prog_AFS_LIB_DOWNLOAD_CMD])
-     AC_CHECK_PROG([AFS_LIB_DOWNLOAD_CMD], [curl], [$(which curl) -S -s -O -J -L], [no])
+     AC_CHECK_PROG([AFS_LIB_DOWNLOAD_CMD], [curl], [$(which curl) \$(BUILD_V_SILENT) -S -O -J -L -C -], [no])
      AS_IF([test "x${AFS_LIB_DOWNLOAD_CMD}" = xno],
          [AC_MSG_WARN([Neither wget nor curl found.])
           AFS_LIB_DOWNLOAD_CMD="echo \"Neither wget nor curl found. Cannot download package. See \$(THIS_FILE).\" && exit 1 && "])])
+AC_SUBST([AFS_LIB_DOWNLOAD_CMD])
 # source meta-data for downloadable packages
 downloads=$afs_srcdir/build-config/downloads
 AS_IF([test -r $downloads],
     [. $downloads],
     [AC_MSG_WARN([File $downloads not readable or does not exist.])])
 AS_UNSET([downloads])
+AC_SUBST([AFS_LIB_PACKAGE_CACHE], ['$(srcdir)/build-config/packages'])
+AC_ARG_WITH([package-cache],
+    [AS_HELP_STRING([--with-package-cache=<path>],
+         [Path where to provide packages for '--with-lib<foo>=download'
+          options to prevent downloads during the build process.
+          '<path>' defaults to 'build-config/packages' in the source
+          directory. The URLs to the required packages are stated in
+          directory. The URLs to the required packages can be listed
+          via build-config/packages.sh.])],
+    [AS_CASE([$withval],
+         [/*], [AFS_LIB_PACKAGE_CACHE=$withval],
+         [AFS_LIB_PACKAGE_CACHE=$(cd "$withval" && pwd)])])
 ])# _AFS_LIB_DOWNLOAD_CMD

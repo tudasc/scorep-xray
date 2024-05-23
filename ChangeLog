@@ -57,6 +57,10 @@ Compatibility:
   disables this build as well, `--with-llvm=<path>` will not
   cause configure to fail if the requirements for the generator
   build cannot be satisfied anymore.
+- External dependencies which can be downloaded via `--with-lib<foo>=download`
+  at configure time, can now be provided via `build-config/packages` or
+  `--with-package-cache=<path>`. Run `build-config/packages.sh` to list
+  all packages and their respective download URL.
 
 Bugfixes:
 

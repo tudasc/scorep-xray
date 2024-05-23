@@ -177,6 +177,19 @@ For the components otf2, cubew, cubelib, and opari2, the corresponding
 --without-<component> or --with-<component>=no options will ignore the
 <component>-config in $PATH but use the Score-P internal components.
 
+Some `--with-lib<foo>` options accept a `download` argument to automatically
+obtain and build the external component during the build process. To prevent
+the download during the build process, one can provide the required tarballs
+upfront in the source directory under `build-config/packages`, or,
+alternatively, in a directory specified via `--with-package-cache=<path>`.
+
+  --with-package-cache=<path>
+               Path where to provide packages for '--with-lib<foo>=download'
+               options to prevent downloads during the build process.
+               '<path>' defaults to 'build-config/packages' in the source
+               directory. The URLs to the required packages can be listed
+               via build-config/packages.sh.
+
 To enable support for CUDA measurement via the CUPTI interface we
 provide three configure options: the path to the CUDA runtime, the
 path to the CUPTI library, and the path to the CUDA library. Usually
@@ -381,18 +394,21 @@ be used to build Score-P are as follows:
   --with-papi-lib=<path-to-libpapi.*>
                If libpapi.* is not installed in the default location,
                specify the dirname where it can be found.
-  --with-libunwind=(yes|no|<Path to libunwind installation>)
-               If you want to build with libunwind support but do
-               not have a libunwind in a standard location, you
-               need to explicitly specify the directory where it is
-               installed. On non-cross-compile systems we search
-               the system include and lib paths per default [yes];
-               on cross-compile systems, however, you have to
-               specify a path [no]. --with-libunwind is a shorthand
-               for --with-libunwind-include=<Path/include> and
-               --with-libunwind-lib=<Path/lib>. If these shorthand
-               assumptions are not correct, you can use the
-               explicit include and lib options directly.
+  --with-libunwind[=yes|no|download|<path to libunwind installation>]
+               Try to use libunwind. Defaults to [yes] on
+               non-cross-compile systems and expects library and
+               headers to be found in system locations. Defaults to
+               [no] on cross-compile systems. Provide libunwind's
+               installation prefix [path] to override the defaults.
+               --with-libunwind=<path> is a shorthand for
+               --with-libunwind-include=<path/include> and
+               --with-libunwind-lib=<path/(lib64|lib)>. If this is
+               not the case, use the explicit options directly or
+               provide paths via LIBUNWIND_LIB and
+               LIBUNWIND_INCLUDE. Use [download] to automatically
+               obtain and use libunwind via external tarball. See
+               --with-package-cache=<path> how to provide the
+               tarball for an offline installation.
   --with-libunwind-include=<Path to libunwind headers: libunwind.h>
   --with-libunwind-lib=<Path to libunwind libraries>
   --with-libOpenCL=(yes|no|<Path to libOpenCL installation>)
@@ -463,7 +479,8 @@ be used to build Score-P are as follows:
                not the case, use the explicit options directly or
                provide paths via LIBBFD_LIB and LIBBFD_INCLUDE. Use
                [download] to automatically obtain and use libbfd
-               via external tarball.
+               via external tarball. See --with-package-cache=<path>
+               how to provide the tarball for an offline installation.
   --with-libbfd-include=<Path to libbfd headers: bfd.h>
   --with-libbfd-lib=<Path to libbfd libraries>
   Please note that if a Score-P installation uses libbfd, the Score-P

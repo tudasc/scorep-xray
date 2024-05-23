@@ -9,6 +9,9 @@ dnl
 dnl Copyright (c) 2022,
 dnl Deutsches Zentrum fuer Luft- und Raumfahrt, Germany
 dnl
+dnl Copyright (c) 2024,
+dnl Technische Universitaet Dresden, Germany
+dnl
 dnl This software may be modified and distributed under the terms of
 dnl a BSD-style license.  See the COPYING file in the package base
 dnl directory for details.
@@ -39,7 +42,9 @@ AS_HELP_STRING([--with-]_afs_lib_name[@<:@=yes|download|<path to ]_afs_lib_name[
      not the case, use the explicit
      options directly or provide paths via ]_afs_lib_NAME[_LIB
      and ]_afs_lib_NAME[_INCLUDE. Use [download] to automatically
-     obtain and use ]_afs_lib_name[ via external tarball.])])dnl
+     obtain and use ]_afs_lib_name[ via external tarball. See
+     --with-package-cache=<path> how to provide the tarball
+     for an offline installation.])])dnl
 AC_LANG_POP([C])
 dnl
 AS_IF([test "${libbfd_summary:+set}" != set],
@@ -66,69 +71,19 @@ AS_IF([test ${have_cplus_demangle+set} != set],
 # though.
 #
 m4_define([_LIBBFD_DOWNLOAD], [
-_afs_lib_PREFIX="$prefix/vendor/[]_afs_lib_name"
+_afs_lib_PREFIX="${libdir}${backend_suffix}/${PACKAGE}/[]_afs_lib_name"
 _afs_lib_MAKEFILE="Makefile.[]_afs_lib_name"
 _afs_lib_LDFLAGS="-L$[]_afs_lib_PREFIX[]/lib -R$[]_afs_lib_PREFIX[]/lib"
 _afs_lib_CPPFLAGS="-I$[]_afs_lib_PREFIX/include"
 dnl
 AFS_AM_CONDITIONAL(HAVE_[]_afs_lib_MAKEFILE, [test 0 -eq 0], [false])dnl
-dnl binutils_package and binutils_base_url are sourced from build-config/downloads
-libbfd_summary="yes, from downloaded $binutils_base_url/$binutils_package.tar.gz"
+dnl binutils_* are sourced from build-config/downloads
+libbfd_summary="yes, from downloaded $binutils_url"
 have_cplus_demangle=yes
 dnl
-m4_changecom([])
-cat <<_SCOREPEOF > $[]_afs_lib_MAKEFILE
-#
-# $(pwd)/$_afs_lib_MAKEFILE
-#
-# Executing 'make -f $_afs_lib_MAKEFILE' downloads a binutils
-# package and installs a shared _afs_lib_name into
-# $prefix/vendor/[]_afs_lib_name
-# using CC=gcc that was found in PATH.
-#
-# Usually, this process is triggered during Score-P's build-backend
-# make. If _afs_lib_name's configure or make fail, or if there are
-# failures in the subsequent build process of Score-P, consider
-# modifying CC above to point to a compiler (gcc recommended) that is
-# compatible with the compute node compiler that you are using for
-# Score-P (i.e., $CC) and try (manually) again. Note that PGI/NVIDIA
-# and well as non-clang-based Cray compilers fail to build
-# _afs_lib_name.
-#
-# You can also modify the installation prefix if, e.g., you want to
-# share the _afs_lib_name installation between several Score-P
-# installations (which then need to be configured using
-# --with-[]_afs_lib_name=<prefix>).
-#
-# Please report bugs to <support@score-p.org>.
-#
-THIS_FILE = $(pwd)/$_afs_lib_MAKEFILE
-URL = $binutils_base_url
-PACKAGE = $binutils_package
-PREFIX = $[]_afs_lib_PREFIX
-CC = gcc
-all:
-	@$AFS_LIB_DOWNLOAD_CMD \$(URL)/\$(PACKAGE).tar.gz \\
-	&& tar xf \$(PACKAGE).tar.gz \\
-	&& mkdir \$(PACKAGE)/_build \\
-	&& cd \$(PACKAGE)/_build \\
-	&& ../configure \\
-	    --prefix=\$(PREFIX) \\
-	    --libdir=\$(PREFIX)/lib \\
-	    CC=\$(CC) \\
-	    --enable-shared \\
-	    --disable-static \\
-	    --enable-silent-rules \\
-	    --silent \\
-	&& make -s all-bfd \\
-	&& make -s install-bfd \\
-	&& rm -f \$(PREFIX)/lib/libbfd.la
-clean:
-	@rm -rf \$(PACKAGE).tar.gz \$(PACKAGE)
-uninstall:
-	@rm -rf \$(PREFIX)
-_SCOREPEOF
-m4_changecom([#])
+AC_SUBST([binutils_url])
+AC_SUBST([binutils_package])
+AC_CONFIG_FILES([Makefile.libbfd:../build-backend/Makefile.libbfd.in])
 ])# _LIBBFD_DOWNLOAD
 
 
