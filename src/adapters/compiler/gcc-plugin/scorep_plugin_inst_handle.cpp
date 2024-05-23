@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2012-2014,
+ * Copyright (c) 2012-2014, 2024,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -54,17 +54,20 @@
 #include "scorep_plugin_gcc_version_compatibility.h"
 #include "scorep_plugin_inst_handle.h"
 
-static const char* region_handle_var_name = "__scorep_region_handle";
 static const char* region_handles_section = ".scorep.region.handles";
 
 static void
 var_build( scorep_plugin_inst_handle* handle )
 {
+    static int count                  = 0;
+    char*      region_handle_var_name = xasprintf( "__scorep_region_handle.%d", count++ );
+
     /* static uint32_t __scorep_region_handle = 0; */
     tree handle_var = build_decl( UNKNOWN_LOCATION,
                                   VAR_DECL,
                                   get_identifier( region_handle_var_name ),
                                   handle->type );
+    free( region_handle_var_name );
 
     DECL_INITIAL( handle_var )    = build_int_cst( handle->type, 0 );
     DECL_CONTEXT( handle_var )    = current_function_decl;
