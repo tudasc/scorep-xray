@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2021-2022,
+## Copyright (c) 2021-2022, 2024,
 ## Technische Universitaet Dresden, Germany
 ##
 ##
@@ -27,7 +27,7 @@ cleanup()
     rm -rf $RESULT_DIR
     rm -f trace.txt
 }
-trap cleanup EXIT
+${KEEP_TEST_OUTPUT:+: }trap cleanup EXIT
 
 OTF2_LIBDIR="$PWD/../vendor/otf2/build-backend/@LT_OBJDIR@"
 CUBEW_LIBDIR="$PWD/../vendor/cubew/build-backend/@LT_OBJDIR@"
