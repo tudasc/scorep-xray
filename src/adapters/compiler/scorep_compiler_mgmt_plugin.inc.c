@@ -50,31 +50,21 @@ scorep_compiler_plugin_register_region( const scorep_compiler_region_description
     /*
      * If unwinding is enabled, we filter out all regions.
      */
-    if ( SCOREP_IsUnwindingEnabled()
-         || SCOREP_Filtering_Match( regionDescr->file,
-                                    regionDescr->name,
-                                    regionDescr->canonical_name ) )
+    if ( SCOREP_IsUnwindingEnabled() )
     {
         *regionDescr->handle = SCOREP_FILTERED_REGION;
         return;
     }
 
+    char* demangled_name;
 #if HAVE( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN )
-    *regionDescr->handle =
-        SCOREP_Definitions_NewRegion( regionDescr->name,
-                                      regionDescr->canonical_name,
-                                      SCOREP_Definitions_NewSourceFile(
-                                          regionDescr->file ),
-                                      regionDescr->begin_lno,
-                                      regionDescr->end_lno,
-                                      SCOREP_PARADIGM_COMPILER,
-                                      SCOREP_REGION_FUNCTION );
+    demangled_name = regionDescr->name;
 #elif HAVE( SCOREP_COMPILER_INSTRUMENTATION_LLVM_PLUGIN )
     /* Try to demangle during registration, as LLVM installations might not
      * provide a way to demangle region descriptions */
     char* mangled_name = calloc( strlen( regionDescr->name ) + 1, sizeof( char ) );
     strncpy( mangled_name, regionDescr->name, strlen( regionDescr->name ) );
-    char* demangled_name = NULL;
+    demangled_name = NULL;
     if ( regionDescr->name == regionDescr->canonical_name )
     {
         scorep_compiler_demangle( mangled_name, demangled_name );
@@ -84,6 +74,18 @@ scorep_compiler_plugin_register_region( const scorep_compiler_region_description
         demangled_name = mangled_name;
         mangled_name   = NULL;
     }
+#else
+#error "No compiler instrumentation plugin available for this compiler. Please check your configuration."
+#endif /* HAVE( SCOREP_COMPILER_INSTRUMENTATION_LLVM_PLUGIN ) */
+
+    if ( SCOREP_Filtering_Match( regionDescr->file,
+                                 demangled_name,
+                                 regionDescr->canonical_name ) )
+    {
+        *regionDescr->handle = SCOREP_FILTERED_REGION;
+        return;
+    }
+
 
     *regionDescr->handle =
         SCOREP_Definitions_NewRegion( demangled_name,
@@ -95,6 +97,8 @@ scorep_compiler_plugin_register_region( const scorep_compiler_region_description
                                       SCOREP_PARADIGM_COMPILER,
                                       SCOREP_REGION_FUNCTION );
 
+
+#if HAVE( SCOREP_COMPILER_INSTRUMENTATION_LLVM_PLUGIN )
     scorep_compiler_demangle_free( mangled_name, demangled_name );
     /* scorep_compiler_demangle_free only frees the pointer allocated
      * if SCOREP_Demangle succeeded. We also need to free the original
@@ -108,9 +112,7 @@ scorep_compiler_plugin_register_region( const scorep_compiler_region_description
     {
         free( demangled_name );
     }
-#else
-#error "No compiler instrumentation plugin available for this compiler. Please check your configuration."
-#endif
+#endif /* HAVE( SCOREP_COMPILER_INSTRUMENTATION_LLVM_PLUGIN ) */
 
     UTILS_DEBUG( "Registered %s:%d-%d:%s: \"%s\"",
                  regionDescr->file,
