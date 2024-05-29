@@ -1,0 +1,36 @@
+# copied form llvm-plugin/Makefile.inc.am
+
+if HAVE_XRAY_PLUGIN_SUPPORT
+
+pkglib_LTLIBRARIES = scorep_instrument_function_xray.la
+
+scorep_instrument_function_xray_la_SOURCES =
+
+scorep_instrument_function_xray_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    $(UTILS_CPPFLAGS) \
+    -I$(INC_ROOT)src/adapters/compiler \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(INC_ROOT)src/utils/include \
+    -I$(INC_ROOT)src/utils/filter \
+    -I$(PUBLIC_INC_DIR) \
+    -I$(INC_DIR_MEASUREMENT) \
+    -I$(INC_DIR_SERVICES) \
+    @SCOREP_XRAY_PLUGIN_CPPFLAGS@
+
+
+scorep_instrument_function_xray_la_CXXFLAGS = \
+    $(AM_CXXFLAGS) \
+    @SCOREP_XRAY_PLUGIN_CXXFLAGS@
+
+scorep_instrument_function_xray_la_LDFLAGS = \
+    @SCOREP_XRAY_PLUGIN_LDFLAGS@ \
+    -module \
+    -avoid-version
+
+scorep_instrument_function_xray_la_LIBADD = \
+    libscorep_filter.la \
+    libutils.la \
+    @SCOREP_XRAY_PLUGIN_LIBS@
+
+endif HAVE_XRAY_PLUGIN_SUPPORT

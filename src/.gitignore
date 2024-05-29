@@ -15,6 +15,8 @@
 /config-gcc-plugin.h
 /config-llvm-plugin.h.in
 /config-llvm-plugin.h
+/config-xray-plugin.h.in
+/config-xray-plugin.h
 /config-libwrap.h
 /config-libwrap.h.in
 /scorep_config_tool_backend.h

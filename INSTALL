@@ -380,6 +380,11 @@ be used to build Score-P are as follows:
                instrumentation. Default is to determine support
                automatically. This disables it by request and fails
                if support cannot be satisfied but was requested.
+  --disable-xray-plugin
+               Disable support for the LLVM xray plug-in
+               instrumentation. Default is to determine support
+               automatically. This disables it by request and fails
+               if support cannot be satisfied but was requested.
   --with-pdt=<path-to-binaries>
                Specifies the path to the program database toolkit
                (PDT) binaries, e.g., cparse.

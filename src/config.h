@@ -79,6 +79,9 @@
 #elif defined LLVM_PLUGIN_BUILD
        #include <config-llvm-plugin.h>
 
+#elif defined XRAY_PLUGIN_BUILD
+       #include <config-xray-plugin.h>
+
 #elif defined LIBWRAP_BUILD
     #include <config-libwrap.h>
 

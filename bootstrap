@@ -14,6 +14,7 @@ LOCAL_CONFIGURES = \
 	build-shmem/configure \
 	build-gcc-plugin/configure \
 	build-llvm-plugin/configure \
+	build-xray-plugin/configure \
 	build-score/configure \
 	build-libwrap/configure
 
@@ -60,6 +61,9 @@ build-gcc-plugin/configure: build-backend/configure
 build-llvm-plugin/configure: build-backend/configure
 	cd build-llvm-plugin; $(AUTORECONF) $(AUTORECONFFLAGS)
 
+build-xray-plugin/configure: build-backend/configure
+	cd build-xray-plugin; $(AUTORECONF) $(AUTORECONFFLAGS)
+
 build-score/configure: build-backend/configure
 	cd build-score; $(AUTORECONF) $(AUTORECONFFLAGS)
 
@@ -97,6 +101,7 @@ sub_builds = \
 	score \
 	gcc-plugin \
 	llvm-plugin \
+	xray-plugin \
 	libwrap
 
 config_headers = \
@@ -108,6 +113,7 @@ config_headers = \
 	score \
 	gcc-plugin \
 	llvm-plugin \
+	xray-plugin \
 	libwrap
 
 clean-local:

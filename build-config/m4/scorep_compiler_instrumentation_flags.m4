@@ -61,6 +61,7 @@ dnl
 scorep_have_compiler_instrumentation=no
 scorep_have_gcc_plugin_instrumentation=no
 scorep_have_llvm_plugin_instrumentation=no
+scorep_have_xray_plugin_instrumentation=no
 scorep_compiler_instrumentation_needs_addr2line=no
 dnl
 AFS_SUMMARY_PUSH
@@ -112,8 +113,12 @@ AC_SCOREP_COND_HAVE([SCOREP_COMPILER_INSTRUMENTATION_LLVM_PLUGIN],
     [test "x${scorep_have_llvm_plugin_instrumentation}" = xyes],
     [Defined if LLVM_PLUGIN compiler instrumentation API is supported])
 dnl
+AC_SCOREP_COND_HAVE([SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN],
+    [test "x${scorep_have_xray_plugin_instrumentation}" = xyes],
+    [Defined if XRAY_PLUGIN compiler instrumentation API is supported])
+
 AC_SCOREP_COND_HAVE([SCOREP_COMPILER_INSTRUMENTATION_PLUGIN],
-    [test "x${scorep_have_llvm_plugin_instrumentation}" = xyes || test "x${scorep_have_gcc_plugin_instrumentation}" = xyes],
+    [test "x${scorep_have_llvm_plugin_instrumentation}" = xyes || test "x${scorep_have_gcc_plugin_instrumentation}" = xyes],dnl || test "x${scorep_have_xray_plugin_instrumentation}" = xyes],
     [Defined if plugin based compiler instrumentation API is supported])
 dnl
 AFS_SUMMARY([C], [${instrumentation_c_api:-no}${instrumentation_cflags:+ via }${instrumentation_cflags}])
@@ -145,6 +150,14 @@ AS_IF([test "x${instrumentation_[]_AC_LANG_ABBREV[]_api}" = x && test -f ../buil
      scorep_have_compiler_instrumentation=yes
      scorep_have_llvm_plugin_instrumentation=yes])
 dnl
+dnl query xray plug-in status
+AS_IF([test "x${instrumentation_[]_AC_LANG_ABBREV[]_api}" = x && test -f ../build-xray-plugin/xray_plugin_supported_[]_AC_LANG_ABBREV[]],
+    [AC_SCOREP_DEFINE_HAVE([SCOREP_COMPILER_INSTRUMENTATION_]_AC_CC[_XRAY_PLUGIN],
+         [1], [Defined if XRAY plug-in is supported for language])
+     instrumentation_[]_AC_LANG_ABBREV[]_api="xray_plugin"
+     scorep_have_compiler_instrumentation=yes
+     scorep_have_xray_plugin_instrumentation=yes])
+
 # Classic Intel compilers icc, icpc, ifort
 # API allows storing a handle, thus, no addr lookup needed
 _CHECK_COMPILER_INSTRUMENTATION_FLAG([-tcollect], ['__VT_IntelEntry$'], ['__VT_IntelExit$'], [VT_INTEL])
