@@ -1,5 +1,6 @@
 # parts taken from scorep_llvm_plugin.m4
 
+# TODO!: REMOVE
 AC_DEFUN([PRINT_VAL], [
   AC_MSG_NOTICE([val: $1])
 ])
@@ -159,10 +160,10 @@ m4_define(
     plugin_install='$SHELL ./libtool --mode=install $INSTALL confmodule.la $PWD/lib/confmodule.la >&AS_MESSAGE_LOG_FD'
     AC_MSG_CHECKING([whether XRAY example plugin can compile])
     AC_LANG_CONFTEST([AC_LANG_SOURCE(_INPUT_XRAY_PLUGIN)])
-    PRINT_VAL($plugin_compile)
-    PRINT_VAL($plugin_link)
-    PRINT_VAL($plugin_mkdir)
-    PRINT_VAL($plugin_install)
+    # PRINT_VAL($plugin_compile)
+    # PRINT_VAL($plugin_link)
+    # PRINT_VAL($plugin_mkdir)
+    # PRINT_VAL($plugin_install)
     AS_IF([_AC_DO_VAR([plugin_compile]) &&
            _AC_DO_VAR([plugin_link]) &&
            _AC_DO_VAR([plugin_mkdir]) &&
@@ -182,21 +183,19 @@ m4_define(
 # ------------------------
 #
 
-# Dummy until useful test is available
+# TODO!: Link plugin into basic executable or at least check for xray functionality (currently the file is written independent of xray plugin)
 m4_define(
     [_TEST_ENABLE_XRAY_PLUGIN],
-    [have_xray_plugin_support="yes"])
-
-# TODO: Check whether -fpassplugin is necessary, leaving this code for now
-m4_define(
-    [_TEST_ENABLE_XRAY_PLUGIN_COPY],
     [save_CC=$[]_AC_CC
     save_CFLAGS=$[]_AC_LANG_PREFIX[]FLAGS
     _AC_CC[]=$XRAY_PLUGIN_TARGET_[]_AC_CC
-    AC_MSG_CHECKING([whether $[]_AC_CC compiler plug-in can be loaded])
+    AC_MSG_CHECKING([whether XRAY plugin for $[]_AC_CC can be loaded])
     for compiler_backend_flag_arg in "-Xclang" "-Xflang"; do
-        _AC_LANG_PREFIX[]FLAGS="-fpass-plugin=$PWD/lib/confmodule.so $compiler_backend_flag_arg -load $compiler_backend_flag_arg $PWD/lib/confmodule.so -mllvm -lang=[]_AC_LANG_ABBREV[]"
-        AC_COMPILE_IFELSE([AC_LANG_SOURCE(_INPUT_XRAY_TEST_[]_AC_LANG_PREFIX)],
+        #_AC_LANG_PREFIX[]FLAGS="-fpass-plugin=$PWD/lib/confmodule.so $compiler_backend_flag_arg -load $compiler_backend_flag_arg $PWD/lib/confmodule.so -mllvm -lang=[]_AC_LANG_ABBREV[]"
+        #_AC_LANG_PREFIX[]FLAGS="$compiler_backend_flag_arg -load $compiler_backend_flag_arg $PWD/lib/confmodule.so -lang=[]_AC_LANG_ABBREV[]"
+        # PRINT_VAL($_AC_LANG_PREFIX[]FLAGS)
+        # TODO: Run code or just compile?
+        AC_RUN_IFELSE([AC_LANG_SOURCE(_INPUT_XRAY_TEST_[]_AC_LANG_PREFIX)],
             [AS_IF([test -f xray_plugin_supported_[]_AC_LANG_ABBREV[]],
                 [have_xray_plugin_support="yes"
                  have_xray_plugin_[]_AC_LANG_ABBREV[]_support="yes"
@@ -238,6 +237,8 @@ AC_LANG_POP([C++])
 #
 m4_define([_INPUT_XRAY_PLUGIN], [[
 #include <iostream>
+#include <stdio.h>
+
 int main() {
     std::cout << "Hello, World!" << std::endl;
     return 0;
@@ -248,8 +249,12 @@ int main() {
 # ------------------
 #
 m4_define([_INPUT_XRAY_TEST_C], [[
+#include <stdio.h>
 int main( void )
 {
+    FILE *file = fopen("xray_plugin_supported_c", "w");
+    fprintf(file, "supported");
+    fclose(file);
     return 0;
 }
 ]])
@@ -257,13 +262,24 @@ int main( void )
 # _INPUT_XRAY_TEST_CXX
 # ------------------
 #
-m4_copy([_INPUT_XRAY_TEST_C], [_INPUT_XRAY_TEST_CXX])
+m4_define([_INPUT_XRAY_TEST_CXX], [[
+#include <stdio.h>
+int main( void )
+{
+    FILE *file = fopen("xray_plugin_supported_cxx", "w");
+    fprintf(file, "supported");
+    fclose(file);
+    return 0;
+}
+]])
 
 # _INPUT_XRAY_TEST_FC
 # ------------------
 #
 m4_define([_INPUT_XRAY_TEST_FC], [[
       PROGRAM main
-
+          open(10, file="xray_plugin_supported_fc")
+          write(10, *) "hello world"
+          close(10)
       END
 ]])
