@@ -119,11 +119,13 @@ SCOREP_Instrumenter_CompilerAdapter::supportInstrumentFilters( void ) const
     // instrumentation methods and the language not available here, be pragmatic
     // and return true if any of the configured instrumentation methods supports
     // filtering.
-#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN ) || \
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN )  || \
     HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_LLVM_PLUGIN ) || \
     HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_VT_INTEL )
     return true;
 #else
+    // HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN ) || \
+    // TODO!: Support filtering
     return false;
 #endif
 }
@@ -171,6 +173,28 @@ write_tcollect_file_rules( void*       userData,
 }
 #endif // HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_VT_INTEL )
 
+#if HAVE_BACKEND(SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN)
+void addXrayFlags(std::string& flags, SCOREP_Instrumenter_CmdLine& cmdLine){
+    // Pass config values to xray plugin by using Macro definition compiler flags
+    if ( cmdLine.getVerbosity() >= 1 ) {
+        // TODO!: Move Macro names to own macro somewhere to avoid magic strings
+        flags += (" --compiler-arg=-DSCOREP_XRAY_VERBOSITY="+ std::to_string(cmdLine.getVerbosity()));
+    }
+    const std::vector<std::string>& filter_files = cmdLine.getInstrumentFilterFiles();
+    // Generate semicolon separated list of filter files
+    std::ostringstream oss;
+    bool firstFile = true;
+    for (const auto & filter_file : filter_files) { //TODO!: Determine C++11?
+        if (!firstFile) {
+            oss << ";";
+        }
+        oss << filter_file;
+        firstFile = false;
+    }
+    flags += " --compiler-arg=-DSCOREP_XRAY_FILTER_FILES="  + oss.str();
+    //flags += " --compiler-arg=-DSCOREP_XRAY_INSTRUMENTED"; // TODO: Only needed when multiple plugins compiled at same time
+}
+#endif // HAVE_BACKEND(SCOREP_COMPILER_INSTRUMENTATION_CC_XRAY_PLUGIN)
 
 std::string
 SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine,
@@ -282,7 +306,9 @@ SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdL
 #elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CC_LLVM_PLUGIN )
         FILTER_LLVM_PLUGIN
         OPTIONS_LLVM_PLUGIN
-#endif  /* SCOREP_BACKEND_COMPILER_CC_INTEL */
+#elif HAVE_BACKEND(SCOREP_COMPILER_INSTRUMENTATION_CC_XRAY_PLUGIN)
+        addXrayFlags(flags, cmdLine);
+#endif
     }
     else if ( is_cpp_file( inputFile ) )
     {
@@ -293,6 +319,8 @@ SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdL
 #elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CXX_LLVM_PLUGIN )
         FILTER_LLVM_PLUGIN
         OPTIONS_LLVM_PLUGIN
+#elif HAVE_BACKEND(SCOREP_COMPILER_INSTRUMENTATION_CXX_XRAY_PLUGIN)
+        addXrayFlags(flags, cmdLine);
 #endif  /* SCOREP_BACKEND_COMPILER_CXX_INTEL */
     }
     else if ( is_fortran_file( inputFile ) )
@@ -304,14 +332,17 @@ SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdL
 #elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_FC_LLVM_PLUGIN )
         FILTER_LLVM_PLUGIN
         OPTIONS_LLVM_PLUGIN
+#elif HAVE_BACKEND(SCOREP_COMPILER_INSTRUMENTATION_FC_XRAY_PLUGIN)
+        addXrayFlags(flags, cmdLine);
 #endif  /* SCOREP_BACKEND_COMPILER_FC_INTEL */
     }
     else if ( is_cuda_file( inputFile ) )
     {
 #if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CXX_LLVM_PLUGIN )
         FILTER_LLVM_PLUGIN
-            OPTIONS_LLVM_PLUGIN
+        OPTIONS_LLVM_PLUGIN
 #endif
+// TODO!: CUDA support?
     }
 
     return flags;
@@ -336,6 +367,7 @@ SCOREP_Instrumenter_CompilerAdapter::checkOption( const std::string& arg )
         }
     }
 #endif
+// TODO!: Support -fxray-instruction-threshold= as flag passed by user?
     return flag;
 }
 

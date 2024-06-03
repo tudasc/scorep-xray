@@ -59,6 +59,8 @@ scorep_compiler_plugin_register_region( const scorep_compiler_region_description
     char* demangled_name;
 #if HAVE( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN )
     demangled_name = regionDescr->name;
+#elif HAVE( SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN )
+    demangled_name = 0; // TODO!: Check how to obtain demangled name
 #elif HAVE( SCOREP_COMPILER_INSTRUMENTATION_LLVM_PLUGIN )
     /* Try to demangle during registration, as LLVM installations might not
      * provide a way to demangle region descriptions */
@@ -121,7 +123,6 @@ scorep_compiler_plugin_register_region( const scorep_compiler_region_description
                  regionDescr->canonical_name,
                  regionDescr->name );
 }
-
 
 static void
 plugin_register_regions( void )
