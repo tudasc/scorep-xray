@@ -26,6 +26,9 @@
 #include <scorep_config_tool_backend.h>
 #include <scorep_config_tool_mpi.h>
 #include <scorep_config_tool_llvm_plugin.h>
+#if HAVE_BACKEND(SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN)
+#include <scorep_config_tool_xray_plugin.h>
+#endif
 #include "scorep_config_adapter.hpp"
 #include "scorep_config_thread.hpp"
 #include "scorep_config_utils.hpp"
@@ -453,18 +456,8 @@ SCOREP_Config_CompilerAdapter::addCFlags( std::string&           cflags,
     if ( xray_plugin_instrumentation_available )
     {
         // TODO!: Determine useful threshold
-        // TODO!: Allow selection of threshold (check m_cflags?)?
+        // TODO!: Allow selection of threshold (check m_cflags?)
         cflags += " -fxray-instrument -fxray-instruction-threshold=1 ";
-        if ( build_check )
-        {
-            extern std::string path_to_binary;
-            //cflags += "-rpath " + path_to_binary + "../build-xray-plugin/" LT_OBJDIR "scorep_instrument_function_xray.so -g ";
-            //cflags += "-l" + path_to_binary + "../build-xray-plugin/" LT_OBJDIR "scorep_instrument_function_xray.so -g ";
-        }
-        else
-        {
-            //cflags += "-rpath " SCOREP_PKGLIBDIR "/scorep_instrument_function_xray.so -g ";
-        }
         cflags += m_cflags;
     }
 #endif /* HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN ) */
@@ -476,9 +469,15 @@ SCOREP_Config_CompilerAdapter::addLdFlags( std::string& ldflags,
                                            bool         nvcc )
 {
 #if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN )
-    ldflags += " -rpath " SCOREP_PKGLIBDIR;
-    ldflags += " -fxray-instrument ";
-    ldflags += SCOREP_PKGLIBDIR "/scorep_instrument_function_xray.so -g ";
+    // Include whole archive as xray init functions are not explicitly used from instrumented code but should still
+    // be included and executed
+    ldflags += "-Wl,--whole-archive ";
+    // Xray lib must be linked statically
+    ldflags += SCOREP_PKGLIBDIR "/scorep_instrument_function_xray.a ";
+    ldflags += "-Wl,--no-whole-archive ";
+    // pass llvm linking flags again for final executable
+    ldflags += SCOREP_XRAY_PLUGIN_LDFLAGS SCOREP_XRAY_PLUGIN_LIBS;
+    ldflags += " -fxray-instruction-threshold=1 ";
 #endif /* HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN ) */
     if ( nvcc )
     {

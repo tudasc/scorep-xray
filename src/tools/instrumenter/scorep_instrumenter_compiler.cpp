@@ -176,9 +176,8 @@ write_tcollect_file_rules( void*       userData,
 #if HAVE_BACKEND(SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN)
 void addXrayFlags(std::string& flags, SCOREP_Instrumenter_CmdLine& cmdLine){
     // Pass config values to xray plugin by using Macro definition compiler flags
-    if ( cmdLine.getVerbosity() >= 1 ) {
-        // TODO!: Move Macro names to own macro somewhere to avoid magic strings
-        flags += (" --compiler-arg=-DSCOREP_XRAY_VERBOSITY="+ std::to_string(cmdLine.getVerbosity()));
+    if ( cmdLine.getVerbosity() >= 2 ) {
+        flags += " --compiler-arg= -DSCOREP_XRAY_DEBUG ";
     }
     const std::vector<std::string>& filter_files = cmdLine.getInstrumentFilterFiles();
     // Generate semicolon separated list of filter files
@@ -191,8 +190,11 @@ void addXrayFlags(std::string& flags, SCOREP_Instrumenter_CmdLine& cmdLine){
         oss << filter_file;
         firstFile = false;
     }
-    flags += " --compiler-arg=-DSCOREP_XRAY_FILTER_FILES="  + oss.str();
-    //flags += " --compiler-arg=-DSCOREP_XRAY_INSTRUMENTED"; // TODO: Only needed when multiple plugins compiled at same time
+    std::string files = oss.str();
+    if(!files.empty()){
+        flags += " --compiler-arg=-DSCOREP_XRAY_FILTER_FILES="  + files  + " ";
+    }
+    //flags += " --compiler-arg=-DSCOREP_XRAY_INSTRUMENTED"; // TODO!: Only needed when multiple plugins compiled at same time
 }
 #endif // HAVE_BACKEND(SCOREP_COMPILER_INSTRUMENTATION_CC_XRAY_PLUGIN)
 

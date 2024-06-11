@@ -3,11 +3,10 @@
 AC_PREREQ([2.69])
 AC_INIT([Score-P], m4_esyscmd([../build-config/common/generate-package-version.sh ../build-config/VERSION]), [support@score-p.org], [scorep])
 
-#TODO: Check whether this is also true for xray plugin, depends on whether it will be a llvm plugin architecture
 # ignore --(enable|disable)-(shared|static) flags on the command line, we
-# can only build the XRAY plug-in if we have support for shared libraries
-enable_shared=yes
-enable_static=no
+# can only build the XRAY plug-in if xray runtime is linked statically!
+enable_shared=no
+enable_static=yes
 
 AFS_PACKAGE_BUILD_INIT([XRAY plug-in])
 AFS_SUMMARY_INIT
@@ -95,7 +94,8 @@ AFS_PROG_CXX([17], [noext], [optional])
 AFS_PROG_FC([optional])
 
 LT_PREREQ([2.4.6])
-LT_INIT([shared disable-static])
+# xray runtime can only be linked statically
+LT_INIT([disable-shared])
 AC_SUBST([LIBTOOL_DEPS])
 
 adl_RECURSIVE_EVAL([${datadir}/${PACKAGE}], [PKGDATADIR])

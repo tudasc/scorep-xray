@@ -69,7 +69,7 @@ AC_DEFUN([SCOREP_XRAY_PLUGIN], [
             [crayx*],
             [], # Cray machines might report being a cross-compile environment even though they're not. Try to build the plug-in anyway.
             [enable_xray_plugin="no"
-            xray_plugin_reason=${xray_plugin_reason:-"not supported in cross-compile mode"}]
+            xray_plugin_reason=${xray_plugin_reason:-"not yet supported in cross-compile mode"}]
         )]
     )
 
@@ -81,11 +81,14 @@ AC_DEFUN([SCOREP_XRAY_PLUGIN], [
             [SCOREP_LLVM_CONFIG
             AS_IF(
                 [test "x${scorep_have_llvm_config}" = "xyes"],
-                [XRAY_PLUGIN_TARGET_CXXFLAGS="${XRAY_PLUGIN_TARGET_CXXFLAGS} $(${scorep_llvm_config_bin} --cxxflags | ${SED} -E 's/ -std=[[a-zA-Z]]+.*[[0-9]]{2} //')"
+                [XRAY_PLUGIN_TARGET_CXXFLAGS="${XRAY_PLUGIN_TARGET_CXXFLAGS} $(${scorep_llvm_config_bin} --cxxflags | ${SED} -E 's/ -std=[[a-zA-Z]]+.*[[0-9]]{2} //') -fxray-instrument"
                 XRAY_PLUGIN_TARGET_CPPFLAGS="${XRAY_PLUGIN_TARGET_CPPFLAGS} $(${scorep_llvm_config_bin} --cppflags)"
-                XRAY_PLUGIN_TARGET_LDFLAGS="${XRAY_PLUGIN_TARGET_LDFLAGS} $(${scorep_llvm_config_bin} --ldflags)"
-                XRAY_PLUGIN_TARGET_LIBS="${XRAY_PLUGIN_TARGET_LIBS} $(${scorep_llvm_config_bin} --libs demangle support)"
-                # TODO: LLVM demangle required?
+                # pass xray instrument flag to linker to link runtime libs
+                XRAY_PLUGIN_TARGET_LDFLAGS="${XRAY_PLUGIN_TARGET_LDFLAGS} -fxray-instrument $(${scorep_llvm_config_bin} --ldflags)"
+                XRAY_PLUGIN_TARGET_LIBS="${XRAY_PLUGIN_TARGET_LIBS} $(${scorep_llvm_config_bin} --libs demangle support xray symbolize)"
+                # TODO!: System libs seems to be necessary when linking statically, check if --link-static applicable
+                # XRAY_PLUGIN_TARGET_LIBS="${XRAY_PLUGIN_TARGET_LIBS} $(${scorep_llvm_config_bin} --link-static --libs demangle support xray symbolize)"
+                # XRAY_PLUGIN_TARGET_LIBS="${XRAY_PLUGIN_TARGET_LIBS} $(${scorep_llvm_config_bin} --link-static --system-libs)"
                 AC_LANG_PUSH([C++])
                 _BUILD_XRAY_PLUGIN
                 AC_LANG_POP([C++])
@@ -196,13 +199,19 @@ m4_define(
         # PRINT_VAL($_AC_LANG_PREFIX[]FLAGS)
         # TODO: Run code or just compile?
         AC_RUN_IFELSE([AC_LANG_SOURCE(_INPUT_XRAY_TEST_[]_AC_LANG_PREFIX)],
-            [AS_IF([test -f xray_plugin_supported_[]_AC_LANG_ABBREV[]],
+            [AS_IF(
+                [test -f xray_plugin_supported_[]_AC_LANG_ABBREV[]],
                 [have_xray_plugin_support="yes"
-                 have_xray_plugin_[]_AC_LANG_ABBREV[]_support="yes"
-                 AC_SUBST(SCOREP_XRAY_PLUGIN_COMPILER_BACKEND_FLAG_[]_AC_CC[], ["${compiler_backend_flag_arg}"])
-                 break],
+                    have_xray_plugin_[]_AC_LANG_ABBREV[]_support="yes"
+                    AC_SUBST(SCOREP_XRAY_PLUGIN_COMPILER_BACKEND_FLAG_[]_AC_CC[], ["${compiler_backend_flag_arg}"])
+                    break],
                 [have_xray_plugin_[]_AC_LANG_ABBREV[]_support="no"])],
-            [have_xray_plugin_[]_AC_LANG_ABBREV[]_support="no"])
+            [have_xray_plugin_[]_AC_LANG_ABBREV[]_support="no"],
+            [enable_xray_plugin="no"
+                # TODO!: Check support for cross compiling, but leave this here to suppress configure warning
+                AC_MSG_WARN([Testing XRay plugin led to cross compiling, which is not yet supported])
+                xray_plugin_reason=${xray_plugin_reason:-"not yet supported in cross-compile mode"}]
+        )
     done
     AC_MSG_RESULT([${have_xray_plugin_[]_AC_LANG_ABBREV[]_support}])
 
@@ -238,6 +247,7 @@ AC_LANG_POP([C++])
 m4_define([_INPUT_XRAY_PLUGIN], [[
 #include <iostream>
 #include <stdio.h>
+#include <xray/xray_interface.h>
 
 int main() {
     std::cout << "Hello, World!" << std::endl;
@@ -250,6 +260,7 @@ int main() {
 #
 m4_define([_INPUT_XRAY_TEST_C], [[
 #include <stdio.h>
+#include <xray/xray_interface.h>
 int main( void )
 {
     FILE *file = fopen("xray_plugin_supported_c", "w");
@@ -264,6 +275,7 @@ int main( void )
 #
 m4_define([_INPUT_XRAY_TEST_CXX], [[
 #include <stdio.h>
+#include <xray/xray_interface.h>
 int main( void )
 {
     FILE *file = fopen("xray_plugin_supported_cxx", "w");
