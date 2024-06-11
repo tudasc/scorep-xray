@@ -37,7 +37,7 @@
  *
  */
 
-#include <config.h>
+
 #include <SCOREP_RuntimeManagement.h>
 
 #include <unistd.h>

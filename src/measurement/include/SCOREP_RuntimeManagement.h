@@ -32,7 +32,6 @@
 #ifndef SCOREP_RUNTIMEMANAGEMENT_H
 #define SCOREP_RUNTIMEMANAGEMENT_H
 
-
 /**
  * @file
  *
@@ -41,6 +40,7 @@
  *
  */
 
+#include <config.h>
 
 UTILS_BEGIN_C_DECLS
 
