@@ -24,6 +24,7 @@
 #define SCOREP_COMPILER_PLUGIN_H
 
 #include <stdint.h>
+#include <scorep/SCOREP_PublicTypes.h>
 
 typedef struct
 {
@@ -40,5 +41,11 @@ scorep_compiler_region_description;
 
 void
 scorep_compiler_plugin_register_region( const scorep_compiler_region_description* region_descr );
+
+//TODO!: Make these only available if xray is used?
+// XRay plugin manually instruments each function at runtime instead of using start and end pointers
+void scorep_plugin_register_region( const scorep_compiler_region_description* regionDescr );
+void scorep_plugin_enter_region( SCOREP_RegionHandle regionHandle );
+void scorep_plugin_exit_region( SCOREP_RegionHandle regionHandle );
 
 #endif /* SCOREP_COMPILER_PLUGIN_H */

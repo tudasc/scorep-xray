@@ -12,30 +12,59 @@
 #define XRAY_INSTRUMENT_NEVER __attribute__((xray_never_instrument))
 #define XRAY_INSTRUMENT_ALWAYS __attribute__((xray_always_instrument))
 
+#include <config.h>
+#include <SCOREP_ErrorCodes.h>
+#include <string>
+extern "C" {
+#include "scorep_compiler_plugin.h"
+}
+#include <unordered_map>
+#include <xray/xray_interface.h>
+#include <cstring>
+
+
 namespace XRayPlugin {
+
+    // Copy value for invalid region as region description expects a pointer to it
+    static uint32_t invalid_region_id = SCOREP_INVALID_REGION;
 
     /**
     * Can hold metadata about a xray instrumented function, enriched with name info for Score-P
     */
-    struct XRayIFuncMetadata {
-        int32_t funcId{0};
-        uint64_t funcAddress{0};
-        std::string funcName;
-        std::string funcNameDemangled;
+    struct XRayFuncMetadata {
+        int32_t xRayFuncId{0};
+        uint64_t address{0};
+        scorep_compiler_region_description* regionDescription;
 
-        explicit XRayIFuncMetadata(int32_t funcId, uint64_t funcAddress) : funcId(funcId), funcAddress(funcAddress){}
-        XRayIFuncMetadata(int32_t funcId, uint64_t funcAddress, std::string& funcName, std::string& funcNameDemangled)
-                         : funcId(funcId), funcAddress(funcAddress), funcName(funcName), funcNameDemangled(funcNameDemangled){}
+        XRayFuncMetadata(int32_t xRayFuncId, uint64_t address, std::string& funcNameMangled, std::string& funcNameDemangled,
+                         std::string& sourceFile, int startLine, int endLine)
+        : xRayFuncId(xRayFuncId), address(address){
+            auto nameMangled = strdup(funcNameMangled.c_str());
+            auto nameDemangled = strdup(funcNameDemangled.c_str());
+            auto file = strdup(sourceFile.c_str());
+            regionDescription = new scorep_compiler_region_description{
+                    &invalid_region_id, //region is reset in register call, init with unknown region
+                    nameMangled,
+                    nameDemangled,
+                    file,
+                    startLine,
+                    endLine,
+                    0
+            };
+        }
+
+        XRayFuncMetadata(int32_t xRayFuncId, uint64_t address, scorep_compiler_region_description* regionDescription)
+                         : xRayFuncId(xRayFuncId), address(address), regionDescription(regionDescription){}
     };
 
 
     /**
-     * Initializes XRay runtime instrumentation and sets up everything.
+     * Initializes XRay runtime instrumentation and sets everything up.
      * On success, the application is fully instrumented and patched according to user specs, therefore ready to run
-     * @return 0 (SCOREP_SUCCESS) on success, error code otherwise
+     * @return true on success, false otherwise
      */
-    bool initXRay() XRAY_INSTRUMENT_NEVER;
-}
+     SCOREP_ErrorCode initXRay() XRAY_INSTRUMENT_NEVER;
+};
 
 #endif
 

@@ -32,7 +32,7 @@ error_code FILE_CAN_NOT_OPEN "Unable to open file"
 
 error_code PARSE_UNKNOWN_TOKEN "Error while parsing: Unknown token"
 error_code PARSE_UNEXPECTED_END "Error while parsing: Unexpected end of string"
-error_code PARSE_NO_SEPARATOR "Error while parsing: Missing seperator"
+error_code PARSE_NO_SEPARATOR "Error while parsing: Missing separator"
 error_code PARSE_NO_KEY "Error while parsing: Missing key"
 error_code PARSE_NO_VALUE "Error while parsing: Missing value"
 error_code PARSE_INVALID_VALUE "Error while parsing: Invalid value"
@@ -40,7 +40,7 @@ error_code PARSE_SYNTAX "Error while parsing: Syntax error"
 
 error_code POMP_SCL_BROKEN "Expect location format 'filename:lineNo1:lineNo2'"
 error_code POMP_UNKNOWN_SCHEDULE "Unknown schedule specified"
-error_code POMP_INVALID_SECNUM "Invalid number of sections. Exspected > 0 sections"
+error_code POMP_INVALID_SECNUM "Invalid number of sections. Expected > 0 sections"
 error_code POMP_NO_NAME "Name of user region missing"
 
 error_code PROFILE_INCONSISTENT "Inconsistent profile. Stop profiling"
@@ -61,3 +61,6 @@ error_code DLSYM_FAILED "Could not find symbol"
 error_code DLCLOSE_FAILED "Cannot close library handle"
 
 error_code PERF_INIT "An error occurred while initializing Linux PERF infrastructure"
+
+error_code XRAY_INIT "An error occurred while initializing XRAY Plugin"
+
