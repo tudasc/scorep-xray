@@ -56,17 +56,15 @@ scorep_compiler_plugin_register_region( const scorep_compiler_region_description
         return;
     }
 
-    char* demangled_name;
-#if HAVE( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN )
+#if HAVE( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN ) || HAVE( SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN )
+    const char* demangled_name;
     demangled_name = regionDescr->name;
-#elif HAVE( SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN )
-    demangled_name = 0; // TODO!: Check how to obtain demangled name
 #elif HAVE( SCOREP_COMPILER_INSTRUMENTATION_LLVM_PLUGIN )
     /* Try to demangle during registration, as LLVM installations might not
      * provide a way to demangle region descriptions */
     char* mangled_name = calloc( strlen( regionDescr->name ) + 1, sizeof( char ) );
     strncpy( mangled_name, regionDescr->name, strlen( regionDescr->name ) );
-    demangled_name = NULL;
+    char* demangled_name = NULL;
     if ( regionDescr->name == regionDescr->canonical_name )
     {
         scorep_compiler_demangle( mangled_name, demangled_name );
@@ -78,6 +76,7 @@ scorep_compiler_plugin_register_region( const scorep_compiler_region_description
     }
 #else
 #error "No compiler instrumentation plugin available for this compiler. Please check your configuration."
+    return;
 #endif /* HAVE( SCOREP_COMPILER_INSTRUMENTATION_LLVM_PLUGIN ) */
 
     if ( SCOREP_Filtering_Match( regionDescr->file,
