@@ -44,7 +44,7 @@
 #include <SCOREP_Definitions.h>
 #include <scorep_status.h>
 #include <scorep_mpp.h>
-#include <scorep_environment.h>
+#include <SCOREP_Environment.h>
 #include <SCOREP_Memory.h>
 #include <stdio.h>
 #include <string.h>

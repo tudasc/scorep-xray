@@ -41,7 +41,7 @@
 #include <SCOREP_Timer_Ticks.h>
 #include <SCOREP_Timer_Utils.h>
 #include <scorep_ipc.h>
-#include <scorep_environment.h>
+#include "measurement/include/SCOREP_Environment.h"
 
 #include <stddef.h>
 #include <assert.h>

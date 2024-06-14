@@ -40,7 +40,7 @@
 #include <SCOREP_Memory.h>
 #include <UTILS_Error.h>
 #include <UTILS_Mutex.h>
-#include "scorep_environment.h"
+#include "SCOREP_Environment.h"
 #include "scorep_location_management.h"
 #include "scorep_status.h"
 #include "scorep_ipc.h"

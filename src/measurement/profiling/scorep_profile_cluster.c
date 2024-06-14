@@ -54,7 +54,7 @@
 #define SCOREP_DEBUG_MODULE_NAME PROFILE
 #include <UTILS_Debug.h>
 #include <UTILS_Mutex.h>
-#include <scorep_environment.h>
+#include "SCOREP_Environment.h"
 #include <scorep_ipc.h>
 #include <SCOREP_Thread_Mgmt.h>
 #include <math.h>                      /* sqrt() and log10() */

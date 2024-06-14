@@ -28,7 +28,7 @@
 #include <scorep_ipc.h>
 #include <scorep_runtime_management.h>
 #include <scorep_type_utils.h>
-#include <scorep_environment.h>
+#include "SCOREP_Environment.h"
 #define SCOREP_DEBUG_MODULE_NAME UNIFY
 #include <UTILS_Debug.h>
 

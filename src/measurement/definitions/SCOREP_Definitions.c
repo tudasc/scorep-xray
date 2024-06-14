@@ -45,7 +45,7 @@
 #include <SCOREP_Definitions.h>
 
 
-#include "scorep_environment.h"
+#include "SCOREP_Environment.h"
 #include "scorep_runtime_management.h"
 #include <scorep/SCOREP_PublicTypes.h>
 #include <SCOREP_Memory.h>

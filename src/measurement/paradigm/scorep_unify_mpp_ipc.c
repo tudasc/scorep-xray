@@ -46,7 +46,7 @@
 
 #include <scorep_ipc.h>
 #include <scorep_unify.h>
-#include <scorep_environment.h>
+#include <SCOREP_Environment.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Memory.h>

@@ -26,7 +26,7 @@
 #include <cstdlib>
 
 #include <SCOREP_Config.h>
-#include <scorep_environment.h>
+#include "measurement/include/SCOREP_Environment.h"
 #include <scorep_config_tool_backend.h>
 
 #include "scorep_info.hpp"

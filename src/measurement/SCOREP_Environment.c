@@ -39,7 +39,7 @@
 
 #include <config.h>
 
-#include "scorep_environment.h"
+#include "SCOREP_Environment.h"
 
 #include <UTILS_Error.h>
 

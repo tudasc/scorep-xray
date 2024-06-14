@@ -85,7 +85,7 @@
 
 #include "scorep_type_utils.h"
 #include "scorep_subsystem_management.h"
-#include "scorep_environment.h"
+#include "SCOREP_Environment.h"
 #include "scorep_status.h"
 #include "scorep_ipc.h"
 #include <SCOREP_Thread_Mgmt.h>

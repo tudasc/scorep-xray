@@ -28,7 +28,7 @@
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_InMeasurement.h>
 
-#include "scorep_environment.h"
+#include "SCOREP_Environment.h"
 #include <stdio.h>
 
 #if SCOREP_COMPILER_CONSTRUCTOR_MODE == SCOREP_COMPILER_CONSTRUCTOR_MODE_ATTRIBUTE

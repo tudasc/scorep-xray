@@ -62,7 +62,7 @@
 #include <SCOREP_Unwinding.h>
 #include <SCOREP_Task.h>
 
-#include "scorep_environment.h"
+#include "SCOREP_Environment.h"
 #include "scorep_events_common.h"
 #include "scorep_runtime_management.h"
 #include "scorep_type_utils.h"

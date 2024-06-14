@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <scorep_environment.h>
+#include <SCOREP_Environment.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_IoManagement.h>
 #include <SCOREP_Platform.h>

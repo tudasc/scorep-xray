@@ -47,7 +47,7 @@
 
 #include <SCOREP_Platform.h>
 #include <SCOREP_Config.h>
-#include <scorep_environment.h>
+#include "measurement/include/SCOREP_Environment.h"
 
 
 /**

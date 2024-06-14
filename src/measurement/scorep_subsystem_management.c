@@ -46,7 +46,7 @@
 #include <UTILS_Error.h>
 
 #include <SCOREP_Location.h>
-#include "scorep_environment.h"
+#include "SCOREP_Environment.h"
 
 
 /* scorep_subsystems[] and scorep_number_of_subsystems will be

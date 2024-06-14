@@ -43,7 +43,7 @@
 #include "scorep_ipc.h"
 #include <SCOREP_Config.h>
 #include <SCOREP_Platform.h>
-#include "scorep_environment.h"
+#include "SCOREP_Environment.h"
 #include "scorep_runtime_management_timings.h"
 #include "scorep_system_tree_sequence.h"
 

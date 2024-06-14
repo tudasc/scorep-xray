@@ -48,7 +48,7 @@
 #include "scorep_ipc.h"
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Location.h>
-#include "scorep_environment.h"
+#include "SCOREP_Environment.h"
 #include "scorep_subsystem_management.h"
 
 #include <scorep_substrates_definition.h>

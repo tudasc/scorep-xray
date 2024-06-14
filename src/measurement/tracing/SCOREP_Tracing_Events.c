@@ -68,7 +68,7 @@
 #include <SCOREP_Unwinding.h>
 #include <SCOREP_Config.h>
 
-#include <scorep_environment.h>
+#include "SCOREP_Environment.h"
 #include <scorep_status.h>
 
 #include "scorep_tracing_internal.h"
