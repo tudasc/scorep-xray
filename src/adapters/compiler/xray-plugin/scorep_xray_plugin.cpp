@@ -2,12 +2,14 @@
  * @file scorep_xry_plugin.cpp
  * @brief Score-P LLVM XRAY instrumentation plugin - runtime management
  */
+extern "C"{
 #include <config.h>
-#include "scorep_xray_plugin.hpp"
+#include "SCOREP_Environment.h"
 #include "SCOREP_RuntimeManagement.h"
 #include "SCOREP_Filter.h"
 #include "UTILS_Error.h"
-
+}
+#include "scorep_xray_plugin.hpp"
 #include <iostream>
 
 // No need to check whether XRAY runtime is available since this header is only included when xray plugin
@@ -126,8 +128,14 @@ void handleInstrumentationPoint(int32_t fid, XRayEntryType entryType) XRAY_INSTR
     }
 }
 
+inline bool shouldInitXray(){
+    return SCOREP_Env_DoProfiling() || SCOREP_Env_DoTracing() || SCOREP_Env_DoUnwinding();
+}
 
 SCOREP_ErrorCode XRayPlugin::initXRay() XRAY_INSTRUMENT_NEVER {
+    if(!shouldInitXray()){
+        return SCOREP_ErrorCode::SCOREP_SUCCESS;
+    }
     __xray_init(); // Safe even if it is already initialized
     bool success = __xray_set_handler(&handleInstrumentationPoint);
     if (!success) {
