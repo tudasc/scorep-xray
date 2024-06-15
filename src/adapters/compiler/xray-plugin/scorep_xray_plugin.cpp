@@ -28,7 +28,7 @@ extern "C" {
 static std::vector<scorep_compiler_region_description> regions;
 
 // Array of only the region handles for each region for more cache friendliness
-static std::vector<scorep_compiler_region_description> regionHandles;
+static std::vector<uint32_t> regionHandles;
 
 /**
  * @param execFileName Name of the file to retrieve Function data from, should be full path to current executable
@@ -41,7 +41,6 @@ void buildRegionsForExecutable(std::string &execFileName) XRAY_INSTRUMENT_NEVER 
     }
     auto funcAddressMap = maybeMap.get().getFunctionAddresses(); // Mapping of XRay fid -> address (unique)
     regions.resize(funcAddressMap.size()); // Resize once so insert is trivial
-    regionHandles.resize(funcAddressMap.size());
     llvm::symbolize::LLVMSymbolizer symbolizer({.Demangle = false});
     for (auto mapping: funcAddressMap) {
         int32_t funcId = mapping.first;
@@ -72,32 +71,22 @@ void buildRegionsForExecutable(std::string &execFileName) XRAY_INSTRUMENT_NEVER 
 
 
 /**
- * Checks whether a XRay instrumented function's sleds should be patched or unpatched
- * This is done by checking if the functions region description was marked as filtered by the score-p runtime
- * The region must have been registered beforehand or the handle will not be set correctly
- * @param funcMetadata Metadata of scorep-p REGISTERED xray-instrumented function
- * @return true if functions sleds should be patched, false if runtime filtered this function out (unpatch)
- */
-inline bool shouldPatchFunction(scorep_compiler_region_description& regionDescription) XRAY_INSTRUMENT_NEVER {
-    uint32_t handle = *regionDescription.handle;
-    return (handle != SCOREP_FILTERED_REGION) && (handle != SCOREP_INVALID_REGION);
-}
-
-
-/**
  * @return true on success, false otherwise
  */
 bool registerAndPatch() XRAY_INSTRUMENT_NEVER {
     bool successStatus = true;
+    regionHandles.resize(regions.size());
     for (int i = 0; i<regions.size(); i++) {
         XRayPatchingStatus status;
         // Register region to init measurement and apply filter rules to region - let score-p do the filter work
         scorep_plugin_register_region(&regions[i]);
-        if (shouldPatchFunction(regions[i])) {
-            //std::cout << "Patching function " << funcMetadata.xRayFuncId << std::endl; //TODO!:
+        // Registering also updated the region handle to its final value
+        uint32_t handle = *regions[i].handle;
+        regionHandles[i] = handle;
+        // Check if handle corresponds to filtered value or if registering failed
+        if ((handle != SCOREP_FILTERED_REGION) && (handle != SCOREP_INVALID_REGION)) {
             status = __xray_patch_function(i+1);  // XrayIDs start at 1
         } else {
-            //std::cout << "UNPatching function " << funcMetadata.xRayFuncId << std::endl; //TODO!:
             status = __xray_unpatch_function(i+1); // XrayIDs start at 1
         }
         if (status != XRayPatchingStatus::SUCCESS) {
@@ -110,9 +99,9 @@ bool registerAndPatch() XRAY_INSTRUMENT_NEVER {
 
 void handleInstrumentationPoint(int32_t fid, XRayEntryType entryType) XRAY_INSTRUMENT_NEVER {
     if (entryType == XRayEntryType::ENTRY) {
-        scorep_plugin_enter_region(*regions[fid-1].handle);
+        scorep_plugin_enter_region(regionHandles[fid-1]);
     } else if (entryType == XRayEntryType::EXIT) {
-        scorep_plugin_exit_region(*regions[fid-1].handle);
+        scorep_plugin_exit_region(regionHandles[fid-1]);
     } else if (entryType == XRayEntryType::TAIL) {
         // TODO!: Ignore tail type for now as this will be the function map destruction
     } else {
