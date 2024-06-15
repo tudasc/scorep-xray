@@ -45,12 +45,12 @@ buildFunctionMap(std::string &execFileName) XRAY_INSTRUMENT_NEVER {
         return idMap;
     }
     auto funcAddressMap = maybeMap.get().getFunctionAddresses();
+    llvm::symbolize::LLVMSymbolizer symbolizer({.Demangle = false});
     for (auto mapping: funcAddressMap) {
         int32_t funcId = mapping.first;
         if (idMap.find(funcId) == idMap.end()) {
             // This funcID is new
             uint64_t funcAddr = mapping.second;
-            llvm::symbolize::LLVMSymbolizer symbolizer;
             llvm::object::SectionedAddress sectAddress{funcAddr}; // init Address but keep SectionIndex default
             auto maybeFuncInfo = symbolizer.symbolizeCode(execFileName, sectAddress);
             if (auto err = maybeFuncInfo.takeError()) {
@@ -58,7 +58,6 @@ buildFunctionMap(std::string &execFileName) XRAY_INSTRUMENT_NEVER {
                                 funcId, funcAddr, toString(std::move(err)).c_str());
             } else {
                 std::string funcNameMangled = maybeFuncInfo.get().FunctionName;
-                // TODO!: Check why mangled = demangled
                 std::string funcNameDemangled = llvm::demangle(funcNameMangled);
                 // Path needn't be cleaned as it is convention to provide filenames with "*/"
                 std::string sourceFile = maybeFuncInfo.get().FileName; // "Source" is unreliable, use FileName
