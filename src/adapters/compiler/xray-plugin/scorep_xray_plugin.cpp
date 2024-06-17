@@ -3,11 +3,12 @@
  * @brief Score-P LLVM XRAY instrumentation plugin - runtime management
  */
 extern "C" {
-#include <config.h>
 #include "SCOREP_Environment.h"
 #include "SCOREP_RuntimeManagement.h"
 #include "SCOREP_Filter.h"
 #include "UTILS_Error.h"
+#include <config-xray-plugin.h>
+#include "scorep_compiler_plugin.h"
 }
 
 #include "scorep_xray_plugin.hpp"
@@ -32,7 +33,6 @@ static std::vector<uint32_t> regionHandles;
 
 /**
  * @param execFileName Name of the file to retrieve Function data from, should be full path to current executable
- * @return TODO
  */
 void buildRegionsForExecutable(std::string &execFileName) XRAY_INSTRUMENT_NEVER {
     auto maybeMap = llvm::xray::loadInstrumentationMap(execFileName);
@@ -54,15 +54,16 @@ void buildRegionsForExecutable(std::string &execFileName) XRAY_INSTRUMENT_NEVER 
             std::string funcNameMangled = maybeFuncInfo.get().FunctionName;
             std::string funcNameDemangled = llvm::demangle(funcNameMangled);
             // Path needn't be cleaned as it is convention to provide filenames with "*/"
-            std::string sourceFile = maybeFuncInfo.get().FileName; // "Source" is unreliable, use FileName
+            // "Source" is unreliable, use FileName (might still be <invalid>)
+            std::string sourceFile = maybeFuncInfo.get().FileName;
             auto regionInfo = XRayPlugin::createRegionDesc(funcNameMangled, funcNameDemangled,
                                                            sourceFile, maybeFuncInfo.get().StartLine,
                                                            maybeFuncInfo.get().Line);
             regions[funcId-1] = regionInfo;  // XrayIDs start at 1
             // Do not set regionHandles yet as they are still subject to change
 #if SCOREP_XRAY_DEBUG
-            std::cout << "XRay instrumented: " << funcId << " @" << funcAddr << ": " << "\n\tdemangled: "
-            << funcNameDemangled << "\n\tname: " << funcNameMangled << "\n\tlineStart: "
+            std::cout << "XRay instrumented: " << funcId << " @" << funcAddr << ": " << "\n\tname: " <<
+            funcNameMangled << "\n\tdemangled: " << funcNameDemangled << "\n\tlineStart: "
             << maybeFuncInfo.get().StartLine << "\n\tfile: " << sourceFile <<std::endl;
 #endif
         }
@@ -80,7 +81,7 @@ bool registerAndPatch() XRAY_INSTRUMENT_NEVER {
         XRayPatchingStatus status;
         // Register region to init measurement and apply filter rules to region - let score-p do the filter work
         scorep_plugin_register_region(&regions[i]);
-        // Registering also updated the region handle to its final value
+        // Registering also updated the region handle to its final value, they can now be cached
         uint32_t handle = *regions[i].handle;
         regionHandles[i] = handle;
         // Check if handle corresponds to filtered value or if registering failed
@@ -103,13 +104,13 @@ void handleInstrumentationPoint(int32_t fid, XRayEntryType entryType) XRAY_INSTR
     } else if (entryType == XRayEntryType::EXIT) {
         scorep_plugin_exit_region(regionHandles[fid-1]);
     } else if (entryType == XRayEntryType::TAIL) {
-        // TODO!: Ignore tail type for now as this will be the function map destruction
+        // TODO!: Ignore tail type for now as this will be the function vector destruction
     } else {
         UTILS_WARN_ONCE("Unhandled Xray sled event %u for fid %i", entryType, fid);
     }
 }
 
-inline bool shouldInitXray() {
+inline bool shouldInitXray() XRAY_INSTRUMENT_NEVER{
     return SCOREP_Env_DoProfiling() || SCOREP_Env_DoTracing() || SCOREP_Env_DoUnwinding();
 }
 
@@ -132,9 +133,21 @@ SCOREP_ErrorCode XRayPlugin::initXRay() XRAY_INSTRUMENT_NEVER {
     return SCOREP_ErrorCode::SCOREP_SUCCESS;
 }
 
+
+void XRayPlugin::cleanupXRay() {
+    for(auto region : regions){
+        free((void *) region.name);
+        free((void *) region.file);
+        free((void *) region.canonical_name);
+    }
+    regions.clear();
+    regionHandles.clear();
+}
+
 namespace {
     struct InitXRayPlugin {
         InitXRayPlugin() XRAY_INSTRUMENT_NEVER { XRayPlugin::initXRay(); }
+        ~InitXRayPlugin() XRAY_INSTRUMENT_NEVER {XRayPlugin::cleanupXRay(); }
     };
 
     InitXRayPlugin _;

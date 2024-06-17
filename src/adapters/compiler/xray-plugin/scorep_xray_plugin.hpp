@@ -12,20 +12,20 @@
 #define XRAY_INSTRUMENT_NEVER __attribute__((xray_never_instrument))
 #define XRAY_INSTRUMENT_ALWAYS __attribute__((xray_always_instrument))
 
-#include <config.h>
-#include <SCOREP_ErrorCodes.h>
-#include <string>
-
 extern "C" {
+#include <config.h>
 #include "scorep_compiler_plugin.h"
+#include <SCOREP_ErrorCodes.h>
 }
 
+#include <string>
 #include <unordered_map>
 #include <xray/xray_interface.h>
 #include <cstring>
 
 
 namespace XRayPlugin {
+
 
     /**
     * Can hold metadata about a xray instrumented function, enriched with name info for Score-P
@@ -75,6 +75,8 @@ namespace XRayPlugin {
      * @return true on success, false otherwise
      */
     SCOREP_ErrorCode initXRay() XRAY_INSTRUMENT_NEVER;
+
+    void cleanupXRay() XRAY_INSTRUMENT_NEVER;
 };
 
 #endif
