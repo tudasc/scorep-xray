@@ -39,7 +39,7 @@
 #ifndef SCOREP_INTERNAL_ENVIRONMENT_H
 #define SCOREP_INTERNAL_ENVIRONMENT_H
 
-
+#include <config.h> // Include for UTILS_BEGIN_C_DECLS
 #include <stdbool.h>
 #include <stdint.h>
 
