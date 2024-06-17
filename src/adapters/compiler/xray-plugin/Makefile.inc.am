@@ -8,7 +8,7 @@ pkglib_LTLIBRARIES = scorep_instrument_function_xray.la
 
 scorep_instrument_function_xray_la_SOURCES = \
     $(SRC_ROOT)src/adapters/compiler/xray-plugin/scorep_xray_plugin.cpp \
-    $(SRC_ROOT)src/adapters/compiler/xray-plugin/scorep_xray_plugin.hpp
+    $(SRC_ROOT)src/adapters/compiler/xray-plugin/scorep_xray_plugin.h
 
 scorep_instrument_function_xray_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \

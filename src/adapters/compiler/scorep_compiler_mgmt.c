@@ -42,7 +42,10 @@
 
 
 #if HAVE( SCOREP_COMPILER_INSTRUMENTATION_PLUGIN )
-#include "scorep_compiler_mgmt_plugin.inc.c"
+    #if HAVE( SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN )
+        #include "xray-plugin/scorep_xray_plugin.h"
+    #endif
+    #include "scorep_compiler_mgmt_plugin.inc.c"
 #endif /* SCOREP_COMPILER_INSTRUMENTATION_PLUGIN */
 
 #if HAVE( SCOREP_COMPILER_INSTRUMENTATION_NEEDS_ADDR2LINE )
@@ -54,9 +57,11 @@ static SCOREP_ErrorCode
 compiler_subsystem_init( void )
 {
     UTILS_DEBUG_ENTRY();
-
-#if HAVE( SCOREP_COMPILER_INSTRUMENTATION_PLUGIN )
     plugin_register_regions();
+#if HAVE( SCOREP_COMPILER_INSTRUMENTATION_PLUGIN )
+    #if HAVE( SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN )
+        initXRayPlugin();
+#endif
 #endif /* SCOREP_COMPILER_INSTRUMENTATION_PLUGIN */
 
 #if HAVE( SCOREP_COMPILER_INSTRUMENTATION_NEEDS_ADDR2LINE )
@@ -67,10 +72,19 @@ compiler_subsystem_init( void )
     return SCOREP_SUCCESS;
 }
 
+static void compiler_subsystem_finalize( void ){
+#if HAVE( SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN )
+    UTILS_DEBUG_ENTRY();
+    finalizeXRayPlugin(1);
+    UTILS_DEBUG_EXIT();
+#endif
+}
+
 
 /* Implementation of the compiler adapter initialization/finalization struct */
 const SCOREP_Subsystem SCOREP_Subsystem_CompilerAdapter =
 {
     .subsystem_name = "COMPILER",
     .subsystem_init = &compiler_subsystem_init,
+    .subsystem_finalize = &compiler_subsystem_finalize,
 };

@@ -75,8 +75,21 @@ libscorep_adapter_compiler_mgmt_la_LIBADD += \
 endif HAVE_SCOREP_DEMANGLE
 
 
-#--- Compiler-Plugin ( GCC / LLVM ) specific settings
+#--- Compiler-Plugin ( GCC / LLVM / XRay ) specific settings
 if HAVE_SCOREP_COMPILER_INSTRUMENTATION_PLUGIN
+
+if HAVE_SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN
+
+libscorep_adapter_compiler_mgmt_la_SOURCES += \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_plugin.h \
+    $(SRC_ROOT)src/adapters/compiler/xray-plugin/scorep_xray_plugin.h
+
+plugin_objects_cppflags = \
+    -I$(PUBLIC_INC_DIR) \
+    -I$(INC_ROOT)src/adapters/compiler \
+    -I$(INC_DIR_MEASUREMENT)
+
+else
 
 libscorep_adapter_compiler_mgmt_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_plugin.h \
@@ -111,6 +124,8 @@ scorep_compiler_plugin_end.$(OBJEXT): $(SRC_ROOT)src/adapters/compiler/scorep_co
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scorep_compiler_plugin_begin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scorep_compiler_plugin_end.Po@am__quote@
+
+endif
 
 endif HAVE_SCOREP_COMPILER_INSTRUMENTATION_PLUGIN
 
