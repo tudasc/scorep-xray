@@ -374,7 +374,7 @@ void
 SCOREP_Instrumenter_CompilerAdapter::prelink( SCOREP_Instrumenter&         instrumenter,
                                               SCOREP_Instrumenter_CmdLine& cmdLine )
 {
-#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_PLUGIN )
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_PLUGIN ) && !HAVE_BACKEND(SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN)
     if ( !cmdLine.isTargetSharedLib() )
     {
         if ( cmdLine.isBuildCheck() )

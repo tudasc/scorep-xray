@@ -57,10 +57,13 @@ static SCOREP_ErrorCode
 compiler_subsystem_init( void )
 {
     UTILS_DEBUG_ENTRY();
-    plugin_register_regions();
 #if HAVE( SCOREP_COMPILER_INSTRUMENTATION_PLUGIN )
     #if HAVE( SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN )
+    // XRay plugin creates regions at runtime, registers them itseld and does not use begin and end object files,
+    // therefore don't use default registration mechanism
         initXRayPlugin();
+    #else
+        plugin_register_regions();
 #endif
 #endif /* SCOREP_COMPILER_INSTRUMENTATION_PLUGIN */
 
