@@ -56,6 +56,19 @@ struct SCOREP_Filter
 };
 
 /**
+ * The struct definition for the rule list. Each record contains one rule.
+ * The @ref scorep_filter_rule_t defines a type for this struct.
+ */
+struct scorep_filter_rule_struct
+{
+    char*                 pattern;    /**< Pointer to the pattern string */
+    bool                  is_mangled; /**< Apply this rule on the mangled name */
+    bool                  is_exclude; /**< True if it is a exclude rule, false else */
+    scorep_filter_rule_t* next;       /**< Next filter rule */
+};
+
+
+/**
  * Adds a filter rule to the file filter rule list.
  * @param rule       The rule's string pattern.
  * @param is_exclude True if it is an exclude rule, false otherwise.

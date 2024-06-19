@@ -30,6 +30,10 @@
 #include <scorep_config_tool_mpi.h>
 #include <SCOREP_Filter.h>
 
+#if HAVE_BACKEND(SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN)
+#include "scorep_xray_filter_converter.hpp"
+#endif
+
 #include <iostream>
 #include <fstream>
 #include <stdlib.h>
@@ -121,11 +125,10 @@ SCOREP_Instrumenter_CompilerAdapter::supportInstrumentFilters( void ) const
     // filtering.
 #if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN )  || \
     HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_LLVM_PLUGIN ) || \
-    HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_VT_INTEL )
+    HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_VT_INTEL )    || \
+    HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN )
     return true;
 #else
-    // HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN ) || \
-    // TODO!: Support filtering
     return false;
 #endif
 }
@@ -175,22 +178,18 @@ write_tcollect_file_rules( void*       userData,
 
 #if HAVE_BACKEND(SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN)
 void addXrayFlags(std::string& flags, SCOREP_Instrumenter_CmdLine& cmdLine){
-    // TODO!: Determine if/how instrument filter should be supported
-    // Pass config values to xray plugin by using Macro definition compiler flags
     const std::vector<std::string>& filter_files = cmdLine.getInstrumentFilterFiles();
-    // Generate semicolon separated list of filter files
-    std::ostringstream oss;
-    bool firstFile = true;
-    for (const auto & filter_file : filter_files) {
-        if (!firstFile) {
-            oss << ";";
-        }
-        oss << filter_file;
-        firstFile = false;
+    if(filter_files.empty()){
+        return;
     }
-    std::string files = oss.str();
-    if(!files.empty()){
-        flags += " --compiler-arg=-DSCOREP_XRAY_FILTER_FILES="  + files  + " ";
+    //TODO!: Check default behaviour (include everything alse not mentioned in file or filter out?)
+    //TODO!: Log files somewhere and delete them after compilation
+    for (const std::string& filter_file : filter_files) {
+        XRayPlugin::FilterConverter conv(filter_file);
+        std::string outPath(filter_file + ".xray");
+        conv.saveAsXRay(outPath);
+        flags += " --compiler-arg=-fxray-attr-list=";
+        flags += outPath;
     }
 }
 #endif // HAVE_BACKEND(SCOREP_COMPILER_INSTRUMENTATION_CC_XRAY_PLUGIN)
