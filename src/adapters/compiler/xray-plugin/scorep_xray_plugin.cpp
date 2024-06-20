@@ -33,6 +33,8 @@ namespace XRayPlugin {
     // Array of only the region handles for each region for more cache friendliness
     static std::vector<uint32_t> *regionHandles;
 
+    static bool xrayInitSuccess = false;
+
     /**
      * Creates a new, trivially copy-able scorep region description on the heap that can be referenced after passed
      * values go out of scope. Make sure to free contents once it is no longer needed.
@@ -149,8 +151,8 @@ namespace XRayPlugin {
             return SCOREP_ErrorCode::SCOREP_SUCCESS;
         }
         __xray_init(); // Safe even if it is already initialized
-        bool success = __xray_set_handler(&handleInstrumentationPoint);
-        if (!success) {
+        xrayInitSuccess = __xray_set_handler(&handleInstrumentationPoint);
+        if (!xrayInitSuccess) {
             // TODO!: Handle 'spurious calls' as per docs?
             UTILS_ERROR(SCOREP_ERROR_XRAY_INIT, "Could not set XRay handler function!");
             return SCOREP_ErrorCode::SCOREP_ERROR_XRAY_INIT;
@@ -164,14 +166,18 @@ namespace XRayPlugin {
 
 
     static void cleanupXRay(bool unpatch) XRAY_INSTRUMENT_NEVER {
-        for (auto region: (*regions)) {
-            free((void *) region.name);
-            free((void *) region.file);
-            free((void *) region.canonical_name);
+        if(regions){
+            for (auto region: (*regions)) {
+                free((void *) region.name);
+                free((void *) region.file);
+                free((void *) region.canonical_name);
+            }
+            (*regions).clear();
         }
-        (*regions).clear();
-        (*regionHandles).clear();
-        if (unpatch) {
+        if(regionHandles){
+            (*regionHandles).clear();
+        }
+        if (unpatch && xrayInitSuccess) {
             __xray_unpatch();
         }
     }
