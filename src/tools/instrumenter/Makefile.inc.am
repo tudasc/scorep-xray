@@ -61,9 +61,9 @@ scorep_SOURCES = \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_libwrap.hpp      \
     $(SRC_ROOT)src/adapters/compiler/xray-plugin/scorep_xray_filter_converter.hpp  \
     $(SRC_ROOT)src/adapters/compiler/xray-plugin/scorep_xray_filter_converter.cpp  \
+    $(SRC_ROOT)src/adapters/compiler/xray-plugin/scorep_xray_config.hpp  \
     $(SRC_ROOT)src/utils/filter/scorep_filter_matching.h
 
- # TODO!: Only conditionally include XRAY path? (Find out why HAVE_.. are not available here)
 scorep_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     $(UTILS_CPPFLAGS) \

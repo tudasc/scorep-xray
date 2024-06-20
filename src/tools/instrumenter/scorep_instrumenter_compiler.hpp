@@ -28,6 +28,11 @@
 #include <vector>
 #endif
 
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN )
+#include "scorep_xray_config.h"
+#include <vector>
+#endif
+
 /* **************************************************************************************
  * class SCOREP_Instrumenter_CompilerAdapter
  * *************************************************************************************/
@@ -60,6 +65,11 @@ public:
 #if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_LLVM_PLUGIN )
 private:
     std::vector<std::string> m_llvm_plugin_args;
+#endif
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN )
+    private:
+    XRayPlugin::Config xrayConfig;
+    std::vector<std::string> m_xray_plugin_args;
 #endif
 };
 

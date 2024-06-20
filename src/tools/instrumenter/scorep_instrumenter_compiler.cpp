@@ -113,6 +113,27 @@ SCOREP_Instrumenter_CompilerAdapter::printHelp( void )
                   May introduce additional overhead. It is enabled by default."
         << std::endl;
 #endif
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN )
+    std::cout << "  --no-xray-default-instrument-filter\n"
+                 "\t\t\t\t  Disables the default instrumentation filter for the XRay plugin.\n"
+                 "\t\t\t\t  Filtered are functions such as scorep, otf2, kokkos etc internals,\n"
+                 "\t\t\t\t  MPI functions to not interfere with MPI adapters etc."
+                 "\n"
+                 "  --no-xray-delete-converted-filter\n"
+                 "\t\t\t\t  Disables deletion of internally converted instrumentation filter after compilation.\n"
+                 "\t\t\t\t  The converted filter file can then be examined and manually edited."
+                 "\n"
+                 "  --xray-instruction-threshold=<int>\n"
+                 "\t\t\t\t  Specify the number of instructions before XRay will automatically instrument a function\n"
+                 "\t\t\t\t  Provided instrumentation filters will still apply.\n"
+                 "\t\t\t  Default:1"
+                 "\n"
+                 "  --xray-plugin-arg=<string>\n"
+                 "\t\t\t\t  Add additional arguments for the XRay plugin.\n"
+                 "\t\t\t\t  Provided arguments will be passed to compiler during the compilation step.\n"
+                 "\t\t\t\t  Default flags will still be applied to XRay plugin, additional arguments come after."
+        << std::endl;
+#endif
 }
 
 bool
@@ -177,19 +198,39 @@ write_tcollect_file_rules( void*       userData,
 #endif // HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_VT_INTEL )
 
 #if HAVE_BACKEND(SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN)
-void addXrayFlags(std::string& flags, SCOREP_Instrumenter_CmdLine& cmdLine){
-    const std::vector<std::string>& filter_files = cmdLine.getInstrumentFilterFiles();
-    if(filter_files.empty()){
-        return;
-    }
-    //TODO!: Check default behaviour (include everything alse not mentioned in file or filter out?)
-    //TODO!: Log files somewhere and delete them after compilation
-    for (const std::string& filter_file : filter_files) {
-        XRayPlugin::FilterConverter conv(filter_file);
-        std::string outPath(filter_file + ".xray");
-        conv.saveAsXRay(outPath);
+inline void addXrayFlags(std::string& flags, SCOREP_Instrumenter_CmdLine& cmdLine, XRayPlugin::Config xrayConfig,
+                         const std::vector<std::string>& userArgs){
+    flags += " --compiler-arg=-fxray-instruction-threshold=" + std::to_string(xrayConfig.instructionThreshold);
+
+    if(xrayConfig.useDefaultInstrumentFilter){
         flags += " --compiler-arg=-fxray-attr-list=";
-        flags += outPath;
+        // TODO!: FInd correct path as SRCDIR refers to _build directory :(
+        flags += AFS_PACKAGE_SRCDIR "src/adapters/compiler/xray-plugin/scorep_xray_basic_filter.txt";
+    }
+
+    // Now check for user instrument filters
+    const std::vector<std::string>& filter_files = cmdLine.getInstrumentFilterFiles();
+    if(!filter_files.empty()){
+        for (const std::string& filter_file : filter_files) {
+            XRayPlugin::FilterConverter conv(filter_file);
+            std::string outPath(filter_file + ".xray_autoconvert");
+            bool success = conv.saveAsXRay(outPath);
+            if(!success){
+                UTILS_FATAL("Instrument filter is not readable, in an unknown format or could not be saved. Check"
+                            " stdout for more info.");
+            }
+            flags += " --compiler-arg=-fxray-attr-list=";
+            flags += outPath;
+            if(xrayConfig.deleteInstrumentFilterAfterCompile){
+                cmdLine.addTempFile(outPath);
+            }
+        }
+    }
+
+    // optionally provided user args
+    for (const std::string& arg : userArgs)
+    {
+        flags += " --compiler-arg=" + arg;
     }
 }
 #endif // HAVE_BACKEND(SCOREP_COMPILER_INSTRUMENTATION_CC_XRAY_PLUGIN)
@@ -318,7 +359,7 @@ SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdL
         FILTER_LLVM_PLUGIN
         OPTIONS_LLVM_PLUGIN
 #elif HAVE_BACKEND(SCOREP_COMPILER_INSTRUMENTATION_CXX_XRAY_PLUGIN)
-        addXrayFlags(flags, cmdLine);
+        addXrayFlags(flags, cmdLine, xrayConfig, m_xray_plugin_args);
 #endif  /* SCOREP_BACKEND_COMPILER_CXX_INTEL */
     }
     else if ( is_fortran_file( inputFile ) )
@@ -340,7 +381,6 @@ SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdL
         FILTER_LLVM_PLUGIN
         OPTIONS_LLVM_PLUGIN
 #endif
-// TODO!: CUDA support?
     }
 
     return flags;
@@ -365,7 +405,40 @@ SCOREP_Instrumenter_CompilerAdapter::checkOption( const std::string& arg )
         }
     }
 #endif
-// TODO!: Support -fxray-instruction-threshold= as flag passed by user?
+#if(HAVE_BACKEND(SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN))
+    if ( !flag )
+    {
+        if ( arg == "--xray-default-instrument-filter" ) // Default
+        {
+            xrayConfig.useDefaultInstrumentFilter = true;
+            return true;
+        }
+        if ( arg == "--no-xray-default-instrument-filter" )
+        {
+            xrayConfig.useDefaultInstrumentFilter = false;
+            return true;
+        }
+        if ( arg == "--xray-delete-converted-filter" ) // Default
+        {
+            xrayConfig.deleteInstrumentFilterAfterCompile = true;
+            return true;
+        }
+        if ( arg == "--no-xray-delete-converted-filter" )
+        {
+            xrayConfig.deleteInstrumentFilterAfterCompile = false;
+            return true;
+        }
+        if( arg.substr(0, 29) == "--xray-instruction-threshold=" ){
+            xrayConfig.instructionThreshold = std::stoi(arg.substr(22, std::string::npos));
+            return true;
+        }
+        if ( arg.substr(0, 18) == "--xray-plugin-arg=" )
+        {
+            m_xray_plugin_args.push_back(arg.substr(18, std::string::npos));
+            return true;
+        }
+    }
+#endif
     return flag;
 }
 
