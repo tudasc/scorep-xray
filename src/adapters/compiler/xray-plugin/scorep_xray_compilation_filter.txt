@@ -1,0 +1,5 @@
+# This file is in the format of llvm sanitizer spacial case lists
+# It is used during compilation of the xray plugin to prevent internal methods from being instrumented
+# by effectively annotating every function that is involved in the compilation with never_instrument attributes
+[never]
+fun:*
