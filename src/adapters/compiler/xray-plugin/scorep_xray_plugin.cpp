@@ -33,17 +33,15 @@ namespace XRayPlugin {
     // Array of only the region handles for each region for more cache friendliness
     static std::vector<uint32_t> *regionHandles;
 
-    static bool xrayInitSuccess = false;
+    static int *xrayInitSuccess;
 
     /**
      * Creates a new, trivially copy-able scorep region description on the heap that can be referenced after passed
      * values go out of scope. Make sure to free contents once it is no longer needed.
      */
-    scorep_compiler_region_description createRegionDesc(std::string &funcNameMangled,
-                                                        std::string &funcNameDemangled,
-                                                        std::string &sourceFile, const uint32_t startLine,
-                                                        const uint32_t endLine) {
-
+    scorep_compiler_region_description
+    createRegionDesc(std::string &funcNameMangled, std::string &funcNameDemangled, std::string &sourceFile,
+                     const uint32_t startLine, const uint32_t endLine) {
         // Copy strings to heap as they are not available once out of scope, but region info needs pointers to them
         auto nameMangled = strdup(funcNameMangled.c_str());
         auto nameDemangled = strdup(funcNameDemangled.c_str());
@@ -53,22 +51,28 @@ namespace XRayPlugin {
         auto heapHandle = new uint32_t(SCOREP_INVALID_REGION);
         return scorep_compiler_region_description{
                 heapHandle, //region is reset in register call, init with unknown region
-                nameDemangled,
-                nameMangled,
-                file,
-                static_cast<int>(startLine),
-                static_cast<int>(endLine),
-                0
-        };
+                nameDemangled, nameMangled, file, static_cast<int>(startLine), static_cast<int>(endLine), 0};
     }
 
     /**
-    * @param execFileName Name of the file to retrieve Function data from, should be full path to current executable
-    */
-    static void buildRegionsForExecutable(std::string &execFileName) XRAY_INSTRUMENT_NEVER {
+     * Reads XRay instrumentation map from the executable, demangles names and builds Score-P region infos for it
+     * May end execution of program via call to UTILS_FATAL
+     * @param execFileName Name of the file to retrieve Function data from, should be full path to current executable
+     * @return true if successful, false if an error occurred but execution can continue
+     */
+    static bool buildRegionsForExecutable(std::string &execFileName) XRAY_INSTRUMENT_NEVER {
         auto maybeMap = llvm::xray::loadInstrumentationMap(execFileName);
         if (auto err = maybeMap.takeError()) {
-            UTILS_BUG("Could not read XRay instrumentation map!: %s", toString(std::move(err)).c_str());
+            std::string errString = toString(std::move(err));
+            if (errString == "Failed to find XRay instrumentation map.") {
+                // Assume this is because no function was instrumented (compile time filter) and therefore not an error
+                UTILS_WARN_ONCE((errString + " Assuming this is because no function was instrumented during "
+                                             "compilation and continuing...").c_str());
+                return false;
+            } else {
+                // Other error messages should be treated as non-recoverable in the context of measurement
+                UTILS_FATAL("Could not read XRay instrumentation map!: %s", errString.c_str());
+            }
         }
         auto funcAddressMap = maybeMap.get().getFunctionAddresses(); // Mapping of XRay fid -> address (unique)
         regions = new std::vector<scorep_compiler_region_description>(
@@ -98,12 +102,14 @@ namespace XRayPlugin {
                 << maybeFuncInfo.get().StartLine << "\n\tfile: " << sourceFile <<std::endl;
 #endif
             }
-            //std::cout << "vectorsize: " << (*regions).size() << ", " << (*regionHandles).size() << std::endl;
         }
+        return true;
     }
 
 
     /**
+     * Registers every created region info with the measurement runtime and patches/unpatches sleds depending on whether
+     * a function was filtered at runtime or not
     * @return true on success, false otherwise
     */
     static bool registerAndPatch() XRAY_INSTRUMENT_NEVER {
@@ -130,6 +136,12 @@ namespace XRayPlugin {
         return successStatus;
     }
 
+    /**
+     * Handler for patched XRay sleds. When called by XRay, it calls the measurement code with the corresponding
+     * region handle to measure the region
+     * @param fid XRay id of function
+     * @param entryType Type of sled
+     */
     static void handleInstrumentationPoint(int32_t fid, XRayEntryType entryType) XRAY_INSTRUMENT_NEVER {
         if (entryType == XRayEntryType::ENTRY) {
             scorep_plugin_enter_region((*regionHandles)[fid - 1]);
@@ -142,31 +154,46 @@ namespace XRayPlugin {
         }
     }
 
+    /**
+     * @return true if measurement will be active. False if xray needn't be setup
+     */
     static inline bool shouldInitXray() XRAY_INSTRUMENT_NEVER {
         return SCOREP_Env_DoProfiling() || SCOREP_Env_DoTracing() || SCOREP_Env_DoUnwinding();
     }
 
+    /**
+     * Initializes XRay Plugin runtime by making all necessary calls to XRay and Score-P
+     * If successful, the application is patched according to runtime & instrumentation filters and ready to run
+     * @return SUCCESS if successful, SCOREP_ERROR_XRAY_INIT if not
+     */
     static SCOREP_ErrorCode initXRay() XRAY_INSTRUMENT_NEVER {
         if (!shouldInitXray()) {
             return SCOREP_ErrorCode::SCOREP_SUCCESS;
         }
         __xray_init(); // Safe even if it is already initialized
-        xrayInitSuccess = __xray_set_handler(&handleInstrumentationPoint);
-        if (!xrayInitSuccess) {
-            // TODO!: Handle 'spurious calls' as per docs?
-            UTILS_ERROR(SCOREP_ERROR_XRAY_INIT, "Could not set XRay handler function!");
-            return SCOREP_ErrorCode::SCOREP_ERROR_XRAY_INIT;
-        }
         bool execNameIsFile;
         std::string fileName = SCOREP_GetExecutableName(&execNameIsFile);
-        buildRegionsForExecutable(fileName);
-        registerAndPatch();
+        bool regionsAvailable = buildRegionsForExecutable(fileName);
+        if (regionsAvailable) {
+            // XRay will throw errors if no function was actually instrumented
+            xrayInitSuccess = new int(__xray_set_handler(&handleInstrumentationPoint));
+            if (!(*xrayInitSuccess)) {
+                // TODO!: Handle 'spurious calls' as per docs?
+                UTILS_ERROR(SCOREP_ERROR_XRAY_INIT, "Could not set XRay handler function!");
+                return SCOREP_ErrorCode::SCOREP_ERROR_XRAY_INIT;
+            }
+            registerAndPatch();
+        }
         return SCOREP_ErrorCode::SCOREP_SUCCESS;
     }
 
 
+    /**
+     * Free all region descriptions and optionally unpatch sleds
+     * @param unpatch Whether to unpatch all sleds for a clean state
+     */
     static void cleanupXRay(bool unpatch) XRAY_INSTRUMENT_NEVER {
-        if(regions){
+        if (regions) {
             for (auto region: (*regions)) {
                 free((void *) region.name);
                 free((void *) region.file);
@@ -174,7 +201,7 @@ namespace XRayPlugin {
             }
             (*regions).clear();
         }
-        if(regionHandles){
+        if (regionHandles) {
             (*regionHandles).clear();
         }
         if (unpatch && xrayInitSuccess) {
@@ -183,11 +210,11 @@ namespace XRayPlugin {
     }
 }
 
-SCOREP_ErrorCode initXRayPlugin() XRAY_INSTRUMENT_NEVER{
+SCOREP_ErrorCode initXRayPlugin() XRAY_INSTRUMENT_NEVER {
     return XRayPlugin::initXRay();
 }
 
-void finalizeXRayPlugin(int doUnpatching) XRAY_INSTRUMENT_NEVER{
+void finalizeXRayPlugin(int doUnpatching) XRAY_INSTRUMENT_NEVER {
     XRayPlugin::cleanupXRay(doUnpatching);
 }
 
