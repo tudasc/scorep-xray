@@ -381,7 +381,6 @@ SCOREP_Config_CompilerAdapter::addCFlags( std::string&           cflags,
 #elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CC_XRAY_PLUGIN )
             xray_plugin_instrumentation_available = true;
 #endif /* HAVE_BACKEND(SCOREP_COMPILER_INSTRUMENTATION_CC_[...]) */
-            // TODO!: Determine if llvm and xray plugin are mutually exclusive
             break;
         case SCOREP_CONFIG_LANGUAGE_CXX:
             cflags += SCOREP_COMPILER_INSTRUMENTATION_CXXFLAGS;
@@ -455,9 +454,9 @@ SCOREP_Config_CompilerAdapter::addCFlags( std::string&           cflags,
 #if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN )
     if ( xray_plugin_instrumentation_available )
     {
-        // TODO!: Determine useful threshold
-        // TODO!: Allow selection of threshold (check m_cflags?)
-        cflags += " -fxray-instrument -fxray-instruction-threshold=1 ";
+        // fxray-instrument here to instrument the input files during compilation
+        // Pass -g to get crucial debug info such as source file of a function
+        cflags += " -g -fxray-instrument ";
         cflags += m_cflags;
     }
 #endif /* HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN ) */
@@ -475,9 +474,8 @@ SCOREP_Config_CompilerAdapter::addLdFlags( std::string& ldflags,
     // Xray lib must be linked statically
     ldflags += SCOREP_PKGLIBDIR "/scorep_instrument_function_xray.a ";
     ldflags += "-Wl,--no-whole-archive ";
-    // pass llvm linking flags again for final executable
+    // pass llvm linking flags again for final executable, fxray-instrument passed too to link xray runtime
     ldflags += SCOREP_XRAY_PLUGIN_LDFLAGS SCOREP_XRAY_PLUGIN_LIBS;
-    ldflags += " -fxray-instruction-threshold=1 ";
 #endif /* HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN ) */
     if ( nvcc )
     {
