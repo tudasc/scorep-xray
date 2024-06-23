@@ -108,6 +108,7 @@ rm -f xray_plugin_supported_fc
 
 SCOREP_XRAY_PLUGIN_SUMMARY
 AC_CONFIG_FILES([../src/scorep_config_tool_xray_plugin.h:../src/tools/config/scorep_config_tool_xray_plugin.h.in])
+AC_CONFIG_FILES([../share/scorep/scorep_xray_filter_no_internals.txt:../src/adapters/compiler/xray-plugin/scorep_xray_filter_no_internals.txt])
 
 AFS_SET_SILENT_RULE_PREFIX([XRAY PLUGIN ])
 AFS_CONFIG_MAKEFILE

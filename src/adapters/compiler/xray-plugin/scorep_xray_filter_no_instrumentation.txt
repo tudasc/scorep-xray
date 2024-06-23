@@ -3,3 +3,4 @@
 # by effectively annotating every function that is involved in the compilation with never_instrument attributes
 [never]
 fun:*
+src:*
