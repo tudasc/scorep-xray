@@ -17,10 +17,10 @@
 namespace XRayPlugin {
 
 
-    FilterConverter::FilterConverter(std::string inFilePath) : inFilePath(std::move(inFilePath)){
-        if(readInFile()){
+    FilterConverter::FilterConverter(std::string inFilePath) : inFilePath(std::move(inFilePath)) {
+        if (readInFile()) {
             formatOkay = determineInputFormat();
-        }else{
+        } else {
             formatOkay = false;
         }
     }
@@ -34,19 +34,19 @@ namespace XRayPlugin {
             file.close();
             return file.good();
         } else {
-            std::cerr << "Unable to open instrument filter file!" << std::endl;
+            UTILS_WARNING("Unable to open instrument filter file!");
             return false;
         }
     }
 
-    bool FilterConverter::writeFile(std::string& outFilePath, std::string& content){
+    bool FilterConverter::writeFile(std::string &outFilePath, std::string &content) {
         std::ofstream file(outFilePath);
         if (file.is_open()) {
             file << content;
             file.close();
             return file.good();
         } else {
-            std::cerr << "Unable to write instrument filter file!" << std::endl;
+            UTILS_WARNING("Unable to write instrument filter file!");
             return false;
         }
     }
@@ -55,7 +55,8 @@ namespace XRayPlugin {
         bool xray = false;
         bool scorep = false;
         // Keywords to look out for that will determine the file type
-        std::vector<std::string> formatKeysScoreP = {"SCOREP_FILE_NAMES_BEGIN", "SCOREP_REGION_NAMES_BEGIN", "INCLUDE", "EXCLUDE", "MANGLED"};
+        std::vector<std::string> formatKeysScoreP = {"SCOREP_FILE_NAMES_BEGIN", "SCOREP_REGION_NAMES_BEGIN", "INCLUDE",
+                                                     "EXCLUDE", "MANGLED"};
         std::vector<std::string> formatKeysXRay = {"[always]", "[never]"};
 
         // tokenize
@@ -67,83 +68,82 @@ namespace XRayPlugin {
         }
 
         // Search for scorep keywords in input file
-        for (const auto& substr : formatKeysScoreP) {
-            if (std::find(tokens.begin(), tokens.end(), substr) != tokens.end()){
+        for (const auto &substr: formatKeysScoreP) {
+            if (std::find(tokens.begin(), tokens.end(), substr) != tokens.end()) {
                 scorep = true;
                 break;
             }
         }
         // Now search for xray words to make sure
-        for (const auto& substr : formatKeysXRay) {
-            if (std::find(tokens.begin(), tokens.end(), substr) != tokens.end()){
+        for (const auto &substr: formatKeysXRay) {
+            if (std::find(tokens.begin(), tokens.end(), substr) != tokens.end()) {
                 xray = true;
                 break;
             }
         }
 
         // Check that they are mutually exclusive but one is true
-        if (xray != scorep){
+        if (xray != scorep) {
             inIsXray = xray;
             return true;
-        }else{
-            std::cerr << "Could not determine format of instrumentation filter file. "
-                         "Make sure your syntax is correct." << std::endl;
+        } else {
+            UTILS_WARNING("Could not determine format of instrumentation filter file. "
+                          "Make sure your syntax is correct.");
             return false;
         }
     }
 
     bool FilterConverter::saveAsScorep(std::string &outFilePath) {
-        if(!formatOkay){
+        if (!formatOkay) {
             // Better to fail than to risk undefined instrumentation behaviour
             return false;
         }
-        if(!inIsXray){
+        if (!inIsXray) {
             return writeFile(outFilePath, inFileContent);
         }
-        std::cerr << "Converting XRay Filter files to ScoreP filter is not supported!" << std::endl;
+        UTILS_WARNING("Converting XRay Filter files to ScoreP filter is not supported!");
         return false;
     }
 
     bool FilterConverter::saveAsXRay(std::string &outFilePath) {
-        if(!formatOkay){
+        if (!formatOkay) {
             // Better to fail than to risk undefined instrumentation behaviour
             return false;
         }
-        if(inIsXray){
+        if (inIsXray) {
             return writeFile(outFilePath, inFileContent);
         }
-        if(convertedXrayContent.empty()){
+        if (convertedXrayContent.empty()) {
             // Only now is a conversion really necessary
-            if(!parseFilter()){
+            if (!parseFilter()) {
                 return false;
             }
-            if(!convertToXRay()){
+            if (!convertToXRay()) {
                 return false;
             }
         }
         return writeFile(outFilePath, convertedXrayContent);
     }
 
-    bool FilterConverter::parseFilter(){
+    bool FilterConverter::parseFilter() {
         filter = SCOREP_Filter_New();
-        if(!filter){
-            std::cerr << "Could not alloc instrumentation filter!" << std::endl;
+        if (!filter) {
+            UTILS_WARNING("Could not alloc instrumentation filter!");
             return false;
         }
         SCOREP_ErrorCode result = SCOREP_Filter_ParseFile(filter, inFilePath.c_str());
-        if(result != SCOREP_SUCCESS){
-            std::cerr << "Could not read or parse instrumentation filter file!" << std::endl;
+        if (result != SCOREP_SUCCESS) {
+            UTILS_WARNING("Could not read or parse instrumentation filter file!");
             return false;
         }
         return true;
     }
 
-    bool FilterConverter::convertToXRay(){
+    bool FilterConverter::convertToXRay() {
         // TODO!: Determine whether implementing this is adequate, meet with seb
-        std::string notice("Note that XRay will instrument explicitly included functions that are excluded by "
-                           " a file filter. The behaviour therefore differs from Score-P filters.\nConsider using"
-                           "--no-xray-delete-converted-filter and then edit the xray filter to your needs manually.");
-        std::cout << notice << std::endl;
+        UTILS_WARN_ONCE("Note that XRay will instrument explicitly included functions that are excluded by a file "
+                        " filter. The behaviour therefore differs from Score-P filters.\nConsider using"
+                        " --no-xray-delete-converted-filter and then edit the xray filter to your needs manually.");
         std::stringstream xrayOutAlways;
         std::stringstream xrayOutNever;
         std::stringstream xrayInfo;
@@ -152,48 +152,48 @@ namespace XRayPlugin {
         xrayOutAlways << "[always]" << std::endl;
         xrayOutNever << "[never]" << std::endl;
 
-        scorep_filter_rule_t* fileRule = filter->file_rules;
+        scorep_filter_rule_t *fileRule = filter->file_rules;
         bool sawStarRuleFile = false;
-        while(fileRule != nullptr){
-            if(strcmp(fileRule->pattern ,"*") == 0){
+        while (fileRule != nullptr) {
+            if (strcmp(fileRule->pattern, "*") == 0) {
                 sawStarRuleFile = true;
             }
-            if(fileRule->is_exclude){
+            if (fileRule->is_exclude) {
                 xrayOutNever << "src:" << fileRule->pattern << std::endl;
-            }else{
+            } else {
                 xrayOutAlways << "src:" << fileRule->pattern << std::endl;
             }
             fileRule = fileRule->next;
         }
-        if(!sawStarRuleFile){
+        if (!sawStarRuleFile) {
             // ScoreP docs 5.3.1: All files and regions included per default
             // To achieve better similarity between Scorep and XRay filters, the default case is handled by explicitly
             // emitting a "*" to include all other files by default
             xrayOutAlways << "src:*" << std::endl;
         }
 
-        scorep_filter_rule_t* regionRule = filter->function_rules;
+        scorep_filter_rule_t *regionRule = filter->function_rules;
         bool emittedWarning = false; // Only emit warning to xray file once
         bool sawStarRuleRegion = false;
-        while(regionRule != nullptr){
-            if(!regionRule->is_mangled && !emittedWarning){
+        while (regionRule != nullptr) {
+            if (!regionRule->is_mangled && !emittedWarning) {
                 std::string warn("A demangled region rule was specified in the filter file, but XRay uses mangled "
-                                "names. Consider specifying mangled names in your instrumentation filter file.");
+                                 "names. Consider specifying mangled names in your instrumentation filter file.");
                 UTILS_WARNING(warn.c_str());
                 xrayInfo << "# " << warn << std::endl;
                 emittedWarning = true;
             }
-            if(strcmp(regionRule->pattern ,"*") == 0){
+            if (strcmp(regionRule->pattern, "*") == 0) {
                 sawStarRuleRegion = true;
             }
-            if(regionRule->is_exclude){
+            if (regionRule->is_exclude) {
                 xrayOutNever << "fun:" << regionRule->pattern << std::endl;
-            }else{
+            } else {
                 xrayOutAlways << "fun:" << regionRule->pattern << std::endl;
             }
             regionRule = regionRule->next;
         }
-        if(!sawStarRuleRegion){
+        if (!sawStarRuleRegion) {
             // To ensure similar behaviour in Scorep and XRay filters, the default case is handled by explicitly
             // emitting a "*" to include all other files by default
             xrayOutAlways << "fun:*" << std::endl;
@@ -204,7 +204,7 @@ namespace XRayPlugin {
     }
 
     FilterConverter::~FilterConverter() {
-        if(filter){
+        if (filter) {
             SCOREP_Filter_Delete(filter);
         }
     }
