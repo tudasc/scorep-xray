@@ -202,10 +202,25 @@ inline void addXrayFlags(std::string& flags, SCOREP_Instrumenter_CmdLine& cmdLin
                          const std::vector<std::string>& userArgs){
     flags += " --compiler-arg=-fxray-instruction-threshold=" + std::to_string(xrayConfig.instructionThreshold);
 
+    // Make default instrumentation filter available
     if(xrayConfig.useDefaultInstrumentFilter){
+        // If the scorep executable is copied, or scorep called via path without install, the default filter files
+        // won't be where they are expected => Write the filters to disk now (and delete them after instrumentation)
+        std::string defaultFilterName("scorep_xray_filter_no_internals.txt");
+        std::ofstream defaultFilter(defaultFilterName);
+        if(!defaultFilter.is_open()){
+            UTILS_BUG("Could not open file to write default instrumentation filter into current working directory!");
+        }
+        defaultFilter << XRayPlugin::Filters::NO_INTERNALS;
+        defaultFilter.close();
+        if(!defaultFilter.good()){
+            UTILS_BUG("Could not write default instrumentation filter into current working directory!");
+        }
         flags += " --compiler-arg=-fxray-attr-list=";
-        // TODO!: FInd correct path as SRCDIR refers to _build directory :(
-        flags += AFS_PACKAGE_SRCDIR "src/adapters/compiler/xray-plugin/scorep_xray_basic_filter.txt";
+        flags += defaultFilterName;
+        if(xrayConfig.deleteInstrumentFilterAfterCompile){
+            cmdLine.addTempFile(defaultFilterName);
+        }
     }
 
     // Now check for user instrument filters
@@ -213,7 +228,7 @@ inline void addXrayFlags(std::string& flags, SCOREP_Instrumenter_CmdLine& cmdLin
     if(!filter_files.empty()){
         for (const std::string& filter_file : filter_files) {
             XRayPlugin::FilterConverter conv(filter_file);
-            std::string outPath(filter_file + ".xray_autoconvert");
+            std::string outPath(filter_file + ".scorep_xray_autoconvert.txt");
             bool success = conv.saveAsXRay(outPath);
             if(!success){
                 UTILS_FATAL("Instrument filter is not readable, in an unknown format or could not be saved. Check"
