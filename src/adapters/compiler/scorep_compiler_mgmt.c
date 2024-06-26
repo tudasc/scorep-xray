@@ -78,7 +78,7 @@ compiler_subsystem_init( void )
 static void compiler_subsystem_finalize( void ){
 #if HAVE( SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN )
     UTILS_DEBUG_ENTRY();
-    finalizeXRayPlugin(1);
+    finalizeXRayPlugin();
     UTILS_DEBUG_EXIT();
 #endif
 }

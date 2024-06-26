@@ -29,11 +29,9 @@ SCOREP_ErrorCode initXRayPlugin() XRAY_INSTRUMENT_NEVER;
 
 /**
  * Finalize XRay plugin and free associated memory.
- * Note that not unpatching the application may lead to inconsistent states if the application is re-run without
- * the XRay plugin enabled.
- * @param doUnpatching if 0, application will not be unpatched explicitly on teardown; 1: unpatch everything
+ * Note: This does not call finalize on other Score-P internal structures
  */
-void finalizeXRayPlugin(int doUnpatching) XRAY_INSTRUMENT_NEVER;
+void finalizeXRayPlugin() XRAY_INSTRUMENT_NEVER;
 
 UTILS_END_C_DECLS
 
