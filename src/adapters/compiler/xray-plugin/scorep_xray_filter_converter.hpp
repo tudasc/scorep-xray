@@ -1,7 +1,3 @@
-//
-// Created by paul on 6/19/24.
-//
-
 #ifndef SCOREP_XRAY_FILTERCONVERTER_HPP
 #define SCOREP_XRAY_FILTERCONVERTER_HPP
 
@@ -16,7 +12,10 @@ namespace XRayPlugin {
      * Helper class to transparently read a filter file and convert it into a xray filter file if requested.
      * The data is kept during the lifetime of this class so that the contents can be written multiple times,
      * e.g. if an export is wanted.
-     * The conversion xray=>scorep is currently not supported as it was not yet needed.
+     * The conversion xray=>scorep is currently not supported, and scorep=>xray is only
+     * supported on a very basic level and may produce errors
+     * TODO: Currently, the conversion process is faulty since XRay/LLVM Sanitizer list filter files behave differently
+     * TODO: Support real conversion
      */
     class FilterConverter {
 
