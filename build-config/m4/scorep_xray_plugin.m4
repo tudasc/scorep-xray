@@ -81,7 +81,8 @@ AC_DEFUN([SCOREP_XRAY_PLUGIN], [
             [SCOREP_LLVM_CONFIG
             AS_IF(
                 [test "x${scorep_have_llvm_config}" = "xyes"],
-                [XRAY_PLUGIN_TARGET_CXXFLAGS="${XRAY_PLUGIN_TARGET_CXXFLAGS} $(${scorep_llvm_config_bin} --cxxflags | ${SED} -E 's/ -std=[[a-zA-Z]]+.*[[0-9]]{2} //') -fxray-instrument"
+                [XRAY_PLUGIN_TARGET_CFLAGS="${XRAY_PLUGIN_TARGET_CFLAGS} $(${scorep_llvm_config_bin} --cflags | ${SED} -E 's/ -std=[[a-zA-Z]]+.*[[0-9]]{2} //') -fxray-instrument -fxray-attr-list=${srcdir}/../src/adapters/compiler/xray-plugin/scorep_xray_filter_no_instrumentation.txt"
+                XRAY_PLUGIN_TARGET_CXXFLAGS="${XRAY_PLUGIN_TARGET_CXXFLAGS} $(${scorep_llvm_config_bin} --cxxflags | ${SED} -E 's/ -std=[[a-zA-Z]]+.*[[0-9]]{2} //') -fxray-instrument -fxray-attr-list=${srcdir}/../src/adapters/compiler/xray-plugin/scorep_xray_filter_no_instrumentation.txt"
                 XRAY_PLUGIN_TARGET_CPPFLAGS="${XRAY_PLUGIN_TARGET_CPPFLAGS} $(${scorep_llvm_config_bin} --cppflags)"
                 # pass xray instrument flag to linker to link runtime libs
                 XRAY_PLUGIN_TARGET_LDFLAGS="${XRAY_PLUGIN_TARGET_LDFLAGS} -fxray-instrument $(${scorep_llvm_config_bin} --ldflags)"
@@ -120,6 +121,7 @@ AC_DEFUN([SCOREP_XRAY_PLUGIN], [
     AS_IF(
         [test "x${have_xray_plugin_support}" = "xyes"],
         [AC_SUBST(SCOREP_XRAY_PLUGIN_CXXFLAGS, ["${XRAY_PLUGIN_TARGET_CXXFLAGS}"])
+         AC_SUBST(SCOREP_XRAY_PLUGIN_CFLAGS, ["${XRAY_PLUGIN_TARGET_CFLAGS}"])
          AC_SUBST(SCOREP_XRAY_PLUGIN_CPPFLAGS, ["${XRAY_PLUGIN_TARGET_CPPFLAGS}"])
          AC_SUBST(SCOREP_XRAY_PLUGIN_LDFLAGS, ["${XRAY_PLUGIN_TARGET_LDFLAGS}"])
          AC_SUBST(SCOREP_XRAY_PLUGIN_LIBS, ["${XRAY_PLUGIN_TARGET_LIBS}"])]
@@ -182,7 +184,7 @@ m4_define(
     AS_UNSET([plugin_install])
 ])
 
-# _TEST_ENABLE_LLVM_PLUGIN
+# _TEST_ENABLE_XRAY_PLUGIN
 # ------------------------
 #
 

@@ -2,52 +2,52 @@
 # "good" baseline for which functions to exclude
 
 [never]
-fun:"POMP*"
-fun:"Pomp*"
-fun:"pomp*"
-fun:"SCOREP_*"
-fun:"scorep_*"
-fun:"OTF2_*"
-fun:"otf2_*"
-fun:"cube_*"
-fun:"cubew_*"
-fun:".omp*"
-fun:"*DIR.OMP.*"
-fun:"*.extracted*"
-fun:"*_tree_reduce_*"
-fun:"..omp*"
-fun:"__omp*"
-fun:"..acc*"
-fun:"virtual thunk*"
-fun:"non-virtual thunk*"
-fun:"*Kokkos::Tools*"
-fun:"*Kokkos::Profiling*"
-fun:"*6Kokkos5Tools*"
-fun:"*6Kokkos9Profiling*"
-fun:"*_GLOBAL__*"
-fun:"*__gnu_cxx::*"
-fun:"*__cxx_*"
-fun:"*std::*"
-fun:"__clang_*"
-fun:"omp*$omp*$*"
-fun:"*.omp_outlined*"
-fun:"*.omp_outlined_debug__*"
-fun:"*_omp_*"
-fun:"*_omp$*"
-fun:"*__kmpc*"
-fun:"ompx::*"
-fun:"__keep_alive*"
-fun:"__assert_fail*"
-fun:"*__internal_trig_*"
-fun:"*thread-local wrapper routine*"
-fun:"*(anonymous namespace)::invokeMicrotask*"
-fun:".red_init.*"
-fun:".red_comb.*"
-fun:"MPI::*"
-fun:"*__device_stub__*"
-fun:"__cuda*"
-fun:"_*_nv_*"
-fun:"__sti_*cuda*"
-fun:"__hip*"
+fun:POMP*
+fun:Pomp*
+fun:pomp*
+fun:SCOREP_*
+fun:scorep_*
+fun:OTF2_*
+fun:otf2_*
+fun:cube_*
+fun:cubew_*
+fun:.omp*
+fun:*DIR.OMP.*
+fun:*.extracted*
+fun:*_tree_reduce_*
+fun:..omp*
+fun:__omp*
+fun:..acc*
+fun:virtual thunk*
+fun:non-virtual thunk*
+fun:*Kokkos::Tools*
+fun:*Kokkos::Profiling*
+fun:*6Kokkos5Tools*
+fun:*6Kokkos9Profiling*
+fun:*_GLOBAL__*
+fun:*__gnu_cxx::*
+fun:*__cxx_*
+fun:*std::*
+fun:__clang_*
+fun:omp*$omp*$*
+fun:*.omp_outlined*
+fun:*.omp_outlined_debug__*
+fun:*_omp_*
+fun:*_omp$*
+fun:*__kmpc*
+fun:ompx::*
+fun:__keep_alive*
+fun:__assert_fail*
+fun:*__internal_trig_*
+fun:*thread-local wrapper routine*
+fun:*(anonymous namespace)::invokeMicrotask*
+fun:.red_init.*
+fun:.red_comb.*
+fun:MPI::*
+fun:*__device_stub__*
+fun:__cuda*
+fun:_*_nv_*
+fun:__sti_*cuda*
+fun:__hip*
         
         
