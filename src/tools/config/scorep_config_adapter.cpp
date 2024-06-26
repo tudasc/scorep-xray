@@ -455,8 +455,7 @@ SCOREP_Config_CompilerAdapter::addCFlags( std::string&           cflags,
     if ( xray_plugin_instrumentation_available )
     {
         // fxray-instrument here to instrument the input files during compilation
-        // Pass -g to get crucial debug info such as source file of a function
-        cflags += " -g -fxray-instrument ";
+        cflags += " -fxray-instrument ";
         cflags += m_cflags;
     }
 #endif /* HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN ) */
