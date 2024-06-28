@@ -101,7 +101,7 @@ AC_DEFUN([SCOREP_XRAY_PLUGIN], [
                 AS_IF(
                     [test "x${can_compile_xray_plugin}" = "xyes"],
                     [AC_LANG_PUSH([C])
-                    _TEST_ENABLE_XRAY_PLUGIN #TODO: Update TEST
+                    _TEST_ENABLE_XRAY_PLUGIN #TODO: Update TEST since plugin is compiled with c++ anyways
                     AC_LANG_POP([C])
                     AC_LANG_PUSH([C++])
                     _TEST_ENABLE_XRAY_PLUGIN
@@ -170,10 +170,6 @@ m4_define(
     plugin_install='$SHELL ./libtool --mode=install $INSTALL confmodule.la $PWD/lib/confmodule.la >&AS_MESSAGE_LOG_FD'
     AC_MSG_CHECKING([whether XRAY example plugin can compile])
     AC_LANG_CONFTEST([AC_LANG_SOURCE(_INPUT_XRAY_PLUGIN)])
-    # PRINT_VAL($plugin_compile)
-    # PRINT_VAL($plugin_link)
-    # PRINT_VAL($plugin_mkdir)
-    # PRINT_VAL($plugin_install)
     AS_IF([_AC_DO_VAR([plugin_compile]) &&
            _AC_DO_VAR([plugin_link]) &&
            _AC_DO_VAR([plugin_mkdir]) &&
@@ -257,6 +253,7 @@ m4_define([_INPUT_XRAY_PLUGIN], [[
 #include <xray/xray_interface.h>
 
 int main() {
+    __xray_init();
     std::cout << "Hello, World!" << std::endl;
     return 0;
 }
@@ -265,9 +262,10 @@ int main() {
 # _INPUT_XRAY_TEST_C
 # ------------------
 #
+# Do not include xray header here as it causes problems with c compilers
+# XRay plugin itself is built with clang++ / a cpp compiler anyways
 m4_define([_INPUT_XRAY_TEST_C], [[
 #include <stdio.h>
-#include <xray/xray_interface.h>
 int main( void )
 {
     FILE *file = fopen("xray_plugin_supported_c", "w");
