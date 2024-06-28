@@ -252,6 +252,7 @@ AX_CONFIG_SUBDIR([build-gcc-plugin], [${args} ac_scorep_platform=${ac_scorep_pla
 
 AX_CONFIG_SUBDIR([build-llvm-plugin], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling}])
 
+# The XRay plugin must be configured after the llvm plugin as it checks for files created by llvm plugin
 AX_CONFIG_SUBDIR([build-xray-plugin], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling}])
 
 AX_CONFIG_SUBDIR([build-libwrap], [${args} ac_scorep_platform=${ac_scorep_platform} afs_cross_compiling=${ac_scorep_cross_compiling}])

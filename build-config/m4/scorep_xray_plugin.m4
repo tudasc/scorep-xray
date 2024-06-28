@@ -5,8 +5,6 @@ AC_DEFUN([PRINT_VAL], [
   AC_MSG_NOTICE([val: $1])
 ])
 
-# TODO: Determine compile and linker flags
-
 # SCOREP_XRAY_PLUGIN_SUMMARY()
 # ----------------------------
 # Reports summary about the XRAY plugin configuration.
@@ -52,7 +50,7 @@ AC_DEFUN([SCOREP_XRAY_PLUGIN], [
     AC_ARG_ENABLE(
         [xray-plugin],
         [AS_HELP_STRING([--disable-xray-plugin],
-        [Disable general support for the XRAY plug-in based instrumentation. Default is to determine support automatically. This disables it by request and fails if support cannot be satisfied but was requested.])],
+        [Disable general support for the XRAY plug-in based instrumentation. Default is to determine support automatically.])],
         [enable_xray_plugin="${enableval}"],
         [enable_xray_plugin="not_given"]
     )
@@ -71,6 +69,13 @@ AC_DEFUN([SCOREP_XRAY_PLUGIN], [
             [enable_xray_plugin="no"
             xray_plugin_reason=${xray_plugin_reason:-"not yet supported in cross-compile mode"}]
         )]
+    )
+
+    # Check status of llvm plugin, as they are mutually exclusive. If the llvm plugin was successfully enabled for any
+    # language, the xray plugin is disabled completely.
+    AS_IF([test -f ../build-llvm-plugin/llvm_plugin_supported_c++ || test -f ../build-llvm-plugin/llvm_plugin_supported_c || test -f ../build-llvm-plugin/llvm_plugin_supported_fortran],
+        [enable_xray_plugin="no"
+        xray_plugin_reason="LLVM plugin was already enabled. Use --disable-llvm-plugin to enable XRay-plugin"],
     )
 
     AS_IF(
