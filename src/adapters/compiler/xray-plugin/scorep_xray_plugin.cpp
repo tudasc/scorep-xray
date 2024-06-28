@@ -16,9 +16,7 @@ extern "C" {
 
 // No need to check whether XRAY runtime is available since this header is only included when xray plugin
 // instrumentation is enabled, which means compiling and linking with -fxray-instrumented
-#include <xray/xray_log_interface.h>
 #include <xray/xray_interface.h>
-#include <xray/xray_records.h>
 
 #include "llvm/Demangle/Demangle.h"
 #include "llvm/DebugInfo/Symbolize/Symbolize.h"
@@ -149,13 +147,9 @@ namespace XRayPlugin {
             case XRayEntryType::ENTRY:
                 scorep_plugin_enter_region((*regionHandles)[fid - 1]);
                 break;
+            case XRayEntryType::TAIL:
             case XRayEntryType::EXIT:
                 scorep_plugin_exit_region((*regionHandles)[fid - 1]);
-                break;
-            case XRayEntryType::TAIL:
-                UTILS_WARN_ONCE("TAIL CALL!"); //TODO!: Remove
-                scorep_plugin_exit_region((*regionHandles)[fid - 1]); //TODO!: Tail call?
-                scorep_plugin_enter_region((*regionHandles)[fid - 1]);
                 break;
             default:
                 UTILS_WARN_ONCE("Unhandled Xray sled event %u for fid %i", entryType, fid);
