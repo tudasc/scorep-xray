@@ -92,9 +92,8 @@ AC_DEFUN([SCOREP_XRAY_PLUGIN], [
                 # pass xray instrument flag to linker to link runtime libs
                 XRAY_PLUGIN_TARGET_LDFLAGS="${XRAY_PLUGIN_TARGET_LDFLAGS} -fxray-instrument $(${scorep_llvm_config_bin} --ldflags)"
                 XRAY_PLUGIN_TARGET_LIBS="${XRAY_PLUGIN_TARGET_LIBS} $(${scorep_llvm_config_bin} --libs demangle support xray symbolize)"
-                # TODO!: System libs seems to be necessary when linking statically, check if --link-static applicable
-                # XRAY_PLUGIN_TARGET_LIBS="${XRAY_PLUGIN_TARGET_LIBS} $(${scorep_llvm_config_bin} --link-static --libs demangle support xray symbolize)"
-                # XRAY_PLUGIN_TARGET_LIBS="${XRAY_PLUGIN_TARGET_LIBS} $(${scorep_llvm_config_bin} --link-static --system-libs)"
+                # System libs may not be empty if default include paths edited, therefore include them as target libs
+                XRAY_PLUGIN_TARGET_LIBS="${XRAY_PLUGIN_TARGET_LIBS} $(${scorep_llvm_config_bin} --system-libs)"
                 AC_LANG_PUSH([C++])
                 _BUILD_XRAY_PLUGIN
                 AC_LANG_POP([C++])
