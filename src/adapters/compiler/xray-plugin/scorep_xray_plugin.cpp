@@ -93,7 +93,7 @@ namespace XRayPlugin {
                 (*regions)[funcId - 1] = regionInfo;  // XrayIDs start at 1
                 // Do not set regionHandles yet as they are still subject to change
                 if (SCOREP_Env_RunVerbose()) {
-                    std::cout << "XRay instrumented: " << funcId << " @" << funcAddr << ": " << "\n\tname: "
+                    std::cerr << "XRay instrumented: " << funcId << " @" << funcAddr << ": " << "\n\tname: "
                               << funcNameMangled << "\n\tdemangled: " << funcNameDemangled << "\n\tlineStart: "
                               << maybeFuncInfo.get().StartLine << "\n\tfile: " << sourceFile << std::endl;
                 }
@@ -125,8 +125,8 @@ namespace XRayPlugin {
             } else {
                 status = __xray_unpatch_function(i + 1); // XrayIDs start at 1
             }
-            if(SCOREP_Env_RunVerbose()){
-                std::cout << "XRay fid " << i+1 << " was " << (shouldPatch ? "patched" : "unpatched") << std::endl;
+            if (SCOREP_Env_RunVerbose()) {
+                std::cerr << "XRay fid " << i + 1 << " was " << (shouldPatch ? "patched" : "unpatched") << std::endl;
             }
             if (status != XRayPatchingStatus::SUCCESS) {
                 successStatus = false;
