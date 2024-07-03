@@ -106,12 +106,7 @@ void SCOREP_Instrumenter_CompilerAdapter::printHelp(void) {
         << std::endl;
 #endif
 #if HAVE_BACKEND(SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN)
-    std::cout << "  --no-xray-default-instrument-filter\n"
-                 "\t\t\t\t  Disables the default instrumentation filter for the XRay plugin.\n"
-                 "\t\t\t\t  Filtered are functions such as scorep, otf2, kokkos etc internals,\n"
-                 "\t\t\t\t  MPI functions to not interfere with MPI adapters etc."
-                 "\n"
-                 "  --no-xray-delete-converted-filter\n"
+    std::cout << "  --no-xray-delete-converted-filter\n"
                  "\t\t\t\t  Disables deletion of internally converted instrumentation filter after compilation.\n"
                  "\t\t\t\t  The converted filter file can then be examined and manually edited."
                  "\n"
@@ -212,27 +207,6 @@ inline void addXrayFlags(std::string &flags, SCOREP_Instrumenter_CmdLine &cmdLin
             if (xrayConfig.deleteInstrumentFilterAfterCompile) {
                 cmdLine.addTempFile(outPath);
             }
-        }
-    }
-
-    // Make default instrumentation filter available
-    if (xrayConfig.useDefaultInstrumentFilter) {
-        // If the scorep executable is copied, or scorep called via path without install, the default filter files
-        // won't be where they are expected => Write the filters to disk now (and delete them after instrumentation)
-        std::string defaultFilterName("scorep_xray_filter_no_internals" + create_random_string() + ".txt");
-        std::ofstream defaultFilter(defaultFilterName);
-        if (!defaultFilter.is_open()) {
-            UTILS_BUG("Could not open file to write default instrumentation filter into current working directory!");
-        }
-        defaultFilter << XRayPlugin::Filters::NO_INTERNALS;
-        defaultFilter.close();
-        if (!defaultFilter.good()) {
-            UTILS_BUG("Could not write default instrumentation filter into current working directory!");
-        }
-        flags += " --compiler-arg=-fxray-attr-list=";
-        flags += defaultFilterName;
-        if (xrayConfig.deleteInstrumentFilterAfterCompile) {
-            cmdLine.addTempFile(defaultFilterName);
         }
     }
 
@@ -409,15 +383,6 @@ bool SCOREP_Instrumenter_CompilerAdapter::checkOption(const std::string &arg) {
 #endif
 #if(HAVE_BACKEND(SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN))
     if (!flag) {
-        if (arg == "--xray-default-instrument-filter") // Default
-        {
-            xrayConfig.useDefaultInstrumentFilter = true;
-            return true;
-        }
-        if (arg == "--no-xray-default-instrument-filter") {
-            xrayConfig.useDefaultInstrumentFilter = false;
-            return true;
-        }
         if (arg == "--xray-delete-converted-filter") // Default
         {
             xrayConfig.deleteInstrumentFilterAfterCompile = true;
