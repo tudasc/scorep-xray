@@ -72,6 +72,9 @@ static char*    env_machine_name;
 static char*    env_executable;
 static bool     env_system_tree_sequence;
 static bool     force_cfg_files;
+#if HAVE(SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN)
+static bool     env_xray_default_filter;
+#endif
 
 /*
  * Tracing setup
@@ -244,6 +247,19 @@ static const SCOREP_ConfigVariable core_confvars[] = {
         "If this is set to `false`, the directory will only be created if any "
         "substrate actually writes data."
     },
+#if HAVE(SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN)
+    {
+            "xray_default_filter",
+            SCOREP_CONFIG_TYPE_BOOL,
+            &env_xray_default_filter,
+            NULL,
+            "true",
+            "Enable/Disable XRay plugin default instrumentation filter",
+            "Similar to the LLVM plugin, the XRay plugin can apply a default filter to "
+            "instrumented functions such as std::* or MPI::*. If the default filter is disabled"
+            ", these functions will be patched at runtime and therefore measured."
+    },
+#endif
     SCOREP_CONFIG_TERMINATOR
 };
 
@@ -358,6 +374,15 @@ SCOREP_Env_UseSystemTreeSequence( void )
     }
     return env_system_tree_sequence;
 }
+
+#if HAVE(SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN)
+bool
+SCOREP_Env_XRayDefaultFilterActive( void )
+{
+    assert( env_variables_initialized );
+    return env_xray_default_filter;
+}
+#endif
 
 void
 SCOREP_RegisterAllConfigVariables( void )

@@ -111,6 +111,11 @@ SCOREP_Env_DoUnwinding( void );
 bool
 SCOREP_Env_DoForceCfgFiles( void );
 
+#if HAVE(XRAY_PLUGIN_SUPPORT)
+bool
+SCOREP_Env_XRayDefaultFilterActive( void );
+#endif
+
 UTILS_END_C_DECLS
 
 
