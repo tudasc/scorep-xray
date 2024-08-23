@@ -81,11 +81,11 @@ AC_DEFUN([SCOREP_XRAY_PLUGIN], [
             [SCOREP_LLVM_CONFIG
             AS_IF(
                 [test "x${scorep_have_llvm_config}" = "xyes"],
-                [XRAY_PLUGIN_TARGET_CFLAGS="${XRAY_PLUGIN_TARGET_CFLAGS} $(${scorep_llvm_config_bin} --cflags | ${SED} -E 's/ -std=[[a-zA-Z]]+.*[[0-9]]{2} //') -fxray-instrument -fxray-attr-list=${srcdir}/../src/adapters/compiler/xray-plugin/scorep_xray_filter_no_instrumentation.txt"
-                XRAY_PLUGIN_TARGET_CXXFLAGS="${XRAY_PLUGIN_TARGET_CXXFLAGS} $(${scorep_llvm_config_bin} --cxxflags | ${SED} -E 's/ -std=[[a-zA-Z]]+.*[[0-9]]{2} //') -fxray-instrument -fxray-attr-list=${srcdir}/../src/adapters/compiler/xray-plugin/scorep_xray_filter_no_instrumentation.txt"
+                [XRAY_PLUGIN_TARGET_CFLAGS="${XRAY_PLUGIN_TARGET_CFLAGS} $(${scorep_llvm_config_bin} --cflags | ${SED} -E 's/ -std=[[a-zA-Z]]+.*[[0-9]]{2} //') -fxray-instrument -fxray-instruction-threshold=1 -fxray-enable-shared -fxray-attr-list=${srcdir}/../src/adapters/compiler/xray-plugin/scorep_xray_filter_no_instrumentation.txt"
+                XRAY_PLUGIN_TARGET_CXXFLAGS="${XRAY_PLUGIN_TARGET_CXXFLAGS} $(${scorep_llvm_config_bin} --cxxflags | ${SED} -E 's/ -std=[[a-zA-Z]]+.*[[0-9]]{2} //') -fxray-instrument -fxray-instruction-threshold=1 -fxray-enable-shared -fxray-attr-list=${srcdir}/../src/adapters/compiler/xray-plugin/scorep_xray_filter_no_instrumentation.txt"
                 XRAY_PLUGIN_TARGET_CPPFLAGS="${XRAY_PLUGIN_TARGET_CPPFLAGS} $(${scorep_llvm_config_bin} --cppflags)"
                 # pass xray instrument flag to linker to link runtime libs
-                XRAY_PLUGIN_TARGET_LDFLAGS="${XRAY_PLUGIN_TARGET_LDFLAGS} -fxray-instrument -lstdc++ $(${scorep_llvm_config_bin} --ldflags)"
+                XRAY_PLUGIN_TARGET_LDFLAGS="${XRAY_PLUGIN_TARGET_LDFLAGS} -fxray-instrument -fxray-enable-shared -lstdc++ $(${scorep_llvm_config_bin} --ldflags)"
                 XRAY_PLUGIN_TARGET_LIBS="${XRAY_PLUGIN_TARGET_LIBS} $(${scorep_llvm_config_bin} --libs demangle support xray symbolize)"
                 # System libs may not be empty if default include paths edited, therefore include them as target libs
                 XRAY_PLUGIN_TARGET_LIBS="${XRAY_PLUGIN_TARGET_LIBS} $(${scorep_llvm_config_bin} --system-libs)"

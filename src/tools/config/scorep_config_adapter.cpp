@@ -455,7 +455,7 @@ SCOREP_Config_CompilerAdapter::addCFlags( std::string&           cflags,
     if ( xray_plugin_instrumentation_available )
     {
         // fxray-instrument here to instrument the input files during compilation
-        cflags += " -fxray-instrument ";
+        cflags += " -fxray-instrument -fxray-instruction-threshold=1 -fxray-enable-shared";
         cflags += m_cflags;
     }
 #endif /* HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_XRAY_PLUGIN ) */
